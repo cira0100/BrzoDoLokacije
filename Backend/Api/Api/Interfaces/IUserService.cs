@@ -4,11 +4,11 @@ namespace Api.Interfaces
 {
     public interface IUserService
     {
-        User createUser(User user);
-        List<User> getUsers();
-        User getUserByEmail(String email);
-        User getUserByUsername(String username);
-        User updateUser(User user);
-        Boolean deleteUser(String email);
+        Task createUser(User user);
+        Task<List<User>> getUsers();
+        Task<User> getUserByEmail(String email);
+        Task<User> getUserByUsername(String username);
+        Task<long> updateUser(User user);
+        Task<User> deleteUser(String email);
     }
 }
