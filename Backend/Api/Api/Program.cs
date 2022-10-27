@@ -1,7 +1,10 @@
+using System.Text;
 using Api.Database;
 using Api.Interfaces;
 using Api.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
+using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -19,6 +22,24 @@ builder.Services.AddSingleton<IMongoClient>(s =>
 
 builder.Services.AddScoped<IUserService, UserService>();
 
+
+
+
+//Add Authentication
+builder.Services.AddAuthentication(
+    JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => {
+        options.TokenValidationParameters = new TokenValidationParameters
+        {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(builder.Configuration.GetSection("AppSettings:JwtToken").Value)),
+            ValidateIssuer = false,
+            ValidateAudience = false
+        };
+
+    });
+
+
+
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
@@ -34,6 +55,9 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseAuthorization();
+
+//Add Authentication
+app.UseAuthentication();
 
 app.MapControllers();
 
