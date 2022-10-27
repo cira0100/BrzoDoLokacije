@@ -13,6 +13,7 @@ namespace Api.Controllers
             _userService = userService;
         }
 
+        [HttpPost("register")]
         public async Task<ActionResult<string>> Register([FromBody] Register creds)
         {
             //this is beyond scuffed and will be cleaned up later, when users,login and controllers are made
