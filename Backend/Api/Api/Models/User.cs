@@ -14,4 +14,18 @@ namespace Api.Models
         public String password { get; set; }
         public DateTime creationDate { get; set; }
     }
+
+    public class Login
+    {
+        public String email { get; set; }
+        public String password { get; set; }
+    }
+
+    public class Register
+    {
+        public String name { get; set; }
+        public String username { get; set; }
+        public String email { get; set; }
+        public String password { get; set; }
+    }
 }

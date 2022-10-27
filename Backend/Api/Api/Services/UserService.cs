@@ -14,10 +14,15 @@ namespace Api.Services
 
         }
 
-        public async Task createUser(User user)
+        public async Task<int> createUser(User user)
         {
-            await _users.InsertOneAsync(user);
+            if (await _users.Find(x => x.email == user.email).FirstOrDefaultAsync() != null)
+                return -1; //email already exists
+            if (await _users.Find(x => x.username == user.username).FirstOrDefaultAsync() != null)
+                return -2; //username already exists
             
+            await _users.InsertOneAsync(user);
+            return 1;
         }
 
         public async Task<User> deleteUser(string email)
