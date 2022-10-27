@@ -13,9 +13,11 @@ namespace Api.Services
     public class JwtService : IJwtService
     {
         private readonly IConfiguration _config;
-        public JwtService(IConfiguration config)
+        private readonly IUserService _userService;
+        public JwtService(IConfiguration config,IUserService userService)
         {
             _config = config;
+            _userService = userService;
         }
 
         public async Task<string> GenToken(User user)
@@ -30,6 +32,42 @@ namespace Api.Services
             };
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
+        }
+        public async Task<string> TokenToId(string token)
+        {
+            if (token == null)
+                return null;
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_config.GetSection("AppSettings:JwtToken").Value);
+            try
+            {
+                tokenHandler.ValidateToken(token, new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                }, out SecurityToken validatedToken);
+
+                var jwtToken = (JwtSecurityToken)validatedToken;
+                return jwtToken.Claims.First(x => x.Type == "id").Value;
+            }
+            catch
+            {
+                return null;
+            }
+
+        }
+
+        public async Task<string> RenewToken(string existingToken)
+        {
+            var id = await TokenToId(existingToken);
+            if (id == null)
+                return null;
+            var user = await _userService.getUserById(id);
+
+            return await GenToken(user);
+
         }
     }
 }

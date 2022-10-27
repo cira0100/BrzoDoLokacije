@@ -40,6 +40,12 @@ namespace Api.Services
             return await _users.Find(_=>true).ToListAsync();
         }
 
+        public async Task<User> getUserById(string id)
+        {
+            return  await _users.Find(user => user._id == id).SingleAsync();
+
+        }
+
         public async Task<long> updateUser(User user)
         {
             /* vraca broj izmenjenih korisnika
