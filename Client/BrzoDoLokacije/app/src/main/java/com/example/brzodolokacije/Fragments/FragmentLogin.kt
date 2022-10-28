@@ -14,7 +14,7 @@ import com.example.brzodolokacije.Interfaces.IAuthApi
 import com.example.brzodolokacije.Models.Auth.Login
 import com.example.brzodolokacije.R
 import com.example.brzodolokacije.Services.RetrofitHelper
-import okhttp3.ResponseBody
+import com.example.brzodolokacije.Services.SharedPreferencesHelper
 import retrofit2.Call
 import retrofit2.Response
 
@@ -77,7 +77,8 @@ class FragmentLogin : Fragment() {
                             Toast.makeText(
                                 activity, token, Toast.LENGTH_LONG
                             ).show();
-                            //TODO(navigate to main page, add token in shared storage)
+                            //TODO(navigate to main page)
+                            SharedPreferencesHelper.addValue("jwt",token,activity!!)
                         }else{
                             if(response.errorBody()!=null)
                                 Toast.makeText(
