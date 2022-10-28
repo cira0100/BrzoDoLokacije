@@ -109,5 +109,16 @@ namespace Api.Services
             }
             return false;
         }
+
+        public async Task<string> RenewToken(string existingToken)
+        {
+            var id = _jwtService.TokenToId(existingToken);
+            if (id == null)
+                return null;
+            var user = await getUserById(id);
+
+            return _jwtService.GenToken(user);
+
+        }
     }
 }

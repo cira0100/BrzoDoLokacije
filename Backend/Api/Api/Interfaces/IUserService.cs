@@ -11,5 +11,6 @@ namespace Api.Interfaces
         Task<long> updateUser(User user);
         Task<User> deleteUser(String email);
         Task<User> getUserById(string id);
+        Task<string> RenewToken(string existingToken);
     }
 }
