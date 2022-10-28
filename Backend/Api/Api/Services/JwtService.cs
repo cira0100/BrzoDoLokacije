@@ -20,7 +20,7 @@ namespace Api.Services
             _userService = userService;
         }
 
-        public async Task<string> GenToken(User user)
+        public string GenToken(User user)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_config.GetSection("AppSettings:JwtToken").Value);
@@ -33,7 +33,7 @@ namespace Api.Services
             var token = tokenHandler.CreateToken(tokenDescriptor);
             return tokenHandler.WriteToken(token);
         }
-        public async Task<string> TokenToId(string token)
+        public string TokenToId(string token)
         {
             if (token == null)
                 return null;
@@ -58,16 +58,56 @@ namespace Api.Services
             }
 
         }
-
         public async Task<string> RenewToken(string existingToken)
         {
-            var id = await TokenToId(existingToken);
+            var id = TokenToId(existingToken);
             if (id == null)
                 return null;
             var user = await _userService.getUserById(id);
 
-            return await GenToken(user);
+            return GenToken(user);
 
+        }
+        public string GenEmailToken(User user)
+        {
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_config.GetSection("AppSettings:EmailToken").Value);
+            var tokenDescriptor = new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(new[] { new Claim("username", user.username), new Claim("id", user._id) }),
+                Expires = DateTime.UtcNow.AddMinutes(30),
+                SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
+        }
+
+        public string EmailTokenToId(string token)
+        {
+            if (token == null)
+                return null;
+            var tokenHandler = new JwtSecurityTokenHandler();
+            var key = Encoding.ASCII.GetBytes(_config.GetSection("AppSettings:EmailToken").Value.ToString());
+            try
+            {
+                tokenHandler.ValidateToken(token, new TokenValidationParameters
+                {
+                    ValidateIssuerSigningKey = true,
+                    IssuerSigningKey = new SymmetricSecurityKey(key),
+                    ValidateIssuer = false,
+                    ValidateAudience = false,
+                    ClockSkew = TimeSpan.Zero
+                },
+                out SecurityToken validatedToken);
+                var jwtToken = (JwtSecurityToken)validatedToken;
+                var username = (jwtToken.Claims.First(x => x.Type == "username").Value.ToString());
+                return username;
+                //return jwtToken.Claims.First(x => x.Type == "id").Value;
+            }
+            catch
+            {
+                return null;
+            }
         }
     }
 }

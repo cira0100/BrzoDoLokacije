@@ -7,11 +7,12 @@ namespace Api.Services
     public class UserService : IUserService
     {
         private readonly IMongoCollection<User> _users;
-        public UserService(IDatabaseConnection settings, IMongoClient mongoClient)
+        private readonly IJwtService _jwtService;
+        public UserService(IDatabaseConnection settings, IMongoClient mongoClient, IJwtService jwtService)
         {
             var database = mongoClient.GetDatabase(settings.DatabaseName);
             _users = database.GetCollection<User>(settings.UserCollectionName);
-
+            _jwtService=jwtService;
         }
 
         public async Task<int> createUser(User user)
@@ -67,6 +68,46 @@ namespace Api.Services
             return 0;
         }
 
-        
+        public async Task<string> Register(Register register)
+        {
+            if (await _users.FindAsync(x => x.email == register.email && x.verified==true).Result.AnyAsync())
+                return "Email Exists";
+            else if (await _users.FindAsync(x => x.username == register.username && x.verified==true).Result.AnyAsync())
+                return "Username Exists";
+            else
+            {
+                List<User> unverified = await _users.Find(x => (x.username == register.username || x.email == register.email) && x.verified == false).ToListAsync();
+                if (unverified.Count > 0)
+                {
+                    foreach(var usr in unverified)
+                    {
+                        //ako user nema validan emailtoken, a nije verifikovan prethodno, onda se brise iz baze
+                        if (_jwtService.EmailTokenToId(usr.emailToken) == null)
+                            await _users.FindOneAndDeleteAsync(x => x._id == usr._id);
+                    }
+                }
+            }
+            var user = new User();
+            user.email = register.email;
+            user.username = register.username;
+            user.name = register.name;
+            user.verified = false;
+            user.password = register.password; // unhashed for now
+
+
+            return "";
+        }
+
+        public async Task<Boolean> VerifyUser(string _id)
+        {
+            User user = await _users.FindAsync(x => x._id==_id).Result.FirstAsync();
+            if(user != null)
+            {
+                user.verified = true;
+                await _users.ReplaceOneAsync(x => x._id == _id, user);
+                return true;
+            }
+            return false;
+        }
     }
 }
