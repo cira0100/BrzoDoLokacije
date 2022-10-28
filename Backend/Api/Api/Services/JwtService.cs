@@ -56,13 +56,13 @@ namespace Api.Services
             }
 
         }
-        public string GenEmailToken(User user)
+        public string GenEmailToken(string username)
         {
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.ASCII.GetBytes(_config.GetSection("AppSettings:EmailToken").Value);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[] { new Claim("username", user.username), new Claim("id", user._id) }),
+                Subject = new ClaimsIdentity(new[] { new Claim("username", username)}),
                 Expires = DateTime.UtcNow.AddMinutes(30),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
@@ -90,7 +90,6 @@ namespace Api.Services
                 var jwtToken = (JwtSecurityToken)validatedToken;
                 var username = (jwtToken.Claims.First(x => x.Type == "username").Value.ToString());
                 return username;
-                //return jwtToken.Claims.First(x => x.Type == "id").Value;
             }
             catch
             {

@@ -6,7 +6,7 @@ namespace Api.Interfaces
     {
         string GenToken(User user);
         string TokenToId(string token);
-        public string GenEmailToken(User user);
+        public string GenEmailToken(string username);
         public string EmailTokenToId(string token);
     }
 }

@@ -1,18 +1,22 @@
 ﻿using Api.Interfaces;
 using Api.Models;
 using MongoDB.Driver;
+using Microsoft.AspNetCore.Http;
+using System.Security.Claims;
 
 namespace Api.Services
 {
     public class UserService : IUserService
     {
+        private readonly IHttpContextAccessor _httpContext;
         private readonly IMongoCollection<User> _users;
         private readonly IJwtService _jwtService;
-        public UserService(IDatabaseConnection settings, IMongoClient mongoClient, IJwtService jwtService)
+        public UserService(IDatabaseConnection settings, IMongoClient mongoClient, IJwtService jwtService, IHttpContextAccessor httpContextAccessor)
         {
             var database = mongoClient.GetDatabase(settings.DatabaseName);
             _users = database.GetCollection<User>(settings.UserCollectionName);
             _jwtService=jwtService;
+            this._httpContext = httpContextAccessor;
         }
 
         public async Task<int> createUser(User user)
@@ -20,8 +24,9 @@ namespace Api.Services
             if (await _users.Find(x => x.email == user.email).FirstOrDefaultAsync() != null)
                 return -1; //email already exists
             if (await _users.Find(x => x.username == user.username).FirstOrDefaultAsync() != null)
-                return -2; //username already exists
-            
+                return -2; //username already
+                           //
+            user.password = hashPassword(user.password);
             await _users.InsertOneAsync(user);
             return 1;
         }
@@ -68,6 +73,29 @@ namespace Api.Services
             return 0;
         }
 
+        private static int difficulty = 10;
+
+        public static String hashPassword(String password)
+        {
+            String salt = BCrypt.Net.BCrypt.GenerateSalt(difficulty);
+            String passwordHash = BCrypt.Net.BCrypt.HashPassword(password, salt);
+
+            return passwordHash;
+        }
+
+        public static Boolean checkPassword(String plainText, String hash)
+        {
+            Boolean verified = false;
+
+            if (hash == null || !hash.StartsWith("$2a$"))
+                return false;
+
+            verified = BCrypt.Net.BCrypt.Verify(plainText, hash);
+
+            return verified;
+
+        }
+
         public async Task<string> Register(Register register)
         {
             if (await _users.FindAsync(x => x.email == register.email && x.verified==true).Result.AnyAsync())
@@ -87,15 +115,18 @@ namespace Api.Services
                     }
                 }
             }
+
             var user = new User();
             user.email = register.email;
             user.username = register.username;
             user.name = register.name;
             user.verified = false;
-            user.password = register.password; // unhashed for now
+            user.password = hashPassword(register.password);
+            user.emailToken = _jwtService.GenEmailToken(user.username);
 
+            await _users.InsertOneAsync(user);
 
-            return "";
+            return "User Registered";
         }
 
         public async Task<Boolean> VerifyUser(string _id)
@@ -118,7 +149,28 @@ namespace Api.Services
             var user = await getUserById(id);
 
             return _jwtService.GenToken(user);
+        }
 
+        public async Task<string> Login(Login login)
+        {
+            User user = await _users.FindAsync(x => x.email == login.email).Result.FirstAsync(); // add && x.verified == true after implementing 
+            if(user != null && checkPassword(login.password, user.password))
+            {
+                return _jwtService.GenToken(user);
+            }
+            return null;
+        }
+        public async Task<string> UserIdFromJwt()
+        {
+            string id = null;
+            if (_httpContext.HttpContext.User.FindFirstValue("id") != null)
+            {
+                id = _httpContext.HttpContext.User.FindFirstValue("id").ToString();
+                var _id = await _users.FindAsync(x => x._id == id).Result.FirstAsync();
+                if (_id == null)
+                    id = null;
+            }
+            return id;
         }
     }
 }

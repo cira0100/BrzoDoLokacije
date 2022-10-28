@@ -33,5 +33,18 @@ namespace Api.Controllers
 
             return Ok();
         }
+        [HttpPost("login")]
+        public async Task<ActionResult<string>> Login([FromBody] Login creds)
+        {
+            var id = await _userService.UserIdFromJwt();
+            if (id != null) return Forbid();
+
+            var jwt= await _userService.Login(creds);
+            if (jwt != null)
+            {
+                return Ok(new { token = jwt });
+            }
+            return BadRequest();
+        }
     }
 }
