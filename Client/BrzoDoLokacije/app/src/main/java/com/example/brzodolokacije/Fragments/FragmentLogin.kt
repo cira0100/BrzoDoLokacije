@@ -10,7 +10,13 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import com.example.brzodolokacije.Interfaces.IAuthApi
+import com.example.brzodolokacije.Models.Auth.Login
 import com.example.brzodolokacije.R
+import com.example.brzodolokacije.Services.RetrofitHelper
+import com.example.brzodolokacije.Services.SharedPreferencesHelper
+import retrofit2.Call
+import retrofit2.Response
 
 
 class FragmentLogin : Fragment() {
@@ -60,15 +66,35 @@ class FragmentLogin : Fragment() {
             }
             if(!emailString.isEmpty() && !passwordString.isEmpty()) {
 
+                var loginData= Login(emailString,passwordString)
+                val authApi= RetrofitHelper.getInstance().create(IAuthApi::class.java)
+                val request=authApi.login(loginData)
 
-                //proveri da li postoji u bazi
+                request.enqueue(object : retrofit2.Callback<String?> {
+                    override fun onResponse(call: Call<String?>, response: Response<String?>) {
+                        if(response.isSuccessful()){
+                            val token=response.body().toString()
+                            Toast.makeText(
+                                activity, token, Toast.LENGTH_LONG
+                            ).show();
+                            //TODO(navigate to main page)
+                            SharedPreferencesHelper.addValue("jwt",token,activity!!)
+                        }else{
+                            if(response.errorBody()!=null)
+                                Toast.makeText(
+                                    activity, response.errorBody()!!.string(), Toast.LENGTH_LONG
+                                ).show();
+                        }
 
-                //UPIT BAZI - ako postoji - idi na pocetnu stranu za logovanog
 
+                    }
 
-                //UPIT BAZI - ako ne postoji ili je pogresan unos - ispisi poruku
-
-                //DODATI da li postoji korisnicko ime i da li je tacna lozinka
+                    override fun onFailure(call: Call<String?>, t: Throwable) {
+                        Toast.makeText(
+                            activity, "Greska, pokusajte ponovo.", Toast.LENGTH_LONG
+                        ).show();
+                    }
+                })
 
                 Toast.makeText(
                     activity, "Korisnik sa unetim podacima nije pronađen. " + "\n" +
