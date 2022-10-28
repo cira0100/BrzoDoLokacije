@@ -13,11 +13,9 @@ namespace Api.Services
     public class JwtService : IJwtService
     {
         private readonly IConfiguration _config;
-        private readonly IUserService _userService;
-        public JwtService(IConfiguration config,IUserService userService)
+        public JwtService(IConfiguration config)
         {
             _config = config;
-            _userService = userService;
         }
 
         public string GenToken(User user)
@@ -56,16 +54,6 @@ namespace Api.Services
             {
                 return null;
             }
-
-        }
-        public async Task<string> RenewToken(string existingToken)
-        {
-            var id = TokenToId(existingToken);
-            if (id == null)
-                return null;
-            var user = await _userService.getUserById(id);
-
-            return GenToken(user);
 
         }
         public string GenEmailToken(User user)
