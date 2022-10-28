@@ -1,7 +1,9 @@
 package com.example.brzodolokacije.Fragments
 
+import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
+import android.util.Base64
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -9,7 +11,14 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
+import com.example.brzodolokacije.Interfaces.IAuthApi
+import com.example.brzodolokacije.Models.Auth.Register
 import com.example.brzodolokacije.R
+import com.example.brzodolokacije.Services.RetrofitHelper
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Response
+import javax.security.auth.callback.Callback
 
 class FragmentRegister : Fragment() {
     // TODO: Rename and change types of parameters
@@ -68,16 +77,37 @@ class FragmentRegister : Fragment() {
             }
             if(!emailString.isEmpty() && !passwordString.isEmpty() && !nameString.isEmpty() && !usernameString.isEmpty()) {
 
+                var registerData=Register(nameString,usernameString,emailString,passwordString)
 
-                //proveri da li postoji u bazi
+                val authApi=RetrofitHelper.getInstance().create(IAuthApi::class.java)
 
-                //UPIT BAZI - ako postoji - greska korisnik je registrovan
-                Toast.makeText(
-                    activity, "Korisnik sa unetim podacima već postoji. " + "\n" +
-                            "Da li želite da se prijavite?", Toast.LENGTH_LONG
-                ).show();
+                val request=authApi.register(registerData)
 
-                //UPIT BAZI - ako ne postoji dodaj u bazu
+                request.enqueue(object : retrofit2.Callback<ResponseBody?> {
+                    override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
+                        if(response.isSuccessful()){
+                            Toast.makeText(
+                                activity, "Uspesna registracija. Verifikujte email. TODO(navigate to login)", Toast.LENGTH_LONG
+                            ).show();
+                            //TODO(navigate to login)
+                        }else{
+                            if(response.errorBody()!=null)
+                            Toast.makeText(
+                                activity, response.errorBody()!!.string(), Toast.LENGTH_LONG
+                            ).show();
+                        }
+
+
+                    }
+
+                    override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
+                        Toast.makeText(
+                            activity, "Greska, pokusajte ponovo.", Toast.LENGTH_LONG
+                        ).show();
+                    }
+                })
+
+
 
                 //***DODATI broj karaktera lozinke, provera da li je email sa @ i .com
 
