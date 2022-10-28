@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Fragments.fragmentRegister">
+
+    <!-- TODO: Update blank fragment layout -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="400dp"
+        android:layout_height="521dp"
+        android:layout_gravity="center_horizontal">
+
+        <EditText
+            android:id="@+id/etFragmentRegisterPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="*********"
+            android:inputType="textPassword"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvFragmentRegisterPassword" />
+
+        <EditText
+            android:id="@+id/etFragmentRegisterEmail"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:ems="10"
+            android:hint="primer@gmail.com"
+            android:inputType="textEmailAddress"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvFragmentRegisterEmail" />
+
+        <TextView
+            android:id="@+id/tvFragmentRegisterPassword"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Lozinka
+"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/etFragmentRegisterEmail"
+            tools:text="Lozinka" />
+
+        <TextView
+            android:id="@+id/tvFragmentRegisterEmail"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:backgroundTint="#00B8D4"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/etFragmentRegisterName"
+            tools:text="Email" />
+
+        <EditText
+            android:id="@+id/etFragmentRegisterUser"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="korisnik123
+"
+            android:inputType="textPersonName"
+            app:layout_constraintTop_toBottomOf="@+id/tvFragmentRegisterUser"
+            tools:layout_editor_absoluteX="-16dp" />
+
+        <EditText
+            android:id="@+id/etFragmentRegisterName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Petar Petrovic"
+            android:inputType="textPersonName"
+
+            app:layout_constraintTop_toBottomOf="@+id/tvFragmentRegisterName"
+            tools:layout_editor_absoluteX="0dp" />
+
+        <TextView
+            android:id="@+id/tvFragmentRegisterName"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Ime i prezime"
+            app:layout_constraintTop_toBottomOf="@+id/etFragmentRegisterUser"
+            tools:layout_editor_absoluteX="0dp" />
+
+        <TextView
+            android:id="@+id/tvFragmentRegisterUser"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="88dp"
+            android:text="Korisničko ime"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:layout_editor_absoluteX="0dp" />
+
+        <Button
+            android:id="@+id/btnFragmentRegisterRegister"
+            android:layout_width="200dp"
+            android:layout_height="45dp"
+            android:layout_marginTop="48dp"
+            android:background="@drawable/rounded_cyan_button"
+            android:text="Registruj se"
+            android:textSize="16dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/etFragmentRegisterPassword" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="200dp"
+            android:layout_height="45dp"
+            android:layout_marginStart="176dp"
+            android:background="@drawable/rounded_cyan_button"
+            android:gravity="center"
+            android:text="REGISTRUJ SE"
+            android:textColor="#ffffff"
+            android:textSize="16dp"
+            android:translationZ="50dp"
+            app:layout_constraintBottom_toTopOf="@+id/tvFragmentRegisterUser"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.058"
+            app:layout_constraintStart_toStartOf="@+id/button2"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/button2"
+            android:layout_width="230dp"
+            android:layout_height="45dp"
+            android:layout_marginStart="16dp"
+            android:background="@drawable/switch_login_register_on"
+            android:backgroundTint="#D1BCBC"
+            android:foreground="@drawable/rounded_white_button_login"
+
+            android:text="Registruj se"
+            android:textColor="#00B8D4"
+            android:translationZ="1dp"
+            app:layout_constraintBottom_toTopOf="@+id/tvFragmentRegisterUser"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.511" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+    />
+</FrameLayout>
