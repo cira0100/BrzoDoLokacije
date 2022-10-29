@@ -4,25 +4,41 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:foreground="@drawable/b3"
+    android:elevation="0dp"
     android:foregroundGravity="fill"
     android:foregroundTint="#5E010F13"
     android:foregroundTintMode="add"
-    tools:context=".Activities.ActivityLoginRegister" >
+    tools:context=".Activities.ActivityLoginRegister">
 
-    <androidx.viewpager2.widget.ViewPager2
+    <Button
+        android:id="@+id/btnFragmentActivityLRLogin"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:elevation="1dp"
+        android:text="Prijavi se"
+        app:layout_constraintEnd_toStartOf="@+id/btnFragmentActivityLRRegister"
+        app:layout_constraintHorizontal_bias="0.846"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/btnFragmentActivityLRRegister"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="52dp"
+        android:elevation="100dp"
+        android:text="Registruj se"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <FrameLayout
+        android:id="@+id/flFragmentActivityLRFragmentsView"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginStart="50dp"
-        android:layout_marginTop="150dp"
-        android:layout_marginEnd="50dp"
-        android:layout_marginBottom="150dp"
-        android:background="#FFFFFF"
-        android:backgroundTint="#F1EDED"
-        android:foregroundGravity="center"
-        android:foregroundTint="#FFFFFF"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/btnFragmentActivityLRLogin">
+
+    </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
