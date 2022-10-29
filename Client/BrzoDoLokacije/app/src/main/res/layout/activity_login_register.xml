@@ -9,7 +9,6 @@
     android:foregroundTint="#5E010F13"
     android:foregroundTintMode="add"
     tools:context=".Activities.ActivityLoginRegister">
-
     <Button
         android:id="@+id/btnFragmentActivityLRLogin"
         android:layout_width="wrap_content"

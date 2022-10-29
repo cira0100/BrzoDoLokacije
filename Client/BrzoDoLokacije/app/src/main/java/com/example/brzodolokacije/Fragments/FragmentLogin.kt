@@ -29,10 +29,6 @@ class FragmentLogin : Fragment() {
     private lateinit var emailString:String
 
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -52,7 +48,6 @@ class FragmentLogin : Fragment() {
         login.setOnClickListener{
             emailString=email.text.toString().trim()
             passwordString=password.text.toString().trim()
-
             //prazan unos?
             if(emailString.isEmpty())
             {
@@ -81,9 +76,7 @@ class FragmentLogin : Fragment() {
                             SharedPreferencesHelper.addValue("jwt",token,activity!!)
                         }else{
                             if(response.errorBody()!=null)
-                                Toast.makeText(
-                                    activity, response.errorBody()!!.string(), Toast.LENGTH_LONG
-                                ).show();
+                                Toast.makeText(activity, response.errorBody()!!.string(), Toast.LENGTH_LONG).show();
                         }
 
 
@@ -91,15 +84,10 @@ class FragmentLogin : Fragment() {
 
                     override fun onFailure(call: Call<String?>, t: Throwable) {
                         Toast.makeText(
-                            activity, "Greska, pokusajte ponovo.", Toast.LENGTH_LONG
+                            activity, t.toString(), Toast.LENGTH_LONG
                         ).show();
                     }
                 })
-
-                Toast.makeText(
-                    activity, "Korisnik sa unetim podacima nije pronađen. " + "\n" +
-                            "Proverite podatke i pokušajte ponovo", Toast.LENGTH_LONG
-                ).show();
 
             }
         }

@@ -92,9 +92,7 @@ class FragmentRegister : Fragment() {
                             //TODO(navigate to login)
                         }else{
                             if(response.errorBody()!=null)
-                            Toast.makeText(
-                                activity, response.errorBody()!!.string(), Toast.LENGTH_LONG
-                            ).show();
+                            Toast.makeText(activity, response.errorBody()!!.string(), Toast.LENGTH_LONG).show()
                         }
 
 

@@ -22,7 +22,7 @@ namespace Api.Controllers
             novi.password = creds.password;
             novi.username = creds.username;
             novi.name = creds.name;
-            novi.creationDate = DateTime.Now;
+            novi.creationDate = DateTime.Now.ToUniversalTime();
             novi._id = "";
 
             int ret= await _userService.createUser(novi);
@@ -42,9 +42,9 @@ namespace Api.Controllers
             var jwt= await _userService.Login(creds);
             if (jwt != null)
             {
-                return Ok(new { token = jwt });
+                return Ok(jwt);
             }
-            return BadRequest();
+            return BadRequest("Pogresno uneti podaci");
         }
     }
 }
