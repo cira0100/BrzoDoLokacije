@@ -46,5 +46,31 @@ namespace Api.Controllers
             }
             return BadRequest("Pogresno uneti podaci");
         }
+        [HttpPost("registeractual")]
+        public async Task<ActionResult<string>> RegisterActual([FromBody] Register creds)
+        {
+            var msg = await _userService.Register(creds);
+            if (msg == "Email Exists")
+                return Forbid(msg);
+            if (msg == "Username Exists")
+                return Forbid(msg);
+            return Ok(msg);
+        }
+        [HttpPost("verify")]
+        public async Task<ActionResult<string>> VerifyEmail([FromBody] VerifyUser creds)
+        {
+            var uspeh = await _userService.VerifyUser(creds);
+            if (!uspeh)
+                return BadRequest("Kod netacan ili istekao");
+            return Ok("Uspesno verifikovan");
+        }
+        [HttpPost("resetpass")]
+        public async Task<ActionResult<string>> ResetPass([FromBody] ResetPass creds)
+        {
+            var uspeh = await _userService.ResetPassword(creds);
+            if (!uspeh)
+                return BadRequest("Kod netacan ili istekao");
+            return Ok("Sifra uspesno resetovana");
+        }
     }
 }

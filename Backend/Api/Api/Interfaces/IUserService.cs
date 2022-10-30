@@ -15,8 +15,12 @@ namespace Api.Interfaces
         Task<string> RenewToken(string existingToken);
         Task<string> Login(Login login);
         Task<string> Register(Register register);
-        Task<Boolean> VerifyUser(string _id);
+        Task<Boolean> VerifyUser(VerifyUser login);
         Task<string> UserIdFromJwt();
+        Task<Boolean> ResendVerifyKod(Login login);
+        Boolean SendEmailKod(User user);
+        Task<Boolean> ForgotPassword(JustMail jm);
+        Task<Boolean> ResetPassword(ResetPass rp);
 
     }
 }

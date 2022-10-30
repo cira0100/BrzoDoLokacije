@@ -30,4 +30,22 @@ namespace Api.Models
         public String email { get; set; }
         public String password { get; set; }
     }
+
+    public class JustMail
+    {
+        public String email { get; set; }
+    }
+
+    public class ResetPass
+    {
+        public String email { get; set; }
+        public String newpass { get; set; }
+        public String kod { get; set; }
+    }
+    public class VerifyUser
+    {
+        public String email { get; set; }
+        public String password { get; set; }
+        public String kod { get; set; }
+    }
 }
