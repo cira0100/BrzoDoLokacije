@@ -1,16 +1,18 @@
 package com.example.brzodolokacije.Fragments
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.brzodolokacije.Adapters.SampleAdapter
+import com.example.brzodolokacije.Models.ListItemModel
 import com.example.brzodolokacije.R
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+import com.example.brzodolokacije.databinding.FragmentHomeBinding
 
 /**
  * A simple [Fragment] subclass.
@@ -18,43 +20,46 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class FragmentHome : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+
+    private lateinit var binding: FragmentHomeBinding
+    private var nameList : MutableList<ListItemModel> = mutableListOf()
+    private var layoutManagerVar: RecyclerView.LayoutManager? = null
+    private var adapterVar: RecyclerView.Adapter<SampleAdapter.ViewHolder>? = null
+    private var recyclerView:RecyclerView?=null
+
+    override fun onViewCreated(itemView: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(itemView, savedInstanceState)
+        Log.d("Main","blabla")
+
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
+        //load data for the list
+        loadData()
+        adapterVar=SampleAdapter(nameList)
+        layoutManagerVar=LinearLayoutManager(activity)
     }
+
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_home, container, false)
+        val rootView =  inflater?.inflate(R.layout.fragment_home, container, false)
+        recyclerView = rootView?.findViewById(R.id.rvMain)
+        // rest of my stuff
+        recyclerView?.setHasFixedSize(true)
+        recyclerView?.layoutManager = layoutManagerVar
+        recyclerView?.adapter = adapterVar
+        return rootView
     }
-
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment FragmentHome.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            FragmentHome().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    fun loadData(){
+        nameList.add(ListItemModel(1,"Sample 1"))
+        nameList.add(ListItemModel(2,"Sample 2"))
+        nameList.add(ListItemModel(3,"Sample 3"))
+        nameList.add(ListItemModel(4,"Sample 4"))
+        nameList.add(ListItemModel(5,"Sample 5"))
+        nameList.add(ListItemModel(6,"Sample 6"))
     }
 }
