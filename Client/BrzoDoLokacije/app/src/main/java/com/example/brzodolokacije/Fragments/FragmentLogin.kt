@@ -1,5 +1,6 @@
 package com.example.brzodolokacije.Fragments
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -10,6 +11,8 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+import com.example.brzodolokacije.Activities.ActivityLoginRegister
+import com.example.brzodolokacije.Activities.NavigationActivity
 import com.example.brzodolokacije.Interfaces.IAuthApi
 import com.example.brzodolokacije.Models.Auth.Login
 import com.example.brzodolokacije.R
@@ -74,6 +77,8 @@ class FragmentLogin : Fragment() {
                             ).show();
                             //TODO(navigate to main page)
                             SharedPreferencesHelper.addValue("jwt",token,activity!!)
+                            val intent= Intent(activity!!, NavigationActivity::class.java)
+                            startActivity(intent)
                         }else{
                             if(response.errorBody()!=null)
                                 Toast.makeText(activity, response.errorBody()!!.string(), Toast.LENGTH_LONG).show();

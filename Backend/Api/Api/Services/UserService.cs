@@ -38,12 +38,12 @@ namespace Api.Services
 
         public async Task<User> getUserByEmail(string email)
         {
-            return await _users.Find(x => x.email == email).SingleAsync();
+            return await _users.Find(x => x.email == email).SingleOrDefaultAsync();
         }
 
         public async Task<User> getUserByUsername(string username)
         {
-            return await _users.Find(x => x.username == username).SingleAsync();
+            return await _users.Find(x => x.username == username).SingleOrDefaultAsync();
         }
 
         public async Task<List<User>> getUsers()
@@ -53,7 +53,7 @@ namespace Api.Services
 
         public async Task<User> getUserById(string id)
         {
-            return  await _users.Find(user => user._id == id).SingleAsync();
+            return  await _users.Find(user => user._id == id).SingleOrDefaultAsync();
 
         }
 
@@ -62,7 +62,7 @@ namespace Api.Services
             /* vraca broj izmenjenih korisnika
              * ovako je odradjeno da bi radilo i kada se posalje potpuno novi objekat User-a bez generisanog _id polja
              */
-            User foundUser = await _users.Find(x => x.email == user.email).SingleAsync();
+            User foundUser = await _users.Find(x => x.email == user.email).SingleOrDefaultAsync();
             if (foundUser!=null && user._id==null)
             {
                 user._id = foundUser._id;
@@ -131,7 +131,7 @@ namespace Api.Services
 
         public async Task<Boolean> VerifyUser(string _id)
         {
-            User user = await _users.FindAsync(x => x._id==_id).Result.FirstAsync();
+            User user = await _users.FindAsync(x => x._id==_id).Result.FirstOrDefaultAsync();
             if(user != null)
             {
                 user.verified = true;
@@ -153,7 +153,7 @@ namespace Api.Services
 
         public async Task<string> Login(Login login)
         {
-            User user = await _users.FindAsync(x => x.email == login.email).Result.FirstAsync(); // add && x.verified == true after implementing 
+            User user = await _users.FindAsync(x => x.email == login.email).Result.FirstOrDefaultAsync(); // add && x.verified == true after implementing 
             if(user != null && checkPassword(login.password, user.password))
             {
                 return _jwtService.GenToken(user);
@@ -166,7 +166,7 @@ namespace Api.Services
             if (_httpContext.HttpContext.User.FindFirstValue("id") != null)
             {
                 id = _httpContext.HttpContext.User.FindFirstValue("id").ToString();
-                var _id = await _users.FindAsync(x => x._id == id).Result.FirstAsync();
+                var _id = await _users.FindAsync(x => x._id == id).Result.FirstOrDefaultAsync();
                 if (_id == null)
                     id = null;
             }
