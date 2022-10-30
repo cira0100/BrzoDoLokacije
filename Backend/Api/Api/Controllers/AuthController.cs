@@ -22,6 +22,7 @@ namespace Api.Controllers
             novi.password = creds.password;
             novi.username = creds.username;
             novi.name = creds.name;
+            novi.verified = true;
             novi.creationDate = DateTime.Now.ToUniversalTime();
             novi._id = "";
 
