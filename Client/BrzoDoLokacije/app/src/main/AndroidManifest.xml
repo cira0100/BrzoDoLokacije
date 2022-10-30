@@ -16,14 +16,19 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
-            android:name=".NavigationActivity"
-            android:exported="false">
-            <meta-data
+
+            android:name=".NavigationActivity">
+    </activity>
+    <activity android:name=".ActivityForgottenPassword">
+
+            <!--<meta-data
                 android:name="android.app.lib_name"
-                android:value="" />
+                android:value="" />-->
         </activity>
         <activity android:name=".Activities.ActivityLoginRegister" />
+
         <activity android:name=".Activities.NavigationActivity"/>
+
         <activity
             android:name=".MainActivity"
             android:exported="true">

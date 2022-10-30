@@ -1,14 +1,185 @@
 <?xml version="1.0" encoding="utf-8"?>
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Fragments.FragmentProfile">
 
-    <!-- TODO: Update blank fragment layout -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="Profile" />
+    
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+
+            android:id="@+id/imageView3"
+            android:layout_width="match_parent"
+            android:layout_height="290dp"
+            android:foreground="@drawable/b3"
+            android:foregroundGravity="center_vertical|center|center_horizontal|fill"
+            android:src="@drawable/b3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+
+            android:id="@+id/imageView4"
+            android:layout_width="411dp"
+            android:layout_height="287dp"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+            app:layout_constraintEnd_toEndOf="@id/imageView3"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/imageView3"
+            app:layout_constraintTop_toTopOf="@+id/imageView3"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+
+            android:id="@+id/tvFragmentProfileInfoContainer"
+            android:layout_width="0dp"
+            android:layout_height="199dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="156dp"
+            android:layout_marginEnd="20dp"
+            android:adjustViewBounds="true"
+            android:background="#E8FFFFFF"
+            android:elevation="20dp"
+            android:scaleType="fitEnd"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.494"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/imageView3"
+            app:shapeAppearanceOverlay="@style/imageViewRoundedEdge" />
+
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/tvFragmentProfileProfilePicture"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_gravity="center"
+            android:layout_margin="5dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="108dp"
+            android:adjustViewBounds="true"
+            android:elevation="21dp"
+            android:scaleType="fitCenter"
+            android:src="@drawable/ic_launcher_background"
+            app:layout_constraintBottom_toTopOf="@+id/tableLayout"
+            app:layout_constraintEnd_toEndOf="@+id/imageView3"
+            app:layout_constraintHorizontal_bias="0.483"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/imageView3"
+            app:layout_constraintVertical_bias="1.0"
+            app:shapeAppearanceOverlay="@style/imageViewCircle" />
+
+        <TextView
+            android:id="@+id/tvFragmentProfilePictures"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="44dp"
+            android:text="Slike"
+            android:textSize="20dp"
+            app:layout_constraintEnd_toStartOf="@+id/btnFragmentProfileAddPicture"
+            app:layout_constraintHorizontal_bias="0.252"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvFragmentProfileInfoContainer" />
+
+        <Button
+            android:id="@+id/btnFragmentProfileAddPicture"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="20dp"
+            android:background="#00FFFFFF"
+            android:text="Dodaj Novu Sliku"
+            android:textColor="@color/cardview_dark_background"
+
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvFragmentProfileInfoContainer" />
+
+        <Button
+            android:id="@+id/button4"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Pogledaj sve slike"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <TableLayout
+            android:id="@+id/tableLayout"
+            android:layout_width="323dp"
+            android:layout_height="120dp"
+            android:elevation="20dp"
+            android:gravity="center"
+            android:stretchColumns="1"
+            app:layout_constraintBottom_toBottomOf="@+id/tvFragmentProfileInfoContainer"
+            app:layout_constraintEnd_toEndOf="@+id/tvFragmentProfileInfoContainer"
+            app:layout_constraintHorizontal_bias="0.488"
+            app:layout_constraintStart_toStartOf="@+id/tvFragmentProfileInfoContainer">
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/tvFragmentProfileName"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Petar Petrović" />
+            </TableRow>
+
+            <Space android:layout_height="35dp"></Space>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/tvFragmentProfileContributions"
+                    android:gravity="center"
+                    android:text="OBJAVE" />
+
+                <TextView
+                    android:id="@+id/tvFragmentProfileFollowers"
+                    android:gravity="center"
+                    android:text="PRATIOCI" />
+
+                <TextView
+                    android:id="@+id/tvFragmentProfileFollow"
+                    android:gravity="center"
+                    android:text="PRAĆENJA" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/tvFragmentProfileContributionsNo"
+                    android:gravity="center"
+                    android:text="156" />
+
+                <TextView
+                    android:id="@+id/tvFragmentProfileFollowersNo"
+                    android:gravity="center"
+                    android:text="50" />
+
+                <TextView
+                    android:id="@+id/tvFragmentProfileFollowNo"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="40" />
+            </TableRow>
+        </TableLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

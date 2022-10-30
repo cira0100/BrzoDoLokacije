@@ -11,8 +11,13 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
+
 import com.example.brzodolokacije.Activities.ActivityLoginRegister
 import com.example.brzodolokacije.Activities.NavigationActivity
+
+import com.example.brzodolokacije.Activities.ActivityForgottenPassword
+
+
 import com.example.brzodolokacije.Interfaces.IAuthApi
 import com.example.brzodolokacije.Models.Auth.Login
 import com.example.brzodolokacije.R
@@ -56,13 +61,27 @@ class FragmentLogin : Fragment() {
             {
                 email.hint="Unesite Email adresu"
                 email.setHintTextColor(Color.RED)
-            }
+            }/*
+            else{
+                if(checkEmail(emailString)==false){
+                    email.hint="Pogrešan unos, unesite ispravnu Email adresu"
+                    email.setHintTextColor(Color.RED)
+                }
+            }*/
             if(passwordString.isEmpty())
             {
                 password.hint = "Unesite lozinku"
                 password.setHintTextColor(Color.RED)
+
+            }/*
+            else{
+                if(checkPassword(passwordString)==false) {
+                    password.hint = "Lozinka mora imati najmanje 6 karaktera"
+                    password.setHintTextColor(Color.RED)
+                }
             }
-            if(!emailString.isEmpty() && !passwordString.isEmpty()) {
+*/
+            if(!emailString.isEmpty() && !passwordString.isEmpty()&& checkPassword(passwordString)==true && checkEmail(emailString)==true) {
 
                 var loginData= Login(emailString,passwordString)
                 val authApi= RetrofitHelper.getInstance().create(IAuthApi::class.java)
@@ -97,30 +116,34 @@ class FragmentLogin : Fragment() {
             }
         }
 
+        // zaboravljena lozinka
+        forgottenPassword.setOnClickListener{
+            val intent = Intent (getActivity(), ActivityForgottenPassword::class.java)
+            getActivity()?.startActivity(intent)
+        }
+
+
 
         return view
 
     }
-/*
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment fragmentLogin.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            fragmentLogin().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
+    fun checkEmail(emailString:String):Boolean{
+        val emailRegex = "^[A-Za-z](.*)([@]{1})(.{1,})(\\.)(.{1,})"
+        if(!(emailRegex.toRegex().matches(emailString))){
+            email.hint="Pogrešan unos, unesite ispravnu Email adresu"
+            email.setHintTextColor(Color.RED)
+            return false
+        }
+        else{
+            return true
+        }
     }
 
- */
+    fun checkPassword(passwordString:String):Boolean{
+        if(passwordString.length<6){
+            return false
+        }
+        return true
+    }
+
 }
