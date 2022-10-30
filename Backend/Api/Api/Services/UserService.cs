@@ -42,12 +42,12 @@ namespace Api.Services
 
         public async Task<User> getUserByEmail(string email)
         {
-            return await _users.Find(x => x.email == email).SingleAsync();
+            return await _users.Find(x => x.email == email).SingleOrDefaultAsync();
         }
 
         public async Task<User> getUserByUsername(string username)
         {
-            return await _users.Find(x => x.username == username).SingleAsync();
+            return await _users.Find(x => x.username == username).SingleOrDefaultAsync();
         }
 
         public async Task<List<User>> getUsers()
@@ -57,7 +57,7 @@ namespace Api.Services
 
         public async Task<User> getUserById(string id)
         {
-            return  await _users.Find(user => user._id == id).SingleAsync();
+            return  await _users.Find(user => user._id == id).SingleOrDefaultAsync();
 
         }
 
@@ -66,7 +66,7 @@ namespace Api.Services
             /* vraca broj izmenjenih korisnika
              * ovako je odradjeno da bi radilo i kada se posalje potpuno novi objekat User-a bez generisanog _id polja
              */
-            User foundUser = await _users.Find(x => x.email == user.email).SingleAsync();
+            User foundUser = await _users.Find(x => x.email == user.email).SingleOrDefaultAsync();
             if (foundUser!=null && user._id==null)
             {
                 user._id = foundUser._id;
