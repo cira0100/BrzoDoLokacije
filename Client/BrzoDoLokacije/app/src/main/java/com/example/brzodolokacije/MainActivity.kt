@@ -3,13 +3,11 @@ package com.example.brzodolokacije
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
-import android.view.View
-import android.widget.Button
-import androidx.fragment.app.FragmentTransaction
+import com.auth0.android.jwt.JWT
 import com.example.brzodolokacije.Activities.ActivityLoginRegister
-import com.example.brzodolokacije.Fragments.FragmentLogin
-import com.example.brzodolokacije.Fragments.FragmentRegister
+import com.example.brzodolokacije.Activities.NavigationActivity
+import com.example.brzodolokacije.Services.SharedPreferencesHelper
+
 
 class MainActivity : AppCompatActivity() {
 
@@ -17,8 +15,28 @@ class MainActivity : AppCompatActivity() {
 
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+        val intent:Intent
 
-        val intent= Intent(this, ActivityLoginRegister::class.java)
+        if(checkLoggedIn())
+            intent= Intent(this, NavigationActivity::class.java)
+        else
+            intent= Intent(this, ActivityLoginRegister::class.java)
+
+
         startActivity(intent)
+    }
+
+    fun checkLoggedIn():Boolean{
+        var jwtString=SharedPreferencesHelper.getValue("jwt",this)
+        if(jwtString==null)
+            return false
+        var jwt:JWT=JWT(jwtString)
+        if(jwt.isExpired(30))
+            return false
+        return true
+
+
+
+
     }
 }
