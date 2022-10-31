@@ -28,16 +28,11 @@ class FragmentHome : Fragment(R.layout.fragment_home) {
     private var adapterVar: RecyclerView.Adapter<SampleAdapter.ViewHolder>? = null
     private var recyclerView:RecyclerView?=null
 
-    override fun onViewCreated(itemView: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(itemView, savedInstanceState)
-        Log.d("Main","blabla")
-
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //load data for the list
         loadData()
+        //instantiate adapter and linearLayout
         adapterVar=SampleAdapter(nameList)
         layoutManagerVar=LinearLayoutManager(activity)
     }
@@ -49,7 +44,7 @@ class FragmentHome : Fragment(R.layout.fragment_home) {
     ): View? {
         val rootView =  inflater?.inflate(R.layout.fragment_home, container, false)
         recyclerView = rootView?.findViewById(R.id.rvMain)
-        // rest of my stuff
+        // set recyclerView attributes
         recyclerView?.setHasFixedSize(true)
         recyclerView?.layoutManager = layoutManagerVar
         recyclerView?.adapter = adapterVar
