@@ -75,40 +75,6 @@
             app:layout_constraintVertical_bias="1.0"
             app:shapeAppearanceOverlay="@style/imageViewCircle" />
 
-        <TextView
-            android:id="@+id/tvFragmentProfilePictures"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="44dp"
-            android:text="Slike"
-            android:textSize="20dp"
-            app:layout_constraintEnd_toStartOf="@+id/btnFragmentProfileAddPicture"
-            app:layout_constraintHorizontal_bias="0.252"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvFragmentProfileInfoContainer" />
-
-        <Button
-            android:id="@+id/btnFragmentProfileAddPicture"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="20dp"
-            android:background="#00FFFFFF"
-            android:text="Dodaj Novu Sliku"
-            android:textColor="@color/cardview_dark_background"
-
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvFragmentProfileInfoContainer" />
-
-        <Button
-            android:id="@+id/button4"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Pogledaj sve slike"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent" />
-
         <TableLayout
             android:id="@+id/tableLayout"
             android:layout_width="323dp"
@@ -133,8 +99,20 @@
                     android:layout_height="match_parent"
                     android:text="Petar Petrović" />
             </TableRow>
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
 
-            <Space android:layout_height="35dp"></Space>
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/tvFragmentProfileUserName"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center"
+                    android:text="#PetarP" />
+            </TableRow>
+            <Space android:layout_height="20dp"></Space>
 
             <TableRow
                 android:layout_width="match_parent"
@@ -142,7 +120,7 @@
                 android:gravity="center">
 
                 <TextView
-                    android:id="@+id/tvFragmentProfileContributions"
+                    android:id="@+id/tvFragmentProfilePosts"
                     android:gravity="center"
                     android:text="OBJAVE" />
 
@@ -163,7 +141,7 @@
                 android:gravity="center">
 
                 <TextView
-                    android:id="@+id/tvFragmentProfileContributionsNo"
+                    android:id="@+id/tvFragmentProfilePostsNo"
                     android:gravity="center"
                     android:text="156" />
 
@@ -180,6 +158,69 @@
                     android:text="40" />
             </TableRow>
         </TableLayout>
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="409dp"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnFragmentProfileShowMyPosts" />
+
+        <Button
+            android:id="@+id/btnFragmentProfileShowMyPosts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="4dp"
+            android:backgroundTint="#FFFFFF"
+            android:stateListAnimator="@null"
+            android:text="Objave"
+
+            android:textColor="@color/cardview_dark_background"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvFragmentProfileInfoContainer" />
+
+        <Button
+            android:id="@+id/btnFragmentProfileShowMyData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="20dp"
+            android:backgroundTint="#FFFFFF"
+            android:stateListAnimator="@null"
+            android:text="Podaci"
+
+            android:textColor="@color/cardview_dark_background"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/btnFragmentProfileShowMyRecensions"
+            app:layout_constraintTop_toBottomOf="@+id/tvFragmentProfileInfoContainer" />
+
+        <FrameLayout
+            android:id="@+id/flFragmentProfileFragmentContainer"
+            android:layout_width="409dp"
+            android:layout_height="319dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/divider">
+
+        </FrameLayout>
+
+        <Button
+            android:id="@+id/btnFragmentProfileShowMyRecensions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="36dp"
+            android:layout_marginTop="4dp"
+            android:backgroundTint="#FFFFFF"
+            android:stateListAnimator="@null"
+            android:textColor="@color/cardview_dark_background"
+            android:text="Recenzije"
+            app:layout_constraintStart_toEndOf="@+id/btnFragmentProfileShowMyPosts"
+            app:layout_constraintTop_toBottomOf="@+id/tvFragmentProfileInfoContainer" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </FrameLayout>

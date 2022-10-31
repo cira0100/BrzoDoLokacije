@@ -87,12 +87,17 @@ class FragmentRegister : Fragment() {
                     override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
                         if(response.isSuccessful()){
                             Toast.makeText(
-                                activity, "Uspesna registracija. Verifikujte email. TODO(navigate to login)", Toast.LENGTH_LONG
+                                activity, "Uspesna registracija. Verifikujte email.", Toast.LENGTH_LONG
                             ).show();
                             //TODO(navigate to login)
                         }else{
-                            if(response.errorBody()!=null)
-                            Toast.makeText(activity, response.errorBody()!!.string(), Toast.LENGTH_LONG).show()
+                            if(response.errorBody()!=null) {
+                                Toast.makeText(
+                                    activity,
+                                    response.errorBody()!!.string(),
+                                    Toast.LENGTH_LONG
+                                ).show()
+                            }
                         }
 
 

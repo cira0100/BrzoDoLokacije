@@ -10,6 +10,14 @@ data class User (
     var emailToken:String,
     var verified:Boolean,
     var password:String,
-    var creationDate:Date
+    var creationDate:Date,
+
+    //profil
+    var followers:List<User>,
+    var followersNumber:Int,
+    var following:List<User>,
+    var followingNumber:Int,
+    var postIds:List<Int>,
+    var postNumber:Int
 
 )
