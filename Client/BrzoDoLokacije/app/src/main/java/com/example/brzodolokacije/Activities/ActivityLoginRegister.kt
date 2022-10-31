@@ -28,7 +28,10 @@ class ActivityLoginRegister : AppCompatActivity() {
         register=findViewById<View>(R.id.btnFragmentActivityLRRegister) as Button
         //var fm: FragmentTransaction =supportFragmentManager.beginTransaction()
         //fm.replace(R.id.flFragmentActivityLRFragmentsView,FragmentLogin())
+        var fm: FragmentTransaction =supportFragmentManager.beginTransaction()
 
+        fm.replace(R.id.flFragmentActivityLRFragmentsView,FragmentLogin())
+        fm.commit()
         login.setOnClickListener{
             Log.d("main","prijavi se")
             var fm: FragmentTransaction =supportFragmentManager.beginTransaction()

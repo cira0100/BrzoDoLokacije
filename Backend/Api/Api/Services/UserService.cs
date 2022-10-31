@@ -221,7 +221,7 @@ namespace Api.Services
             try
             {
                 client.Connect(_configuration.GetSection("EmailCfg:SmtpServer").Value, 465, true);
-                client.Authenticate(_configuration.GetSection("EmailCfg:Email").Value, _configuration.GetSection("EmailCofg:Password").Value);
+                client.Authenticate(_configuration.GetSection("EmailCfg:Email").Value, _configuration.GetSection("EmailCfg:Password").Value);
                 client.Send(message);
 
             }
