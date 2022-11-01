@@ -75,7 +75,9 @@ class FragmentRegister : Fragment() {
                 name.hint = "Unesite ime i prezime"
                 name.setHintTextColor(Color.RED)
             }
-            if(!emailString.isEmpty() && !passwordString.isEmpty() && !nameString.isEmpty() && !usernameString.isEmpty()) {
+            if(!emailString.isEmpty() && !passwordString.isEmpty() && !nameString.isEmpty()
+                && !usernameString.isEmpty() && checkPassword(passwordString)==true
+                && checkEmail(emailString)==true && checkUsername(usernameString)==true) {
 
                 var registerData=Register(nameString,usernameString,emailString,passwordString)
 
@@ -120,24 +122,37 @@ class FragmentRegister : Fragment() {
 
         return view
     }
-/*
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment fragmentRegister.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            fragmentRegister().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }*/
+    fun checkEmail(emailString:String):Boolean{
+        val emailRegex = "^[A-Za-z](.*)([@]{1})(.{1,})(\\.)(.{1,})"
+        if(!(emailRegex.toRegex().matches(emailString))){
+            Toast.makeText(
+                activity, "Email adresa nije validna, pokušajte ponovo", Toast.LENGTH_LONG
+            ).show();
+            email.setHintTextColor(Color.RED)
+            return false
+        }
+        else{
+            return true
+        }
+    }
+
+    fun checkPassword(passwordString:String):Boolean{
+        if(passwordString.length<6){
+            Toast.makeText(
+                activity, "Izaberite sigurniju lozinku", Toast.LENGTH_LONG
+            ).show();
+            return false
+        }
+        return true
+    }
+
+    fun checkUsername(usernameString:String):Boolean{
+        if(usernameString.length<4){
+            Toast.makeText(
+                activity, "Izaberite korisničko ime sa 4 ili više karaktera ", Toast.LENGTH_LONG
+            ).show();
+            return false
+        }
+        return true
+    }
 }
