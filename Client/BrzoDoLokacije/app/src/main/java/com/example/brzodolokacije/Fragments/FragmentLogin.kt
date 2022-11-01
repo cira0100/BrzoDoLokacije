@@ -132,7 +132,9 @@ class FragmentLogin : Fragment() {
     fun checkEmail(emailString:String):Boolean{
         val emailRegex = "^[A-Za-z](.*)([@]{1})(.{1,})(\\.)(.{1,})"
         if(!(emailRegex.toRegex().matches(emailString))){
-            email.hint="Pogrešan unos, unesite ispravnu Email adresu"
+            Toast.makeText(
+                activity, "Email adresa nije validna, pokušajte ponovo", Toast.LENGTH_LONG
+            ).show();
             email.setHintTextColor(Color.RED)
             return false
         }
@@ -143,6 +145,9 @@ class FragmentLogin : Fragment() {
 
     fun checkPassword(passwordString:String):Boolean{
         if(passwordString.length<6){
+            Toast.makeText(
+                activity, "Uneta lozinka nije validna, pokušajte ponovo", Toast.LENGTH_LONG
+            ).show();
             return false
         }
         return true
