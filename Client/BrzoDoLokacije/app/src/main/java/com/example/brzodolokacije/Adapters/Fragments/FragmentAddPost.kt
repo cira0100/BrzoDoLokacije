@@ -1,4 +1,4 @@
-package com.example.brzodolokacije.Fragments
+package com.example.brzodolokacije.Adapters.Fragments
 
 import android.content.Intent
 import android.os.Bundle

@@ -1,4 +1,4 @@
-package com.example.brzodolokacije.Fragments
+package com.example.brzodolokacije.Adapters.Fragments
 
 import android.os.Bundle
 import android.util.Log
@@ -65,7 +65,7 @@ class FragmentProfile : Fragment(R.layout.fragment_profile) {
 
             var fm: FragmentTransaction =childFragmentManager.beginTransaction()
 
-            fm.replace(R.id.flFragmentProfileFragmentContainer,FragmentUserPosts())
+            fm.replace(R.id.flFragmentProfileFragmentContainer, FragmentUserPosts())
             fm.commit()
         }
 
@@ -74,7 +74,7 @@ class FragmentProfile : Fragment(R.layout.fragment_profile) {
 
             var fm: FragmentTransaction =childFragmentManager.beginTransaction()
 
-            fm.replace(R.id.flFragmentProfileFragmentContainer,FragmentMyProfileInfo())
+            fm.replace(R.id.flFragmentProfileFragmentContainer, FragmentMyProfileInfo())
             fm.commit()
         }
 
@@ -82,7 +82,7 @@ class FragmentProfile : Fragment(R.layout.fragment_profile) {
 
             var fm: FragmentTransaction =childFragmentManager.beginTransaction()
 
-            fm.replace(R.id.flFragmentProfileFragmentContainer,FragmentMyRecensions())
+            fm.replace(R.id.flFragmentProfileFragmentContainer, FragmentMyRecensions())
             fm.commit()
         }
 
