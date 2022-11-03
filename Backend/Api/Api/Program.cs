@@ -1,4 +1,3 @@
-using System.Text;
 using Api.Database;
 using Api.Interfaces;
 using Api.Services;
@@ -6,6 +5,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using MongoDB.Driver;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -30,7 +30,8 @@ builder.Services.AddHttpContextAccessor();
 
 //Add Authentication
 builder.Services.AddAuthentication(
-    JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options => {
+    JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
+    {
         options.TokenValidationParameters = new TokenValidationParameters
         {
             ValidateIssuerSigningKey = true,

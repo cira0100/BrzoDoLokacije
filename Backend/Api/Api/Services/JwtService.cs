@@ -72,7 +72,7 @@ namespace Api.Services
             return tokenHandler.WriteToken(token);
         }
 
-        public string EmailTokenToId(string token)
+        public string EmailTokenToClaim(string token,string claim)
         {
             if (token == null)
                 return null;
@@ -90,41 +90,13 @@ namespace Api.Services
                 },
                 out SecurityToken validatedToken);
                 var jwtToken = (JwtSecurityToken)validatedToken;
-                var username = (jwtToken.Claims.First(x => x.Type == "username").Value.ToString());
-                return username;
+                var result = (jwtToken.Claims.First(x => x.Type == claim).Value.ToString());
+                return result;
             }
             catch
             {
                 return null;
             }
         }
-
-        public string EmailTokenToKod(string token)
-        {
-            if (token == null)
-                return null;
-            var tokenHandler = new JwtSecurityTokenHandler();
-            var key = Encoding.ASCII.GetBytes(_config.GetSection("AppSettings:EmailToken").Value.ToString());
-            try
-            {
-                tokenHandler.ValidateToken(token, new TokenValidationParameters
-                {
-                    ValidateIssuerSigningKey = true,
-                    IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = false,
-                    ValidateAudience = false,
-                    ClockSkew = TimeSpan.Zero
-                },
-                out SecurityToken validatedToken);
-                var jwtToken = (JwtSecurityToken)validatedToken;
-                var kod = (jwtToken.Claims.First(x => x.Type == "kod").Value.ToString());
-                return kod;
-            }
-            catch
-            {
-                return null;
-            }
-        }
-
     }
 }
