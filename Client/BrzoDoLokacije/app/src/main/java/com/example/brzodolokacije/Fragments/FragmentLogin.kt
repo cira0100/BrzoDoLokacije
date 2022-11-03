@@ -1,4 +1,4 @@
-package com.example.brzodolokacije.Adapters.Fragments
+package com.example.brzodolokacije.Fragments
 
 import android.content.Intent
 import android.graphics.Color
