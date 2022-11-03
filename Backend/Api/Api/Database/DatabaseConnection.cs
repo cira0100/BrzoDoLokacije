@@ -8,5 +8,6 @@ namespace Api.Database
         public string DatabaseName { get; set; } = String.Empty;
         public string UserCollectionName { get; set; } = String.Empty;
         public string PostCollectionName { get; set; } = String.Empty;
+        public string FileCollectionName { get; set; } = String.Empty;
     }
 }

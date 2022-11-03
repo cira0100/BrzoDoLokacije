@@ -1,5 +1,6 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
+using System.ComponentModel.DataAnnotations;
 
 namespace Api.Models
 {
@@ -9,7 +10,7 @@ namespace Api.Models
         [BsonRepresentation(BsonType.ObjectId)]
         public string _id { get; set; }
         public string ownerId { get; set; }
-        public Location location { get; set; }
+        public string locationId { get; set; }
         public string description { get; set; }
         public List<string> views { get; set; }
         public List<string> reports { get; set; }
@@ -22,7 +23,7 @@ namespace Api.Models
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string _id { get; set; }
-        public Location location { get; set; }
+        public string locationId { get; set; }
         public string description { get; set; }
         public List<IFormFile> images { get; set; }
 

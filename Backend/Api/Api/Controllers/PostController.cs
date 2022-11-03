@@ -20,7 +20,7 @@ namespace Api.Controllers
 
         [HttpPost("add")]
         [Authorize(Roles ="User")]
-        public async Task<ActionResult<PostSend>> addPost([FromBody] PostReceive post)
+        public async Task<ActionResult<PostSend>> addPost([FromForm]PostReceive post)
         {
             var res = await _postService.addPost(post);
             if (res != null)
