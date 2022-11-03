@@ -7,5 +7,6 @@ namespace Api.Database
         public string ConnectionString { get; set; } = String.Empty;
         public string DatabaseName { get; set; } = String.Empty;
         public string UserCollectionName { get; set; } = String.Empty;
+        public string PostCollectionName { get; set; } = String.Empty;
     }
 }
