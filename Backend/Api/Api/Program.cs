@@ -24,6 +24,7 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IJwtService, JwtService>();
 builder.Services.AddScoped<IPostService,PostService>();
 builder.Services.AddScoped<IFileService,FileService>();
+builder.Services.AddScoped<ILocationService,LocationService>();
 
 builder.Services.AddHttpContextAccessor();
 

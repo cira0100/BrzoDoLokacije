@@ -1,4 +1,4 @@
-﻿namespace Api.Services
+﻿namespace Api.Interfaces
 {
     public interface IFileService
     {
