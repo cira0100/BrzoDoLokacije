@@ -24,7 +24,8 @@ namespace Api.Services
             var key = Encoding.ASCII.GetBytes(_config.GetSection("AppSettings:JwtToken").Value);
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Subject = new ClaimsIdentity(new[] { new Claim("id", user._id) }),
+                Subject = new ClaimsIdentity(new[] { new Claim("id", user._id),
+                                                    new Claim("role","User")}),
                 Expires = DateTime.UtcNow.AddDays(7),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };

@@ -1,12 +1,14 @@
 package com.example.brzodolokacije.Models
 
-data class Location(
-    val _id:String,
-    val name:String,
-    val city:String,
-    val country:String,
-    val address:String,
-    val latitude:String,
-    val longitude:String,
-    val type:LocationTypes
-)
+import com.example.brzodolokacije.Models.LocationType
+
+data class Location (
+        var _id:String,
+        var name:String,
+        var city:String,
+        var country:String,
+        var adress:String,
+        var latitude:Double,
+        var longitude:Double,
+        var type:LocationType
+        )

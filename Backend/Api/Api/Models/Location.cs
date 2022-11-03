@@ -11,7 +11,7 @@ namespace Api.Models
         public String name { get; set; }
         public String city { get; set; }
         public String country { get; set; }
-        public String adress { get; set; }
+        public String address { get; set; }
         public double latitude { get; set; }
         public double longitude { get; set; }
         public LocationType type { get; set; }

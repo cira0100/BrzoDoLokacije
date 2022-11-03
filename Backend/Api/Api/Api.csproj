@@ -15,4 +15,8 @@
 	<PackageReference Include="MailKit" Version="3.4.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Files\" />
+  </ItemGroup>
+
 </Project>
