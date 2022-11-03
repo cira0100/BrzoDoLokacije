@@ -1,4 +1,4 @@
-package com.example.brzodolokacije.Adapters.Fragments
+package com.example.brzodolokacije.Fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -14,10 +14,10 @@ private const val ARG_PARAM2 = "param2"
 
 /**
  * A simple [Fragment] subclass.
- * Use the [FragmentMyRecensions.newInstance] factory method to
+ * Use the [FragmentBrowse.newInstance] factory method to
  * create an instance of this fragment.
  */
-class FragmentMyRecensions : Fragment() {
+class FragmentBrowse : Fragment(R.layout.fragment_browse) {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
@@ -35,7 +35,7 @@ class FragmentMyRecensions : Fragment() {
         savedInstanceState: Bundle?
     ): View? {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_my_recensions, container, false)
+        return inflater.inflate(R.layout.fragment_browse, container, false)
     }
 
     companion object {
@@ -45,12 +45,12 @@ class FragmentMyRecensions : Fragment() {
          *
          * @param param1 Parameter 1.
          * @param param2 Parameter 2.
-         * @return A new instance of fragment FragmentMyRecensions.
+         * @return A new instance of fragment FragmentBrowse.
          */
         // TODO: Rename and change types and number of parameters
         @JvmStatic
         fun newInstance(param1: String, param2: String) =
-            FragmentMyRecensions().apply {
+            FragmentBrowse().apply {
                 arguments = Bundle().apply {
                     putString(ARG_PARAM1, param1)
                     putString(ARG_PARAM2, param2)
