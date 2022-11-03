@@ -12,7 +12,7 @@ namespace Api.Services
         public LocationService(IDatabaseConnection settings, IMongoClient mongoClient)
         {
             var database = mongoClient.GetDatabase(settings.DatabaseName);
-            _locations = database.GetCollection<Location>(settings.FileCollectionName);
+            _locations = database.GetCollection<Location>(settings.LocationCollectionName);
         }
         public async Task<Location> add(Location loc)
         {
