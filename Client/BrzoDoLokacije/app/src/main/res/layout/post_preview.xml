@@ -4,8 +4,6 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_padding="5dp"
-    android:layout_margin="0dp"
     android:layout_margin="0dp"
     android:background="@drawable/rounded_picture_background"
     android:clipToOutline="true"
@@ -31,7 +29,7 @@
         android:background="@color/dark_blue_transparent"
         android:outlineProvider="background"
         app:layout_constraintBottom_toBottomOf="@+id/locationImage"
-        tools:layout_editor_absoluteX="0dp">
+        tools:layout_editor_absoluteX="10dp">
 
 
     </View>

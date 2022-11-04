@@ -29,10 +29,10 @@ class FragmentAddPost : Fragment(R.layout.fragment_add_post) {
     ): View? {
         val view:View=inflater.inflate(R.layout.fragment_add_post, container, false)
         // Inflate the layout for this fragment
-        val logOutButton=view.findViewById<View>(R.id.btnFragmentAddLogOut) as Button
+        /*val logOutButton=view.findViewById<View>(R.id.btnFragmentAddLogOut) as Button
         logOutButton.setOnClickListener{
             logOut()
-        }
+        }*/
         return view;
     }
 

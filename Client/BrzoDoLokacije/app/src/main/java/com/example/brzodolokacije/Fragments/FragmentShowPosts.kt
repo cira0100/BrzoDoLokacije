@@ -11,7 +11,7 @@ import com.example.brzodolokacije.Adapters.SampleAdapter
 import com.example.brzodolokacije.Adapters.ShowPostsAdapter
 import com.example.brzodolokacije.Models.ListItemModel
 import com.example.brzodolokacije.Models.Location
-import com.example.brzodolokacije.Models.LocationTypes
+import com.example.brzodolokacije.Models.LocationType
 import com.example.brzodolokacije.Models.Post
 import com.example.brzodolokacije.R
 import com.example.brzodolokacije.databinding.FragmentHomeBinding
@@ -35,22 +35,22 @@ class FragmentShowPosts : Fragment() {
     }
 
     private fun loadData() {
-        posts.add(Post("123","213",
+        posts.add(Post("123",
             Location("asd","Ajfelov toranj","Pariz",
-                "Francuska","idk","asda","asdsd",LocationTypes.Grad),"opsiopsaid",1.1,56,
-            mutableListOf(),mutableListOf()))
-        posts.add(Post("123","213",
+                "Francuska","idk",1.1,1.1, LocationType.GRAD),"opsiopsaid","opasdiad",
+            mutableListOf(),mutableListOf(),mutableListOf(),mutableListOf(),mutableListOf()))
+        posts.add(Post("123",
             Location("asd","Ajfelov toranj","Pariz",
-                "Francuska","idk","asda","asdsd",LocationTypes.Grad),"opsiopsaid",1.1,56,
-            mutableListOf(),mutableListOf(),))
-        posts.add(Post("123","213",
+                "Francuska","idk",1.1,1.1, LocationType.GRAD),"opsiopsaid","opasdiad",
+            mutableListOf(),mutableListOf(),mutableListOf(),mutableListOf(),mutableListOf()))
+        posts.add(Post("123",
             Location("asd","Ajfelov toranj","Pariz",
-                "Francuska","idk","asda","asdsd",LocationTypes.Grad),"opsiopsaid",1.1,56,
-            mutableListOf(),mutableListOf(),))
-        posts.add(Post("123","213",
+                "Francuska","idk",1.1,1.1, LocationType.GRAD),"opsiopsaid","opasdiad",
+            mutableListOf(),mutableListOf(),mutableListOf(),mutableListOf(),mutableListOf()))
+        posts.add(Post("123",
             Location("asd","Ajfelov toranj","Pariz",
-                "Francuska","idk","asda","asdsd",LocationTypes.Grad),"opsiopsaid",1.1,56,
-            mutableListOf(),mutableListOf(),))
+                "Francuska","idk",1.1,1.1, LocationType.GRAD),"opsiopsaid","opasdiad",
+            mutableListOf(),mutableListOf(),mutableListOf(),mutableListOf(),mutableListOf()))
     }
 
     override fun onCreateView(
