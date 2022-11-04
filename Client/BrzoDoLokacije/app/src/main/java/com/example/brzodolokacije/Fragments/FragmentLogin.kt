@@ -84,7 +84,7 @@ class FragmentLogin : Fragment() {
             if(!emailString.isEmpty() && !passwordString.isEmpty()&& checkPassword(passwordString)==true && checkEmail(emailString)==true) {
 
                 var loginData= Login(emailString,passwordString)
-                val authApi= RetrofitHelper.getInstance().create(IAuthApi::class.java)
+                val authApi= RetrofitHelper.getInstanceNoAuth()
                 val request=authApi.login(loginData)
 
                 request.enqueue(object : retrofit2.Callback<String?> {
