@@ -81,7 +81,7 @@ class FragmentRegister : Fragment() {
 
                 var registerData=Register(nameString,usernameString,emailString,passwordString)
 
-                val authApi=RetrofitHelper.getInstanceNoAuth()
+                val authApi=RetrofitHelper.getInstance()
 
                 val request=authApi.register(registerData)
 
