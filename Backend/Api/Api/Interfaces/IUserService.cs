@@ -12,7 +12,7 @@ namespace Api.Interfaces
         Task<User> deleteUser(String email);
         Task<User> getUserById(string id);
 
-        Task<string> RenewToken(string existingToken);
+        Task<string> RenewToken();
         Task<string> Login(Login login);
         Task<string> Register(Register register);
         Task<Boolean> VerifyUser(VerifyUser login);

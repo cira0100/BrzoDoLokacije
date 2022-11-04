@@ -163,9 +163,9 @@ namespace Api.Services
             return false;
         }
 
-        public async Task<string> RenewToken(string existingToken)
+        public async Task<string> RenewToken()
         {
-            var id = _jwtService.TokenToId(existingToken);
+            var id = await UserIdFromJwt();
             if (id == null)
                 return null;
             var user = await getUserById(id);
