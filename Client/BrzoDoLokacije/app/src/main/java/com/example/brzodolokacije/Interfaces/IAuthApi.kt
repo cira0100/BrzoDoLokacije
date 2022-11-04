@@ -14,7 +14,8 @@ interface IAuthApi {
     fun login(@Body obj:Login): Call<String>
     @POST("/api/auth/register")
     fun register(@Body obj:Register):Call<ResponseBody>
-
+    @POST("/api/auth/refreshJwt")
+    fun refreshJwt(@Header("Authorization") authHeader:String): Call<String>
     //@POST("putanja")
     //fun add(@Body obj:Post,@Header("Authorization") authHeader:String):Call<Post>
 }

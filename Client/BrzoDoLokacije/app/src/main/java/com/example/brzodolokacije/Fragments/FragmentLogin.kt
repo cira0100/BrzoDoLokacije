@@ -94,7 +94,6 @@ class FragmentLogin : Fragment() {
                             Toast.makeText(
                                 activity, token, Toast.LENGTH_LONG
                             ).show();
-                            //TODO(navigate to main page)
                             SharedPreferencesHelper.addValue("jwt",token,activity!!)
                             val intent= Intent(activity!!, NavigationActivity::class.java)
                             startActivity(intent)
