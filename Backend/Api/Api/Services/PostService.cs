@@ -23,7 +23,7 @@ namespace Api.Services
         {
             Post p = new Post();
             p._id = "";
-            p.ownerId = _httpContext.HttpContext.User.FindFirstValue("id");
+            p.ownerId = _httpContext.HttpContext.User.FindFirstValue("id").ToString();
 
             p.locationId = post.locationId;
             p.description = post.description;
@@ -63,14 +63,6 @@ namespace Api.Services
                 
             }
             await _posts.InsertOneAsync(p);
-
-
-
-
-
-
-
-
             return postToPostSend(p);
 
         }
