@@ -16,7 +16,7 @@ class NavigationActivity : AppCompatActivity() {
 
         val fragmentShowPosts=FragmentShowPosts()
         val browseFragment=FragmentBrowse()
-        val addPostFragment=FragmentAddPost()
+        val addPostFragment= FragmentAddNew()
         val profileFragment=FragmentProfile()
         val bottomNav=findViewById<View>(R.id.bottomNavigationView) as BottomNavigationView
         setCurrentFragment(fragmentShowPosts)
