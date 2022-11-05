@@ -46,9 +46,8 @@ class FragmentProfile : Fragment(R.layout.fragment_profile) {
         postsCount = view.findViewById<View>(R.id.tvFragmentProfilePostsNo) as TextView
         followersCount = view.findViewById<View>(R.id.tvFragmentProfileFollowersNo) as TextView
         followingCount = view.findViewById<View>(R.id.tvFragmentProfileFollowNo) as TextView
-
-        showMyPosts=view.findViewById<View>(R.id.btnFragmentAddNewNewPost) as Button
-        showMyData=view.findViewById<View>(R.id.btnFragmentAddNewNewLocation) as Button
+        showMyPosts=view.findViewById<View>(R.id.btnFragmentProfileShowMyPosts) as Button
+        showMyData=view.findViewById<View>(R.id.btnFragmentProfileShowMyData) as Button
         showMyRecensions=view.findViewById<View>(R.id.btnFragmentProfileShowMyRecensions) as Button
         //podaci iz baze
 
