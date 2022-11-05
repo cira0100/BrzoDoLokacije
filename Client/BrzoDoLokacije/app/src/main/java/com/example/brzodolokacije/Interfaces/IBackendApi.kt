@@ -4,14 +4,13 @@ import com.example.brzodolokacije.Models.Auth.JustMail
 import com.example.brzodolokacije.Models.Auth.Login
 import com.example.brzodolokacije.Models.Auth.Register
 import com.example.brzodolokacije.Models.Auth.ResetPass
-import com.example.brzodolokacije.Models.Post
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.Header
 import retrofit2.http.POST
 
-interface IAuthApi {
+interface IBackendApi {
     @POST("/api/auth/login")
     fun login(@Body obj:Login): Call<String>
     @POST("/api/auth/register")

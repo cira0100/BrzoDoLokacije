@@ -1,7 +1,7 @@
 package com.example.brzodolokacije.Models
 
+import okhttp3.MultipartBody
 import java.time.LocalDateTime
-import java.util.*
 
 data class Post (
     var _id:String,
@@ -12,10 +12,29 @@ data class Post (
     var reports:List<String>,
     var ratings:List<Rating>,
     var comments:List<Comment>,
-    var images:List<File>
+    var images:List<PostImage>
 
 
     )
+data class PostSend(
+    var _id:String,
+    var locationId:String,
+    var description:String,
+    var images: List<MultipartBody.Part>
+
+)
+data class PostPreview(
+    var _id:String,
+    var ownerId:String,
+    var location:Location,
+    var description:String,
+    var views:Int,
+    var ratings:Float,
+    var comments:List<Comment>,
+    var images:List<PostImage>
+)
+
+
 
 data class Comment (
     var userId:String,

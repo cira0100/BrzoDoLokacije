@@ -12,13 +12,11 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 
-import com.example.brzodolokacije.Activities.ActivityLoginRegister
 import com.example.brzodolokacije.Activities.NavigationActivity
 
 import com.example.brzodolokacije.Activities.ActivityForgottenPassword
 
 
-import com.example.brzodolokacije.Interfaces.IAuthApi
 import com.example.brzodolokacije.Models.Auth.Login
 import com.example.brzodolokacije.R
 import com.example.brzodolokacije.Services.RetrofitHelper
