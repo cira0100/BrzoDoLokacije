@@ -12,13 +12,11 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 
-import com.example.brzodolokacije.Activities.ActivityLoginRegister
 import com.example.brzodolokacije.Activities.NavigationActivity
 
 import com.example.brzodolokacije.Activities.ActivityForgottenPassword
 
 
-import com.example.brzodolokacije.Interfaces.IAuthApi
 import com.example.brzodolokacije.Models.Auth.Login
 import com.example.brzodolokacije.R
 import com.example.brzodolokacije.Services.RetrofitHelper
@@ -84,7 +82,7 @@ class FragmentLogin : Fragment() {
             if(!emailString.isEmpty() && !passwordString.isEmpty()&& checkPassword(passwordString)==true && checkEmail(emailString)==true) {
 
                 var loginData= Login(emailString,passwordString)
-                val authApi= RetrofitHelper.getInstance().create(IAuthApi::class.java)
+                val authApi= RetrofitHelper.getInstance()
                 val request=authApi.login(loginData)
 
                 request.enqueue(object : retrofit2.Callback<String?> {
@@ -94,7 +92,6 @@ class FragmentLogin : Fragment() {
                             Toast.makeText(
                                 activity, token, Toast.LENGTH_LONG
                             ).show();
-                            //TODO(navigate to main page)
                             SharedPreferencesHelper.addValue("jwt",token,activity!!)
                             val intent= Intent(activity!!, NavigationActivity::class.java)
                             startActivity(intent)

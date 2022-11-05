@@ -37,6 +37,17 @@ namespace Api.Controllers
 
             return Ok();
         }
+        [HttpPost("refreshJwt")]
+        [Authorize(Roles ="User")]
+        public async Task<ActionResult<string>> refreshJwt()
+        {
+            var jwt = await _userService.RenewToken();
+            if (jwt != null)
+            {
+                return Ok(jwt);
+            }
+            return BadRequest("Pogresno uneti podaci");
+        }
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login([FromBody] Login creds)
         {
