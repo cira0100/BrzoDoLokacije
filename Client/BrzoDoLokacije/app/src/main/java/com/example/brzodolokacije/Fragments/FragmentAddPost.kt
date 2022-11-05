@@ -33,13 +33,7 @@ class FragmentAddPost : Fragment(R.layout.fragment_add_post) {
         return view;
     }
 
-    fun logOut(){
-        if(SharedPreferencesHelper.removeValue("jwt",requireActivity()))
-        {
-            val intent= Intent(requireActivity(), ActivityLoginRegister::class.java)
-            startActivity(intent)
-        }
-    }
+
 
 
 }
