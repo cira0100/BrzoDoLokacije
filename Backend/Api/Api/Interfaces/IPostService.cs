@@ -7,6 +7,6 @@ namespace Api.Interfaces
         Task<PostSend> addPost(PostReceive post);
         Task<List<PostSend>> getAllPosts();
         Task<PostSend> getPostById(string id);
-        PostSend postToPostSend(Post post);
+        Task<PostSend> postToPostSend(Post post);
     }
 }

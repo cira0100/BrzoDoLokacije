@@ -11,12 +11,14 @@ namespace Api.Services
         private readonly IMongoCollection<Post> _posts;
         private readonly IHttpContextAccessor _httpContext;
         private readonly IFileService _fileService;
-        public PostService(IDatabaseConnection settings, IMongoClient mongoClient, IHttpContextAccessor httpContext, IFileService fileService)
+        private readonly ILocationService _locationService;
+        public PostService(IDatabaseConnection settings, IMongoClient mongoClient, IHttpContextAccessor httpContext, IFileService fileService,ILocationService locationService)
         {
             var database = mongoClient.GetDatabase(settings.DatabaseName);
             _posts = database.GetCollection<Post>(settings.PostCollectionName);
             _httpContext = httpContext;
             _fileService = fileService;
+            _locationService = locationService;
         }
 
         public async Task<PostSend> addPost(PostReceive post)
@@ -63,14 +65,23 @@ namespace Api.Services
                 
             }
             await _posts.InsertOneAsync(p);
-            return postToPostSend(p);
+            return await postToPostSend(p);
 
         }
-        public PostSend postToPostSend(Post post)
+        public async Task<PostSend> postToPostSend(Post post)
         {
             PostSend p = new PostSend();
             //Convert post to post send (TODO)
             p._id = post._id;
+            p.ownerId = post.ownerId;
+            p.description = post.description;
+            p.location = await _locationService.getById(post.locationId);
+            p.images = post.images;
+            p.views = 1;//Default values todo
+            p.ratings = 1;
+            p.comments = null;
+
+
             return p;
         }
 
@@ -80,7 +91,7 @@ namespace Api.Services
             List<PostSend> temp = new List<PostSend>();
             foreach (var post in posts)
             {
-                temp.Add(postToPostSend(post));
+                temp.Add(await postToPostSend(post));
             }
             return temp;
         }
@@ -88,7 +99,7 @@ namespace Api.Services
         public async Task<PostSend> getPostById(string id)
         {
             Post p = await _posts.Find(post => post._id == id).FirstOrDefaultAsync();
-            return postToPostSend(p);
+            return await postToPostSend(p);
 
         }
         //(TODO) ADD Delete and update

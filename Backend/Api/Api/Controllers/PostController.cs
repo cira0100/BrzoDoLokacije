@@ -42,7 +42,7 @@ namespace Api.Controllers
             }
             return BadRequest();
         }
-        [HttpGet("posts /{id}")]
+        [HttpGet("posts/{id}")]
         [Authorize(Roles = "User")]
         public async Task<ActionResult<PostSend>> getPostByid(string id)
         {
