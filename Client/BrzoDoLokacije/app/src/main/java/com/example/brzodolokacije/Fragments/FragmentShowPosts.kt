@@ -1,5 +1,6 @@
 package com.example.brzodolokacije.Fragments
 
+import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -33,7 +34,7 @@ class FragmentShowPosts : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         //load data for the list
-        //loadData()
+        loadData()
         //instantiate adapter and linearLayout
         val postApi= RetrofitHelper.getInstance()
         val token=SharedPreferencesHelper.getValue("jwt", requireActivity())
@@ -42,8 +43,8 @@ class FragmentShowPosts : Fragment() {
         request.enqueue(object : retrofit2.Callback<MutableList<PostPreview>?> {
             override fun onResponse(call: Call<MutableList<PostPreview>?>, response: Response<MutableList<PostPreview>?>) {
                 if(response.isSuccessful){
-                    posts=response.body()!!
-                    recyclerView?.adapter=ShowPostsAdapter(posts)
+                    //posts=response.body()!!
+                    //recyclerView?.adapter=ShowPostsAdapter(requireActivity(),posts)
                     Toast.makeText(
                         activity, "prosao zahtev", Toast.LENGTH_LONG
                     ).show()
@@ -62,7 +63,7 @@ class FragmentShowPosts : Fragment() {
             }
         })
 
-        adapterVar=ShowPostsAdapter(posts)
+        adapterVar=ShowPostsAdapter(requireActivity(),posts)
         layoutManagerVar= LinearLayoutManager(activity)
     }
 
