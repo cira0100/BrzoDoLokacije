@@ -30,6 +30,7 @@ class MainActivity : AppCompatActivity() {
 
 
         startActivity(intent)
+        finish()
     }
 
     fun checkLoggedIn():Boolean{
@@ -48,7 +49,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun refreshJwt(token:String){
-        Log.d("Main","RIPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP")
         if(token==null)
             return
         var refreshJwt= RetrofitHelper.getInstance().refreshJwt("Bearer "+token)

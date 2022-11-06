@@ -13,9 +13,11 @@ namespace Api.Controllers
     public class PostController : ControllerBase
     {
         private readonly IPostService _postService;
-        public PostController(IPostService postService)
+        private readonly IFileService _fileService;
+        public PostController(IPostService postService, IFileService fileService)
         {
             _postService = postService;
+            _fileService = fileService;
         }
 
         [HttpPost("add")]
@@ -40,7 +42,7 @@ namespace Api.Controllers
             }
             return BadRequest();
         }
-        [HttpGet("posts /{id}")]
+        [HttpGet("posts/{id}")]
         [Authorize(Roles = "User")]
         public async Task<ActionResult<PostSend>> getPostByid(string id)
         {
@@ -51,6 +53,19 @@ namespace Api.Controllers
             }
             return BadRequest();
         }
+
+        [HttpGet("image/{id}")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult> getImage(string id)
+        {
+            Models.File f =await _fileService.getById(id);
+            if (f == null || !System.IO.File.Exists(f.path))
+                return BadRequest("Slika ne postoji");
+            return File(System.IO.File.ReadAllBytes(f.path), "image/*", Path.GetFileName(f.path));
+
+
+        }
+
 
     }
 }
