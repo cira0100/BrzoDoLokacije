@@ -46,13 +46,9 @@
         <activity android:name=".Activities.ActivityForgottenPassword" />
         <activity android:name=".Activities.ActivityLoginRegister" />
         <activity
-            android:name=".Activities.NavigationActivity"
-            android:exported="true">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
+            android:name=".Activities.NavigationActivity"/>
+
+
         <activity
             android:name=".MainActivity"
             android:exported="false">
