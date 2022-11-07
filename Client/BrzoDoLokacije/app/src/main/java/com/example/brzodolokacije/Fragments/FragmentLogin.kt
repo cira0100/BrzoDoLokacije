@@ -95,6 +95,7 @@ class FragmentLogin : Fragment() {
                             SharedPreferencesHelper.addValue("jwt",token,activity!!)
                             val intent= Intent(activity!!, NavigationActivity::class.java)
                             startActivity(intent)
+                            activity!!.finish()
                         }else{
                             if(response.errorBody()!=null)
                                 Toast.makeText(activity, response.errorBody()!!.string(), Toast.LENGTH_LONG).show();

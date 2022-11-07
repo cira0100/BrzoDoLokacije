@@ -6,10 +6,11 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.brzodolokacije.Models.Post
+import com.example.brzodolokacije.Models.PostImage
 import com.example.brzodolokacije.databinding.PostImageBinding
 import com.example.brzodolokacije.databinding.PostPreviewBinding
 
-class PostImageAdapter(val items : MutableList<java.io.File>)
+class PostImageAdapter(val items : MutableList<PostImage>)
     : RecyclerView.Adapter<PostImageAdapter.ViewHolder>(){
     //constructer has one argument - list of objects that need to be displayed
     //it is bound to xml of single item
@@ -25,9 +26,9 @@ class PostImageAdapter(val items : MutableList<java.io.File>)
     }
     override fun getItemCount() = items.size
     inner class ViewHolder(itemView : PostImageBinding) : RecyclerView.ViewHolder(itemView.root){
-        fun bind(item : java.io.File){
+        fun bind(item : PostImage){
             binding.apply {
-                locationImage.setImageBitmap(BitmapFactory.decodeStream(item.inputStream()))
+                //locationImage.setImageBitmap(BitmapFactory.decodeStream(item.inputStream()))
             }
         }
     }
