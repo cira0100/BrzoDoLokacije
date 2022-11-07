@@ -33,7 +33,7 @@ data class PostPreview (
     var description:String,
     var views:Int,
     var ratings:Float,
-    var comments:List<Comment>,
+    var comments:List<Comment>?,
     var images:List<PostImage>
 ):Parcelable
 

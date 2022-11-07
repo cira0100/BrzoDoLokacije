@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import androidx.appcompat.app.AppCompatActivity
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.brzodolokacije.Adapters.PostImageAdapter
 import com.example.brzodolokacije.Models.PostImage
@@ -46,9 +47,9 @@ class ActivitySinglePost : AppCompatActivity() {
         binding.apply {
             tvTitle.text= post.location.name
             tvTitle.invalidate()
-            tvLocationType.text=post.location.type.name
+            tvLocationType.text="TODO"
             tvLocationType.invalidate()
-            tvLocationParent.text=post.location.country
+            tvLocationParent.text="TODO"
             tvLocationParent.invalidate()
             tvRating.text=post.ratings.toString()
             tvRating.invalidate()

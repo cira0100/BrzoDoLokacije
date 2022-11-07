@@ -3,6 +3,7 @@ package com.example.brzodolokacije.Fragments
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -43,8 +44,9 @@ class FragmentShowPosts : Fragment() {
         request.enqueue(object : retrofit2.Callback<MutableList<PostPreview>?> {
             override fun onResponse(call: Call<MutableList<PostPreview>?>, response: Response<MutableList<PostPreview>?>) {
                 if(response.isSuccessful){
-                    //posts=response.body()!!
-                    //recyclerView?.adapter=ShowPostsAdapter(requireActivity(),posts)
+                    posts=response.body()!!
+                    Log.d("main",posts[0].toString())
+                    recyclerView?.adapter=ShowPostsAdapter(requireActivity(),posts)
                     Toast.makeText(
                         activity, "prosao zahtev", Toast.LENGTH_LONG
                     ).show()

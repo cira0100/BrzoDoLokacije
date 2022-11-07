@@ -1,7 +1,6 @@
 package com.example.brzodolokacije.Models
 
 import android.os.Parcelable
-import com.example.brzodolokacije.Models.LocationType
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
@@ -10,8 +9,8 @@ data class Location (
         var name:String,
         var city:String,
         var country:String,
-        var adress:String,
+        var address:String,
         var latitude:Double,
         var longitude:Double,
-        var type:LocationType
-        ): Parcelable
+        var type:LocationType?
+): Parcelable
