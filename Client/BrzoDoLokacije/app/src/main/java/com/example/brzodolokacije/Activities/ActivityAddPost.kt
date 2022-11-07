@@ -33,9 +33,9 @@ class ActivityAddPost : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_post)
-        Toast.makeText(
-            applicationContext, "Add new ", Toast.LENGTH_LONG
-        ).show();
+//        Toast.makeText(
+//            applicationContext, "Add new ", Toast.LENGTH_LONG
+//        ).show();
         uploadedImages= ArrayList()
 
         //paths= ArrayList()
@@ -83,7 +83,7 @@ class ActivityAddPost : AppCompatActivity() {
             if(place>0){
                 place=place-1
                 switcher.setImageURI(uploadedImages!![place])
-
+                showNextImage.isEnabled=true
             }
             else{
                 showPreviousImage.isEnabled=false
@@ -95,7 +95,7 @@ class ActivityAddPost : AppCompatActivity() {
             if(place<uploadedImages!!.size-1){
                 place=place+1
                 switcher.setImageURI(uploadedImages!![place])
-
+                showPreviousImage.isEnabled=true
             }
             else{
                 showNextImage.isEnabled=false
