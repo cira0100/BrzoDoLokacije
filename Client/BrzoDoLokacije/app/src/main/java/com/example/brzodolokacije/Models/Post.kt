@@ -1,5 +1,7 @@
 package com.example.brzodolokacije.Models
 
+import android.os.Parcelable
+import kotlinx.android.parcel.Parcelize
 import okhttp3.MultipartBody
 import java.time.LocalDateTime
 
@@ -23,25 +25,26 @@ data class PostSend(
     var images: List<MultipartBody.Part>
 
 )
-data class PostPreview(
+@Parcelize
+data class PostPreview (
     var _id:String,
     var ownerId:String,
     var location:Location,
     var description:String,
     var views:Int,
     var ratings:Float,
-    var comments:List<Comment>,
+    var comments:List<Comment>?,
     var images:List<PostImage>
-)
+):Parcelable
 
 
-
+@Parcelize
 data class Comment (
     var userId:String,
     var comment:String,
     var parent:Comment,
     var timeStamp: LocalDateTime
-)
+):Parcelable
 
 data class Rating(
     var useridval :String,

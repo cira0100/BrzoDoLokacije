@@ -1,12 +1,17 @@
 package com.example.brzodolokacije.Fragments
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.Toast
 import androidx.fragment.app.FragmentTransaction
+import com.example.brzodolokacije.Activities.ActivityAddPost
+import com.example.brzodolokacije.Activities.ActivityForgottenPassword
 import com.example.brzodolokacije.R
 
 // TODO: Rename parameter arguments, choose names that match
@@ -36,11 +41,17 @@ class FragmentAddNew : Fragment() {
 
 
         addNewPost.setOnClickListener{
+            Toast.makeText(
+                activity, "Add new post", Toast.LENGTH_LONG
+            ).show();
+                val intent = Intent (getActivity(), ActivityAddPost::class.java)
+                getActivity()?.startActivity(intent)
 
+/*
             var fm: FragmentTransaction =childFragmentManager.beginTransaction()
 
             fm.replace(R.id.flFragmentAddNewFragmentContainer, FragmentAddPost())
-            fm.commit()
+            fm.commit()*/
         }
 
 

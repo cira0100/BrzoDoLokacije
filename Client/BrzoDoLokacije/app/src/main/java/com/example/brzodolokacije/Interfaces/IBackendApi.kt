@@ -7,10 +7,7 @@ import com.example.brzodolokacije.Models.Auth.ResetPass
 import com.example.brzodolokacije.Models.PostPreview
 import okhttp3.ResponseBody
 import retrofit2.Call
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.POST
+import retrofit2.http.*
 
 interface IBackendApi {
     @POST("/api/auth/login")
@@ -25,6 +22,9 @@ interface IBackendApi {
     fun resetpass(@Body obj:ResetPass):Call<ResponseBody>
     @GET("/api/post")
     fun getPosts(@Header("Authorization") authHeader:String):Call<MutableList<PostPreview>>
+    @Streaming
+    @GET("/api/post/image/{id}")
+    fun getImage(@Header("Authorization") authHeader:String,@Path("id") obj:String):Call<ResponseBody>
     //@POST("putanja")
     //fun add(@Body obj:Post,@Header("Authorization") authHeader:String):Call<Post>
 }
