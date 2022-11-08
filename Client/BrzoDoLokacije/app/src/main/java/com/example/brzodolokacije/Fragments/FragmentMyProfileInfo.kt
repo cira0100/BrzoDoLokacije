@@ -46,6 +46,7 @@ class FragmentMyProfileInfo : Fragment() {
         logout=view.findViewById<View>(R.id.buttonLogOut) as Button
         logout.setOnClickListener{
             logOut()
+
         }
 
         return view
@@ -56,6 +57,7 @@ class FragmentMyProfileInfo : Fragment() {
         {
             val intent= Intent(requireActivity(), ActivityLoginRegister::class.java)
             startActivity(intent)
+            requireActivity().finish()
         }
     }
 }
