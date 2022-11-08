@@ -1,33 +1,30 @@
 package com.example.brzodolokacije.Activities
 
 import android.Manifest
-import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.database.Cursor
-import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.net.Uri
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.provider.MediaStore
-import android.provider.MediaStore.Audio.Media
 import android.util.Log
 import android.view.View
-import android.view.ViewGroup
 import android.widget.*
-import androidx.constraintlayout.motion.widget.TransitionBuilder.validate
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.example.brzodolokacije.Interfaces.IBackendApi
-import com.example.brzodolokacije.Models.Post
-import com.example.brzodolokacije.Models.PostImage
-import com.example.brzodolokacije.Models.PostSend
+import com.example.brzodolokacije.Models.Location
+import com.example.brzodolokacije.Models.LocationType
+import com.example.brzodolokacije.Models.PostPreview
 import com.example.brzodolokacije.R
 import com.example.brzodolokacije.Services.RetrofitHelper
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
-import java.net.URI
+import com.example.brzodolokacije.Services.SharedPreferencesHelper
+import okhttp3.MediaType
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import retrofit2.Call
+import retrofit2.Response
+import java.io.File
+import java.io.IOException
 
 
 class ActivityAddPost : AppCompatActivity() {
@@ -162,20 +159,106 @@ class ActivityAddPost : AppCompatActivity() {
         }
     }
     private fun sendPost(){
-        val api =RetrofitHelper.getInstance()
-
-
-        var obj=PostSend("","","")
-
-        var loc=locationString
-        location.text.clear()
-        var desc=descriptionString
-        description.text.clear()
-
-        obj.locationId=loc
-        obj.description=desc
-
-        //dodavanje u bazu
+        uploadLocation()
 
     }
+    fun uploadLocation() {
+        val api =RetrofitHelper.getInstance()
+        var loc:Location=Location("",locationString,"","","",0.0,0.0,LocationType.GRAD)
+        var jwtString= SharedPreferencesHelper.getValue("jwt",this)
+        var data=api.addLocation("Bearer "+jwtString,loc)
+
+
+        data.enqueue(object : retrofit2.Callback<Location?> {
+            override fun onResponse(call: Call<Location?>, response: Response<Location?>) {
+                if(response.isSuccessful()){
+                    Toast.makeText(
+                        applicationContext, "USPEH", Toast.LENGTH_LONG
+                    ).show();
+                    uploadPost(response.body()!!._id)
+                    Log.d("MAIN","RADI")
+                    Log.d("MAIN","RADI")
+
+                }else {
+
+                    if (response.errorBody() != null) {
+                        Log.d("Main",response.errorBody()!!.string())
+                        Log.d("Main",response.message())
+                    }
+                    Log.d("Main","sadadsa")
+                    Log.d("Main",response.errorBody()!!.string())
+                    Log.d("Main",response.message())
+                }
+
+
+            }
+
+            override fun onFailure(call: Call<Location?>, t: Throwable) {
+                Toast.makeText(
+                    applicationContext, t.toString(), Toast.LENGTH_LONG
+                ).show();
+                Log.d("Main",t.toString())
+            }
+        })
+    }
+    fun uploadPost(loc:String){
+        val api =RetrofitHelper.getInstance()
+        var desc=descriptionString
+        description.text.clear()
+        //loc
+        //desc
+        var locReq=RequestBody.create(MediaType.parse("text/plain"),loc)
+        var descReq=RequestBody.create(MediaType.parse("text/plain"),desc)
+        var idReq=RequestBody.create(MediaType.parse("text/plain"),"dsa")
+        val imagesParts = arrayOfNulls<MultipartBody.Part>(
+            uploadedImages!!.size
+        )
+
+        //dodavanje u bazu
+        for (i in 0..uploadedImages!!.size - 1){
+            //var file=File(uploadedImages!![i]!!.path)
+            Log.d("Main", uploadedImages!![i]!!.path!!)
+
+            var inputStream=getContentResolver().openInputStream(uploadedImages!![i]!!)
+            val file: File = File.createTempFile("temp",i.toString())
+            file!!.writeBytes(inputStream!!.readBytes())
+
+
+            var imageBody=RequestBody.create(MediaType.parse("image/*"),file)
+            imagesParts[i]=MultipartBody.Part.createFormData("images",file.name,imageBody)
+        }
+        var jwtString= SharedPreferencesHelper.getValue("jwt",this)
+        var data=api.addPost("Bearer "+jwtString,imagesParts,idReq,descReq,locReq)
+
+
+        data.enqueue(object : retrofit2.Callback<PostPreview?> {
+            override fun onResponse(call: Call<PostPreview?>, response: Response<PostPreview?>) {
+                if(response.isSuccessful()){
+                    Toast.makeText(
+                        applicationContext, "USPEH", Toast.LENGTH_LONG
+                    ).show();
+                }else {
+
+                    if (response.errorBody() != null) {
+                        Toast.makeText(
+                            applicationContext,
+                            response.errorBody()!!.string(),
+                            Toast.LENGTH_LONG
+                        ).show();
+                        Log.d("Main",response.errorBody()!!.string())
+                    }
+                }
+
+
+            }
+
+            override fun onFailure(call: Call<PostPreview?>, t: Throwable) {
+                Toast.makeText(
+                    applicationContext, t.toString(), Toast.LENGTH_LONG
+                ).show();
+                Log.d("Main",t.toString())
+            }
+        })
+    }
+
 }

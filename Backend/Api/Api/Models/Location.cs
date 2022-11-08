@@ -14,16 +14,15 @@ namespace Api.Models
         public String address { get; set; }
         public double latitude { get; set; }
         public double longitude { get; set; }
-        public LocationType type { get; set; }
+        //public LocationType type { get; set; }
 
     }
 
 
     public enum LocationType
     {
-        Plaza,
-        Grad,
-        Zgrada,
-        Itd
+        GRAD,ULICA,JEZERO,REKA,PLAZA,OKEAN, MORE, MOREUZ, MOST,BANJA,
+    PLANINA, VISORAVAN, PIRAMIDA, LIVADA, SELO, OSTRVO, POLUOSTRVO, KLISURA, ARHIPELAG,
+    ADA, DELTA, FJORD, GEJZIR, IZVOR, KOTLINA, MINERALNI_IZVOR, PECINA ,SUMA, VODOPAD,VULKAN
     }
 }

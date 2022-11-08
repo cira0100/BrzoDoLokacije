@@ -6,10 +6,13 @@ import com.example.brzodolokacije.Models.Auth.Register
 import com.example.brzodolokacije.Models.Auth.ResetPass
 import com.example.brzodolokacije.Models.Location
 import com.example.brzodolokacije.Models.PostPreview
-import com.example.brzodolokacije.Models.PostSend
+import okhttp3.MultipartBody
+import okhttp3.Request
+import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.http.*
+
 
 interface IBackendApi {
     @POST("/api/auth/login")
@@ -25,10 +28,14 @@ interface IBackendApi {
     @GET("/api/post")
     fun getPosts(@Header("Authorization") authHeader:String):Call<MutableList<PostPreview>>
     @POST("/api/Location/add")
-    fun addLocation(@Body obj:Location,@Header("Authorization") authHeader:String):Call<Location>
+    fun addLocation(@Header("Authorization") authHeader:String,@Body obj: Location ):Call<Location>
     @Multipart
     @POST("/api/Post/add")
-    fun addPost(@Part obj:PostSend,@Header("Authorization") authHeader:String):Call<PostPreview>
+    fun addPost(@Header("Authorization") authHeader:String, @Part images: Array<MultipartBody.Part?>?
+                                                            ,@Part("_id") _id:RequestBody
+                                                            ,@Part("description") description:RequestBody
+                                                            ,@Part("locationId") locationId:RequestBody
+                                                            ):Call<PostPreview>
 
     //@POST("putanja")
     //fun add(@Body obj:Post,@Header("Authorization") authHeader:String):Call<Post>

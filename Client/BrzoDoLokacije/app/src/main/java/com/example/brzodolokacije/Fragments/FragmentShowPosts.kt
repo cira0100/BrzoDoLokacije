@@ -96,7 +96,7 @@ class FragmentShowPosts : Fragment() {
         val rootView =  inflater?.inflate(R.layout.fragment_show_posts, container, false)
         recyclerView = rootView?.findViewById(R.id.rvMain)
         // set recyclerView attributes
-        recyclerView?.setHasFixedSize(true)
+        recyclerView?.setHasFixedSize(false)
         recyclerView?.layoutManager = layoutManagerVar
         recyclerView?.adapter = adapterVar
         return rootView

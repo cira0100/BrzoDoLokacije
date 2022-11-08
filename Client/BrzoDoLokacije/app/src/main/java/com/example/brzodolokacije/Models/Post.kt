@@ -22,7 +22,7 @@ data class PostSend(
     var _id:String,
     var locationId:String,
     var description:String,
-    //var images: List<MultipartBody.Part>
+    var images: List<MultipartBody.Part>
 
 )
 @Parcelize
