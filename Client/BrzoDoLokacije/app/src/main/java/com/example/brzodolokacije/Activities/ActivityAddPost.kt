@@ -20,6 +20,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.brzodolokacije.Models.PostImage
 import com.example.brzodolokacije.R
+import com.example.brzodolokacije.Services.RetrofitHelper
 import java.net.URI
 
 
@@ -167,6 +168,7 @@ class ActivityAddPost : AppCompatActivity() {
     }
 
     private fun addToDatabase(){
+
 
     }
     /*
