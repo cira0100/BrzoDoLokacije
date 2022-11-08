@@ -12,14 +12,21 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.provider.MediaStore
 import android.provider.MediaStore.Audio.Media
+import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.constraintlayout.motion.widget.TransitionBuilder.validate
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import com.example.brzodolokacije.Interfaces.IBackendApi
+import com.example.brzodolokacije.Models.Post
 import com.example.brzodolokacije.Models.PostImage
+import com.example.brzodolokacije.Models.PostSend
 import com.example.brzodolokacije.R
+import com.example.brzodolokacije.Services.RetrofitHelper
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import java.net.URI
 
 
@@ -78,16 +85,8 @@ class ActivityAddPost : AppCompatActivity() {
             intent.type="image/*"
             startActivityForResult(Intent.createChooser(intent,"Izaberi fotografije"),0)
         }
-/*
-        //fotografisanje
-        takePhoto.setOnClickListener {
-            //provera da li je odobrena upotreba kamere
-            if(ContextCompat.checkSelfPermission(this@ActivityAddPost, Manifest.permission.CAMERA)!=PackageManager.PERMISSION_GRANTED){
-                ActivityCompat.requestPermissions(this@ActivityAddPost, arrayOf(Manifest.permission.CAMERA),200)
-            }
-        }
 
-*/
+
         //prikaz ucitanih
         //
        showPreviousImage.setOnClickListener{
@@ -114,10 +113,25 @@ class ActivityAddPost : AppCompatActivity() {
         }
 
         post.setOnClickListener{
-            validate()
+            locationString=location.text.toString().trim()
+            descriptionString=description.text.toString().trim()
+            //prazan unos?
+            if(locationString.isEmpty()) {
+                location.hint="Unesite lokaciju"
+                location.setHintTextColor(Color.RED)
+            }
+            if(descriptionString.isEmpty()) {
+                description.hint="Unesite lokaciju"
+                description.setHintTextColor(Color.RED)
+            }
+
+            if(!locationString.isEmpty() && !descriptionString.isEmpty()){
+                sendPost()
+            }
+            }
         }
 
-    }
+
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
@@ -147,69 +161,21 @@ class ActivityAddPost : AppCompatActivity() {
             }
         }
     }
+private fun sendPost(){
+    val api =RetrofitHelper.getInstance()
 
-    private fun validate(){
-         locationString=location.text.toString().trim()
-         descriptionString=description.text.toString().trim()
-        //prazan unos?
-        if(locationString.isEmpty()) {
-            location.hint="Unesite lokaciju"
-            location.setHintTextColor(Color.RED)
-        }
-        if(descriptionString.isEmpty()) {
-            description.hint="Unesite lokaciju"
-            description.setHintTextColor(Color.RED)
-        }
 
-        if(!locationString.isEmpty() && !descriptionString.isEmpty()){
-            addToDatabase()
-        }
-    }
+    var obj=PostSend("","","")
 
-    private fun addToDatabase(){
+    var loc=locationString
+    location.text.clear()
+    var desc=descriptionString
+    description.text.clear()
 
-    }
-    /*
-    private fun showImportedImages(){
-        var cols= listOf<String>(MediaStore.Images.Thumbnails.DATA).toTypedArray()
-        rs= contentResolver.query(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,cols,null,null,null)!!
-        imagesGrid.adapter=ImageAdapter(applicationContext)
-    }
+    obj.locationId=loc
+    obj.description=desc
 
-    inner class ImageAdapter:BaseAdapter{
-        lateinit var context: Context
+    //dodavanje u bazu
 
-        constructor(contect: Context){
-            this.context=context
-        }
-
-        override fun getCount(): Int {
-            return rs.count
-        }
-
-        override fun getItem(p0: Int): Any {
-            return p0
-        }
-
-        override fun getItemId(p0: Int): Long {
-            return p0 as Long
-        }
-
-        override fun getView(p0: Int, p1: View?, p2: ViewGroup?): View {
-            //prikaz slike u GridView-u
-
-            //generisanje jednog imageView-a
-            var imageView=ImageView(context)
-            rs.moveToPosition(p0)
-            var path=rs.getString(0)
-            var bitmap=BitmapFactory.decodeFile(path)
-
-            imageView.setImageBitmap(bitmap)
-            imageView.layoutParams=AbsListView.LayoutParams(300,300)
-            return imageView
-
-        }
-
-    }*/
-
+}
 }
