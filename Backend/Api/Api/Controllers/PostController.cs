@@ -58,7 +58,7 @@ namespace Api.Controllers
         }
 
         [HttpGet("image/{id}")]
-        [Authorize(Roles = "User")]
+        //[Authorize(Roles = "User")]
         public async Task<ActionResult> getImage(string id)
         {
             Models.File f =await _fileService.getById(id);
