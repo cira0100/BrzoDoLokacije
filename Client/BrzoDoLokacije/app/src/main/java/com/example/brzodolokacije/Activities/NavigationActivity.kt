@@ -26,11 +26,10 @@ class NavigationActivity : AppCompatActivity() {
         val addPostFragment= FragmentAddNew()
         val profileFragment=FragmentProfile()
         val bottomNav=findViewById<View>(R.id.bottomNavigationView) as BottomNavigationView
-        //setCurrentFragment(fragmentShowPosts)
-        setCurrentFragment(browseFragment)
+        setCurrentFragment(fragmentShowPosts)
         bottomNav.setOnNavigationItemSelectedListener {
             when(it.itemId){
-               // R.id.navHome->setCurrentFragment(fragmentShowPosts)
+                R.id.navHome->setCurrentFragment(fragmentShowPosts)
                 //R.id.navAddPost->setCurrentFragment(addPostFragment)
                 R.id.navAddPost->showBottomSheetAddNew()
                 R.id.navBrowse->setCurrentFragment(browseFragment)

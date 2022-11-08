@@ -65,7 +65,7 @@ class ActivityCapturePost : AppCompatActivity() {
         takePhoto.setOnClickListener {
             val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             Toast.makeText(
-               applicationContext, "take photo is working", Toast.LENGTH_LONG
+                applicationContext, "take photo is working", Toast.LENGTH_LONG
             ).show();
             if(cameraIntent.resolveActivity(packageManager)!=null){
                 var photoFile: File?=null
@@ -84,11 +84,11 @@ class ActivityCapturePost : AppCompatActivity() {
                 }catch (e:IOException){Toast.makeText(
                     applicationContext, "greska", Toast.LENGTH_LONG
                 ).show();}
-
+                startActivityForResult(cameraIntent,1)
                 if(photoFile!=null){
                     val _uri=FileProvider.getUriForFile(this,"com.example.android.fileprovider",photoFile)
                     cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,_uri)
-                    startActivityForResult(cameraIntent,1)
+
                 }
 
             }
@@ -105,8 +105,8 @@ class ActivityCapturePost : AppCompatActivity() {
             showImage.setImageURI(Uri.parse(photoPath))
 
 
-        /*var photo:Bitmap=data.extras!!.get("data") as Bitmap
-            showImage.setImageBitmap(photo)*/
+            /*var photo:Bitmap=data.extras!!.get("data") as Bitmap
+                showImage.setImageBitmap(photo)*/
         }
     }
 }
