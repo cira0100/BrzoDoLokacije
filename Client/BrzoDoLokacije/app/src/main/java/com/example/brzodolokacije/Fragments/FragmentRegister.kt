@@ -1,9 +1,7 @@
 package com.example.brzodolokacije.Fragments
 
-import android.graphics.BitmapFactory
 import android.graphics.Color
 import android.os.Bundle
-import android.util.Base64
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,14 +9,12 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
-import com.example.brzodolokacije.Interfaces.IAuthApi
 import com.example.brzodolokacije.Models.Auth.Register
 import com.example.brzodolokacije.R
 import com.example.brzodolokacije.Services.RetrofitHelper
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Response
-import javax.security.auth.callback.Callback
 
 class FragmentRegister : Fragment() {
     // TODO: Rename and change types of parameters
@@ -81,7 +77,7 @@ class FragmentRegister : Fragment() {
 
                 var registerData=Register(nameString,usernameString,emailString,passwordString)
 
-                val authApi=RetrofitHelper.getInstance().create(IAuthApi::class.java)
+                val authApi=RetrofitHelper.getInstance()
 
                 val request=authApi.register(registerData)
 

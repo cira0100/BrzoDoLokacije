@@ -1,21 +1,14 @@
 package com.example.brzodolokacije.Fragments
 
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
-import android.widget.EditText
 import android.widget.TextView
 import androidx.fragment.app.FragmentTransaction
 import com.example.brzodolokacije.R
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -53,7 +46,6 @@ class FragmentProfile : Fragment(R.layout.fragment_profile) {
         postsCount = view.findViewById<View>(R.id.tvFragmentProfilePostsNo) as TextView
         followersCount = view.findViewById<View>(R.id.tvFragmentProfileFollowersNo) as TextView
         followingCount = view.findViewById<View>(R.id.tvFragmentProfileFollowNo) as TextView
-
         showMyPosts=view.findViewById<View>(R.id.btnFragmentProfileShowMyPosts) as Button
         showMyData=view.findViewById<View>(R.id.btnFragmentProfileShowMyData) as Button
         showMyRecensions=view.findViewById<View>(R.id.btnFragmentProfileShowMyRecensions) as Button
@@ -65,7 +57,7 @@ class FragmentProfile : Fragment(R.layout.fragment_profile) {
 
             var fm: FragmentTransaction =childFragmentManager.beginTransaction()
 
-            fm.replace(R.id.flFragmentProfileFragmentContainer,FragmentUserPosts())
+            fm.replace(R.id.flFragmentProfileFragmentContainer, FragmentUserPosts())
             fm.commit()
         }
 
@@ -74,7 +66,7 @@ class FragmentProfile : Fragment(R.layout.fragment_profile) {
 
             var fm: FragmentTransaction =childFragmentManager.beginTransaction()
 
-            fm.replace(R.id.flFragmentProfileFragmentContainer,FragmentMyProfileInfo())
+            fm.replace(R.id.flFragmentProfileFragmentContainer, FragmentMyProfileInfo())
             fm.commit()
         }
 
@@ -82,7 +74,7 @@ class FragmentProfile : Fragment(R.layout.fragment_profile) {
 
             var fm: FragmentTransaction =childFragmentManager.beginTransaction()
 
-            fm.replace(R.id.flFragmentProfileFragmentContainer,FragmentMyRecensions())
+            fm.replace(R.id.flFragmentProfileFragmentContainer, FragmentMyRecensions())
             fm.commit()
         }
 

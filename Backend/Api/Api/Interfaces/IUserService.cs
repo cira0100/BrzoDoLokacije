@@ -12,15 +12,17 @@ namespace Api.Interfaces
         Task<User> deleteUser(String email);
         Task<User> getUserById(string id);
 
-        Task<string> RenewToken(string existingToken);
+        Task<string> RenewToken();
         Task<string> Login(Login login);
         Task<string> Register(Register register);
         Task<Boolean> VerifyUser(VerifyUser login);
         Task<string> UserIdFromJwt();
-        Task<Boolean> ResendVerifyKod(Login login);
-        Boolean SendEmailKod(User user);
+        Task<Boolean> ResendVerifyEmail(Login login);
+        Boolean SendEmailKod(User user,int msgid);
         Task<Boolean> ForgotPassword(JustMail jm);
         Task<Boolean> ResetPassword(ResetPass rp);
+        Task<Boolean> CheckVerification(Login login);
+        Task<Boolean> VerifyFromToken(string token);
 
     }
 }
