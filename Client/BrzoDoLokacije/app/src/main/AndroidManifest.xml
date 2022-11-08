@@ -17,7 +17,7 @@
     <!--SVOJSTVA-->
 
     <uses-feature android:name="android.hardware.camera" android:required="true"></uses-feature>
-    
+
     <!--AKTIVNOSTI-->
     <application
         android:allowBackup="true"
@@ -65,7 +65,7 @@
                 android:name="android.app.lib_name"
                 android:value="" />
         </activity>
-        
+
         <provider
             android:authorities="com.example.android.fileprovider"
             android:name="androidx.core.content.FileProvider"
