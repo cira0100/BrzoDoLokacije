@@ -46,7 +46,6 @@ class FragmentShowPosts : Fragment() {
             override fun onResponse(call: Call<MutableList<PostPreview>?>, response: Response<MutableList<PostPreview>?>) {
                 if(response.isSuccessful){
                     posts=response.body()!!
-                    Log.d("main",posts[0].toString())
                     recyclerView?.adapter=ShowPostsAdapter(requireActivity(),posts)
                     Toast.makeText(
                         activity, "prosao zahtev", Toast.LENGTH_LONG
@@ -96,7 +95,7 @@ class FragmentShowPosts : Fragment() {
         val rootView =  inflater?.inflate(R.layout.fragment_show_posts, container, false)
         recyclerView = rootView?.findViewById(R.id.rvMain)
         // set recyclerView attributes
-        recyclerView?.setHasFixedSize(false)
+        recyclerView?.setHasFixedSize(true)
         recyclerView?.layoutManager = layoutManagerVar
         recyclerView?.adapter = adapterVar
         return rootView
