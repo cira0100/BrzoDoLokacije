@@ -22,9 +22,6 @@ interface IBackendApi {
     fun resetpass(@Body obj:ResetPass):Call<ResponseBody>
     @GET("/api/post")
     fun getPosts(@Header("Authorization") authHeader:String):Call<MutableList<PostPreview>>
-    @Streaming
-    @GET("/api/post/image/{id}")
-    fun getImage(@Header("Authorization") authHeader:String,@Path("id") obj:String):Call<ResponseBody>
     //@POST("putanja")
     //fun add(@Body obj:Post,@Header("Authorization") authHeader:String):Call<Post>
 }

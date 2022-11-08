@@ -15,7 +15,6 @@ import com.example.brzodolokacije.databinding.ActivitySinglePostBinding
 
 class ActivitySinglePost : AppCompatActivity() {
     private lateinit var binding: ActivitySinglePostBinding
-    private var images : MutableList<PostImage> = mutableListOf()
     private var layoutManagerVar: RecyclerView.LayoutManager? = null
     private var adapterVar: RecyclerView.Adapter<PostImageAdapter.ViewHolder>? = null
     private var recyclerView: RecyclerView?=null
@@ -24,18 +23,18 @@ class ActivitySinglePost : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding=ActivitySinglePostBinding.inflate(layoutInflater)
-        setContentView(R.layout.activity_single_post)
+        setContentView(binding.root)
         post= intent.extras?.getParcelable("selectedPost")!!
-        /*//load data for the list
+        //load data for the list
 
         //instantiate adapter and linearLayout
-        adapterVar= PostImageAdapter(images)
-        layoutManagerVar= LinearLayoutManager(this)
+        adapterVar= PostImageAdapter(this@ActivitySinglePost, post.images as MutableList<PostImage>)
+        layoutManagerVar= LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false)
         recyclerView = binding.rvMain
         // set recyclerView attributes
         recyclerView?.setHasFixedSize(true)
         recyclerView?.layoutManager = layoutManagerVar
-        recyclerView?.adapter = adapterVar*/
+        recyclerView?.adapter = adapterVar
         loadTextComponents()
     }
 
@@ -55,6 +54,8 @@ class ActivitySinglePost : AppCompatActivity() {
             tvRating.invalidate()
             tvNumberOfRatings.text=post.ratings.toString()
             tvNumberOfRatings.invalidate()
+            tvDescription.text=post.description
+            tvDescription.invalidate()
         }
     }
 

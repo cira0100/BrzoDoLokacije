@@ -10,6 +10,7 @@ import com.example.brzodolokacije.Activities.ActivityLoginRegister
 import com.example.brzodolokacije.Activities.NavigationActivity
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
+import com.example.brzodolokacije.Services.authCheck
 import retrofit2.Call
 import retrofit2.Response
 

@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.brzodolokacije.Activities.ActivitySinglePost
 import com.example.brzodolokacije.Interfaces.IBackendApi
 import com.example.brzodolokacije.Models.LocationType
@@ -61,33 +62,11 @@ class ShowPostsAdapter (val activity:Activity,val items : MutableList<PostPrevie
                 tvTitle.text = item.location.name
                 tvLocationParent.text = item.location.country
                 tvLocationType.text = "TODO"
-
-                val request=imageApi.getImage("Bearer "+token,item.images[0]._id)
-
-                request.enqueue(object : retrofit2.Callback<ResponseBody?> {
-                    override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
-                        if (response.isSuccessful) {
-                            val image: ResponseBody = response.body()!!
-                            binding.locationImage.setImageBitmap(BitmapFactory.decodeStream(image.byteStream()))
-                            Toast.makeText(
-                                activity, "prosao zahtev", Toast.LENGTH_LONG
-                            ).show()
-                        } else {
-                            if (response.errorBody() != null)
-                                Toast.makeText(
-                                    activity,
-                                    response.errorBody()!!.string(),
-                                    Toast.LENGTH_LONG
-                                ).show();
-                        }
-                    }
-
-                    override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
-                        Toast.makeText(
-                            activity, t.toString(), Toast.LENGTH_LONG
-                        ).show();
-                    }
-                })
+                if(item.images.isNotEmpty()) {
+                    Glide.with(activity)
+                        .load(RetrofitHelper.baseUrl + "/api/post/image/" + item.images[0]._id)
+                        .into(locationImage)
+                }
 
             }
         }
