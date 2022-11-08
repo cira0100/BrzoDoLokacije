@@ -6,30 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".Activities.ActivityAddPost">
 
-    <Button
-        android:id="@+id/btnActivityAddPostUploadImages"
-        android:layout_width="417dp"
-        android:layout_height="61dp"
-        android:layout_gravity="center"
-        android:layout_weight="0"
-        android:text="Importuj"
-        app:layout_constraintBottom_toTopOf="@+id/btnActivityAddPosTakeImage"
+    <ImageSwitcher
+        android:id="@+id/isActivityAddPostSwitcher"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <Button
-        android:id="@+id/btnActivityAddPosTakeImage"
-        android:layout_width="417dp"
-        android:layout_height="57dp"
-        android:layout_gravity="center"
-        android:layout_marginBottom="4dp"
-        android:layout_weight="0"
-
-        android:text="Slikaj"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <Button
         android:id="@+id/nextImage"
@@ -37,12 +20,14 @@
         android:layout_height="0dp"
         android:background="@drawable/rounded_transparent_button"
         android:gravity="right"
-        android:textColor="@color/material_dynamic_primary30"
         android:padding="30dp"
+        android:textColor="@color/material_dynamic_primary30"
         app:icon="@drawable/ic_baseline_arrow_forward"
         app:iconTint="#072242"
-        app:layout_constraintBottom_toTopOf="@+id/btnActivityAddPostUploadImages"
+        app:layout_constraintBottom_toTopOf="@+id/btnActivityAddPostUploadFromGallery"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toEndOf="@+id/previousImage"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="SpeakableTextPresentCheck" />
 
@@ -50,27 +35,83 @@
         android:id="@+id/previousImage"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:padding="30dp"
 
-        android:gravity="left"
         android:background="@drawable/rounded_transparent_button"
+        android:gravity="left"
+        android:padding="30dp"
         android:textColor="@color/material_dynamic_primary30"
         app:icon="@drawable/ic_baseline_arrow_back"
         app:iconTint="#0E283C"
-        app:layout_constraintBottom_toTopOf="@+id/btnActivityAddPostUploadImages"
-        app:layout_constraintEnd_toStartOf="@+id/nextImage"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintBottom_toTopOf="@+id/btnActivityAddPostUploadFromGallery"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="SpeakableTextPresentCheck" />
 
-    <ImageSwitcher
-        android:id="@+id/switcher"
+    <Button
+        android:id="@+id/btnActivityAddPostUploadFromGallery"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        app:layout_constraintBottom_toTopOf="@+id/btnActivityAddPostUploadImages"
+        android:layout_marginTop="292dp"
+        android:text="Otvori galeriju"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/isActivityAddPostSwitcher" />
+
+    <TextView
+        android:id="@+id/tvActivityAddPostLocationtext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="24dp"
+        android:text="Lokacija"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnActivityAddPostUploadFromGallery" />
+
+    <EditText
+        android:id="@+id/etActivityAddPostLocation"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:ems="10"
+        android:hint="Reykjavik, Iceland"
+        android:inputType="textEmailAddress"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/tvActivityAddPostLocationtext" />
+
+    <TextView
+        android:id="@+id/tvActivityAddPostDescriptiontext"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Opis"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/etActivityAddPostLocation" />
+
+    <EditText
+        android:id="@+id/etActivityAddPostDescription"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="4dp"
+        android:ems="10"
+        android:hint="Reykjavik, Iceland"
+        android:inputType="textEmailAddress"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvActivityAddPostDescriptiontext" />
+
+    <Button
+        android:id="@+id/btnActivityAddPostPost"
+        android:layout_width="200dp"
+        android:layout_height="40dp"
+        android:layout_marginBottom="16dp"
+        android:background="@drawable/rounded_cyan_button"
+        android:backgroundTint="#1C789A"
+        android:text="Objavi"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

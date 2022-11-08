@@ -36,6 +36,7 @@ class FragmentShowPosts : Fragment() {
         super.onCreate(savedInstanceState)
         //load data for the list
         loadData()
+        Log.d("main","greska")
         //instantiate adapter and linearLayout
         val postApi= RetrofitHelper.getInstance()
         val token=SharedPreferencesHelper.getValue("jwt", requireActivity())

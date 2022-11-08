@@ -26,10 +26,11 @@ class NavigationActivity : AppCompatActivity() {
         val addPostFragment= FragmentAddNew()
         val profileFragment=FragmentProfile()
         val bottomNav=findViewById<View>(R.id.bottomNavigationView) as BottomNavigationView
-        setCurrentFragment(fragmentShowPosts)
+        //setCurrentFragment(fragmentShowPosts)
+        setCurrentFragment(browseFragment)
         bottomNav.setOnNavigationItemSelectedListener {
             when(it.itemId){
-                R.id.navHome->setCurrentFragment(fragmentShowPosts)
+               // R.id.navHome->setCurrentFragment(fragmentShowPosts)
                 //R.id.navAddPost->setCurrentFragment(addPostFragment)
                 R.id.navAddPost->showBottomSheetAddNew()
                 R.id.navBrowse->setCurrentFragment(browseFragment)
@@ -60,9 +61,17 @@ class NavigationActivity : AppCompatActivity() {
 
         openAddPost.setOnClickListener{
             Toast.makeText(
-                applicationContext, "Open ", Toast.LENGTH_LONG
+                applicationContext, "Open select from gallery ", Toast.LENGTH_LONG
             ).show();
             val intent = Intent (this, ActivityAddPost::class.java)
+            startActivity(intent)
+        }
+
+        capturePost.setOnClickListener{
+            Toast.makeText(
+                applicationContext, "Open capture ", Toast.LENGTH_LONG
+            ).show();
+            val intent = Intent (this, ActivityCapturePost::class.java)
             startActivity(intent)
         }
 

@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.graphics.BitmapFactory
+import android.graphics.Color
 import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
@@ -14,6 +15,7 @@ import android.provider.MediaStore.Audio.Media
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import androidx.constraintlayout.motion.widget.TransitionBuilder.validate
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.example.brzodolokacije.Models.PostImage
@@ -28,6 +30,12 @@ class ActivityAddPost : AppCompatActivity() {
     private lateinit var showPreviousImage:Button
     private lateinit var switcher: ImageSwitcher
     private var uploadedImages:ArrayList<Uri?>?=null
+
+    private lateinit var location:EditText
+    private lateinit var description:EditText
+    private lateinit var locationString:String
+    private lateinit var descriptionString:String
+    private lateinit var post:Button
     //private var paths :ArrayList<String?>?=null
     private var place=0;
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -40,11 +48,14 @@ class ActivityAddPost : AppCompatActivity() {
 
         //paths= ArrayList()
 
-        uploadFromGallery=findViewById<View>(R.id.btnActivityAddPostUploadImages) as Button
-        takePhoto=findViewById<View>(R.id.btnActivityAddPosTakeImage) as Button
+        uploadFromGallery=findViewById<View>(R.id.btnActivityAddPostUploadFromGallery) as Button
         showNextImage=findViewById<View>(R.id.nextImage) as Button
         showPreviousImage=findViewById<View>(R.id.previousImage) as Button
-        switcher=findViewById<View>(R.id.switcher) as ImageSwitcher
+        switcher=findViewById<View>(R.id.isActivityAddPostSwitcher) as ImageSwitcher
+        location=findViewById<View>(R.id.etActivityAddPostLocation) as EditText
+        description=findViewById<View>(R.id.etActivityAddPostDescription) as EditText
+        post=findViewById<View>(R.id.btnActivityAddPostPost) as Button
+
 
         switcher?.setFactory{
             val imgView = ImageView(applicationContext)
@@ -102,6 +113,10 @@ class ActivityAddPost : AppCompatActivity() {
             }
         }
 
+        post.setOnClickListener{
+            validate()
+        }
+
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -133,8 +148,27 @@ class ActivityAddPost : AppCompatActivity() {
         }
     }
 
+    private fun validate(){
+         locationString=location.text.toString().trim()
+         descriptionString=description.text.toString().trim()
+        //prazan unos?
+        if(locationString.isEmpty()) {
+            location.hint="Unesite lokaciju"
+            location.setHintTextColor(Color.RED)
+        }
+        if(descriptionString.isEmpty()) {
+            description.hint="Unesite lokaciju"
+            description.setHintTextColor(Color.RED)
+        }
 
+        if(!locationString.isEmpty() && !descriptionString.isEmpty()){
+            addToDatabase()
+        }
+    }
 
+    private fun addToDatabase(){
+
+    }
     /*
     private fun showImportedImages(){
         var cols= listOf<String>(MediaStore.Images.Thumbnails.DATA).toTypedArray()
