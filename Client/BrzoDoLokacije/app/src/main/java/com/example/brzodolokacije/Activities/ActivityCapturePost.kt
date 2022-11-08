@@ -10,6 +10,7 @@ import android.net.Uri
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.os.Environment
+import android.os.Environment.getExternalStoragePublicDirectory
 import android.provider.MediaStore
 import android.view.View
 import android.widget.Button
@@ -23,9 +24,12 @@ import com.example.brzodolokacije.R
 import kotlinx.android.synthetic.main.fragment_profile.*
 import java.io.File
 import java.io.IOException
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class ActivityCapturePost : AppCompatActivity() {
-
+    lateinit var currentPhotoPath: String
     private lateinit var takePhoto: Button
     private lateinit var location: EditText
     private lateinit var description: EditText
@@ -35,6 +39,21 @@ class ActivityCapturePost : AppCompatActivity() {
     private lateinit var showImage:ImageView
     private var uploadedImages:ArrayList<Uri?>?=null
     private lateinit var photoPath:String
+    private lateinit var photoURI:Uri
+
+    @Throws(IOException::class)
+    private fun createImageFile(): File {
+        val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+        val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
+        return File.createTempFile(
+            "JPEG_${timeStamp}_", /* prefix */
+            ".jpg", /* suffix */
+            storageDir /* directory */
+        ).apply {
+            currentPhotoPath = absolutePath
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_capture_post)
@@ -47,13 +66,13 @@ class ActivityCapturePost : AppCompatActivity() {
         //provera da li je odobrena upotreba kamere
         if(ContextCompat.checkSelfPermission(this@ActivityCapturePost, Manifest.permission.CAMERA)
             != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this@ActivityCapturePost, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),101)
+            ActivityCompat.requestPermissions(this@ActivityCapturePost, arrayOf(Manifest.permission.CAMERA),101)
         }
 
         //provera da li je odobren upis u skladiste
         if(ContextCompat.checkSelfPermission(this@ActivityCapturePost, Manifest.permission.WRITE_EXTERNAL_STORAGE)
             != PackageManager.PERMISSION_GRANTED){
-            ActivityCompat.requestPermissions(this@ActivityCapturePost, arrayOf(Manifest.permission.READ_EXTERNAL_STORAGE),101)
+            ActivityCompat.requestPermissions(this@ActivityCapturePost, arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE),101)
         }
 
         location=findViewById<View>(R.id.etActivityCapturePostLocation) as EditText
@@ -64,35 +83,29 @@ class ActivityCapturePost : AppCompatActivity() {
 
         //dodavanje sa kamere
         takePhoto.setOnClickListener {
-            val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             Toast.makeText(
-                applicationContext, "take photo is working", Toast.LENGTH_LONG
+                applicationContext, "camera intent button", Toast.LENGTH_LONG
             ).show();
-            if(cameraIntent.resolveActivity(packageManager)!=null){
-                var photoFile: File?=null
-                try {
-                    Toast.makeText(
-                        applicationContext, "try", Toast.LENGTH_LONG
-                    ).show();
-                    val fileName="IMG"
-                    val destStorageDir=getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-                    val photo=File.createTempFile(fileName,".jpg",destStorageDir)
-                    photoPath=photo.absolutePath
-                    photoFile=photo
-                    Toast.makeText(
-                        applicationContext, "photoFile generisano", Toast.LENGTH_LONG
-                    ).show();
-                }catch (e:IOException){Toast.makeText(
-                    applicationContext, "greska", Toast.LENGTH_LONG
-                ).show();}
-                startActivityForResult(cameraIntent,1)
-                if(photoFile!=null){
-                    val _uri=FileProvider.getUriForFile(this,"com.example.android.fileprovider",photoFile)
-                    cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT,_uri)
-
+            Intent(MediaStore.ACTION_IMAGE_CAPTURE).also { takePictureIntent ->
+                takePictureIntent.resolveActivity(packageManager)?.also {
+                    val photoFile: File? = try {
+                        createImageFile()
+                    } catch (ex: IOException) {
+                        null
+                    }
+                    photoFile?.also {
+                        photoURI= FileProvider.getUriForFile(
+                            this,
+                            "com.example.android.fileprovider",
+                            it
+                        )
+                        takePictureIntent.putExtra(MediaStore.EXTRA_OUTPUT, photoURI)
+                        startActivityForResult(takePictureIntent, 123)
+                    }
                 }
-
             }
+
+
         }
         post.setOnClickListener{
             locationString=location.text.toString().trim()
@@ -107,24 +120,26 @@ class ActivityCapturePost : AppCompatActivity() {
                 description.setHintTextColor(Color.RED)
             }
 
-            if(!locationString.isEmpty() && !descriptionString.isEmpty()){
+            /*if(!locationString.isEmpty() && !descriptionString.isEmpty()){
 
                 //dodaj u bazu
 
-            }
+            }*/
         }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (resultCode == Activity.RESULT_OK && requestCode == 1 && data != null){
+        if (resultCode == Activity.RESULT_OK && requestCode == 123 && data != null){
             Toast.makeText(
                 applicationContext, "camera intent", Toast.LENGTH_LONG
             ).show();
 
-            showImage.setImageURI(Uri.parse(photoPath))
+          showImage.setImageURI(photoURI)
 
-
+            Toast.makeText(
+                applicationContext, currentPhotoPath, Toast.LENGTH_LONG
+            ).show();
             /*var photo:Bitmap=data.extras!!.get("data") as Bitmap
                 showImage.setImageBitmap(photo)*/
         }
