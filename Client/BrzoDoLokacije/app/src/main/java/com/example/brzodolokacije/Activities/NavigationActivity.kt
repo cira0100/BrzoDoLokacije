@@ -5,6 +5,7 @@ import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
+import android.widget.ImageButton
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.example.brzodolokacije.Fragments.*
@@ -20,7 +21,9 @@ class NavigationActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_navigation)
-
+        Toast.makeText(
+            applicationContext, "Open  ", Toast.LENGTH_LONG
+        ).show();
         val fragmentShowPosts=FragmentShowPosts()
         val browseFragment=FragmentBrowse()
         val addPostFragment= FragmentAddNew()
@@ -47,16 +50,15 @@ class NavigationActivity : AppCompatActivity() {
             commit()
         }
 
-    private fun showBottomSheetAddNew(){
-        var bottomSheetDialog:BottomSheetDialog
-        val bottomSheetView = layoutInflater.inflate(R.layout.bottom_sheet_add_new, null)
-        bottomSheetDialog=BottomSheetDialog(this)
-        bottomSheetDialog.setContentView(R.layout.bottom_sheet_add_new)
-        bottomSheetDialog.show()
+    private fun showBottomSheetAddPost(){
+        var bottomSheetDialog2:BottomSheetDialog
+        bottomSheetDialog2=BottomSheetDialog(this)
+        bottomSheetDialog2.setContentView(R.layout.bottom_sheet_add_new_post)
+        bottomSheetDialog2.show()
 
-
-        var openAddPost=bottomSheetDialog.findViewById<View>(R.id.btnBottomSheetAddNewOpenAddPost) as Button
-        var capturePost=bottomSheetDialog.findViewById<View>(R.id.btnBottomSheetAddNewOpenCapturePost) as Button
+        var close=bottomSheetDialog2.findViewById<View>(R.id.btnBottomSheetAddNewPostClose) as ImageButton
+        var openAddPost=bottomSheetDialog2.findViewById<View>(R.id.btnBottomSheetAddNewPostOpenAddPost) as ImageButton
+        var capturePost=bottomSheetDialog2.findViewById<View>(R.id.btnBottomSheetAddNewPostOpenCapturePost) as ImageButton
 
         openAddPost.setOnClickListener{
             Toast.makeText(
@@ -73,7 +75,38 @@ class NavigationActivity : AppCompatActivity() {
             val intent = Intent (this, ActivityCapturePost::class.java)
             startActivity(intent)
         }
+        close.setOnClickListener {
+            bottomSheetDialog2.dismiss()
+        }
 
+    }
+    private fun showBottomSheetAddNew(){
+        Toast.makeText(
+            applicationContext, "Open add new ", Toast.LENGTH_LONG
+        ).show();
+        var bottomSheetDialog:BottomSheetDialog
+        bottomSheetDialog=BottomSheetDialog(this)
+        bottomSheetDialog.setContentView(R.layout.bottom_sheet_add_new)
+        bottomSheetDialog.show()
+        var close=bottomSheetDialog.findViewById<View>(R.id.btnBottomSheetAddNewClose) as ImageButton
+        var newPost=bottomSheetDialog.findViewById<View>(R.id.btnBottomSheetAddNewPost) as ImageButton
+        var newLocation=bottomSheetDialog.findViewById<View>(R.id.btnBottomSheetAddNewLocation) as ImageButton
+
+        newPost.setOnClickListener{
+            showBottomSheetAddPost()
+        }
+
+        newLocation.setOnClickListener{
+            Toast.makeText(
+                applicationContext, "Open capture ", Toast.LENGTH_LONG
+            ).show();
+            val intent = Intent (this, MapsActivity::class.java)
+            startActivity(intent)
+        }
+
+        close.setOnClickListener {
+            bottomSheetDialog.dismiss()
+        }
     }
 
 

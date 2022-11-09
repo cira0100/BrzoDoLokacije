@@ -2,55 +2,56 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/bottomSheetAddNew"
+    android:id="@+id/bottomSheetAddNewForNav"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
-
+    android:layout_height="wrap_content"
+>
     <TextView
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:fontFamily="sans-serif-black"
-        android:text=" "
+        android:text="Dodaj novu objavu"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <ImageButton
-        android:id="@+id/btnBottomSheetAddNewPost"
+        android:id="@+id/btnBottomSheetAddNewPostOpenAddPost"
         android:layout_width="0dp"
         android:layout_height="60dp"
         android:layout_marginStart="30dp"
+
         android:layout_marginTop="16dp"
         android:layout_marginEnd="40dp"
-
         android:layout_marginBottom="24dp"
-        android:background="@drawable/button_add_post"
+        android:background="@drawable/button_choose_from_gallery"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/btnBottomSheetAddNewLocation"
+        app:layout_constraintEnd_toStartOf="@+id/btnBottomSheetAddNewPostOpenCapturePost"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView6"
         app:layout_constraintVertical_bias="0.0" />
 
     <ImageButton
-        android:id="@+id/btnBottomSheetAddNewLocation"
+        android:id="@+id/btnBottomSheetAddNewPostOpenCapturePost"
+
         android:layout_width="0dp"
         android:layout_height="60dp"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="30dp"
         android:layout_marginBottom="24dp"
-        android:background="@drawable/button_add_location"
+        android:background="@drawable/button_capture"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/btnBottomSheetAddNewPost"
+        app:layout_constraintStart_toEndOf="@+id/btnBottomSheetAddNewPostOpenAddPost"
         app:layout_constraintTop_toBottomOf="@+id/textView6"
         app:layout_constraintVertical_bias="1.0" />
 
     <ImageButton
-        android:id="@+id/btnBottomSheetAddNewClose"
+        android:id="@+id/btnBottomSheetAddNewPostClose"
         android:layout_width="65dp"
         android:layout_height="17dp"
         app:cornerRadius="50dp"
