@@ -2,6 +2,8 @@
 using System.Data;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Api.Interfaces;
+using Api.Services;
 
 namespace Api.Controllers
 {
@@ -21,7 +23,8 @@ namespace Api.Controllers
             string truePassword = _configuration.GetSection("AppSettings:AppPassword").Value;
             if (appPath == null || !System.IO.File.Exists(appPath))
                 return BadRequest("Aplikacija ne postoji");
-            if (password == null || password!=truePassword)
+            
+            if (password == null || !UserService.checkPassword(password,truePassword))
                 return BadRequest("Pogresna sifra");
             return File(System.IO.File.ReadAllBytes(appPath), "application/octet-stream", Path.GetFileName(appPath));
         }
