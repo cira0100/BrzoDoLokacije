@@ -22,7 +22,7 @@
 
 
         <ImageButton
-            android:id="@+id/button3"
+            android:id="@+id/btnSortType"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_alignParentRight="true"
@@ -31,19 +31,19 @@
             android:background="@color/white"/>
 
         <ImageButton
-            android:id="@+id/imageButton1"
+            android:id="@+id/btnSortDirection"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginStart="8dp"
             android:layout_weight="1"
             android:scaleType="centerCrop"
             android:src="@drawable/sort"
-            app:layout_constraintStart_toEndOf="@+id/button3"
+            app:layout_constraintStart_toEndOf="@+id/btnSortType"
             tools:layout_editor_absoluteY="0dp"
             android:background="@color/white"/>
 
         <ImageButton
-            android:id="@+id/imageButton2"
+            android:id="@+id/btnLinearLayout"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginEnd="16dp"
@@ -51,13 +51,13 @@
             android:background="@color/white"
             android:scaleType="centerCrop"
             android:src="@drawable/list"
-            app:layout_constraintEnd_toStartOf="@+id/imageButton3"
+            app:layout_constraintEnd_toStartOf="@+id/btnGridLayout"
             app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/imageButton1"
+            app:layout_constraintStart_toEndOf="@+id/btnSortDirection"
             tools:layout_editor_absoluteY="0dp" />
 
         <ImageButton
-            android:id="@+id/imageButton3"
+            android:id="@+id/btnGridLayout"
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_marginStart="248dp"
@@ -65,9 +65,14 @@
             android:background="@color/white"
             android:scaleType="centerCrop"
             android:src="@drawable/grid"
-            app:layout_constraintStart_toEndOf="@+id/imageButton1"
+            android:clickable="true"
+            app:layout_constraintStart_toEndOf="@+id/btnSortDirection"
             tools:layout_editor_absoluteY="0dp" />
     </androidx.constraintlayout.widget.ConstraintLayout>
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:id="@+id/swipeContainer">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvMain"
@@ -77,5 +82,7 @@
         app:layout_constraintTop_toTopOf="parent" >
 
     </androidx.recyclerview.widget.RecyclerView>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
 </LinearLayout>
