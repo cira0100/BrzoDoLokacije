@@ -19,6 +19,7 @@ import com.example.brzodolokacije.R
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -207,9 +208,9 @@ class ActivityAddPost : AppCompatActivity() {
         description.text.clear()
         //loc
         //desc
-        var locReq=RequestBody.create(MediaType.parse("text/plain"),loc)
-        var descReq=RequestBody.create(MediaType.parse("text/plain"),desc)
-        var idReq=RequestBody.create(MediaType.parse("text/plain"),"dsa")
+        var locReq=RequestBody.create("text/plain".toMediaTypeOrNull(),loc)
+        var descReq=RequestBody.create("text/plain".toMediaTypeOrNull(),desc)
+        var idReq=RequestBody.create("text/plain".toMediaTypeOrNull(),"dsa")
         val imagesParts = arrayOfNulls<MultipartBody.Part>(
             uploadedImages!!.size
         )
@@ -224,7 +225,7 @@ class ActivityAddPost : AppCompatActivity() {
             file!!.writeBytes(inputStream!!.readBytes())
 
 
-            var imageBody=RequestBody.create(MediaType.parse("image/*"),file)
+            var imageBody=RequestBody.create("image/*".toMediaTypeOrNull(),file)
             imagesParts[i]=MultipartBody.Part.createFormData("images",file.name,imageBody)
         }
         var jwtString= SharedPreferencesHelper.getValue("jwt",this)

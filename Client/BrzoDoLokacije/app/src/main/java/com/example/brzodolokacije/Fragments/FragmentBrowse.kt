@@ -3,19 +3,21 @@ package com.example.brzodolokacije.Fragments
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
-import android.location.Geocoder
+import android.os.Build
 import android.os.Bundle
+import android.os.StrictMode
+import android.os.StrictMode.ThreadPolicy
 import android.preference.PreferenceManager
 import android.util.DisplayMetrics
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.brzodolokacije.R
+import com.example.brzodolokacije.Services.GeocoderHelper
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
@@ -68,15 +70,15 @@ class FragmentBrowse : Fragment(R.layout.fragment_browse) {
         map!!.setMultiTouchControls(true);
         val mapController = map!!.controller
         mapController.setZoom(15)
-
+        fixNetworkPolicy()
 
         //my location
         //checkLocPerm()
         mLocationOverlay = MyLocationNewOverlay(GpsMyLocationProvider(context), map)
         mLocationOverlay!!.enableMyLocation()
         map!!.getOverlays().add(this.mLocationOverlay)
-        //var res=Geocoder(requireContext()).getFromLocationName("Paris",1)
-        //Log.d("Main",res.toString())
+        var res= GeocoderHelper.getInstance()
+        Log.d("Main",res!!.getFromLocationName("Paris",1)[0].countryName)
         //start point
         val startPoint = GeoPoint(44.0107,20.9181)//dodati nasu lokaciju TODO
         mapController.setCenter(startPoint)
@@ -111,6 +113,16 @@ class FragmentBrowse : Fragment(R.layout.fragment_browse) {
                 arrayOf(Manifest.permission.ACCESS_FINE_LOCATION),
                 101
             )
+        }
+    }
+
+    fun fixNetworkPolicy(){
+        val SDK_INT = Build.VERSION.SDK_INT
+        if (SDK_INT > 8) {
+            val policy = ThreadPolicy.Builder()
+                .permitAll().build()
+            StrictMode.setThreadPolicy(policy)
+            //your codes here
         }
     }
 
