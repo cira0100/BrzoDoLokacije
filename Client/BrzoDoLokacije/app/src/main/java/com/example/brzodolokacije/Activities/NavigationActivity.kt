@@ -93,6 +93,7 @@ class NavigationActivity : AppCompatActivity() {
         var newLocation=bottomSheetDialog.findViewById<View>(R.id.btnBottomSheetAddNewLocation) as ImageButton
 
         newPost.setOnClickListener{
+            bottomSheetDialog.dismiss()
             showBottomSheetAddPost()
         }
 
