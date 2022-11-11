@@ -33,8 +33,6 @@ namespace Api.Controllers
         {
 
                 var html = await System.IO.File.ReadAllTextAsync(@"./Assets/appDownload.html");
-                html = html.Replace("{{name}}", "test");
-
                 return base.Content(html, "text/html");
             
         }
