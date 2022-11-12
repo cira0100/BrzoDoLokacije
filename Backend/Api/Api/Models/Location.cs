@@ -25,4 +25,20 @@ namespace Api.Models
     PLANINA, VISORAVAN, PIRAMIDA, LIVADA, SELO, OSTRVO, POLUOSTRVO, KLISURA, ARHIPELAG,
     ADA, DELTA, FJORD, GEJZIR, IZVOR, KOTLINA, MINERALNI_IZVOR, PECINA ,SUMA, VODOPAD,VULKAN
     }
+
+    public class Coords
+    {
+        public double latitude { get; set; }
+        public double longitude { get; set; }
+    }
+    public enum SearchType
+    {
+        BY_NAME = 1 ,
+        BY_COORDS =2 
+    }
+    public class LocationViews
+    {
+        public Location location { get; set; }
+        public int views { get; set; }
+    }
 }

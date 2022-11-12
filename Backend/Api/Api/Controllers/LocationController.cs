@@ -50,5 +50,24 @@ namespace Api.Controllers
             }
             return BadRequest();
         }
+
+        [HttpPost("search")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<List<Location>>> searchLocation(int searchtype ,string? query,Coords? coords)
+        {
+            List<Location> ret = new List<Location>();
+            switch (searchtype)
+            {
+                case 1:
+                    ret = await _locationService.SearchLocation(query);
+                    return Ok(ret);
+                case 2:
+                    ret = await _locationService.SearchLocation(coords);
+                    return Ok(ret);
+                default:
+                    ret = await _locationService.SearchLocation(query);
+                    return Ok(ret);
+            }
+        }
     }
 }

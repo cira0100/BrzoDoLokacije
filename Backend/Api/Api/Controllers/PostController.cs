@@ -116,5 +116,16 @@ namespace Api.Controllers
                 return Ok();
             return BadRequest();
         }
+        [HttpGet("locations/{id}/posts")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<List<PostSend>>> searchPosts(string id,int page=0,int sorttype=1,int  filterdate=1)
+        {
+            var res = await _postService.SearchPosts(id,page,sorttype,filterdate);
+            if (res != null)
+            {
+                return Ok(res);
+            }
+            return BadRequest();
+        }
     }
 }
