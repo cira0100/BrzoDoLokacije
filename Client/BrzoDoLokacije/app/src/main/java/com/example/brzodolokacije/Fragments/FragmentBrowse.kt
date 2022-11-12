@@ -13,11 +13,15 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
+import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.brzodolokacije.R
 import com.example.brzodolokacije.Services.GeocoderHelper
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
@@ -37,6 +41,8 @@ class FragmentBrowse : Fragment(R.layout.fragment_browse) {
     var mRotationGestureOverlay:RotationGestureOverlay?=null
     var mScaleBarOverlay: ScaleBarOverlay?=null
     var mCompassOverlay:CompassOverlay?=null
+    private lateinit var searchButton:FloatingActionButton
+    private lateinit var searchBar: EditText
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -53,6 +59,14 @@ class FragmentBrowse : Fragment(R.layout.fragment_browse) {
         map=v.findViewById(R.id.FragmentBrowseMapView) as MapView
         map!!.setTileSource(TileSourceFactory.MAPNIK);
         setUpMap()
+        searchButton=v.findViewById<View>(R.id.FragmentBrowseSearchButton) as FloatingActionButton
+        searchBar=v.findViewById<View>(R.id.FragmentBrowseSearchBar) as EditText
+
+        searchButton.setOnClickListener{
+            searchMap()
+        }
+
+
         return v
     }
 
@@ -77,8 +91,7 @@ class FragmentBrowse : Fragment(R.layout.fragment_browse) {
         mLocationOverlay = MyLocationNewOverlay(GpsMyLocationProvider(context), map)
         mLocationOverlay!!.enableMyLocation()
         map!!.getOverlays().add(this.mLocationOverlay)
-        var res= GeocoderHelper.getInstance()
-        Log.d("Main",res!!.getFromLocationName("Paris",1)[0].countryName)
+
         //start point
         val startPoint = GeoPoint(44.0107,20.9181)//dodati nasu lokaciju TODO
         mapController.setCenter(startPoint)
@@ -123,6 +136,24 @@ class FragmentBrowse : Fragment(R.layout.fragment_browse) {
                 .permitAll().build()
             StrictMode.setThreadPolicy(policy)
             //your codes here
+        }
+    }
+    fun searchMap(){
+        var geocoder= GeocoderHelper.getInstance()
+        //Log.d("Main",geocoder!!.getFromLocationName("Paris",1)[0].countryName)
+        var locString=searchBar.text.toString().trim()
+        if(locString==null || locString=="")
+            Toast.makeText(requireContext(),"Unesite naziv lokacije",Toast.LENGTH_SHORT)
+        else{
+            var result=geocoder!!.getFromLocationName(locString,1)[0]
+            if(result==null)
+                Toast.makeText(requireContext(),"Nepostojeca lokacija",Toast.LENGTH_SHORT)
+            else{
+                //move to spot
+                map!!.controller.animateTo(GeoPoint(result.latitude,result.longitude))
+
+
+            }
         }
     }
 
