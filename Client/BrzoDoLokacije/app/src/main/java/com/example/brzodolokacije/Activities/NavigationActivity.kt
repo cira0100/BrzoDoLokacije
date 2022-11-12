@@ -24,6 +24,7 @@ class NavigationActivity : AppCompatActivity() {
         Toast.makeText(
             applicationContext, "Open  ", Toast.LENGTH_LONG
         ).show();
+        val fragmentHomePage=FragmentHomePage()
         val fragmentShowPosts=FragmentShowPosts()
         val browseFragment=FragmentBrowse()
         val addPostFragment= FragmentAddNew()
@@ -32,7 +33,8 @@ class NavigationActivity : AppCompatActivity() {
         setCurrentFragment(fragmentShowPosts)
         bottomNav.setOnNavigationItemSelectedListener {
             when(it.itemId){
-                R.id.navHome->setCurrentFragment(fragmentShowPosts)
+                R.id.navHomePage->setCurrentFragment(fragmentHomePage)
+                R.id.navAllPosts->setCurrentFragment(fragmentShowPosts)
                 //R.id.navAddPost->setCurrentFragment(addPostFragment)
                 R.id.navAddPost->showBottomSheetAddNew()
                 R.id.navBrowse->setCurrentFragment(browseFragment)
