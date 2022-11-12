@@ -50,3 +50,8 @@ data class Rating(
     var useridval :String,
     var rating:Int
 )
+
+data class RatingReceive(
+    var rating:Int,
+    var postId:String
+)

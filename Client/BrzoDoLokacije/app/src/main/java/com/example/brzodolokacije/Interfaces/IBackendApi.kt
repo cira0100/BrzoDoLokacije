@@ -6,6 +6,8 @@ import com.example.brzodolokacije.Models.Auth.Register
 import com.example.brzodolokacije.Models.Auth.ResetPass
 import com.example.brzodolokacije.Models.Location
 import com.example.brzodolokacije.Models.PostPreview
+import com.example.brzodolokacije.Models.Rating
+import com.example.brzodolokacije.Models.RatingReceive
 import okhttp3.MultipartBody
 import okhttp3.Request
 import okhttp3.RequestBody
@@ -36,7 +38,8 @@ interface IBackendApi {
                                                             ,@Part("description") description:RequestBody
                                                             ,@Part("locationId") locationId:RequestBody
                                                             ):Call<PostPreview>
-
+    @POST("api/Post/posts/{id}/addrating")
+    fun addRating(@Header("Authorization") authHeader:String,@Path("id") id:String,@Body rating: RatingReceive):Call<ResponseBody>
     //@POST("putanja")
     //fun add(@Body obj:Post,@Header("Authorization") authHeader:String):Call<Post>
 }
