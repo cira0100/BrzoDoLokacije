@@ -15,5 +15,7 @@ namespace Api.Interfaces
         Task<List<CommentSend>> CascadeComments(string parentid, Post p);
         Task<Boolean> DeleteComments(string postid, string cmntid,string userid);
         Task CascadeDeleteComments(string cmntid, Post p);
+        Task<PostSendPage> SearchPosts(string locid, int page = 0, int sorttype = 1, int filterdate = 1);
+        int DateEnumToDays(int filterdate);
     }
 }
