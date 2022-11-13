@@ -1,19 +1,20 @@
 package com.example.brzodolokacije.Fragments
 
-import android.media.CamcorderProfile.getAll
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.example.brzodolokacije.Adapters.ShowPostsHomePageAdapter
 import com.example.brzodolokacije.Interfaces.IBackendApi
 import com.example.brzodolokacije.Models.PostPreview
 import com.example.brzodolokacije.R
 import com.example.brzodolokacije.Services.RetrofitHelper.baseUrl
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
+import kotlinx.android.synthetic.main.activity_single_post.view.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -23,9 +24,10 @@ import retrofit2.converter.gson.GsonConverterFactory
 class FragmentHomePage : Fragment() {
     private lateinit var posts : MutableList<PostPreview>
     private lateinit var mostViewedPosts : MutableList<PostPreview>
-    private lateinit var recommendedPosts : MutableList<PostPreview>
+    private lateinit var newestPosts : MutableList<PostPreview>
     private lateinit var bestRatedPosts:MutableList<PostPreview>
-
+    private lateinit var rvPopular: RecyclerView
+    private lateinit var rvNewest:RecyclerView
     /* override fun onCreate(savedInstanceState: Bundle?) {
          super.onCreate(savedInstanceState)
 
@@ -38,16 +40,11 @@ class FragmentHomePage : Fragment() {
         // Inflate the layout for this fragment
         var view:View= inflater.inflate(R.layout.fragment_home_page, container, false)
 
-
-        //pokupi sve objave iz baze
-
-            /*Toast.makeText(
-                activity, "get all 1", Toast.LENGTH_LONG
-            ).show();*/
+        rvPopular=view.findViewById(R.id.rvFragmentHomePagePopular)
+        rvNewest=view.findViewById(R.id.rvFragmentHomePageLatest)
+        //pokupi sve objave iz baze'
             getAllPosts()
-            //getMostViewedPosts()
-            //getRecommendedPosts()
-            //getBestRatedPosts()
+
 
 
 
@@ -80,8 +77,8 @@ class FragmentHomePage : Fragment() {
                     activity, "get all ", Toast.LENGTH_LONG
                 ).show();
                 posts = response.body()!!.toMutableList<PostPreview>()
-                getMostViewedPosts(posts)
-                getRecommendedPosts(posts)
+                getPopularPosts(posts)
+                getNewestPosts(posts)
                 getBestRatedPosts(posts)
             }
 
@@ -93,20 +90,29 @@ class FragmentHomePage : Fragment() {
         })
     }
 
-    private fun getMostViewedPosts(allPosts:MutableList<PostPreview>){
+    private fun getPopularPosts(allPosts:MutableList<PostPreview>){//most viewed
         Toast.makeText(
             activity, "get all mv ", Toast.LENGTH_LONG
         ).show();
         mostViewedPosts=allPosts
         mostViewedPosts.sortByDescending { it.views }
+        rvPopular.apply {
+            layoutManager=LinearLayoutManager(activity,LinearLayoutManager.HORIZONTAL,false)
+            adapter=ShowPostsHomePageAdapter(mostViewedPosts)
+
+        }
 
     }
-    private fun getRecommendedPosts(allPosts:MutableList<PostPreview>){
+    private fun getNewestPosts(allPosts:MutableList<PostPreview>){
         Toast.makeText(
             activity, "get all r ", Toast.LENGTH_LONG
         ).show();
-        recommendedPosts=allPosts
-        recommendedPosts.sortByDescending { it.ratings }
+        newestPosts=allPosts/// izmeniti nakon dodavanja datuma u model!!!!!!
+        newestPosts.sortBy { it.ratings}
+        rvNewest.apply {
+            layoutManager=LinearLayoutManager(activity,LinearLayoutManager.HORIZONTAL,false)
+            adapter=ShowPostsHomePageAdapter(newestPosts)
+        }
     }
 
     private fun getBestRatedPosts(allPosts:MutableList<PostPreview>){

@@ -2,34 +2,32 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_width="150dp"
+    android:layout_height="150dp">
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/ivPIHPBackground"
         android:layout_width="0dp"
-        android:layout_height="390dp"
-        android:layout_marginStart="8dp"
+        android:layout_height="150dp"
         android:layout_marginTop="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_marginEnd="16dp"
         android:layout_marginBottom="8dp"
         android:scaleType="fitXY"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:shapeAppearanceOverlay="@style/imageViewCircle"
+        app:shapeAppearanceOverlay="@style/Circular"
         app:srcCompat="@drawable/b1" />
 
     <com.google.android.material.imageview.ShapeableImageView
         android:id="@+id/ivPIHPMenu"
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:layout_marginStart="8dp"
-        android:layout_marginEnd="8dp"
+        android:layout_width="0dp"
+        android:layout_height="22dp"
         app:layout_constraintBottom_toBottomOf="@+id/ivPIHPBackground"
-        app:layout_constraintEnd_toEndOf="@+id/ivPIHPBackground"
 
+        app:layout_constraintEnd_toEndOf="@+id/ivPIHPBackground"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="@+id/ivPIHPBackground"
         app:shapeAppearanceOverlay="@style/roundedBottom"
         app:srcCompat="@color/dark_blue_transparent" />
@@ -38,11 +36,10 @@
         android:id="@+id/tvPIHPLocationName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="52dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
         android:text="TextView"
-        android:textSize="20dp"
         android:textColor="@color/white"
+        android:textSize="10dp"
         app:layout_constraintStart_toStartOf="@+id/ivPIHPMenu"
         app:layout_constraintTop_toTopOf="@+id/ivPIHPMenu" />
 
