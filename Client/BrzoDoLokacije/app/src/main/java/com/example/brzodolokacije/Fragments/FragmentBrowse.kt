@@ -3,17 +3,18 @@ package com.example.brzodolokacije.Fragments
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.location.Location
+import android.location.LocationManager
 import android.os.Build
 import android.os.Bundle
+import android.os.Looper
 import android.os.StrictMode
 import android.os.StrictMode.ThreadPolicy
 import android.preference.PreferenceManager
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
@@ -21,6 +22,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.example.brzodolokacije.R
 import com.example.brzodolokacije.Services.GeocoderHelper
+import com.google.android.gms.location.*
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -41,8 +43,11 @@ class FragmentBrowse : Fragment(R.layout.fragment_browse) {
     var mRotationGestureOverlay:RotationGestureOverlay?=null
     var mScaleBarOverlay: ScaleBarOverlay?=null
     var mCompassOverlay:CompassOverlay?=null
+    private lateinit var locationManager: LocationManager
     private lateinit var searchButton:FloatingActionButton
+    private lateinit var gpsButton:FloatingActionButton
     private lateinit var searchBar: EditText
+    var client: FusedLocationProviderClient? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -60,13 +65,16 @@ class FragmentBrowse : Fragment(R.layout.fragment_browse) {
         map!!.setTileSource(TileSourceFactory.MAPNIK);
         setUpMap()
         searchButton=v.findViewById<View>(R.id.FragmentBrowseSearchButton) as FloatingActionButton
+        gpsButton=v.findViewById<View>(R.id.FragmentBrowseMyLocation) as FloatingActionButton
         searchBar=v.findViewById<View>(R.id.FragmentBrowseSearchBar) as EditText
-
+        client=LocationServices.getFusedLocationProviderClient(requireActivity())
         searchButton.setOnClickListener{
             searchMap()
+
         }
-
-
+        gpsButton.setOnClickListener{
+            getLocation()
+        }
         return v
     }
 
@@ -156,6 +164,116 @@ class FragmentBrowse : Fragment(R.layout.fragment_browse) {
             }
         }
     }
+    private fun getLocation() {
+        if (ContextCompat.checkSelfPermission(
+                requireActivity(),
+                Manifest.permission
+                    .ACCESS_FINE_LOCATION)
+            == PackageManager
+                .PERMISSION_GRANTED
+            && ContextCompat.checkSelfPermission(
+                requireActivity(),
+                Manifest.permission
+                    .ACCESS_COARSE_LOCATION)
+            == PackageManager
+                .PERMISSION_GRANTED) {
+            // When permission is granted
+            // Call method
+            getCurrentLocation()
+        }
+        else {
+            requestPermissions(
+                arrayOf(
+                    Manifest.permission.ACCESS_FINE_LOCATION,
+                    Manifest.permission.ACCESS_COARSE_LOCATION
+                ),
+                111
+            )
+
+        }
+    }
+    override fun onRequestPermissionsResult(
+        requestCode: Int, permissions: Array<String?>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(
+            requestCode, permissions, grantResults
+        )
+        // Check condition
+        if (requestCode == 111 && grantResults.size > 0
+            && (grantResults[0] + grantResults[1]
+                    == PackageManager.PERMISSION_GRANTED)
+        ) {
+            // When permission are granted
+            // Call  method
+            getCurrentLocation()
+        } else {
+            // When permission are denied
+            // Display toast
+            Toast
+                .makeText(
+                    activity,
+                    "Permission denied",
+                    Toast.LENGTH_SHORT
+                )
+                .show()
+        }
+    }
+    @Suppress("MissingPermission")
+    private fun getCurrentLocation(){
+        val locationManager = requireActivity()
+            .getSystemService(
+                Context.LOCATION_SERVICE
+            ) as LocationManager
+        checkLocPerm()
+        if (locationManager.isProviderEnabled(
+                LocationManager.GPS_PROVIDER)
+            || locationManager.isProviderEnabled(
+                LocationManager.NETWORK_PROVIDER)){
+
+            client!!.getLastLocation().addOnCompleteListener {task ->
+                var location = task.result
+                if(location == null) {
+                    val locationRequest: LocationRequest = LocationRequest()
+                        .setPriority(
+                            LocationRequest.PRIORITY_HIGH_ACCURACY
+                        )
+                        .setInterval(10000)
+                        .setFastestInterval(
+                            1000
+                        )
+                        .setNumUpdates(1)
+
+                    val locationCallback: LocationCallback = object : LocationCallback() {
+                        override fun onLocationResult(
+                            locationResult: LocationResult
+                        ) {
+                            // Initialize
+                            // location
+                            val location1: Location? = locationResult
+                                .lastLocation
+                            // Set latitude
+                            map!!.controller.animateTo(GeoPoint(location1!!.latitude,location1!!.longitude))
+                            Toast.makeText(requireContext()," "+location1!!.latitude,Toast.LENGTH_LONG)
+
+                        }
+                    }
+                    client!!.requestLocationUpdates(
+                        locationRequest,
+                        locationCallback,
+                        Looper.myLooper());
+                } else {
+                    map!!.controller.animateTo(GeoPoint(location!!.latitude,location!!.longitude))
+                    Toast.makeText(requireContext()," "+location.latitude,Toast.LENGTH_LONG)
+                }
 
 
+
+        }
+    }
+
+
+
+
+}
 }

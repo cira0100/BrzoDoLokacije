@@ -45,5 +45,20 @@
         app:rippleColor="#FFFFFF"
         app:srcCompat="@android:drawable/ic_search_category_default" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/FragmentBrowseMyLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:backgroundTint="#FFFFFF"
+        android:layout_marginBottom="80dp"
+        android:clickable="true"
+        android:focusable="true"
+        android:tint="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@+id/FragmentBrowseMapView"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:rippleColor="#FFFFFF"
+        app:srcCompat="@android:drawable/ic_menu_mylocation" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
