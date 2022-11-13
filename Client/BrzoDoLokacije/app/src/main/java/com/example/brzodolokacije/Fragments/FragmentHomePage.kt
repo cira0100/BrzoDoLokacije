@@ -14,12 +14,12 @@ import com.example.brzodolokacije.Models.PostPreview
 import com.example.brzodolokacije.R
 import com.example.brzodolokacije.Services.RetrofitHelper.baseUrl
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
-import kotlinx.android.synthetic.main.activity_single_post.view.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+
 
 class FragmentHomePage : Fragment() {
     private lateinit var posts : MutableList<PostPreview>
@@ -28,6 +28,7 @@ class FragmentHomePage : Fragment() {
     private lateinit var bestRatedPosts:MutableList<PostPreview>
     private lateinit var rvPopular: RecyclerView
     private lateinit var rvNewest:RecyclerView
+    private lateinit var rvBestRated:RecyclerView
     /* override fun onCreate(savedInstanceState: Bundle?) {
          super.onCreate(savedInstanceState)
 
@@ -41,7 +42,8 @@ class FragmentHomePage : Fragment() {
         var view:View= inflater.inflate(R.layout.fragment_home_page, container, false)
 
         rvPopular=view.findViewById(R.id.rvFragmentHomePagePopular)
-        rvNewest=view.findViewById(R.id.rvFragmentHomePageLatest)
+        rvNewest=view.findViewById(R.id.rvFragmentHomePageNewest)
+        rvBestRated=view.findViewById(R.id.rvFragmentHomePageBestRated)
         //pokupi sve objave iz baze'
             getAllPosts()
 
@@ -60,7 +62,7 @@ class FragmentHomePage : Fragment() {
         val token= SharedPreferencesHelper.getValue("jwt", requireActivity())
         val data=api.getPosts("Bearer "+token)
 
-        data.enqueue(object : Callback<MutableList<PostPreview>>{
+        data.enqueue(object : Callback<MutableList<PostPreview>> {
             override fun onResponse(
                 call: Call<MutableList<PostPreview>>,
                 response: Response<MutableList<PostPreview>>
@@ -97,8 +99,8 @@ class FragmentHomePage : Fragment() {
         mostViewedPosts=allPosts
         mostViewedPosts.sortByDescending { it.views }
         rvPopular.apply {
-            layoutManager=LinearLayoutManager(activity,LinearLayoutManager.HORIZONTAL,false)
-            adapter=ShowPostsHomePageAdapter(mostViewedPosts)
+            layoutManager= LinearLayoutManager(activity,LinearLayoutManager.HORIZONTAL,false)
+            adapter= ShowPostsHomePageAdapter(mostViewedPosts)
 
         }
 
@@ -121,6 +123,11 @@ class FragmentHomePage : Fragment() {
         ).show();
         bestRatedPosts=allPosts
         bestRatedPosts.sortByDescending { it.ratings }
+        rvBestRated.apply {
+            layoutManager=LinearLayoutManager(activity,LinearLayoutManager.HORIZONTAL,false)
+            adapter=ShowPostsHomePageAdapter(bestRatedPosts)
+        }
+
     }
 
 
