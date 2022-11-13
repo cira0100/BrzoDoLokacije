@@ -31,6 +31,7 @@ import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.ScaleBarOverlay
 import org.osmdroid.views.overlay.compass.CompassOverlay
 import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider
@@ -172,7 +173,12 @@ class FragmentBrowse : Fragment(R.layout.fragment_browse) {
                 Toast.makeText(requireContext(),"Nepostojeca lokacija",Toast.LENGTH_SHORT)
             else{
                 //move to spot
-                map!!.controller.animateTo(GeoPoint(result.latitude,result.longitude))
+                val searchPoint = GeoPoint(result.latitude,result.longitude)
+                val startMarker = Marker(map)
+                startMarker.setPosition(searchPoint)
+                startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                map!!.getOverlays().add(startMarker)
+                map!!.controller.animateTo(searchPoint)
 
 
             }
