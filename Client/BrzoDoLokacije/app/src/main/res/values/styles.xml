@@ -10,4 +10,11 @@
         <item name="cornerSize">15dp</item>
         <item name="color">@color/white</item>
     </style>
+    <style name="Circular">
+        <item name="cornerSize">20%</item>
+    </style>
+    <style name="roundedBottom">
+        <item name="cornerSizeBottomLeft">70dp</item>
+        <item name="cornerSizeBottomRight">70dp</item>
+    </style>
 </resources>
