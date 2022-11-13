@@ -12,10 +12,11 @@ import android.os.StrictMode
 import android.os.StrictMode.ThreadPolicy
 import android.preference.PreferenceManager
 import android.util.DisplayMetrics
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
+import android.view.View.OnKeyListener
 import android.view.ViewGroup
-import android.widget.EditText
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
@@ -23,7 +24,9 @@ import androidx.fragment.app.Fragment
 import com.example.brzodolokacije.R
 import com.example.brzodolokacije.Services.GeocoderHelper
 import com.google.android.gms.location.*
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
+import com.google.android.material.textfield.TextInputEditText
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
@@ -44,9 +47,9 @@ class FragmentBrowse : Fragment(R.layout.fragment_browse) {
     var mScaleBarOverlay: ScaleBarOverlay?=null
     var mCompassOverlay:CompassOverlay?=null
     private lateinit var locationManager: LocationManager
-    private lateinit var searchButton:FloatingActionButton
+    private lateinit var searchButton: MaterialButton
     private lateinit var gpsButton:FloatingActionButton
-    private lateinit var searchBar: EditText
+    private lateinit var searchBar: TextInputEditText
     var client: FusedLocationProviderClient? = null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -64,9 +67,9 @@ class FragmentBrowse : Fragment(R.layout.fragment_browse) {
         map=v.findViewById(R.id.FragmentBrowseMapView) as MapView
         map!!.setTileSource(TileSourceFactory.MAPNIK);
         setUpMap()
-        searchButton=v.findViewById<View>(R.id.FragmentBrowseSearchButton) as FloatingActionButton
+        searchButton=v.findViewById<View>(R.id.FragmentBrowseSearchButton) as MaterialButton
         gpsButton=v.findViewById<View>(R.id.FragmentBrowseMyLocation) as FloatingActionButton
-        searchBar=v.findViewById<View>(R.id.FragmentBrowseSearchBar) as EditText
+        searchBar=v.findViewById<View>(R.id.FragmentBrowseSearchBar) as TextInputEditText
         client=LocationServices.getFusedLocationProviderClient(requireActivity())
         searchButton.setOnClickListener{
             searchMap()
@@ -75,6 +78,17 @@ class FragmentBrowse : Fragment(R.layout.fragment_browse) {
         gpsButton.setOnClickListener{
             getLocation()
         }
+        searchBar.setOnKeyListener(OnKeyListener { v1, keyCode, event -> // If the event is a key-down event on the "enter" button
+            if (event.action === KeyEvent.ACTION_DOWN &&
+                keyCode == KeyEvent.KEYCODE_ENTER
+            ) {
+                // Perform action on key press
+                searchMap()
+                return@OnKeyListener true
+            }
+            false
+        })
+
         return v
     }
 
