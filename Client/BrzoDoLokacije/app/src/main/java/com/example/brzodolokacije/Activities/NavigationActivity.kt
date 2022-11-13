@@ -30,7 +30,7 @@ class NavigationActivity : AppCompatActivity() {
         val addPostFragment= FragmentAddNew()
         val profileFragment=FragmentProfile()
         val bottomNav=findViewById<View>(R.id.bottomNavigationView) as BottomNavigationView
-        setCurrentFragment(fragmentShowPosts)
+        setCurrentFragment(fragmentHomePage)
         bottomNav.setOnNavigationItemSelectedListener {
             when(it.itemId){
                 R.id.navHomePage->setCurrentFragment(fragmentHomePage)
