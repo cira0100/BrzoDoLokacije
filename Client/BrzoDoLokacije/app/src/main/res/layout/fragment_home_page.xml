@@ -75,6 +75,7 @@
             android:layout_height="match_parent"
             android:background="@drawable/rounded_white_button_login"
             android:hint="  Pretraga"
+            android:paddingLeft="15dp"
             android:inputType="textPersonName" />
 
         <com.google.android.material.button.MaterialButton

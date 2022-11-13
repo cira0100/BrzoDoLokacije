@@ -100,7 +100,7 @@ class FragmentHomePage : Fragment() {
         mostViewedPosts.sortByDescending { it.views }
         rvPopular.apply {
             layoutManager= LinearLayoutManager(activity,LinearLayoutManager.HORIZONTAL,false)
-            adapter= ShowPostsHomePageAdapter(mostViewedPosts)
+            adapter= ShowPostsHomePageAdapter(mostViewedPosts,requireActivity())
 
         }
 
@@ -113,7 +113,7 @@ class FragmentHomePage : Fragment() {
         newestPosts.sortBy { it.ratings}
         rvNewest.apply {
             layoutManager=LinearLayoutManager(activity,LinearLayoutManager.HORIZONTAL,false)
-            adapter=ShowPostsHomePageAdapter(newestPosts)
+            adapter=ShowPostsHomePageAdapter(newestPosts,requireActivity())
         }
     }
 
@@ -125,7 +125,7 @@ class FragmentHomePage : Fragment() {
         bestRatedPosts.sortByDescending { it.ratings }
         rvBestRated.apply {
             layoutManager=LinearLayoutManager(activity,LinearLayoutManager.HORIZONTAL,false)
-            adapter=ShowPostsHomePageAdapter(bestRatedPosts)
+            adapter=ShowPostsHomePageAdapter(bestRatedPosts,requireActivity())
         }
 
     }
