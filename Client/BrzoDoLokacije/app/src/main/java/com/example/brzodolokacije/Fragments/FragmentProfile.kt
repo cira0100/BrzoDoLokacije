@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -17,6 +18,7 @@ import com.example.brzodolokacije.Models.UserReceive
 import com.example.brzodolokacije.R
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
+import com.google.android.material.button.MaterialButton
 import com.google.android.material.imageview.ShapeableImageView
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
@@ -51,8 +53,8 @@ class FragmentProfile : Fragment(R.layout.fragment_profile) {
     private lateinit var showMyPosts: Button
     private lateinit var showMyData: Button
     private lateinit var showMyRecensions: Button
-    private lateinit var profilePicture: ShapeableImageView
-    private lateinit var profilePicturePlus: ShapeableImageView
+    private lateinit var profilePicture: ImageView
+    private lateinit var profilePicturePlus: MaterialButton
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -67,8 +69,8 @@ class FragmentProfile : Fragment(R.layout.fragment_profile) {
         showMyPosts=view.findViewById<View>(R.id.btnFragmentProfileShowMyPosts) as Button
         showMyData=view.findViewById<View>(R.id.btnFragmentProfileShowMyData) as Button
         showMyRecensions=view.findViewById<View>(R.id.btnFragmentProfileShowMyRecensions) as Button
-        profilePicture=view.findViewById<View>(R.id.tvFragmentProfileProfilePicture) as ShapeableImageView
-        profilePicturePlus=view.findViewById<View>(R.id.tvFragmentProfileProfilePicturePlus) as ShapeableImageView
+        profilePicture=view.findViewById<View>(R.id.tvFragmentProfileProfilePicture) as ImageView
+        profilePicturePlus=view.findViewById<View>(R.id.btnFragmentProfileProfilePicturePlus) as MaterialButton
         //podaci iz baze
 
 
