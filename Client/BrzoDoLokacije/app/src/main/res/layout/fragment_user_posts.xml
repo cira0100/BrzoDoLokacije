@@ -10,6 +10,7 @@ android:orientation="vertical"
 
     <!-- TODO: Update blank fragment layout -->
     <androidx.cardview.widget.CardView
+        android:layout_marginTop="35dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -33,15 +34,6 @@ android:orientation="vertical"
             android:focusable="true" />
     </androidx.cardview.widget.CardView>
 
-
-
-
-
-    <androidx.legacy.widget.Space
-        android:id="@+id/space"
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-  />
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/rvFragmentUserPostsPosts"
