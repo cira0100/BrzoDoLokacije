@@ -1,23 +1,30 @@
 package com.example.brzodolokacije.Fragments
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-import com.example.brzodolokacije.Activities.NavigationActivity
+import com.bumptech.glide.Glide
 import com.example.brzodolokacije.Models.UserReceive
 import com.example.brzodolokacije.R
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
+import com.google.android.material.imageview.ShapeableImageView
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Response
+import java.io.File
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -44,6 +51,7 @@ class FragmentProfile : Fragment(R.layout.fragment_profile) {
     private lateinit var showMyPosts: Button
     private lateinit var showMyData: Button
     private lateinit var showMyRecensions: Button
+    private lateinit var profilePicture: ShapeableImageView
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -58,6 +66,7 @@ class FragmentProfile : Fragment(R.layout.fragment_profile) {
         showMyPosts=view.findViewById<View>(R.id.btnFragmentProfileShowMyPosts) as Button
         showMyData=view.findViewById<View>(R.id.btnFragmentProfileShowMyData) as Button
         showMyRecensions=view.findViewById<View>(R.id.btnFragmentProfileShowMyRecensions) as Button
+        profilePicture=view.findViewById<View>(R.id.tvFragmentProfileProfilePicture) as ShapeableImageView
         //podaci iz baze
 
 
@@ -86,9 +95,54 @@ class FragmentProfile : Fragment(R.layout.fragment_profile) {
             fm.replace(R.id.flFragmentProfileFragmentContainer, FragmentMyRecensions())
             fm.commit()
         }
+        profilePicture.setOnClickListener{
+            addProfilePicture()
+        }
         getProfileInfo()
 
         return view
+    }
+
+    private fun addProfilePicture(){
+        val intent= Intent(Intent.ACTION_PICK)
+        intent.action = Intent.ACTION_GET_CONTENT
+        intent.type="image/*"
+        startActivityForResult(Intent.createChooser(intent,"Izaberi profilnu sliku"),201)
+    }
+    private fun uploadProfilePicture(imageUri:Uri){
+        val api =RetrofitHelper.getInstance()
+        var inputStream=requireActivity().getContentResolver().openInputStream(imageUri)
+        val file: File = File.createTempFile("temp","pfp")
+        file!!.writeBytes(inputStream!!.readBytes())
+        var imageReq=RequestBody.create("image/*".toMediaTypeOrNull(),file)
+        val imageBody: MultipartBody.Part = MultipartBody.Part.createFormData("image", file.name, imageReq)
+        val token= SharedPreferencesHelper.getValue("jwt", requireActivity())
+        val req=api.setPfp("Bearer "+token,imageBody)
+
+        req.enqueue(object : retrofit2.Callback<ResponseBody?> {
+            override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
+                if(response.isSuccessful()){
+                   getProfileInfo()
+                }else{
+                    if(response.errorBody()!=null)
+                        Toast.makeText(activity, response.errorBody()!!.string(), Toast.LENGTH_LONG).show();
+                }
+            }
+            override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
+                Toast.makeText(
+                    activity, t.toString(), Toast.LENGTH_LONG
+                ).show();
+            }
+        })
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        //nakon otvaranja
+        if(requestCode==201 && resultCode== AppCompatActivity.RESULT_OK){
+            var imageUri=data!!.data
+            uploadProfilePicture(imageUri!!)
+
+        }
     }
 
     private fun getProfileInfo(){
@@ -104,12 +158,8 @@ class FragmentProfile : Fragment(R.layout.fragment_profile) {
                     if(response.errorBody()!=null)
                         Toast.makeText(activity, response.errorBody()!!.string(), Toast.LENGTH_LONG).show();
                 }
-
-
             }
-
             override fun onFailure(call: Call<UserReceive?>, t: Throwable) {
-                Log.d("Main","Graska3")
                 Toast.makeText(
                     activity, t.toString(), Toast.LENGTH_LONG
                 ).show();
@@ -118,11 +168,19 @@ class FragmentProfile : Fragment(R.layout.fragment_profile) {
     }
     private fun setUserInfo(user:UserReceive){
         name.setText(user.name)
-        username.setText(user.username)
+        username.setText("@"+user.username)
 
-        postsCount.setText("to do backend")
-        followersCount.setText("to do backend")
-        followingCount.setText("to do backend")
+        postsCount.setText("to do back")
+        followersCount.setText("to do back")
+        followingCount.setText("to do back")
+
+        //Add Profile image
+        if(user.pfp!=null) {
+            Glide.with(requireActivity())
+                .load(RetrofitHelper.baseUrl + "/api/post/image/" + user.pfp!!._id)
+                .circleCrop()//Round image
+                .into(profilePicture)
+        }
     }
 
 
