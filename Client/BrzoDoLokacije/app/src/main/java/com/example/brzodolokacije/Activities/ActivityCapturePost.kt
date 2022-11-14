@@ -22,6 +22,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
+import androidx.core.view.isVisible
 import com.example.brzodolokacije.R
 import java.io.File
 import java.text.SimpleDateFormat
@@ -47,7 +48,7 @@ class ActivityCapturePost : AppCompatActivity() {
         description = findViewById<View>(R.id.etActivityCapturePostDescription) as EditText
         post = findViewById<View>(R.id.btnActivityCapturePostPost) as Button
         showImage = findViewById<View>(R.id.ivActivityCapturePostImage) as ImageView
-        takePhoto = findViewById<View>(R.id.btnActivityCapturePostCapture) as Button
+        takePhoto = findViewById<View>(R.id.btnActivityCapturePostCaptureVisible) as Button
 
         //dodavanje sa kamere
 
@@ -97,8 +98,8 @@ class ActivityCapturePost : AppCompatActivity() {
         takePhoto.setOnClickListener {
 
             val APP_TAG = "BrzoDoLokacije"
-            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)/*
-            val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
+            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+ /*           val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
             //val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
             //val photo= File(storageDir,"JPEG_${timeStamp}.jpg")
 
@@ -113,8 +114,8 @@ class ActivityCapturePost : AppCompatActivity() {
                     FileProvider.getUriForFile(this, "com.codepath.fileprovider", photoFile!!)
                 intent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider)
             }
-            */
 
+*/
             cameraActivityResultLauncher.launch(takePictureIntent)
         }
 
@@ -130,6 +131,9 @@ class ActivityCapturePost : AppCompatActivity() {
                 description.hint = "Unesite lokaciju"
                 description.setHintTextColor(Color.RED)
             }
+
+
+
         }
     }
         private val cameraActivityResultLauncher =
@@ -138,6 +142,8 @@ class ActivityCapturePost : AppCompatActivity() {
                 val bundle = result.data!!.extras
                 val bitmap = bundle!!["data"] as Bitmap?
                 showImage.setImageBitmap(bitmap)
+                takePhoto.isVisible=false
+
             }
 
         }
