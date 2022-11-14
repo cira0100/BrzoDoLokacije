@@ -99,9 +99,6 @@ class FragmentProfile : Fragment(R.layout.fragment_profile) {
         profilePicturePlus.setOnClickListener{
             addProfilePicture()
         }
-        profilePicture.setOnClickListener{
-            addProfilePicture()
-        }
         getProfileInfo()
         openMyPosts()
         return view
