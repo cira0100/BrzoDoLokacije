@@ -324,7 +324,7 @@ namespace Api.Services
                 Directory.CreateDirectory(folderPath);
             var filename = image.FileName;
             var ext = Path.GetExtension(filename).ToLowerInvariant();
-            var name ="PFP - " + user._id;
+            var name =user._id;
             var fullPath = Path.Combine(folderPath, name+ext);
             if (System.IO.File.Exists(fullPath))
                 System.IO.File.Delete(fullPath);
@@ -347,6 +347,7 @@ namespace Api.Services
             if(user == null)
                 return null;
             var tosend = new UserSend();
+            tosend.name = user.name;
             tosend.pfp = user.pfp;
             tosend.username = user.username;
             tosend._id= user._id;
@@ -360,6 +361,7 @@ namespace Api.Services
             if (user == null)
                 return null;
             var tosend = new UserSend();
+            tosend.name = user.name;
             tosend.pfp = user.pfp;
             tosend.username = user.username;
             tosend._id = user._id;

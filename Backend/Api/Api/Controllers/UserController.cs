@@ -17,13 +17,9 @@ namespace Api.Controllers
         }
         [HttpPost("profile/pfp")]
         [Authorize(Roles = "User")]
-        public async Task<ActionResult<User>> setPfp([FromBody] IFormFile image)
+        public async Task<ActionResult<User>> setPfp(IFormFile image)
         {
-            if (image == null)
-                return BadRequest();
             var id = await _userService.UserIdFromJwt();
-            if (id == null)
-                return Unauthorized();
             if(await _userService.AddOrChangePfp(id,image))
                 return Ok();
             return BadRequest();
