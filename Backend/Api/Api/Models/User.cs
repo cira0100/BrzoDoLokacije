@@ -57,5 +57,6 @@ namespace Api.Models
         public String email { get; set; }
         public DateTime creationDate { get; set; }
         public File? pfp { get; set; }
+        public int postcount { get; set; }
     }
 }

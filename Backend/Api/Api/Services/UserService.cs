@@ -12,6 +12,7 @@ namespace Api.Services
     {
         private readonly IHttpContextAccessor _httpContext;
         private readonly IMongoCollection<User> _users;
+        private readonly IMongoCollection<Post> _posts;
         private readonly IJwtService _jwtService;
         private IConfiguration _configuration;
         private readonly IFileService _fileService;
@@ -19,6 +20,7 @@ namespace Api.Services
         {
             var database = mongoClient.GetDatabase(settings.DatabaseName);
             _users = database.GetCollection<User>(settings.UserCollectionName);
+            _posts = database.GetCollection<Post>(settings.PostCollectionName);
             _jwtService = jwtService;
             this._httpContext = httpContextAccessor;
             this._configuration = configuration;
@@ -353,6 +355,8 @@ namespace Api.Services
             tosend._id= user._id;
             tosend.creationDate = user.creationDate;
             tosend.email="";
+            var userposts = await _posts.Find(x => x.ownerId == user._id).ToListAsync();
+            tosend.postcount = userposts.Count();
             return tosend;
         }
         public async Task<UserSend> GetSelfUserData(string id)
@@ -367,6 +371,8 @@ namespace Api.Services
             tosend._id = user._id;
             tosend.creationDate = user.creationDate;
             tosend.email = user.email;
+            var userposts = await _posts.Find(x => x.ownerId == user._id).ToListAsync();
+            tosend.postcount = userposts.Count();
             return tosend;
         }
     }

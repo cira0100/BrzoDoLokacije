@@ -336,5 +336,18 @@ namespace Api.Services
                 default: return 365 * 10;
             }
         }
+        public async Task<List<PostSend>> GetUsersPosts(string id)
+        {
+            var userposts = await _posts.Find(x => x.ownerId == id).ToListAsync();
+            if (userposts == null)
+                return null;
+            var tosend = new List<PostSend>();
+            foreach (var post in userposts)
+            {
+                var x = await postToPostSend(post);
+                tosend.Add(x);
+            }
+            return tosend;
+        }
     }
 }
