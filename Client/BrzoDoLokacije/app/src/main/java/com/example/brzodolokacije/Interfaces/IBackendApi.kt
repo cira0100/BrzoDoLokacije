@@ -43,6 +43,16 @@ interface IBackendApi {
     fun getComments(@Header("Authorization") authHeader:String,@Path("id") id:String):Call<MutableList<CommentSend>>
 
 
+    @Multipart
+    @POST("/api/user/profile/pfp")
+    fun setPfp(@Header("Authorization") authHeader:String, @Part image: MultipartBody.Part):Call<ResponseBody>
+    @GET("/api/user/profile")
+    fun selfProfile(@Header("Authorization") authHeader:String):Call<UserReceive>
+    @GET("/api/user/{username}/profile")
+    fun getProfile(@Header("Authorization") authHeader:String,@Path("username") username:String):Call<UserReceive>
+
+
+
 //@POST("putanja")
     //fun add(@Body obj:Post,@Header("Authorization") authHeader:String):Call<Post>
 }

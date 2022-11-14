@@ -21,3 +21,11 @@ data class User (
     var postNumber:Int
 
 )
+data class UserReceive(
+    var _id:String,
+    var name:String,
+    var username:String,
+    var email:String,
+    var creationDate: Date,
+    var pfp:PostImage?
+)

@@ -1,14 +1,23 @@
 package com.example.brzodolokacije.Fragments
 
+import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.FragmentTransaction
+import com.example.brzodolokacije.Activities.NavigationActivity
+import com.example.brzodolokacije.Models.UserReceive
 import com.example.brzodolokacije.R
+import com.example.brzodolokacije.Services.RetrofitHelper
+import com.example.brzodolokacije.Services.SharedPreferencesHelper
+import retrofit2.Call
+import retrofit2.Response
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -71,14 +80,49 @@ class FragmentProfile : Fragment(R.layout.fragment_profile) {
         }
 
         showMyRecensions.setOnClickListener{
-
+            getProfileInfo()
             var fm: FragmentTransaction =childFragmentManager.beginTransaction()
 
             fm.replace(R.id.flFragmentProfileFragmentContainer, FragmentMyRecensions())
             fm.commit()
         }
+        getProfileInfo()
 
         return view
+    }
+
+    private fun getProfileInfo(){
+        val authApi=RetrofitHelper.getInstance()
+        val token= SharedPreferencesHelper.getValue("jwt", requireActivity())
+        val request=authApi.selfProfile("Bearer "+token)
+
+        request.enqueue(object : retrofit2.Callback<UserReceive?> {
+            override fun onResponse(call: Call<UserReceive?>, response: Response<UserReceive?>) {
+                if(response.isSuccessful()){
+                     setUserInfo(response.body()!!)
+                }else{
+                    if(response.errorBody()!=null)
+                        Toast.makeText(activity, response.errorBody()!!.string(), Toast.LENGTH_LONG).show();
+                }
+
+
+            }
+
+            override fun onFailure(call: Call<UserReceive?>, t: Throwable) {
+                Log.d("Main","Graska3")
+                Toast.makeText(
+                    activity, t.toString(), Toast.LENGTH_LONG
+                ).show();
+            }
+        })
+    }
+    private fun setUserInfo(user:UserReceive){
+        name.setText(user.name)
+        username.setText(user.username)
+
+        postsCount.setText("to do backend")
+        followersCount.setText("to do backend")
+        followingCount.setText("to do backend")
     }
 
 
