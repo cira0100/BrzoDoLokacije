@@ -75,10 +75,7 @@ class FragmentProfile : Fragment(R.layout.fragment_profile) {
 
         showMyPosts.setOnClickListener{
 
-            var fm: FragmentTransaction =childFragmentManager.beginTransaction()
-
-            fm.replace(R.id.flFragmentProfileFragmentContainer, FragmentUserPosts())
-            fm.commit()
+            openMyPosts()
         }
 
 
@@ -104,8 +101,14 @@ class FragmentProfile : Fragment(R.layout.fragment_profile) {
             addProfilePicture()
         }
         getProfileInfo()
-
+        openMyPosts()
         return view
+    }
+    fun openMyPosts(){
+        var fm: FragmentTransaction =childFragmentManager.beginTransaction()
+
+        fm.replace(R.id.flFragmentProfileFragmentContainer, FragmentUserPosts())
+        fm.commit()
     }
 
     private fun addProfilePicture(){
@@ -174,10 +177,10 @@ class FragmentProfile : Fragment(R.layout.fragment_profile) {
     private fun setUserInfo(user:UserReceive){
         name.setText(user.name)
         username.setText("@"+user.username)
+        postsCount.setText(user.postcount.toString())
 
-        postsCount.setText("to do back")
-        followersCount.setText("to do back")
-        followingCount.setText("to do back")
+        followersCount.setText("to do")
+        followingCount.setText("to do")
 
         //Add Profile image
         if(user.pfp!=null) {

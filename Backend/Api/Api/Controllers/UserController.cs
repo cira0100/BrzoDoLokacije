@@ -47,7 +47,7 @@ namespace Api.Controllers
         }
         [HttpGet("posts")]
         [Authorize(Roles = "User")] 
-        public async Task<ActionResult<PostSend>> SelfPosts()
+        public async Task<ActionResult<List<PostSend>>> SelfPosts()
         {
             var id = await _userService.UserIdFromJwt();
             var rez = await _postService.GetUsersPosts(id);

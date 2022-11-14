@@ -51,7 +51,8 @@ interface IBackendApi {
     @GET("/api/user/{username}/profile")
     fun getProfile(@Header("Authorization") authHeader:String,@Path("username") username:String):Call<UserReceive>
 
-
+    @GET("/api/user/posts")
+    fun getMyPosts(@Header("Authorization") authHeader:String):Call<MutableList<PostPreview>>
 
 //@POST("putanja")
     //fun add(@Body obj:Post,@Header("Authorization") authHeader:String):Call<Post>

@@ -27,5 +27,6 @@ data class UserReceive(
     var username:String,
     var email:String,
     var creationDate: Date,
-    var pfp:PostImage?
+    var pfp:PostImage?,
+    var postcount:Int
 )
