@@ -164,7 +164,7 @@ namespace Api.Services
             }
             return false;
         }
-        public async Task<Boolean> AddComment(CommentReceive cmnt,string userid,string postid)
+        public async Task<Comment> AddComment(CommentReceive cmnt,string userid,string postid)
         {
             Post p = await _posts.Find(post => post._id == postid).FirstOrDefaultAsync();
             if (p != null)
@@ -177,9 +177,9 @@ namespace Api.Services
                 c._id = ObjectId.GenerateNewId().ToString();
                 p.comments.Add(c);
                 await _posts.ReplaceOneAsync(x => x._id == postid, p);
-                return true;
+                return c;
             }
-            return false;
+            return null;
         }
 
         public async Task<List<CommentSend>> ListComments(string postid)

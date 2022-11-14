@@ -14,13 +14,15 @@ namespace Api.Services
         private readonly IMongoCollection<User> _users;
         private readonly IJwtService _jwtService;
         private IConfiguration _configuration;
-        public UserService(IDatabaseConnection settings, IMongoClient mongoClient, IJwtService jwtService, IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
+        private readonly IFileService _fileService;
+        public UserService(IDatabaseConnection settings, IMongoClient mongoClient, IJwtService jwtService, IHttpContextAccessor httpContextAccessor, IConfiguration configuration, IFileService fileService)
         {
             var database = mongoClient.GetDatabase(settings.DatabaseName);
             _users = database.GetCollection<User>(settings.UserCollectionName);
             _jwtService = jwtService;
             this._httpContext = httpContextAccessor;
             this._configuration = configuration;
+            _fileService = fileService;
         }
 
         public async Task<int> createUser(User user)
@@ -310,6 +312,60 @@ namespace Api.Services
                 return true;
             }
             return false;
+        }
+
+        public async Task<Boolean> AddOrChangePfp(string userid,IFormFile image)
+        {
+            var user = await _users.Find(x => x._id == userid).FirstOrDefaultAsync();
+            if (user == null)
+                return false;
+            var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "Files", userid);
+            if (!Directory.Exists(folderPath))
+                Directory.CreateDirectory(folderPath);
+            var filename = image.FileName;
+            var ext = Path.GetExtension(filename).ToLowerInvariant();
+            var name ="PFP - " + user._id;
+            var fullPath = Path.Combine(folderPath, name+ext);
+            if (System.IO.File.Exists(fullPath))
+                System.IO.File.Delete(fullPath);
+            using (var stream = new FileStream(fullPath, FileMode.Create))
+            {
+                await image.CopyToAsync(stream);
+            }
+            var f = new Models.File();
+            f.path = fullPath;
+            f._id = "";
+            f = await _fileService.add(f);
+            user.pfp = f;
+            await _users.ReplaceOneAsync(x => x._id == user._id, user);
+            return true;
+        }
+
+        public async Task<UserSend> GetUserData(string username)
+        {
+            var user = await _users.Find(x => x.username == username).FirstOrDefaultAsync();
+            if(user == null)
+                return null;
+            var tosend = new UserSend();
+            tosend.pfp = user.pfp;
+            tosend.username = user.username;
+            tosend._id= user._id;
+            tosend.creationDate = user.creationDate;
+            tosend.email="";
+            return tosend;
+        }
+        public async Task<UserSend> GetSelfUserData(string id)
+        {
+            var user = await _users.Find(x => x._id == id).FirstOrDefaultAsync();
+            if (user == null)
+                return null;
+            var tosend = new UserSend();
+            tosend.pfp = user.pfp;
+            tosend.username = user.username;
+            tosend._id = user._id;
+            tosend.creationDate = user.creationDate;
+            tosend.email = user.email;
+            return tosend;
         }
     }
 }
