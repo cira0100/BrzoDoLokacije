@@ -5,6 +5,7 @@ import android.util.Log
 import android.widget.Adapter
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.brzodolokacije.Adapters.CommentsAdapter
@@ -123,6 +124,11 @@ class ActivitySinglePost : AppCompatActivity() {
             if(binding.NewComment.text.isNotEmpty()){
                 val comment=CommentReceive(binding.NewComment.text.toString(),"")
                 requestAddComment(comment)
+
+
+            }
+            else{
+                Toast.makeText(this@ActivitySinglePost,"Unesite tekst komentara.",Toast.LENGTH_LONG).show()
             }
         }
 
@@ -136,9 +142,7 @@ class ActivitySinglePost : AppCompatActivity() {
             override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
                 if(response.isSuccessful){
                     requestGetComments()
-                    Toast.makeText(
-                        this@ActivitySinglePost, "prosao zahtev", Toast.LENGTH_LONG
-                    ).show()
+                    binding.NewComment.text.clear()
                 }else{
                     if(response.errorBody()!=null)
                         Log.d("main1",response.message().toString())

@@ -174,8 +174,9 @@
 
             <ImageButton
                 android:id="@+id/rateStar1"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="30dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical"
                 android:scaleType="centerCrop"
                 android:layout_weight="1"
                 android:backgroundTint="@color/white"
@@ -183,8 +184,9 @@
 
             <ImageButton
                 android:id="@+id/rateStar2"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="30dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical"
                 android:scaleType="centerCrop"
                 android:layout_weight="1"
                 android:backgroundTint="@color/white"
@@ -192,8 +194,9 @@
 
             <ImageButton
                 android:id="@+id/rateStar3"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="30dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical"
                 android:scaleType="centerCrop"
                 android:layout_weight="1"
                 android:backgroundTint="@color/white"
@@ -201,8 +204,9 @@
 
             <ImageButton
                 android:id="@+id/rateStar4"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="30dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical"
                 android:scaleType="centerCrop"
                 android:layout_weight="1"
                 android:backgroundTint="@color/white"
@@ -210,8 +214,9 @@
 
             <ImageButton
                 android:id="@+id/rateStar5"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
+                android:layout_width="30dp"
+                android:layout_height="40dp"
+                android:layout_gravity="center_vertical"
                 android:scaleType="centerCrop"
                 android:layout_weight="1"
                 android:backgroundTint="@color/white"
@@ -219,12 +224,14 @@
 
             <Button
                 android:id="@+id/submitRating"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="30dp"
+                android:layout_height="40dp"
                 android:layout_weight="1"
                 android:backgroundTint="@color/white"
-                android:text="oceni"
-                android:textColor="@color/black" />
+                android:text="ok"
+                android:layout_gravity="center_vertical"
+                android:textColor="@color/black"
+                />
         </LinearLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
@@ -247,8 +254,11 @@
 
                 <ImageButton
                     android:id="@+id/btnPostComment"
-                    android:layout_width="wrap_content"
-                    android:layout_height="50dp" />
+                    android:layout_width="50dp"
+                    android:scaleType="fitCenter"
+                    android:layout_height="50dp"
+                    android:src="@drawable/post_comment"
+                    android:backgroundTint="@color/white"/>
             </LinearLayout>
 
 
@@ -274,11 +284,11 @@
                 android:id="@+id/rvComments"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/tvCommentLabel">
+                app:layout_constraintTop_toBottomOf="@id/tvCommentLabel"
+                android:nestedScrollingEnabled="false">
 
             </androidx.recyclerview.widget.RecyclerView>
         </androidx.constraintlayout.widget.ConstraintLayout>
-
     </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>

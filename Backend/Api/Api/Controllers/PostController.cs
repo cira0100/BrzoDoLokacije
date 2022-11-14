@@ -89,11 +89,12 @@ namespace Api.Controllers
 
         [HttpPost("posts/{id}/addcomment")]
         [Authorize(Roles = "User")]
-        public async Task<ActionResult> addComment([FromBody] CommentReceive cmnt,string id)
+        public async Task<ActionResult<Comment>> addComment([FromBody] CommentReceive cmnt,string id)
         {
             var userid = await _userService.UserIdFromJwt();
-            if (await _postService.AddComment(cmnt,userid,id))
-                return Ok();
+            var c = await _postService.AddComment(cmnt, userid, id);
+            if (c != null)
+                return Ok(c);
             return BadRequest();
         }
 

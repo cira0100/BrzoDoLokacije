@@ -23,6 +23,8 @@ namespace Api.Interfaces
         Task<Boolean> ResetPassword(ResetPass rp);
         Task<Boolean> CheckVerification(Login login);
         Task<Boolean> VerifyFromToken(string token);
-
+        Task<Boolean> AddOrChangePfp(string userid, IFormFile image);
+        Task<UserSend> GetUserData(string username);
+        Task<UserSend> GetSelfUserData(string id);
     }
 }
