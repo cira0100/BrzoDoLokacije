@@ -52,6 +52,7 @@ class FragmentProfile : Fragment(R.layout.fragment_profile) {
     private lateinit var showMyData: Button
     private lateinit var showMyRecensions: Button
     private lateinit var profilePicture: ShapeableImageView
+    private lateinit var profilePicturePlus: ShapeableImageView
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -67,6 +68,7 @@ class FragmentProfile : Fragment(R.layout.fragment_profile) {
         showMyData=view.findViewById<View>(R.id.btnFragmentProfileShowMyData) as Button
         showMyRecensions=view.findViewById<View>(R.id.btnFragmentProfileShowMyRecensions) as Button
         profilePicture=view.findViewById<View>(R.id.tvFragmentProfileProfilePicture) as ShapeableImageView
+        profilePicturePlus=view.findViewById<View>(R.id.tvFragmentProfileProfilePicturePlus) as ShapeableImageView
         //podaci iz baze
 
 
@@ -94,6 +96,9 @@ class FragmentProfile : Fragment(R.layout.fragment_profile) {
 
             fm.replace(R.id.flFragmentProfileFragmentContainer, FragmentMyRecensions())
             fm.commit()
+        }
+        profilePicturePlus.setOnClickListener{
+            addProfilePicture()
         }
         profilePicture.setOnClickListener{
             addProfilePicture()

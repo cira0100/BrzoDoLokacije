@@ -75,6 +75,24 @@
             app:layout_constraintVertical_bias="1.0"
             app:shapeAppearanceOverlay="@style/imageViewCircle" />
 
+
+        <com.google.android.material.imageview.ShapeableImageView
+            android:id="@+id/tvFragmentProfileProfilePicturePlus"
+            android:layout_width="30dp"
+            android:layout_height="100dp"
+            android:layout_margin="5dp"
+            android:adjustViewBounds="true"
+            android:elevation="25dp"
+            android:src="@drawable/add_profile_picture_plus_color"
+            android:visibility="visible"
+            app:layout_constraintBottom_toTopOf="@+id/tvFragmentProfileInfoContainer"
+            app:layout_constraintEnd_toEndOf="@+id/tvFragmentProfileProfilePicture"
+            app:layout_constraintHorizontal_bias="0.8"
+            app:layout_constraintStart_toStartOf="@+id/tvFragmentProfileProfilePicture"
+            app:layout_constraintTop_toTopOf="@+id/tvFragmentProfileProfilePicture"
+            app:layout_constraintVertical_bias="1.0"
+            app:shapeAppearanceOverlay="@style/imageViewCircle" />
+
         <TableLayout
             android:id="@+id/tableLayout"
             android:layout_width="323dp"
@@ -158,6 +176,7 @@
                     android:text="40" />
             </TableRow>
         </TableLayout>
+
 
         <View
             android:id="@+id/divider"
