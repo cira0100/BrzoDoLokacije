@@ -89,211 +89,28 @@
             app:iconTint="#333D70" />
 
     </androidx.cardview.widget.CardView>
-    <!--***************************SCROLL****************************************-->
 
-    <ScrollView
-        android:id="@+id/svFragmentHomePageMainScroll"
-        android:layout_width="0dp"
+    <!--***************************SCROLL****************************************-->
+    <ImageView
+        android:id="@+id/btnFragmentHomePageBack"
+        android:layout_width="63dp"
+        android:layout_height="40dp"
+        android:clickable="true"
+        android:src="@drawable/ic_baseline_arrow_back_24"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/cvFragmentHomePageSearch" />
+
+    <FrameLayout
+        android:id="@+id/flFragmentHomePageMainContent"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
         android:layout_marginEnd="16dp"
+        android:layout_marginBottom="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/cvFragmentHomePageSearch"
-        app:layout_constraintVertical_bias="0.0">
+        app:layout_constraintTop_toBottomOf="@+id/btnFragmentHomePageBack">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="parent"
-            app:layout_constraintVertical_bias="0.0">
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cvFragmentHomePageText1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                >
-
-                <TextView
-                    android:id="@+id/tvFragmentHomePagePopular"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="left"
-                    android:text="Popularno"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tvFragmentHomePagePopularShowAll"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:clickable="true"
-                    android:text="Prikaži sve"
-
-                    tools:ignore="TouchTargetSizeCheck" />
-
-            </androidx.cardview.widget.CardView>
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvFragmentHomePagePopular"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="16dp"
-            />
-            <HorizontalScrollView
-                android:id="@+id/hsvFragmentHomePageLocationButtonScroll"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-
-                >
-
-                <LinearLayout
-                    android:id="@+id/llFragmentHomePageLocationButtonLayout"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent">
-
-                    <ImageButton
-                        android:id="@+id/imageButton4"
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:layout_marginRight="10dp"
-                        android:background="@drawable/location_city"
-                        tools:ignore="SpeakableTextPresentCheck" />
-
-                    <ImageButton
-                        android:id="@+id/imageButton6"
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:layout_marginRight="10dp"
-                        android:background="@drawable/location_beach"
-                        tools:ignore="SpeakableTextPresentCheck" />
-
-                    <ImageButton
-                        android:id="@+id/imageButton5"
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:layout_marginRight="10dp"
-                        android:background="@drawable/location_mountain"
-                        tools:ignore="SpeakableTextPresentCheck" />
-
-                    <ImageButton
-                        android:id="@+id/imageView8"
-                        android:layout_width="60dp"
-                        android:layout_height="match_parent"
-                        android:layout_marginRight="10dp"
-                        android:background="@drawable/location_lake"
-                        tools:ignore="SpeakableTextPresentCheck" />
-
-                    <ImageButton
-                        android:id="@+id/imageButton16"
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:layout_marginRight="10dp"
-                        android:background="@drawable/location_spa"
-                        tools:ignore="SpeakableTextPresentCheck" />
-
-                    <ImageButton
-                        android:id="@+id/imageButton7"
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:layout_marginRight="10dp"
-                        android:background="@drawable/location_waterfall"
-                        tools:ignore="SpeakableTextPresentCheck" />
-
-                    <ImageButton
-                        android:id="@+id/imageButton11"
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:layout_marginRight="10dp"
-                        android:background="@drawable/location_amusement_park"
-                        tools:ignore="SpeakableTextPresentCheck" />
-
-                    <ImageButton
-                        android:id="@+id/imageButton10"
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:layout_marginRight="10dp"
-                        android:background="@drawable/location_attraction"
-                        tools:ignore="SpeakableTextPresentCheck" />
-
-                    <ImageButton
-                        android:id="@+id/imageButton15"
-                        android:layout_width="60dp"
-                        android:layout_height="60dp"
-                        android:layout_marginRight="10dp"
-                        android:background="@drawable/location_landmark"
-                        tools:ignore="SpeakableTextPresentCheck" />
-
-                </LinearLayout>
-            </HorizontalScrollView>
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cvFragmentHomePageText2"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp">
-
-                <TextView
-                    android:id="@+id/tvFragmentHomePageNewest"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Najnovije"
-                    android:textStyle="bold"
-                    android:layout_gravity="left"
-                    />
-
-                <TextView
-                    android:id="@+id/tvFragmentHomePageNewestShowAll"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:clickable="true"
-                    android:text="Prikaži sve"
-               />
-            </androidx.cardview.widget.CardView>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvFragmentHomePageNewest"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-            <androidx.cardview.widget.CardView
-                android:id="@+id/cvFragmentHomePageText3"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="16dp">
-
-                <TextView
-                    android:id="@+id/tvFragmentHomePageBestRated"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Najposećenije"
-                    android:textStyle="bold"
-                    android:layout_gravity="left"
-                    />
-
-                <TextView
-                    android:id="@+id/tvFragmentHomePageBestRatedShowAll"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:clickable="true"
-                    android:text="Prikaži sve"
-                    />
-            </androidx.cardview.widget.CardView>
-
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvFragmentHomePageBestRated"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content" />
-
-        </LinearLayout>
-
-    </ScrollView>
-
+    </FrameLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
