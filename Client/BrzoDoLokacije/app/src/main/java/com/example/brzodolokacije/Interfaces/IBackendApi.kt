@@ -1,11 +1,10 @@
 package com.example.brzodolokacije.Interfaces
 
+import com.example.brzodolokacije.Models.*
 import com.example.brzodolokacije.Models.Auth.JustMail
 import com.example.brzodolokacije.Models.Auth.Login
 import com.example.brzodolokacije.Models.Auth.Register
 import com.example.brzodolokacije.Models.Auth.ResetPass
-import com.example.brzodolokacije.Models.Location
-import com.example.brzodolokacije.Models.PostPreview
 import okhttp3.MultipartBody
 import okhttp3.Request
 import okhttp3.RequestBody
@@ -36,7 +35,25 @@ interface IBackendApi {
                                                             ,@Part("description") description:RequestBody
                                                             ,@Part("locationId") locationId:RequestBody
                                                             ):Call<PostPreview>
+    @POST("api/Post/posts/{id}/addrating")
+    fun addRating(@Header("Authorization") authHeader:String,@Path("id") id:String,@Body rating: RatingReceive):Call<ResponseBody>
+    @POST("api/Post/posts/{id}/addcomment")
+    fun addComment(@Header("Authorization") authHeader:String,@Path("id") id:String,@Body rating: CommentReceive):Call<ResponseBody>
+    @GET("api/Post/posts/{id}/listcomments")
+    fun getComments(@Header("Authorization") authHeader:String,@Path("id") id:String):Call<MutableList<CommentSend>>
 
-    //@POST("putanja")
+
+    @Multipart
+    @POST("/api/user/profile/pfp")
+    fun setPfp(@Header("Authorization") authHeader:String, @Part image: MultipartBody.Part):Call<ResponseBody>
+    @GET("/api/user/profile")
+    fun selfProfile(@Header("Authorization") authHeader:String):Call<UserReceive>
+    @GET("/api/user/{username}/profile")
+    fun getProfile(@Header("Authorization") authHeader:String,@Path("username") username:String):Call<UserReceive>
+
+    @GET("/api/user/posts")
+    fun getMyPosts(@Header("Authorization") authHeader:String):Call<MutableList<PostPreview>>
+
+//@POST("putanja")
     //fun add(@Body obj:Post,@Header("Authorization") authHeader:String):Call<Post>
 }

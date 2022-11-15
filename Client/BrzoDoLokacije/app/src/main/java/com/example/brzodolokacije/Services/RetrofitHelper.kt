@@ -7,8 +7,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 
 
 object RetrofitHelper {
-    //val baseUrl="http://10.0.2.2:5279"
-    val baseUrl="http://147.91.204.115:10082"
+    val baseUrl="http://10.0.2.2:5279"
+    //val baseUrl="http://147.91.204.115:10082"
     private var retrofit_noauth: IBackendApi? = null
     private var retrofit_auth: IBackendApi? = null
 

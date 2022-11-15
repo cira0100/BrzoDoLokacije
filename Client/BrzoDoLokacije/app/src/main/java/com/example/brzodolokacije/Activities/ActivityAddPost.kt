@@ -12,6 +12,7 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import com.example.brzodolokacije.Models.Location
 import com.example.brzodolokacije.Models.LocationType
 import com.example.brzodolokacije.Models.PostPreview
@@ -19,6 +20,7 @@ import com.example.brzodolokacije.R
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
@@ -52,7 +54,7 @@ class ActivityAddPost : AppCompatActivity() {
 
         //paths= ArrayList()
 
-        uploadFromGallery=findViewById<View>(R.id.btnActivityAddPostUploadFromGallery) as Button
+        uploadFromGallery=findViewById<View>(R.id.btnActivityAddPostUploadFromGalleryVisible) as Button
         showNextImage=findViewById<View>(R.id.nextImage) as Button
         showPreviousImage=findViewById<View>(R.id.previousImage) as Button
         switcher=findViewById<View>(R.id.isActivityAddPostSwitcher) as ImageSwitcher
@@ -139,6 +141,7 @@ class ActivityAddPost : AppCompatActivity() {
 
             //veci broj slika
             if (data!!.getClipData() != null) {
+
                 var count = data!!.clipData!!.itemCount
 
                 for (i in 0..count - 1) {
@@ -148,6 +151,7 @@ class ActivityAddPost : AppCompatActivity() {
 
                 // prikaz ucitanih
                 switcher.setImageURI(uploadedImages!![0])
+                uploadFromGallery.isVisible=false
                 place=0
                 //jedna slika
             } else if (data?.getData() != null) {
@@ -155,6 +159,7 @@ class ActivityAddPost : AppCompatActivity() {
 
                 //prikaz jedne ucitane
                 switcher.setImageURI(data.data!!)
+                uploadFromGallery.isVisible=false
             }
         }
     }
@@ -207,9 +212,9 @@ class ActivityAddPost : AppCompatActivity() {
         description.text.clear()
         //loc
         //desc
-        var locReq=RequestBody.create(MediaType.parse("text/plain"),loc)
-        var descReq=RequestBody.create(MediaType.parse("text/plain"),desc)
-        var idReq=RequestBody.create(MediaType.parse("text/plain"),"dsa")
+        var locReq=RequestBody.create("text/plain".toMediaTypeOrNull(),loc)
+        var descReq=RequestBody.create("text/plain".toMediaTypeOrNull(),desc)
+        var idReq=RequestBody.create("text/plain".toMediaTypeOrNull(),"dsa")
         val imagesParts = arrayOfNulls<MultipartBody.Part>(
             uploadedImages!!.size
         )
@@ -224,7 +229,7 @@ class ActivityAddPost : AppCompatActivity() {
             file!!.writeBytes(inputStream!!.readBytes())
 
 
-            var imageBody=RequestBody.create(MediaType.parse("image/*"),file)
+            var imageBody=RequestBody.create("image/*".toMediaTypeOrNull(),file)
             imagesParts[i]=MultipartBody.Part.createFormData("images",file.name,imageBody)
         }
         var jwtString= SharedPreferencesHelper.getValue("jwt",this)

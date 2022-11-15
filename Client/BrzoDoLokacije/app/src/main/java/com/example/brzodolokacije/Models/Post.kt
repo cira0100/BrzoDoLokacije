@@ -33,8 +33,9 @@ data class PostPreview (
     var description:String,
     var views:Int,
     var ratings:Float,
-    var comments:List<Comment>?,
+    var comments:List<CommentSend>?,
     var images:List<PostImage>
+    //nedostaju datum i vreme kreiranja
 ):Parcelable
 
 
@@ -46,7 +47,28 @@ data class Comment (
     var timeStamp: LocalDateTime
 ):Parcelable
 
+@Parcelize
+data class CommentSend(
+    var _id: String,
+    var userId: String,
+    var comment: String,
+    var parentId: String,
+    //var timestamp:LocalDateTime,
+    var username: String,
+    var replies: List<CommentSend>?
+):Parcelable
+
+data class CommentReceive(
+    var comment: String,
+    var parentId: String
+)
+
 data class Rating(
     var useridval :String,
     var rating:Int
+)
+
+data class RatingReceive(
+    var rating:Int,
+    var postId:String
 )

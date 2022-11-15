@@ -38,7 +38,7 @@ namespace Api.Services
             p.ratings = new List<Rating>();
             p.comments = new List<Comment>();
             p.images = new List<Models.File>();
-
+            p.createdAt = DateTime.Now.ToUniversalTime();
             var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "Files", p.ownerId);
             if (!Directory.Exists(folderPath))
             {
@@ -75,13 +75,13 @@ namespace Api.Services
         public async Task<PostSend> postToPostSend(Post post)
         {
             PostSend p = new PostSend();
-            //Convert post to post send (TODO)
             p._id = post._id;
             p.ownerId = post.ownerId;
             p.description = post.description;
             p.location = await _locationService.getById(post.locationId);
             p.images = post.images;
             p.views = post.views.Count();
+            p.createdAt = post.createdAt;
             if (post.ratings.Count() > 0)
             {
                 List<int> ratings = new List<int>();
@@ -164,7 +164,7 @@ namespace Api.Services
             }
             return false;
         }
-        public async Task<Boolean> AddComment(CommentReceive cmnt,string userid,string postid)
+        public async Task<Comment> AddComment(CommentReceive cmnt,string userid,string postid)
         {
             Post p = await _posts.Find(post => post._id == postid).FirstOrDefaultAsync();
             if (p != null)
@@ -177,9 +177,9 @@ namespace Api.Services
                 c._id = ObjectId.GenerateNewId().ToString();
                 p.comments.Add(c);
                 await _posts.ReplaceOneAsync(x => x._id == postid, p);
-                return true;
+                return c;
             }
-            return false;
+            return null;
         }
 
         public async Task<List<CommentSend>> ListComments(string postid)
@@ -274,6 +274,80 @@ namespace Api.Services
                     await CascadeDeleteComments(comment._id, p);
                 }             
             }
+        }
+        public async Task<PostSendPage> SearchPosts(string locid,int page = 0,int sorttype = 1 ,int filterdate = 1) // for now sorting by number of ratings , not avg rating
+        {
+            var days = DateEnumToDays(filterdate);
+            var tosend = new PostSendPage();
+            var pslista = new List<PostSend>();
+            var lista = new List<Post>();
+            var ls = new List<PostSend>();
+            var xd = new List<PostSend>();
+            lista = await _posts.Find(x => x.locationId == locid).ToListAsync();
+            if (lista != null)
+            {
+                foreach (var elem in lista)
+                {
+                    if ((DateTime.Now - elem.createdAt).TotalDays < days)
+                        ls.Add(await postToPostSend(elem));
+                }
+                
+            }
+            switch (sorttype)
+            {
+                case 1:
+                    xd = ls.OrderByDescending(x => x.views).ToList();
+                    break;
+                case 2:
+                    xd = ls.OrderByDescending(x => x.ratings).ToList();
+                    break;
+                case 3:
+                    xd = ls.OrderByDescending(x => x.createdAt).ToList();
+                    break;
+                default:
+
+                    break;
+            }
+            if(xd != null)
+            {
+                tosend.page = page;
+                tosend.index = page * 20;
+                tosend.totalposts = xd.Count();
+                double pgs = xd.Count / 20;
+                tosend.totalpages = (int)Math.Ceiling(pgs);
+                var selected = ls.Skip(20 * page).Take(20);
+                foreach(var post in selected)
+                {
+                    pslista.Add(post);
+                }
+                tosend.posts = pslista;
+            }
+            return tosend;
+        }
+        public int DateEnumToDays(int filterdate)
+        {
+            switch(filterdate)
+            {
+                case 1: return 365 * 10;
+                case 2: return 365;
+                case 3: return 90;
+                case 4: return 30;
+                case 5: return 7;
+                default: return 365 * 10;
+            }
+        }
+        public async Task<List<PostSend>> GetUsersPosts(string id)
+        {
+            var userposts = await _posts.Find(x => x.ownerId == id).ToListAsync();
+            if (userposts == null)
+                return null;
+            var tosend = new List<PostSend>();
+            foreach (var post in userposts)
+            {
+                var x = await postToPostSend(post);
+                tosend.Add(x);
+            }
+            return tosend;
         }
     }
 }

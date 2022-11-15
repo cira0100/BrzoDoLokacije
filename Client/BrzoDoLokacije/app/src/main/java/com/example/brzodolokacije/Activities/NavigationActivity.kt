@@ -7,6 +7,7 @@ import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.Fragment
 import com.example.brzodolokacije.Fragments.*
 import com.example.brzodolokacije.R
@@ -24,15 +25,17 @@ class NavigationActivity : AppCompatActivity() {
         Toast.makeText(
             applicationContext, "Open  ", Toast.LENGTH_LONG
         ).show();
+        val fragmentHomePage=FragmentHomePage()
         val fragmentShowPosts=FragmentShowPosts()
         val browseFragment=FragmentBrowse()
         val addPostFragment= FragmentAddNew()
         val profileFragment=FragmentProfile()
         val bottomNav=findViewById<View>(R.id.bottomNavigationView) as BottomNavigationView
-        setCurrentFragment(fragmentShowPosts)
+        setCurrentFragment(fragmentHomePage)
         bottomNav.setOnNavigationItemSelectedListener {
             when(it.itemId){
-                R.id.navHome->setCurrentFragment(fragmentShowPosts)
+                R.id.navHomePage->setCurrentFragment(fragmentHomePage)
+                R.id.navAllPosts->setCurrentFragment(fragmentShowPosts)
                 //R.id.navAddPost->setCurrentFragment(addPostFragment)
                 R.id.navAddPost->showBottomSheetAddNew()
                 R.id.navBrowse->setCurrentFragment(browseFragment)
@@ -93,6 +96,7 @@ class NavigationActivity : AppCompatActivity() {
         var newLocation=bottomSheetDialog.findViewById<View>(R.id.btnBottomSheetAddNewLocation) as ImageButton
 
         newPost.setOnClickListener{
+            bottomSheetDialog.dismiss()
             showBottomSheetAddPost()
         }
 

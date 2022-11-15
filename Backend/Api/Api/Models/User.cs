@@ -15,6 +15,7 @@ namespace Api.Models
         public Boolean verified { get; set; }
         public String password { get; set; }
         public DateTime creationDate { get; set; }
+        public File? pfp { get; set; }
     }
 
     public class Login
@@ -47,5 +48,15 @@ namespace Api.Models
         public String email { get; set; }
         public String password { get; set; }
         public String kod { get; set; }
+    }
+    public class UserSend
+    {
+        public String _id { get; set; }
+        public String name { get; set; }
+        public String username { get; set; }
+        public String email { get; set; }
+        public DateTime creationDate { get; set; }
+        public File? pfp { get; set; }
+        public int postcount { get; set; }
     }
 }

@@ -89,11 +89,12 @@ namespace Api.Controllers
 
         [HttpPost("posts/{id}/addcomment")]
         [Authorize(Roles = "User")]
-        public async Task<ActionResult> addComment([FromBody] CommentReceive cmnt,string id)
+        public async Task<ActionResult<Comment>> addComment([FromBody] CommentReceive cmnt,string id)
         {
             var userid = await _userService.UserIdFromJwt();
-            if (await _postService.AddComment(cmnt,userid,id))
-                return Ok();
+            var c = await _postService.AddComment(cmnt, userid, id);
+            if (c != null)
+                return Ok(c);
             return BadRequest();
         }
 
@@ -114,6 +115,17 @@ namespace Api.Controllers
             var userid = await _userService.UserIdFromJwt();
             if (await _postService.DeleteComments(id,cmntid,userid))
                 return Ok();
+            return BadRequest();
+        }
+        [HttpGet("locations/{id}/posts")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<List<PostSend>>> searchPosts(string id,int page=0,int sorttype=1,int  filterdate=1)
+        {
+            var res = await _postService.SearchPosts(id,page,sorttype,filterdate);
+            if (res != null)
+            {
+                return Ok(res);
+            }
             return BadRequest();
         }
     }

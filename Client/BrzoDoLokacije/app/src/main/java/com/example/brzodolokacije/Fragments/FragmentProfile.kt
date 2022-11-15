@@ -1,14 +1,32 @@
 package com.example.brzodolokacije.Fragments
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import com.bumptech.glide.Glide
+import com.example.brzodolokacije.Models.UserReceive
 import com.example.brzodolokacije.R
+import com.example.brzodolokacije.Services.RetrofitHelper
+import com.example.brzodolokacije.Services.SharedPreferencesHelper
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.imageview.ShapeableImageView
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.ResponseBody
+import retrofit2.Call
+import retrofit2.Response
+import java.io.File
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -35,6 +53,8 @@ class FragmentProfile : Fragment(R.layout.fragment_profile) {
     private lateinit var showMyPosts: Button
     private lateinit var showMyData: Button
     private lateinit var showMyRecensions: Button
+    private lateinit var profilePicture: ImageView
+    private lateinit var profilePicturePlus: MaterialButton
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -49,16 +69,15 @@ class FragmentProfile : Fragment(R.layout.fragment_profile) {
         showMyPosts=view.findViewById<View>(R.id.btnFragmentProfileShowMyPosts) as Button
         showMyData=view.findViewById<View>(R.id.btnFragmentProfileShowMyData) as Button
         showMyRecensions=view.findViewById<View>(R.id.btnFragmentProfileShowMyRecensions) as Button
+        profilePicture=view.findViewById<View>(R.id.tvFragmentProfileProfilePicture) as ImageView
+        profilePicturePlus=view.findViewById<View>(R.id.btnFragmentProfileProfilePicturePlus) as MaterialButton
         //podaci iz baze
 
 
 
         showMyPosts.setOnClickListener{
 
-            var fm: FragmentTransaction =childFragmentManager.beginTransaction()
-
-            fm.replace(R.id.flFragmentProfileFragmentContainer, FragmentUserPosts())
-            fm.commit()
+            openMyPosts()
         }
 
 
@@ -71,14 +90,104 @@ class FragmentProfile : Fragment(R.layout.fragment_profile) {
         }
 
         showMyRecensions.setOnClickListener{
-
+            getProfileInfo()
             var fm: FragmentTransaction =childFragmentManager.beginTransaction()
 
             fm.replace(R.id.flFragmentProfileFragmentContainer, FragmentMyRecensions())
             fm.commit()
         }
-
+        profilePicturePlus.setOnClickListener{
+            addProfilePicture()
+        }
+        getProfileInfo()
+        openMyPosts()
         return view
+    }
+    fun openMyPosts(){
+        var fm: FragmentTransaction =childFragmentManager.beginTransaction()
+
+        fm.replace(R.id.flFragmentProfileFragmentContainer, FragmentUserPosts())
+        fm.commit()
+    }
+
+    private fun addProfilePicture(){
+        val intent= Intent(Intent.ACTION_PICK)
+        intent.action = Intent.ACTION_GET_CONTENT
+        intent.type="image/*"
+        startActivityForResult(Intent.createChooser(intent,"Izaberi profilnu sliku"),201)
+    }
+    private fun uploadProfilePicture(imageUri:Uri){
+        val api =RetrofitHelper.getInstance()
+        var inputStream=requireActivity().getContentResolver().openInputStream(imageUri)
+        val file: File = File.createTempFile("temp","pfp")
+        file!!.writeBytes(inputStream!!.readBytes())
+        var imageReq=RequestBody.create("image/*".toMediaTypeOrNull(),file)
+        val imageBody: MultipartBody.Part = MultipartBody.Part.createFormData("image", file.name, imageReq)
+        val token= SharedPreferencesHelper.getValue("jwt", requireActivity())
+        val req=api.setPfp("Bearer "+token,imageBody)
+
+        req.enqueue(object : retrofit2.Callback<ResponseBody?> {
+            override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
+                if(response.isSuccessful()){
+                   getProfileInfo()
+                }else{
+                    if(response.errorBody()!=null)
+                        Toast.makeText(activity, response.errorBody()!!.string(), Toast.LENGTH_LONG).show();
+                }
+            }
+            override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
+                Toast.makeText(
+                    activity, t.toString(), Toast.LENGTH_LONG
+                ).show();
+            }
+        })
+    }
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        //nakon otvaranja
+        if(requestCode==201 && resultCode== AppCompatActivity.RESULT_OK){
+            var imageUri=data!!.data
+            uploadProfilePicture(imageUri!!)
+
+        }
+    }
+
+    private fun getProfileInfo(){
+        val authApi=RetrofitHelper.getInstance()
+        val token= SharedPreferencesHelper.getValue("jwt", requireActivity())
+        val request=authApi.selfProfile("Bearer "+token)
+
+        request.enqueue(object : retrofit2.Callback<UserReceive?> {
+            override fun onResponse(call: Call<UserReceive?>, response: Response<UserReceive?>) {
+                if(response.isSuccessful()){
+                     setUserInfo(response.body()!!)
+                }else{
+                    if(response.errorBody()!=null)
+                        Toast.makeText(activity, response.errorBody()!!.string(), Toast.LENGTH_LONG).show();
+                }
+            }
+            override fun onFailure(call: Call<UserReceive?>, t: Throwable) {
+                Toast.makeText(
+                    activity, t.toString(), Toast.LENGTH_LONG
+                ).show();
+            }
+        })
+    }
+    private fun setUserInfo(user:UserReceive){
+        name.setText(user.name)
+        username.setText("@"+user.username)
+        postsCount.setText(user.postcount.toString())
+
+        followersCount.setText("to do")
+        followingCount.setText("to do")
+
+        //Add Profile image
+        if(user.pfp!=null) {
+            Glide.with(requireActivity())
+                .load(RetrofitHelper.baseUrl + "/api/post/image/" + user.pfp!!._id)
+                .circleCrop()//Round image
+                .into(profilePicture)
+        }
     }
 
 
