@@ -1,14 +1,12 @@
 package com.example.brzodolokacije.Activities
 
 import android.Manifest
-import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.os.Environment
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
@@ -16,17 +14,26 @@ import android.widget.Button
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.Toast
-import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import androidx.core.content.FileProvider
 import androidx.core.view.isVisible
+import com.example.brzodolokacije.Models.Location
+import com.example.brzodolokacije.Models.LocationType
+import com.example.brzodolokacije.Models.PostPreview
 import com.example.brzodolokacije.R
+import com.example.brzodolokacije.Services.RetrofitHelper
+import com.example.brzodolokacije.Services.SharedPreferencesHelper
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import retrofit2.Call
+import retrofit2.Response
+import java.io.ByteArrayInputStream
+import java.io.ByteArrayOutputStream
 import java.io.File
-import java.text.SimpleDateFormat
-import java.util.*
+import java.io.InputStream
 
 
 class ActivityCapturePost : AppCompatActivity() {
@@ -38,12 +45,11 @@ class ActivityCapturePost : AppCompatActivity() {
     private lateinit var descriptionString: String
     private lateinit var post: Button
     private lateinit var showImage: ImageView
-    private var uploadedImages: ArrayList<Uri?>? = null
+    private var uploadedImages: Uri? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_capture_post)
-
         location = findViewById<View>(R.id.etActivityCapturePostLocation) as EditText
         description = findViewById<View>(R.id.etActivityCapturePostDescription) as EditText
         post = findViewById<View>(R.id.btnActivityCapturePostPost) as Button
@@ -126,27 +132,123 @@ class ActivityCapturePost : AppCompatActivity() {
             if (locationString.isEmpty()) {
                 location.hint = "Unesite lokaciju"
                 location.setHintTextColor(Color.RED)
-            }
+            }else
             if (descriptionString.isEmpty()) {
-                description.hint = "Unesite lokaciju"
+                description.hint = "Unesite opis"
                 description.setHintTextColor(Color.RED)
+            }else if(f!=null){
+                    uploadLocation()
             }
+
 
 
 
         }
     }
+
+    var f:File?=null
         private val cameraActivityResultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
             if (result.resultCode === RESULT_OK && result.data != null) {
                 val bundle = result.data!!.extras
                 val bitmap = bundle!!["data"] as Bitmap?
+                val outputStream = ByteArrayOutputStream()
+                bitmap!!.compress(Bitmap.CompressFormat.PNG,100,outputStream)
+                val bitmapdata = outputStream.toByteArray()
+                val inputstream: InputStream = ByteArrayInputStream(bitmapdata)
+                f=File.createTempFile("temp","12345")
+                f!!.writeBytes(inputstream!!.readBytes())
+
+
+
                 showImage.setImageBitmap(bitmap)
                 takePhoto.isVisible=false
 
             }
 
         }
+    fun uploadLocation() {
+        val api = RetrofitHelper.getInstance()
+        var loc: Location = Location("",locationString,"","","",0.0,0.0, LocationType.GRAD)
+        var jwtString= SharedPreferencesHelper.getValue("jwt",this)
+        var data=api.addLocation("Bearer "+jwtString,loc)
+
+
+        data.enqueue(object : retrofit2.Callback<Location?> {
+            override fun onResponse(call: Call<Location?>, response: Response<Location?>) {
+                if(response.isSuccessful()){
+                    Toast.makeText(
+                        applicationContext, "USPEH", Toast.LENGTH_LONG
+                    ).show();
+                    uploadPost(response.body()!!._id)
+                    Log.d("MAIN","RADI")
+                    Log.d("MAIN","RADI")
+
+                }else {
+
+                    if (response.errorBody() != null) {
+                        Log.d("Main",response.errorBody()!!.string())
+                    }
+                    Log.d("Main",response.message())
+                }
+
+
+            }
+
+            override fun onFailure(call: Call<Location?>, t: Throwable) {
+                Log.d("Main",t.toString())
+            }
+        })
+    }
+    fun uploadPost(loc:String){
+        val api = RetrofitHelper.getInstance()
+        var desc=descriptionString
+        description.text.clear()
+        //loc
+        //desc
+        var locReq= RequestBody.create("text/plain".toMediaTypeOrNull(),loc)
+        var descReq= RequestBody.create("text/plain".toMediaTypeOrNull(),desc)
+        var idReq= RequestBody.create("text/plain".toMediaTypeOrNull(),"dsa")
+        val imagesParts = arrayOfNulls<MultipartBody.Part>(
+            1
+        )
+
+            var imageBody= RequestBody.create("image/*".toMediaTypeOrNull(),f!!)
+            imagesParts[0]= MultipartBody.Part.createFormData("images",f!!.name,imageBody)
+
+        var jwtString= SharedPreferencesHelper.getValue("jwt",this)
+        var data=api.addPost("Bearer "+jwtString,imagesParts,idReq,descReq,locReq)
+
+
+        data.enqueue(object : retrofit2.Callback<PostPreview?> {
+            override fun onResponse(call: Call<PostPreview?>, response: Response<PostPreview?>) {
+                if(response.isSuccessful()){
+                    Toast.makeText(
+                        applicationContext, "USPEH", Toast.LENGTH_LONG
+                    ).show();
+                }else {
+
+                    if (response.errorBody() != null) {
+                        Toast.makeText(
+                            applicationContext,
+                            response.errorBody()!!.string(),
+                            Toast.LENGTH_LONG
+                        ).show();
+                        Log.d("Main",response.errorBody()!!.string())
+                    }
+                }
+
+
+            }
+
+            override fun onFailure(call: Call<PostPreview?>, t: Throwable) {
+                Toast.makeText(
+                    applicationContext, t.toString(), Toast.LENGTH_LONG
+                ).show();
+                Log.d("Main",t.toString())
+            }
+        })
+    }
     }
 
 
