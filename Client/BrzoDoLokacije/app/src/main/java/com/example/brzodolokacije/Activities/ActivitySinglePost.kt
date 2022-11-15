@@ -19,6 +19,7 @@ import okhttp3.ResponseBody
 import okhttp3.internal.notifyAll
 import retrofit2.Call
 import retrofit2.Response
+import kotlin.math.roundToInt
 
 
 class ActivitySinglePost : AppCompatActivity() {
@@ -192,6 +193,9 @@ class ActivitySinglePost : AppCompatActivity() {
         request.enqueue(object : retrofit2.Callback<ResponseBody?> {
             override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
                 if(response.isSuccessful){
+                    //zasad hardkodovano, zameniti te vrednosti sa brojem ocena kada se doda
+                    post.ratings=((post.ratings)*10+rating.rating)/11
+                    binding.tvRating.text=String.format("%.2f",post.ratings)
                     Toast.makeText(
                         this@ActivitySinglePost, "prosao zahtev", Toast.LENGTH_LONG
                     ).show()
