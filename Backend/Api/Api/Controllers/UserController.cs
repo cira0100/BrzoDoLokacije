@@ -55,5 +55,14 @@ namespace Api.Controllers
                 return Ok(rez);
             return BadRequest();
         }
+        [HttpGet("{id}/profile")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<UserSend>> GetUserById(string id)
+        {
+            var rez = await _userService.getUserById(id);
+            if (rez != null)
+                return Ok(rez);
+            return BadRequest();
+        }
     }
 }

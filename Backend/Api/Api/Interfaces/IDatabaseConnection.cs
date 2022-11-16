@@ -8,5 +8,6 @@
         string PostCollectionName { get; set; }
         string FileCollectionName { get; set; }
         string LocationCollectionName { get; set; }
+        string MessageCollectionname { get; set; }
     }
 }
