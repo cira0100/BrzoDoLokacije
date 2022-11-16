@@ -5,7 +5,7 @@ using MongoDB.Driver;
 
 namespace Api.Services
 {
-    public class MessageService
+    public class MessageService : IMessageService
     {
         private readonly IHttpContextAccessor _httpContext;
         private readonly IMongoCollection<Message> _messages;
@@ -15,11 +15,15 @@ namespace Api.Services
         public MessageService(IDatabaseConnection settings, IMongoClient mongoClient, IJwtService jwtService, IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
         {
             var database = mongoClient.GetDatabase(settings.DatabaseName);
-            _messages= database.GetCollection<Message>(settings.UserCollectionName);
+            _messages = database.GetCollection<Message>(settings.MessageCollectionname);
             _jwtService = jwtService;
+            _httpContext = httpContextAccessor;
+            _configuration = configuration;
         }
         public async Task<Message> addMessage(MessageReceive msg)
         {
+            if (_httpContext.HttpContext.User.FindFirstValue("id") == null)
+                return null;
             var senderId = _httpContext.HttpContext.User.FindFirstValue("id").ToString();
             if (senderId == null)
                 return null;
@@ -28,17 +32,19 @@ namespace Api.Services
             tempMsg.receiverId = msg.receiverId;
             tempMsg.senderId = senderId;
             tempMsg.messagge = msg.messagge;
-            tempMsg.timestamp= DateTime.Now.ToUniversalTime();
+            tempMsg.timestamp = DateTime.Now.ToUniversalTime();
 
+
+            //TODO if user online send thru socket
             await _messages.InsertOneAsync(tempMsg);
 
             return tempMsg;
         }
         public MessageSend messageToMessageSend(Message msg)
         {
-            var tempMsg=new MessageSend();
+            var tempMsg = new MessageSend();
             tempMsg.senderId = msg.senderId;
-            tempMsg.messagge=msg.messagge;
+            tempMsg.messagge = msg.messagge;
             tempMsg.timestamp = msg.timestamp;
             return tempMsg;
         }
@@ -52,7 +58,7 @@ namespace Api.Services
             foreach (var message in messages)
             {
                 tempMessages.Add(messageToMessageSend(message));
-                _messages.DeleteOne(msg=>msg._id==message._id);
+                _messages.DeleteOne(msg => msg._id == message._id);
             }
             return tempMessages;
         }
