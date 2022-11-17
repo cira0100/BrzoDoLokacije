@@ -19,6 +19,7 @@ namespace Api.Services
             if (id == null)
                 return;
             Users.Add(Context.ConnectionId, id);
+            
             //await SendDirect(id, "poruka");
             //await Send(Context.ConnectionId);
             await base.OnConnectedAsync();
@@ -38,6 +39,17 @@ namespace Api.Services
             }
             return keys;
         }
+        public static bool CheckUser(string id)
+        {
+            var users = Users.Values;
+            foreach (var user in users)
+            {
+                if (user == id)
+                    return true;
+            }
+            return false;
+        }
+
     }
 }
 //private readonly IHubContext<ChatHub> _ichat;

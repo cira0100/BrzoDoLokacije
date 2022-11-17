@@ -24,7 +24,7 @@ namespace Api.Controllers
         }
         [HttpPost("add")]
         [Authorize(Roles = "User")]
-        public async Task<ActionResult<MessageSend>> addMessage([FromBody] MessageReceive msg)
+        public async Task<ActionResult<Message>> addMessage([FromBody] MessageReceive msg)
         {
             var msgTemp = await _messageService.addMessage(msg);
             if(msgTemp == null)

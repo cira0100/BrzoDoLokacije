@@ -1,6 +1,7 @@
 ﻿using System.Security.Claims;
 using Api.Interfaces;
 using Api.Models;
+using Microsoft.AspNetCore.SignalR;
 using MongoDB.Driver;
 
 namespace Api.Services
@@ -11,14 +12,15 @@ namespace Api.Services
         private readonly IMongoCollection<Message> _messages;
         private readonly IJwtService _jwtService;
         private IConfiguration _configuration;
-        private readonly IFileService _fileService;
-        public MessageService(IDatabaseConnection settings, IMongoClient mongoClient, IJwtService jwtService, IHttpContextAccessor httpContextAccessor, IConfiguration configuration)
+        private readonly IHubContext<ChatHub> _chatHub;
+        public MessageService(IDatabaseConnection settings, IMongoClient mongoClient, IJwtService jwtService, IHttpContextAccessor httpContextAccessor, IConfiguration configuration,IHubContext<ChatHub> chatHub)
         {
             var database = mongoClient.GetDatabase(settings.DatabaseName);
             _messages = database.GetCollection<Message>(settings.MessageCollectionname);
             _jwtService = jwtService;
             _httpContext = httpContextAccessor;
             _configuration = configuration;
+            _chatHub = chatHub;
         }
         public async Task<Message> addMessage(MessageReceive msg)
         {
@@ -33,10 +35,21 @@ namespace Api.Services
             tempMsg.senderId = senderId;
             tempMsg.messagge = msg.messagge;
             tempMsg.timestamp = DateTime.Now.ToUniversalTime();
+            if (ChatHub.CheckUser(msg.receiverId))
+            {
+                //user online
+                var temp =messageToMessageSend(tempMsg); 
+                foreach (var connection in ChatHub.getAllConnectionsOfUser(msg.receiverId))
+                    await _chatHub.Clients.Client(connection).SendAsync("Message",temp);
 
+            }
+            else
+            {
+                //user offline
+                await _messages.InsertOneAsync(tempMsg);
 
-            //TODO if user online send thru socket
-            await _messages.InsertOneAsync(tempMsg);
+            }
+            
 
             return tempMsg;
         }
