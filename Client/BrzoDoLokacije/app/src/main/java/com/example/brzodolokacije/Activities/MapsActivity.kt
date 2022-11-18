@@ -78,7 +78,7 @@ class MapsActivity : AppCompatActivity() {
         }
         confirmButton.setOnClickListener{
             if(locLatitude!=null && locLatitude!=null)
-            returnValue()
+                returnValue()
         }
         searchBar.setOnKeyListener(View.OnKeyListener { v1, keyCode, event -> // If the event is a key-down event on the "enter" button
             if (event.action === KeyEvent.ACTION_DOWN &&

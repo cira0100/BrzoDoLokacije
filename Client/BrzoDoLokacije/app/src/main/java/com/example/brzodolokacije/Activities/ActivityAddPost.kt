@@ -17,16 +17,15 @@ import com.example.brzodolokacije.Models.Location
 import com.example.brzodolokacije.Models.LocationType
 import com.example.brzodolokacije.Models.PostPreview
 import com.example.brzodolokacije.R
+import com.example.brzodolokacije.Services.GeocoderHelper
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Response
 import java.io.File
-import java.io.IOException
 
 
 class ActivityAddPost : AppCompatActivity() {
@@ -42,6 +41,11 @@ class ActivityAddPost : AppCompatActivity() {
     private lateinit var locationString:String
     private lateinit var descriptionString:String
     private lateinit var post:Button
+    private lateinit var addLocation:Button
+    val incorectCoord:Double=1000.0
+    val LOCATIONREQCODE=123
+    var longitude:Double=incorectCoord
+    var latitude:Double=incorectCoord
     //private var paths :ArrayList<String?>?=null
     private var place=0;
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -61,6 +65,7 @@ class ActivityAddPost : AppCompatActivity() {
         location=findViewById<View>(R.id.etActivityAddPostLocation) as EditText
         description=findViewById<View>(R.id.etActivityAddPostDescription) as EditText
         post=findViewById<View>(R.id.btnActivityAddPostPost) as Button
+        addLocation=findViewById<View>(R.id.btnActivityAddPostAddLocation) as Button
 
 
         switcher?.setFactory{
@@ -68,6 +73,10 @@ class ActivityAddPost : AppCompatActivity() {
             imgView.scaleType = ImageView.ScaleType.CENTER_CROP
             imgView.setPadding(8, 8, 8, 8)
             imgView}
+        addLocation.setOnClickListener {
+            val myIntent = Intent(this, MapsActivity::class.java)
+            startActivityForResult(myIntent,LOCATIONREQCODE)
+        }
 
         //dodavanje iz galerije
         uploadFromGallery.setOnClickListener{
@@ -116,7 +125,7 @@ class ActivityAddPost : AppCompatActivity() {
             descriptionString=description.text.toString().trim()
             //prazan unos?
             if(locationString.isEmpty()) {
-                location.hint="Unesite lokaciju"
+                location.hint="Unesite naziv lokaciju"
                 location.setHintTextColor(Color.RED)
             }
             if(descriptionString.isEmpty()) {
@@ -124,7 +133,7 @@ class ActivityAddPost : AppCompatActivity() {
                 description.setHintTextColor(Color.RED)
             }
 
-            if(!locationString.isEmpty() && !descriptionString.isEmpty()){
+            if(!locationString.isEmpty() && !descriptionString.isEmpty() && longitude!=incorectCoord && latitude!=incorectCoord){
                 sendPost()
             }
         }
@@ -162,14 +171,26 @@ class ActivityAddPost : AppCompatActivity() {
                 uploadFromGallery.isVisible=false
             }
         }
+        if(requestCode==LOCATIONREQCODE && resultCode== RESULT_OK){
+            var bundle=data!!.extras
+            longitude=bundle!!.getDouble("longitude",incorectCoord)
+            latitude=bundle!!.getDouble("latitude",incorectCoord)
+        }
     }
     private fun sendPost(){
         uploadLocation()
 
     }
     fun uploadLocation() {
+        //TO DO SEARCH EXISTING LOCATION FROM DB
+        //IF NOT EXISTS ADD NEW LOCATION
         val api =RetrofitHelper.getInstance()
-        var loc:Location=Location("",locationString,"","","",0.0,0.0,LocationType.GRAD)
+        var geocoder=GeocoderHelper.getInstance()
+        var loc1=geocoder!!.getFromLocation(latitude,longitude,1)
+        var countryName=loc1[0].countryName
+        var address="todo not possible in query"
+        var city=loc1[0].adminArea//not possible
+        var loc:Location=Location("",locationString,city,countryName,address,latitude,longitude,LocationType.GRAD)
         var jwtString= SharedPreferencesHelper.getValue("jwt",this)
         var data=api.addLocation("Bearer "+jwtString,loc)
 
@@ -177,12 +198,11 @@ class ActivityAddPost : AppCompatActivity() {
         data.enqueue(object : retrofit2.Callback<Location?> {
             override fun onResponse(call: Call<Location?>, response: Response<Location?>) {
                 if(response.isSuccessful()){
+
+                    uploadPost(response.body()!!._id)
                     Toast.makeText(
                         applicationContext, "USPEH", Toast.LENGTH_LONG
                     ).show();
-                    uploadPost(response.body()!!._id)
-                    Log.d("MAIN","RADI")
-                    Log.d("MAIN","RADI")
 
                 }else {
 
@@ -190,7 +210,6 @@ class ActivityAddPost : AppCompatActivity() {
                         Log.d("Main",response.errorBody()!!.string())
                         Log.d("Main",response.message())
                     }
-                    Log.d("Main","sadadsa")
                     Log.d("Main",response.errorBody()!!.string())
                     Log.d("Main",response.message())
                 }
