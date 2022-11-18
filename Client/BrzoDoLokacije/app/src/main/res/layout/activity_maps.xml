@@ -33,6 +33,23 @@
         app:rippleColor="#FFFFFF"
         app:srcCompat="@android:drawable/ic_menu_mylocation" />
 
+    <com.google.android.material.floatingactionbutton.FloatingActionButton
+        android:id="@+id/ActivityMapsConfirmLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_marginBottom="80dp"
+        android:layout_marginLeft="10dp"
+        android:backgroundTint="#FFFFFF"
+        android:clickable="true"
+        android:focusable="true"
+        android:tint="#FFFFFF"
+        app:layout_constraintBottom_toBottomOf="@+id/ActivityMapsMapView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:rippleColor="#FFFFFF"
+        app:srcCompat="@drawable/ic_baseline_check_24"
+        android:visibility="invisible"/>
+
     <androidx.cardview.widget.CardView
         android:id="@+id/ActivityMapsCardViewSearch"
         android:layout_width="0dp"

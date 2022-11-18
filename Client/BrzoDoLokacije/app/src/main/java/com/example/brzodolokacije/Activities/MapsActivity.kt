@@ -3,7 +3,6 @@ package com.example.brzodolokacije.Activities
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
-import android.graphics.Canvas
 import android.location.Location
 import android.location.LocationManager
 import android.os.Build
@@ -12,6 +11,7 @@ import android.os.Looper
 import android.os.StrictMode
 import android.preference.PreferenceManager
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
@@ -30,7 +30,10 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.Projection
-import org.osmdroid.views.overlay.*
+import org.osmdroid.views.overlay.ItemizedIconOverlay
+import org.osmdroid.views.overlay.Overlay
+import org.osmdroid.views.overlay.OverlayItem
+import org.osmdroid.views.overlay.ScaleBarOverlay
 import org.osmdroid.views.overlay.compass.CompassOverlay
 import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay
@@ -47,8 +50,11 @@ class MapsActivity : AppCompatActivity() {
     private lateinit var locationManager: LocationManager
     private lateinit var searchButton: MaterialButton
     private lateinit var gpsButton: FloatingActionButton
+    private lateinit var confirmButton: FloatingActionButton
     private lateinit var searchBar: TextInputEditText
     var client: FusedLocationProviderClient? = null
+    var locLongitude:Double?=null
+    var locLatitude:Double?=null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
@@ -60,6 +66,7 @@ class MapsActivity : AppCompatActivity() {
         setUpMap()
         searchButton=findViewById<View>(R.id.ActivityMapsSearchButton) as MaterialButton
         gpsButton=findViewById<View>(R.id.ActivityMapsMyLocation) as FloatingActionButton
+        confirmButton=findViewById<View>(R.id.ActivityMapsConfirmLocation) as FloatingActionButton
         searchBar=findViewById<View>(R.id.ActivityMapsSearchBar) as TextInputEditText
         client= LocationServices.getFusedLocationProviderClient(this)
         searchButton.setOnClickListener{
@@ -68,6 +75,10 @@ class MapsActivity : AppCompatActivity() {
         }
         gpsButton.setOnClickListener{
             getLocation()
+        }
+        confirmButton.setOnClickListener{
+            if(locLatitude!=null && locLatitude!=null)
+            returnValue()
         }
         searchBar.setOnKeyListener(View.OnKeyListener { v1, keyCode, event -> // If the event is a key-down event on the "enter" button
             if (event.action === KeyEvent.ACTION_DOWN &&
@@ -83,7 +94,15 @@ class MapsActivity : AppCompatActivity() {
 
 
     }
-
+    fun returnValue(){
+        val intent = intent
+        val bundle = Bundle()
+        bundle.putDouble("longitude", locLongitude!!)
+        bundle.putDouble("latitude", locLatitude!!)
+        intent.putExtras(bundle)
+        setResult(RESULT_OK, intent)
+        finish()
+    }
 
     override fun onResume() {
         super.onResume()
@@ -138,6 +157,10 @@ class MapsActivity : AppCompatActivity() {
                 val loc = proj.fromPixels(e.x.toInt(), e.y.toInt())
                 val longitude = java.lang.Double.toString(loc.longitudeE6.toDouble() / 1000000)
                 val latitude = java.lang.Double.toString(loc.latitudeE6.toDouble() / 1000000)
+                locLongitude=loc.longitude
+                locLatitude=loc.latitude
+                Log.d("main"," "+locLongitude)
+                Log.d("main"," "+locLatitude)
                 val overlayArray = ArrayList<OverlayItem>()
                 val mapItem = OverlayItem(
                     "", "", GeoPoint(
@@ -160,6 +183,7 @@ class MapsActivity : AppCompatActivity() {
                     mapView.overlays.add(anotherItemizedIconOverlay)
                 }
                 //      dlgThread();
+                confirmButton.visibility=View.VISIBLE
                 return true
             }
         }
@@ -200,12 +224,8 @@ class MapsActivity : AppCompatActivity() {
             if(result==null)
                 Toast.makeText(this,"Nepostojeca lokacija", Toast.LENGTH_SHORT)
             else{
-                //move to spot
+                //Move to spot
                 val searchPoint = GeoPoint(result.latitude,result.longitude)
-                val startMarker = Marker(map)
-                startMarker.setPosition(searchPoint)
-                startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-                map!!.getOverlays().add(startMarker)
                 map!!.controller.animateTo(searchPoint)
 
 
@@ -327,5 +347,9 @@ class MapsActivity : AppCompatActivity() {
 
             }
         }
+    }
+    override fun onBackPressed() {
+        super.onBackPressed()
+        finish()
     }
 }
