@@ -1,6 +1,7 @@
 package com.example.brzodolokacije.Activities
 
 import android.Manifest
+import android.app.ProgressDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -46,6 +47,7 @@ class ActivityAddPost : AppCompatActivity() {
     val LOCATIONREQCODE=123
     var longitude:Double=incorectCoord
     var latitude:Double=incorectCoord
+    var progressDialog:ProgressDialog?=null
     //private var paths :ArrayList<String?>?=null
     private var place=0;
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -66,6 +68,11 @@ class ActivityAddPost : AppCompatActivity() {
         description=findViewById<View>(R.id.etActivityAddPostDescription) as EditText
         post=findViewById<View>(R.id.btnActivityAddPostPost) as Button
         addLocation=findViewById<View>(R.id.btnActivityAddPostAddLocation) as Button
+
+        progressDialog= ProgressDialog(this)
+        progressDialog!!.setMessage("Molimo sacekajte!!!")
+        progressDialog!!.setCancelable(false)
+        progressDialog!!.setCanceledOnTouchOutside(false)
 
 
         switcher?.setFactory{
@@ -184,6 +191,7 @@ class ActivityAddPost : AppCompatActivity() {
     fun uploadLocation() {
         //TO DO SEARCH EXISTING LOCATION FROM DB
         //IF NOT EXISTS ADD NEW LOCATION
+        progressDialog!!.show()
         val api =RetrofitHelper.getInstance()
         var geocoder=GeocoderHelper.getInstance()
         var loc1=geocoder!!.getFromLocation(latitude,longitude,1)
@@ -193,7 +201,6 @@ class ActivityAddPost : AppCompatActivity() {
         var loc:Location=Location("",locationString,city,countryName,address,latitude,longitude,LocationType.GRAD)
         var jwtString= SharedPreferencesHelper.getValue("jwt",this)
         var data=api.addLocation("Bearer "+jwtString,loc)
-
 
         data.enqueue(object : retrofit2.Callback<Location?> {
             override fun onResponse(call: Call<Location?>, response: Response<Location?>) {
@@ -205,6 +212,7 @@ class ActivityAddPost : AppCompatActivity() {
                     ).show();
 
                 }else {
+                    progressDialog!!.dismiss()
 
                     if (response.errorBody() != null) {
                         Log.d("Main",response.errorBody()!!.string())
@@ -222,6 +230,7 @@ class ActivityAddPost : AppCompatActivity() {
                     applicationContext, t.toString(), Toast.LENGTH_LONG
                 ).show();
                 Log.d("Main",t.toString())
+                progressDialog!!.dismiss()
             }
         })
     }
@@ -257,6 +266,7 @@ class ActivityAddPost : AppCompatActivity() {
 
         data.enqueue(object : retrofit2.Callback<PostPreview?> {
             override fun onResponse(call: Call<PostPreview?>, response: Response<PostPreview?>) {
+                progressDialog!!.dismiss()
                 if(response.isSuccessful()){
                     Toast.makeText(
                         applicationContext, "USPEH", Toast.LENGTH_LONG
@@ -279,7 +289,8 @@ class ActivityAddPost : AppCompatActivity() {
             override fun onFailure(call: Call<PostPreview?>, t: Throwable) {
                 Toast.makeText(
                     applicationContext, t.toString(), Toast.LENGTH_LONG
-                ).show();
+                ).show()
+                progressDialog!!.dismiss()
                 Log.d("Main",t.toString())
             }
         })
