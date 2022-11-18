@@ -10,6 +10,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.Toast
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
+import androidx.paging.PagingDataAdapter
+import androidx.paging.cachedIn
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -23,8 +27,14 @@ import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
 import com.example.brzodolokacije.databinding.FragmentHomeBinding
 import com.example.brzodolokacije.databinding.FragmentShowPostsBinding
+import com.example.brzodolokacije.paging.SearchPostsRepository
+import com.example.brzodolokacije.paging.SearchPostsViewModel
+import com.example.brzodolokacije.paging.SearchPostsViewModelFactory
 import kotlinx.android.synthetic.main.fragment_show_posts.*
 import kotlinx.android.synthetic.main.fragment_show_posts.view.*
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
 import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Response
@@ -35,18 +45,25 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private lateinit var binding: FragmentShowPostsBinding
     private var posts : MutableList<PostPreview> = mutableListOf()
     private var linearManagerVar: RecyclerView.LayoutManager? = null
-    private var adapterVar: RecyclerView.Adapter<ShowPostsAdapter.ViewHolder>? = null
+    private var adapterVar: ShowPostsAdapter? = null
     private var recyclerView: RecyclerView?=null
     private var gridManagerVar: RecyclerView.LayoutManager?=null
     private var swipeRefreshLayout:SwipeRefreshLayout?=null
+    private lateinit var searchPostsViewModel:SearchPostsViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setUpViewModel()
         binding=FragmentShowPostsBinding.inflate(layoutInflater)
         //instantiate adapter and linearLayout
         adapterVar=ShowPostsAdapter(requireActivity(),posts)
         linearManagerVar= LinearLayoutManager(activity)
         gridManagerVar=GridLayoutManager(activity,2)
+    }
+
+    private fun setUpViewModel() {
+        val factory=SearchPostsViewModelFactory(RetrofitHelper.getInstance(),requireActivity())
+        searchPostsViewModel=ViewModelProvider(this@FragmentShowPosts,factory).get(SearchPostsViewModel::class.java)
     }
 
     fun setUpListeners(rootView: View?){
@@ -66,32 +83,38 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     fun requestToBack(){
-        val postApi= RetrofitHelper.getInstance()
-        val token=SharedPreferencesHelper.getValue("jwt", requireActivity())
-        val request=postApi.getPosts("Bearer "+token)
-        request.enqueue(object : retrofit2.Callback<MutableList<PostPreview>?> {
-            override fun onResponse(call: Call<MutableList<PostPreview>?>, response: Response<MutableList<PostPreview>?>) {
-                if(response.isSuccessful){
-                    posts=response.body()!!
-                    recyclerView?.adapter=ShowPostsAdapter(requireActivity(),posts)
-                    Toast.makeText(
-                        activity, "prosao zahtev", Toast.LENGTH_LONG
-                    ).show()
-                    swipeRefreshLayout?.isRefreshing=false
-                }else{
-                    if(response.errorBody()!=null)
-                        Toast.makeText(activity, response.errorBody()!!.string(), Toast.LENGTH_LONG).show();
-                }
-
-
+        lifecycleScope.launch{
+            searchPostsViewModel.fetchPosts().distinctUntilChanged().collectLatest {
+                adapterVar?.submitData(it)
+                swipeRefreshLayout?.isRefreshing=false
             }
-
-            override fun onFailure(call: Call<MutableList<PostPreview>?>, t: Throwable) {
-                Toast.makeText(
-                    activity, t.toString(), Toast.LENGTH_LONG
-                ).show();
-            }
-        })
+        }
+//        val postApi= RetrofitHelper.getInstance()
+//        val token=SharedPreferencesHelper.getValue("jwt", requireActivity())
+//        val request=postApi.getPosts("Bearer "+token)
+//        request.enqueue(object : retrofit2.Callback<MutableList<PostPreview>?> {
+//            override fun onResponse(call: Call<MutableList<PostPreview>?>, response: Response<MutableList<PostPreview>?>) {
+//                if(response.isSuccessful){
+//                    posts=response.body()!!
+//                    recyclerView?.adapter=ShowPostsAdapter(requireActivity(),posts)
+//                    Toast.makeText(
+//                        activity, "prosao zahtev", Toast.LENGTH_LONG
+//                    ).show()
+//                    swipeRefreshLayout?.isRefreshing=false
+//                }else{
+//                    if(response.errorBody()!=null)
+//                        Toast.makeText(activity, response.errorBody()!!.string(), Toast.LENGTH_LONG).show();
+//                }
+//
+//
+//            }
+//
+//            override fun onFailure(call: Call<MutableList<PostPreview>?>, t: Throwable) {
+//                Toast.makeText(
+//                    activity, t.toString(), Toast.LENGTH_LONG
+//                ).show();
+//            }
+//        })
     }
 
     override fun onCreateView(
@@ -115,14 +138,16 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             R.color.purple_700
         )
         swipeRefreshLayout?.post(kotlinx.coroutines.Runnable {
-            swipeRefreshLayout?.isRefreshing=true
+            //swipeRefreshLayout?.isRefreshing=true
             requestToBack()
         })
         return rootView
     }
 
     override fun onRefresh() {
-        requestToBack()
+        //requestToBack()
+        adapterVar!!.notifyDataSetChanged()
+        Log.d("main",adapterVar!!.itemCount.toString())
     }
 
 }

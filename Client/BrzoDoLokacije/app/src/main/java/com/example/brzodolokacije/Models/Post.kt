@@ -72,3 +72,11 @@ data class RatingReceive(
     var rating:Int,
     var postId:String
 )
+
+data class PagedPosts(
+    var page:Int,
+    var index:Int,
+    var totalpages:Int,
+    var totalposts:Int,
+    var posts:MutableList<PostPreview>
+)

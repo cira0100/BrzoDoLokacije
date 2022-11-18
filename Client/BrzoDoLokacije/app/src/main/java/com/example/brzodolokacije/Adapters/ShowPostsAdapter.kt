@@ -8,6 +8,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.paging.PagingDataAdapter
+import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.brzodolokacije.Activities.ActivitySinglePost
@@ -25,9 +27,22 @@ import retrofit2.Response
 
 
 class ShowPostsAdapter (val activity:Activity,val items : MutableList<PostPreview>)
-    : RecyclerView.Adapter<ShowPostsAdapter.ViewHolder>() {
+    : PagingDataAdapter<PostPreview, ShowPostsAdapter.ViewHolder>(REPO_COMPARATOR) {
     private lateinit var token: String
     private lateinit var imageApi: IBackendApi
+
+    companion object{
+        private val REPO_COMPARATOR=object:DiffUtil.ItemCallback<PostPreview>(){
+            override fun areContentsTheSame(oldItem: PostPreview, newItem: PostPreview): Boolean {
+                return oldItem._id==newItem._id
+            }
+
+            override fun areItemsTheSame(oldItem: PostPreview, newItem: PostPreview): Boolean {
+                return oldItem._id==newItem._id
+            }
+        }
+    }
+
 
     //constructer has one argument - list of objects that need to be displayed
     //it is bound to xml of single item
@@ -42,20 +57,18 @@ class ShowPostsAdapter (val activity:Activity,val items : MutableList<PostPrevie
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         //sets components of particular item
-        holder.bind(items[position])
+        holder.bind(getItem(position)!!)
         holder.itemView.setOnClickListener {
             //Toast.makeText(activity,item._id,Toast.LENGTH_LONG).show()
-            val intent:Intent = Intent(activity,ActivitySinglePost::class.java)
-            var b=Bundle()
-            items[position].location.type=LocationType.ADA
-            b.putParcelable("selectedPost", items[position])
-            intent.putExtras(b)
-            activity.startActivity(intent)
+//            val intent:Intent = Intent(activity,ActivitySinglePost::class.java)
+//            var b=Bundle()
+//            items[position].location.type=LocationType.ADA
+//            b.putParcelable("selectedPost", items[position])
+//            intent.putExtras(b)
+//            activity.startActivity(intent)
         }
     }
 
-
-    override fun getItemCount() = items.size
     inner class ViewHolder(itemView: PostPreviewBinding) : RecyclerView.ViewHolder(itemView.root) {
         fun bind(item: PostPreview) {
             binding.apply {

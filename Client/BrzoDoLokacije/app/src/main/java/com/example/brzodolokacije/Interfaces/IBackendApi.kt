@@ -54,6 +54,13 @@ interface IBackendApi {
     @GET("/api/user/posts")
     fun getMyPosts(@Header("Authorization") authHeader:String):Call<MutableList<PostPreview>>
 
+    @GET("/api/post/locations/{id}/posts")
+    suspend fun getPagedPosts(@Header("Authorization") authHeader: String,
+                        @Path("id") locationId:String,
+                        @Query("page") page:Int,
+                        @Query("sorttype") sorttype:Int,
+                        @Query("filterdate") filterdate:Int
+                        ):PagedPosts
 //@POST("putanja")
     //fun add(@Body obj:Post,@Header("Authorization") authHeader:String):Call<Post>
 }
