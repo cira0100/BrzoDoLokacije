@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".Fragments.FragmentUserProfile">
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <ImageView
+
+            android:id="@+id/imageView3"
+            android:layout_width="match_parent"
+            android:layout_height="290dp"
+            android:foreground="@drawable/b3"
+            android:foregroundGravity="center_vertical|center|center_horizontal|fill"
+            android:src="@drawable/b3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+
+            android:id="@+id/imageView4"
+            android:layout_width="411dp"
+            android:layout_height="287dp"
+            app:layout_constraintBottom_toBottomOf="@+id/imageView3"
+            app:layout_constraintEnd_toEndOf="@id/imageView3"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/imageView3"
+            app:layout_constraintTop_toTopOf="@+id/imageView3"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <com.google.android.material.imageview.ShapeableImageView
+
+            android:id="@+id/tvFragmentProfileInfoContainer"
+            android:layout_width="0dp"
+            android:layout_height="220dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="156dp"
+            android:layout_marginEnd="20dp"
+            android:adjustViewBounds="true"
+            android:background="#E8FFFFFF"
+            android:elevation="1dp"
+            android:scaleType="fitEnd"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.494"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/imageView3"
+            app:shapeAppearanceOverlay="@style/imageViewRoundedEdge" />
+
+
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cvFragmentHomePageProfile"
+            android:layout_width="140dp"
+            android:layout_height="140dp"
+            android:layout_gravity="center"
+            android:elevation="10dp"
+            app:cardCornerRadius="250dp"
+            app:layout_constraintBottom_toTopOf="@+id/tableLayout"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.498"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.77">
+
+            <ImageView
+
+                android:id="@+id/tvFragmentProfileProfilePicture"
+                android:layout_width="140dp"
+                android:layout_height="140dp"
+                android:elevation="10dp"
+                android:scaleType="centerCrop"
+                android:src="@drawable/ic_baseline_person_24"
+                tools:ignore="ContentDescription" />
+        </androidx.cardview.widget.CardView>
+
+        <TableLayout
+            android:id="@+id/tableLayout"
+            android:layout_width="323dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="-10dp"
+
+            android:elevation="20dp"
+            android:gravity="center"
+            android:stretchColumns="1"
+            app:layout_constraintBottom_toBottomOf="@+id/tvFragmentProfileInfoContainer"
+            app:layout_constraintEnd_toEndOf="@+id/tvFragmentProfileInfoContainer"
+            app:layout_constraintHorizontal_bias="0.488"
+            app:layout_constraintStart_toStartOf="@+id/tvFragmentProfileInfoContainer"
+            app:layout_constraintTop_toTopOf="@+id/tvFragmentProfileInfoContainer">
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+
+                android:gravity="center">
+
+                <TextView
+                    android:id="@+id/tvFragmentProfileName"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:text="Petar Petrović"
+
+                    android:textSize="25sp" />
+            </TableRow>
+
+            <TableRow
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+
+                android:gravity="center">
+
+                <com.google.android.material.button.MaterialButton
+                    android:layout_height="35dp"
+                    android:layout_gravity="start"
+                    android:width="150dp"
+                    android:height="10dp"
+                    android:background="@drawable/rounded_cyan_button"
+                    android:text="Prati" />
+
+                <com.google.android.material.button.MaterialButton android:layout_gravity="end"
+                    android:layout_height="35dp"
+                    android:width="150dp"
+                    android:height="10dp"
+                    android:background="@drawable/rounded_cyan_button"
+                    android:text="Poruka"
+                    />
+
+            </TableRow>
+        </TableLayout>
+
+        <LinearLayout
+            android:layout_marginTop="20dp"
+            android:elevation="30dp"
+            android:id="@+id/linearLayout3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="vertical"
+            app:layout_constraintTop_toBottomOf="@+id/tableLayout">
+<LinearLayout
+    android:orientation="horizontal"
+
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+            <TextView
+                android:id="@+id/tvFragmentProfilePosts"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginStart="40dp"
+                android:layout_marginEnd="20dp"
+                android:text="OBJAVE" />
+
+            <TextView
+                android:layout_marginStart="40dp"
+                android:layout_marginEnd="40dp"
+                android:id="@+id/tvFragmentProfileFollowers"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="PRATIOCI" />
+
+    <TextView
+        android:id="@+id/tvFragmentProfileFollow"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="40dp"
+        android:layout_gravity="right"
+        android:text="PRAĆENJA" />
+</LinearLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="20dp"
+            android:gravity="center"
+            app:layout_constraintBottom_toBottomOf="@+id/tvFragmentProfileInfoContainer"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tableLayout">
+
+            <TextView
+                android:id="@+id/tvFragmentProfilePostsNo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_gravity="left"
+                android:layout_marginStart="60dp"
+                android:layout_marginEnd="35dp"
+
+                android:text="156" />
+
+            <TextView
+                android:id="@+id/tvFragmentProfileFollowersNo"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="50"
+                android:layout_gravity="left"
+                android:layout_marginStart="60dp"
+                android:layout_marginEnd="20dp"/>
+
+            <TextView
+                android:id="@+id/tvFragmentProfileFollowNo"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                android:layout_gravity="left"
+                android:layout_marginStart="40dp"
+                android:layout_marginEnd="20dp"
+                android:text="40" />
+            </LinearLayout>
+        </LinearLayout>
+
+
+        <View
+            android:id="@+id/divider"
+            android:layout_width="409dp"
+            android:layout_height="1dp"
+            android:background="?android:attr/listDivider"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnFragmentProfileShowMyPosts" />
+
+        <Button
+            android:id="@+id/btnFragmentProfileShowMyPosts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="4dp"
+            android:backgroundTint="#FFFFFF"
+            android:stateListAnimator="@null"
+            android:text="Objave"
+
+            android:textColor="@color/cardview_dark_background"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvFragmentProfileInfoContainer" />
+
+        <Button
+            android:id="@+id/btnFragmentProfileShowMyData"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="4dp"
+            android:layout_marginEnd="20dp"
+            android:backgroundTint="#FFFFFF"
+            android:stateListAnimator="@null"
+            android:text="Podaci"
+
+            android:textColor="@color/cardview_dark_background"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintStart_toEndOf="@+id/btnFragmentProfileShowMyRecensions"
+            app:layout_constraintTop_toBottomOf="@+id/tvFragmentProfileInfoContainer" />
+
+        <Button
+            android:id="@+id/btnFragmentProfileShowMyRecensions"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="36dp"
+            android:layout_marginTop="4dp"
+            android:backgroundTint="#FFFFFF"
+            android:stateListAnimator="@null"
+            android:text="Recenzije"
+            android:textColor="@color/cardview_dark_background"
+            app:layout_constraintStart_toEndOf="@+id/btnFragmentProfileShowMyPosts"
+            app:layout_constraintTop_toBottomOf="@+id/tvFragmentProfileInfoContainer" />
+
+        <FrameLayout
+            android:id="@+id/flFragmentProfileFragmentContainer"
+            android:layout_width="409dp"
+            android:layout_height="319dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/divider">
+        </FrameLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</FrameLayout>
