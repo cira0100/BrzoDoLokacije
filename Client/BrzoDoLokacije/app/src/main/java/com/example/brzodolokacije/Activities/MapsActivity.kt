@@ -218,11 +218,16 @@ class MapsActivity : AppCompatActivity() {
         //Log.d("Main",geocoder!!.getFromLocationName("Paris",1)[0].countryName)
         var locString=searchBar.text.toString().trim()
         if(locString==null || locString=="")
-            Toast.makeText(this,"Unesite naziv lokacije", Toast.LENGTH_SHORT)
+            Toast.makeText(this,"Unesite naziv lokacije", Toast.LENGTH_LONG)
         else{
-            var result=geocoder!!.getFromLocationName(locString,1)[0]
+            var temp=geocoder!!.getFromLocationName(locString,1)
+            if(temp.size<=0) {
+                Toast.makeText(this,"Nepostojeca lokacija",Toast.LENGTH_LONG)
+                return
+            }
+            var result=temp[0]
             if(result==null)
-                Toast.makeText(this,"Nepostojeca lokacija", Toast.LENGTH_SHORT)
+                Toast.makeText(this,"Nepostojeca lokacija", Toast.LENGTH_LONG)
             else{
                 //Move to spot
                 val searchPoint = GeoPoint(result.latitude,result.longitude)

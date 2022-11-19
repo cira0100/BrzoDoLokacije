@@ -37,7 +37,7 @@ class NavigationActivity : AppCompatActivity() {
                 R.id.navHomePage->setCurrentFragment(fragmentHomePage)
                 R.id.navAllPosts->setCurrentFragment(fragmentShowPosts)
                 //R.id.navAddPost->setCurrentFragment(addPostFragment)
-                R.id.navAddPost->showBottomSheetAddNew()
+                R.id.navAddPost->showBottomSheetAddPost()
                 R.id.navBrowse->setCurrentFragment(browseFragment)
                 R.id.navProfile->setCurrentFragment(profileFragment)
 

@@ -166,11 +166,16 @@ class FragmentBrowse : Fragment(R.layout.fragment_browse) {
         //Log.d("Main",geocoder!!.getFromLocationName("Paris",1)[0].countryName)
         var locString=searchBar.text.toString().trim()
         if(locString==null || locString=="")
-            Toast.makeText(requireContext(),"Unesite naziv lokacije",Toast.LENGTH_SHORT)
+            Toast.makeText(requireContext(),"Unesite naziv lokacije",Toast.LENGTH_LONG)
         else{
-            var result=geocoder!!.getFromLocationName(locString,1)[0]
+            var temp=geocoder!!.getFromLocationName(locString,1)
+            if(temp.size<=0) {
+                Toast.makeText(requireContext(),"Nepostojeca lokacija",Toast.LENGTH_LONG)
+                return
+            }
+            var result=temp[0]
             if(result==null)
-                Toast.makeText(requireContext(),"Nepostojeca lokacija",Toast.LENGTH_SHORT)
+                Toast.makeText(requireContext(),"Nepostojeca lokacija",Toast.LENGTH_LONG)
             else{
                 //move to spot
                 val searchPoint = GeoPoint(result.latitude,result.longitude)

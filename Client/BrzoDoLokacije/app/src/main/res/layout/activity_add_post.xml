@@ -96,6 +96,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/etActivityAddPostLocation" />
 
+
     <TextView
         android:id="@+id/tvActivityAddPostDescriptiontext"
         android:layout_width="match_parent"

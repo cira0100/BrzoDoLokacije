@@ -11,6 +11,7 @@ import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -139,8 +140,11 @@ class ActivityAddPost : AppCompatActivity() {
                 description.hint="Unesite lokaciju"
                 description.setHintTextColor(Color.RED)
             }
+            if(longitude!=incorectCoord && latitude!=incorectCoord){
+                Toast.makeText(this,"Unesite lokaciju klikom na dugme",Toast.LENGTH_LONG)
+            }
 
-            if(!locationString.isEmpty() && !descriptionString.isEmpty() && longitude!=incorectCoord && latitude!=incorectCoord){
+            if(!locationString.isEmpty() && !descriptionString.isEmpty() && longitude!=incorectCoord && latitude!=incorectCoord && uploadedImages!!.size>0){
                 sendPost()
             }
         }
@@ -195,6 +199,12 @@ class ActivityAddPost : AppCompatActivity() {
         val api =RetrofitHelper.getInstance()
         var geocoder=GeocoderHelper.getInstance()
         var loc1=geocoder!!.getFromLocation(latitude,longitude,1)
+        if(loc1==null ||loc1.size<=0)
+        {
+            progressDialog!!.dismiss()
+            Toast.makeText(this,"Lokacija ne postoji",Toast.LENGTH_LONG);
+            return
+        }
         var countryName=loc1[0].countryName
         var address="todo not possible in query"
         var city=loc1[0].adminArea//not possible
