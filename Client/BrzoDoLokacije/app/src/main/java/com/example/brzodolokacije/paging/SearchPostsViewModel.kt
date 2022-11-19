@@ -9,17 +9,14 @@ import androidx.paging.PagingData
 import androidx.paging.cachedIn
 import com.example.brzodolokacije.Interfaces.IBackendApi
 import com.example.brzodolokacije.Models.PostPreview
+import com.example.brzodolokacije.Models.SearchParams
 import kotlinx.coroutines.flow.Flow
 
 class SearchPostsViewModel(
     private val api:IBackendApi,
     val activity:Activity
 ): ViewModel() {
-    val posts =
-        Pager(config = PagingConfig(pageSize = 10), pagingSourceFactory = {
-            SearchPostsPagingSource(api,activity)
-        }).flow.cachedIn(viewModelScope)
-    fun fetchPosts(): Flow<PagingData<PostPreview>>{
-        return SearchPostsRepository.getInstance(activity).letSearchedPostsFlow().cachedIn(viewModelScope)
+    fun fetchPosts(searchParams: SearchParams): Flow<PagingData<PostPreview>>{
+        return SearchPostsRepository.getInstance(activity,searchParams).letSearchedPostsFlow().cachedIn(viewModelScope)
     }
 }

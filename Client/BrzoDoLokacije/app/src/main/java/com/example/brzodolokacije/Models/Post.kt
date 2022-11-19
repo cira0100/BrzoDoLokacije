@@ -80,3 +80,9 @@ data class PagedPosts(
     var totalposts:Int,
     var posts:MutableList<PostPreview>
 )
+
+data class SearchParams(
+    var locationId: String,
+    var sorttype:Int,
+    var filterdate:Int
+)

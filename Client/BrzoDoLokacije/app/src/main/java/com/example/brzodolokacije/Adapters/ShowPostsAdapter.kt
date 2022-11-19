@@ -26,7 +26,7 @@ import retrofit2.Call
 import retrofit2.Response
 
 
-class ShowPostsAdapter (val activity:Activity,val items : MutableList<PostPreview>)
+class ShowPostsAdapter (val activity:Activity,val items : MutableList<PostPreview>?=null)
     : PagingDataAdapter<PostPreview, ShowPostsAdapter.ViewHolder>(REPO_COMPARATOR) {
     private lateinit var token: String
     private lateinit var imageApi: IBackendApi
@@ -59,13 +59,13 @@ class ShowPostsAdapter (val activity:Activity,val items : MutableList<PostPrevie
         //sets components of particular item
         holder.bind(getItem(position)!!)
         holder.itemView.setOnClickListener {
-            //Toast.makeText(activity,item._id,Toast.LENGTH_LONG).show()
-//            val intent:Intent = Intent(activity,ActivitySinglePost::class.java)
-//            var b=Bundle()
-//            items[position].location.type=LocationType.ADA
-//            b.putParcelable("selectedPost", items[position])
-//            intent.putExtras(b)
-//            activity.startActivity(intent)
+            Toast.makeText(activity,getItem(position)!!._id,Toast.LENGTH_LONG).show()
+            val intent:Intent = Intent(activity,ActivitySinglePost::class.java)
+            var b=Bundle()
+            //getItem(position)!!.location.type=LocationType.ADA
+            b.putParcelable("selectedPost",getItem(position)!!)
+            intent.putExtras(b)
+            activity.startActivity(intent)
         }
     }
 

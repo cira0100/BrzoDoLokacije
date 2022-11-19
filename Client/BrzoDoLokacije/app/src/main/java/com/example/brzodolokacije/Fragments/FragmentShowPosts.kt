@@ -43,20 +43,20 @@ import retrofit2.Response
 class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     private lateinit var binding: FragmentShowPostsBinding
-    private var posts : MutableList<PostPreview> = mutableListOf()
     private var linearManagerVar: RecyclerView.LayoutManager? = null
     private var adapterVar: ShowPostsAdapter? = null
     private var recyclerView: RecyclerView?=null
     private var gridManagerVar: RecyclerView.LayoutManager?=null
     private var swipeRefreshLayout:SwipeRefreshLayout?=null
     private lateinit var searchPostsViewModel:SearchPostsViewModel
+    private var searchParams:SearchParams?= SearchParams("6375784fe84e2d53df32bf03",1,1)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setUpViewModel()
         binding=FragmentShowPostsBinding.inflate(layoutInflater)
         //instantiate adapter and linearLayout
-        adapterVar=ShowPostsAdapter(requireActivity(),posts)
+        adapterVar=ShowPostsAdapter(requireActivity())
         linearManagerVar= LinearLayoutManager(activity)
         gridManagerVar=GridLayoutManager(activity,2)
     }
@@ -82,39 +82,13 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         }
     }
 
-    fun requestToBack(){
+    fun requestToBack(searchParams: SearchParams){
         lifecycleScope.launch{
-            searchPostsViewModel.fetchPosts().distinctUntilChanged().collectLatest {
-                adapterVar?.submitData(it)
+            searchPostsViewModel.fetchPosts(searchParams).distinctUntilChanged().collectLatest {
+                adapterVar?.submitData(lifecycle,it)
                 swipeRefreshLayout?.isRefreshing=false
             }
         }
-//        val postApi= RetrofitHelper.getInstance()
-//        val token=SharedPreferencesHelper.getValue("jwt", requireActivity())
-//        val request=postApi.getPosts("Bearer "+token)
-//        request.enqueue(object : retrofit2.Callback<MutableList<PostPreview>?> {
-//            override fun onResponse(call: Call<MutableList<PostPreview>?>, response: Response<MutableList<PostPreview>?>) {
-//                if(response.isSuccessful){
-//                    posts=response.body()!!
-//                    recyclerView?.adapter=ShowPostsAdapter(requireActivity(),posts)
-//                    Toast.makeText(
-//                        activity, "prosao zahtev", Toast.LENGTH_LONG
-//                    ).show()
-//                    swipeRefreshLayout?.isRefreshing=false
-//                }else{
-//                    if(response.errorBody()!=null)
-//                        Toast.makeText(activity, response.errorBody()!!.string(), Toast.LENGTH_LONG).show();
-//                }
-//
-//
-//            }
-//
-//            override fun onFailure(call: Call<MutableList<PostPreview>?>, t: Throwable) {
-//                Toast.makeText(
-//                    activity, t.toString(), Toast.LENGTH_LONG
-//                ).show();
-//            }
-//        })
     }
 
     override fun onCreateView(
@@ -138,16 +112,14 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             R.color.purple_700
         )
         swipeRefreshLayout?.post(kotlinx.coroutines.Runnable {
-            //swipeRefreshLayout?.isRefreshing=true
-            requestToBack()
+            swipeRefreshLayout?.isRefreshing=true
+            requestToBack(searchParams!!)
         })
         return rootView
     }
 
     override fun onRefresh() {
-        //requestToBack()
-        adapterVar!!.notifyDataSetChanged()
-        Log.d("main",adapterVar!!.itemCount.toString())
+        requestToBack(searchParams!!)
     }
 
 }
