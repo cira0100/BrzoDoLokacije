@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.brzodolokacije.Activities.ActivitySinglePost
+import com.example.brzodolokacije.Activities.NavigationActivity
 import com.example.brzodolokacije.Interfaces.IBackendApi
 import com.example.brzodolokacije.Models.LocationType
 import com.example.brzodolokacije.Models.PostPreview
@@ -63,6 +64,19 @@ class ShowPostsAdapter (val activity:Activity,val items : MutableList<PostPrevie
             val intent:Intent = Intent(activity,ActivitySinglePost::class.java)
             var b=Bundle()
             //getItem(position)!!.location.type=LocationType.ADA
+            //---------------------------------------------------------------  call back to add view tick
+            val Api= RetrofitHelper.getInstance()
+            val request=Api.addView("Bearer "+token,getItem(position)!!._id)
+            request.enqueue(object : retrofit2.Callback<PostPreview?> {
+                override fun onResponse(call: Call<PostPreview?>, response: Response<PostPreview?>) {
+
+                }
+
+                override fun onFailure(call: Call<PostPreview?>, t: Throwable) {
+
+                }
+            })
+            //---------------------------------------------------------------
             b.putParcelable("selectedPost",getItem(position)!!)
             intent.putExtras(b)
             activity.startActivity(intent)
