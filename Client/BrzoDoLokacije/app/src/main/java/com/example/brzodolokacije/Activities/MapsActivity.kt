@@ -15,6 +15,7 @@ import android.util.Log
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -90,6 +91,13 @@ class MapsActivity : AppCompatActivity() {
             }
             false
         })
+        val extras = intent.extras
+        if (extras != null) {
+            val value = extras.getString("search")
+            Log.d("Main",value!!)
+            searchBar.setText(value,TextView.BufferType.EDITABLE)
+            searchMap()
+        }
 
 
 
@@ -99,6 +107,8 @@ class MapsActivity : AppCompatActivity() {
         val bundle = Bundle()
         bundle.putDouble("longitude", locLongitude!!)
         bundle.putDouble("latitude", locLatitude!!)
+        if(searchBar.text!=null && !searchBar.text.toString().equals(""))
+            bundle.putString("name", searchBar.text.toString())
         intent.putExtras(bundle)
         setResult(RESULT_OK, intent)
         finish()
