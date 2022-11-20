@@ -64,5 +64,15 @@ namespace Api.Controllers
                 return Ok(rez);
             return BadRequest();
         }
+        [HttpGet("history")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<List<PostSend>>> ViewHistory()
+        {
+            var id = await _userService.UserIdFromJwt();
+            var rez = await _postService.UserHistory(id);
+            if (rez != null)
+                return Ok(rez);
+            return BadRequest();
+        }
     }
 }

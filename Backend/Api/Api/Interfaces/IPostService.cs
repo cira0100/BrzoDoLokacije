@@ -18,5 +18,6 @@ namespace Api.Interfaces
         Task<PostSendPage> SearchPosts(string locid, int page = 0, int sorttype = 1, int filterdate = 1);
         int DateEnumToDays(int filterdate);
         Task<List<PostSend>> GetUsersPosts(string id);
+        Task<List<PostSend>> UserHistory(string userid);
     }
 }

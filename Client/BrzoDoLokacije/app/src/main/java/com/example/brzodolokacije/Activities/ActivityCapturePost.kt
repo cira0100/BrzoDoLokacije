@@ -11,10 +11,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.Toast
+import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
@@ -120,6 +117,8 @@ class ActivityCapturePost : AppCompatActivity() {
 
         addLocation.setOnClickListener {
             val myIntent = Intent(this, MapsActivity::class.java)
+            if(location.text!=null && !location.text.trim().equals(""))
+                myIntent.putExtra("search",location.text.toString())
             startActivityForResult(myIntent,LOCATIONREQCODE)
         }
 
@@ -173,6 +172,9 @@ class ActivityCapturePost : AppCompatActivity() {
             var bundle=data!!.extras
             longitude=bundle!!.getDouble("longitude",incorectCoord)
             latitude=bundle!!.getDouble("latitude",incorectCoord)
+            var locName=bundle!!.getString("name")
+            if(location.text.toString().trim().equals("") && locName!=null && !locName.toString().trim().equals(""))
+                location.setText(locName, TextView.BufferType.EDITABLE)
         }
     }
     var f:File?=null

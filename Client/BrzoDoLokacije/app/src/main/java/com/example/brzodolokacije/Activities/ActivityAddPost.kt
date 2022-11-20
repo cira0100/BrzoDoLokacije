@@ -44,6 +44,9 @@ class ActivityAddPost : AppCompatActivity() {
     private lateinit var descriptionString:String
     private lateinit var post:Button
     private lateinit var addLocation:Button
+    private lateinit var tagLayout:LinearLayout
+    private lateinit var tagButtons:List<Button>
+    private lateinit var tagAutoText: AutoCompleteTextView
     val incorectCoord:Double=1000.0
     val LOCATIONREQCODE=123
     var longitude:Double=incorectCoord
@@ -70,6 +73,12 @@ class ActivityAddPost : AppCompatActivity() {
         post=findViewById<View>(R.id.btnActivityAddPostPost) as Button
         addLocation=findViewById<View>(R.id.btnActivityAddPostAddLocation) as Button
 
+        val tags=resources.getStringArray(R.array.Tags)
+        //Log.d("Main",tags[0].toString())
+        val tagadapter = ArrayAdapter(this,android.R.layout.simple_list_item_1,tags)
+        tagAutoText= findViewById(R.id.acTags) as AutoCompleteTextView
+        tagAutoText.setAdapter(tagadapter)
+
         progressDialog= ProgressDialog(this)
         progressDialog!!.setMessage("Molimo sacekajte!!!")
         progressDialog!!.setCancelable(false)
@@ -83,6 +92,8 @@ class ActivityAddPost : AppCompatActivity() {
             imgView}
         addLocation.setOnClickListener {
             val myIntent = Intent(this, MapsActivity::class.java)
+            if(location.text!=null && !location.text.trim().equals(""))
+                myIntent.putExtra("search",location.text.toString())
             startActivityForResult(myIntent,LOCATIONREQCODE)
         }
 
@@ -186,6 +197,9 @@ class ActivityAddPost : AppCompatActivity() {
             var bundle=data!!.extras
             longitude=bundle!!.getDouble("longitude",incorectCoord)
             latitude=bundle!!.getDouble("latitude",incorectCoord)
+            var locName=bundle!!.getString("name")
+            if(location.text.toString().trim().equals("") && locName!=null && !locName.toString().trim().equals(""))
+                location.setText(locName,TextView.BufferType.EDITABLE)
         }
     }
     private fun sendPost(){
