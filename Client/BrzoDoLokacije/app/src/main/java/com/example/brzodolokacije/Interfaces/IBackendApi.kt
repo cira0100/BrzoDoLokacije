@@ -26,6 +26,8 @@ interface IBackendApi {
     fun resetpass(@Body obj:ResetPass):Call<ResponseBody>
     @GET("/api/post")
     fun getPosts(@Header("Authorization") authHeader:String):Call<MutableList<PostPreview>>
+    @GET("/api/Post/posts/{id}")
+    fun addView(@Header("Authorization") authHeader:String,@Path("id") id:String):Call<PostPreview>
     @POST("/api/Location/add")
     fun addLocation(@Header("Authorization") authHeader:String,@Body obj: Location ):Call<Location>
     @Multipart

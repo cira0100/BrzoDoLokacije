@@ -19,7 +19,7 @@
     <Button
         android:id="@+id/nextImage"
         android:layout_width="78dp"
-        android:layout_height="499dp"
+        android:layout_height="0dp"
         android:background="@drawable/rounded_transparent_button"
         android:gravity="right"
         android:padding="30dp"
@@ -33,7 +33,7 @@
     <Button
         android:id="@+id/previousImage"
         android:layout_width="70dp"
-        android:layout_height="497dp"
+        android:layout_height="0dp"
 
         android:background="@drawable/rounded_transparent_button"
         android:gravity="left"
@@ -117,7 +117,7 @@
         android:ems="10"
         android:hint="Reykjavik, Iceland"
         android:inputType="textEmailAddress"
-        app:layout_constraintBottom_toTopOf="@+id/btnActivityAddPostPost"
+        app:layout_constraintBottom_toTopOf="@+id/llTags"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -148,6 +148,27 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/isActivityAddPostSwitcher" />
+
+    <LinearLayout
+        android:id="@+id/llTags"
+        android:layout_width="0dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/acTags"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"></LinearLayout>
+
+    <AutoCompleteTextView
+        android:id="@+id/acTags"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:minHeight="48dp"
+        android:hint="Dodaj tag"
+        app:layout_constraintBottom_toTopOf="@+id/btnActivityAddPostPost"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

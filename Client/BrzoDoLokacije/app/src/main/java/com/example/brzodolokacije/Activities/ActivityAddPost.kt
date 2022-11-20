@@ -44,6 +44,9 @@ class ActivityAddPost : AppCompatActivity() {
     private lateinit var descriptionString:String
     private lateinit var post:Button
     private lateinit var addLocation:Button
+    private lateinit var tagLayout:LinearLayout
+    private lateinit var tagButtons:List<Button>
+    private lateinit var tagAutoText: AutoCompleteTextView
     val incorectCoord:Double=1000.0
     val LOCATIONREQCODE=123
     var longitude:Double=incorectCoord
@@ -69,6 +72,12 @@ class ActivityAddPost : AppCompatActivity() {
         description=findViewById<View>(R.id.etActivityAddPostDescription) as EditText
         post=findViewById<View>(R.id.btnActivityAddPostPost) as Button
         addLocation=findViewById<View>(R.id.btnActivityAddPostAddLocation) as Button
+
+        val tags=resources.getStringArray(R.array.Tags)
+        //Log.d("Main",tags[0].toString())
+        val tagadapter = ArrayAdapter(this,android.R.layout.simple_list_item_1,tags)
+        tagAutoText= findViewById(R.id.acTags) as AutoCompleteTextView
+        tagAutoText.setAdapter(tagadapter)
 
         progressDialog= ProgressDialog(this)
         progressDialog!!.setMessage("Molimo sacekajte!!!")

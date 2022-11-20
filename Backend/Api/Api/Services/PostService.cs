@@ -349,5 +349,21 @@ namespace Api.Services
             }
             return tosend;
         }
+        public async Task<List<PostSend>> UserHistory(string userid)
+        {
+            var posts = await _posts.Find(_ => true).ToListAsync();
+            if (posts == null)
+                return null;
+            var tosend = new List<PostSend>();
+            foreach (var post in posts)
+            {
+                if (post.views.Any(x => x.Equals(userid)))
+                {
+                    var x = await postToPostSend(post);
+                    tosend.Add(x);
+                }
+            }
+            return tosend;
+        }
     }
 }
