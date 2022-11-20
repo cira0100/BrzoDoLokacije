@@ -1,12 +1,13 @@
-﻿using Microsoft.AspNetCore.SignalR;
+﻿using Api.Interfaces;
+using Microsoft.AspNetCore.SignalR;
 
 namespace Api.Services
 {
     public class ChatHub:Hub
     {
         static public readonly Dictionary<string, string> Users = new Dictionary<string, string>();
-        private readonly JwtService _jwtService;
-        public ChatHub(JwtService jwtService)
+        private readonly IJwtService _jwtService;
+        public ChatHub(IJwtService jwtService)
         {
             _jwtService = jwtService;
         }
