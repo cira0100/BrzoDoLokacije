@@ -20,3 +20,8 @@ data class Message(
     var messagge: String,
     var timestamp: Date
 )
+
+data class ChatPreview(
+    var userId:String,
+    var read:Boolean
+)

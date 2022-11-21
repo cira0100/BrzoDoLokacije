@@ -2,43 +2,47 @@ package com.example.brzodolokacije.Activities
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.cardview.widget.CardView
-import androidx.core.view.isVisible
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.exam.DBHelper
+import com.example.brzodolokacije.Adapters.ChatMessagesAdapter
 import com.example.brzodolokacije.Models.Message
 import com.example.brzodolokacije.Models.MessageSend
 import com.example.brzodolokacije.Models.UserReceive
 import com.example.brzodolokacije.R
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
-import com.example.brzodolokacije.chat.DBHelper
 import com.example.brzodolokacije.chat.SignalRListener
+import com.example.brzodolokacije.databinding.ActivityChatConversationBinding
 import retrofit2.Call
 import retrofit2.Response
 
 class ChatActivityConversation : AppCompatActivity() {
 
-    var receiverId:String?=null
+    var recyclerView:RecyclerView?=null
+    var adapterVar: ChatMessagesAdapter?=null
+    var layoutVar: RecyclerView.LayoutManager?=null
+    lateinit var binding:ActivityChatConversationBinding
+    var userId:String?=null
     var receiverUsername:String?="jelena"
-    var dbConnection:DBHelper?=null
+    var dbConnection: DBHelper?=null
     var webSocketConnection:SignalRListener?=null
+    var items:MutableList<Message>?=mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_chat_conversation)
-        receiverId=intent.extras?.get("receiverId").toString()
-        if(receiverId.isNullOrEmpty()){
-            findViewById<CardView>(R.id.cvParentMessageEdit).isVisible=true
-            findViewById<CardView>(R.id.cvParentMessageEdit).invalidate()
-        }
-        else{
-            findViewById<CardView>(R.id.cvParentUsername).isVisible=true
-            findViewById<CardView>(R.id.cvParentUsername).invalidate()
-        }
+        binding= ActivityChatConversationBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        userId=intent.extras?.get("userId").toString()
         dbConnection=DBHelper.getInstance(this@ChatActivityConversation)
+        setHeader()
+        setRecyclerView()
+        requestMessages()
         webSocketConnection=SignalRListener.getInstance(this@ChatActivityConversation)
         setListeners()
     }
@@ -49,7 +53,7 @@ class ChatActivityConversation : AppCompatActivity() {
             var messageContent=findViewById<EditText>(R.id.etNewMessage).text.toString()
             Log.d("main",token!!)
             val Api= RetrofitHelper.getInstance()
-            if(receiverId.isNullOrEmpty()){
+            if(userId.isNullOrEmpty() || userId.equals("null")){
                 //zahtev sa username=om
                 receiverUsername=findViewById<EditText>(R.id.etReceiverUsername).text.toString()
                 val request=Api.getProfile("Bearer "+token,
@@ -59,8 +63,8 @@ class ChatActivityConversation : AppCompatActivity() {
                     override fun onResponse(call: Call<UserReceive?>, response: Response<UserReceive?>) {
                         if(response.isSuccessful()){
                             //zahtev da se posalje poruka
-                            receiverId=response.body()?._id
-                            var message= MessageSend(receiverId!!,messageContent)
+                            userId=response.body()?._id
+                            var message= MessageSend(userId!!,messageContent)
                             val request2=Api.sendMessage("Bearer "+token,
                                 message
                             )
@@ -70,8 +74,7 @@ class ChatActivityConversation : AppCompatActivity() {
                                         //zahtev da se posalje poruka
                                         var responseMessage=response.body()
                                         dbConnection?.addMessage(responseMessage!!)
-                                        dbConnection?.getMessages()
-                                        webSocketConnection?.getConnectionState()
+
 
 
                                     }
@@ -98,7 +101,7 @@ class ChatActivityConversation : AppCompatActivity() {
             }
             else{
                 //zahtev da se posalje poruka
-                var message= MessageSend(receiverId!!,messageContent)
+                var message= MessageSend(userId!!,messageContent)
                 val request2=Api.sendMessage("Bearer "+token,
                     message
                 )
@@ -108,7 +111,7 @@ class ChatActivityConversation : AppCompatActivity() {
                             //zahtev da se posalje poruka
                             var responseMessage=response.body()
                             dbConnection?.addMessage(responseMessage!!)
-                            dbConnection?.getMessages()
+                            requestMessages()
 
 
                         }
@@ -124,5 +127,35 @@ class ChatActivityConversation : AppCompatActivity() {
             }
         }
 
+    }
+
+    private fun setHeader(){
+        if(userId.isNullOrEmpty() || userId.equals("null")){
+            binding.tvFragmentTitle.visibility= View.GONE
+            binding.tvFragmentTitle.invalidate()
+            binding.tvFragmentTitle.forceLayout()
+        }
+        else{
+            binding.tvFragmentTitle.text=userId
+            binding.tvFragmentTitle.invalidate()
+            binding.cvParentUsername.visibility= View.GONE
+            binding.cvParentUsername.forceLayout()
+        }
+    }
+    fun setRecyclerView(setParams:Boolean=true){
+        if(setParams){
+            adapterVar= items?.let { ChatMessagesAdapter(it,this@ChatActivityConversation) }
+            layoutVar= LinearLayoutManager(this@ChatActivityConversation)
+        }
+        recyclerView = binding.rvMain
+        recyclerView?.setHasFixedSize(true)
+        recyclerView?.layoutManager=layoutVar
+        recyclerView?.adapter=adapterVar
+    }
+
+    fun requestMessages(){
+        items=dbConnection?.getMessages(userId!!)
+        adapterVar= items?.let { ChatMessagesAdapter(it,this@ChatActivityConversation) }
+        setRecyclerView(setParams = false)
     }
 }
