@@ -14,9 +14,9 @@ data class User (
 
     //profil
     var followers:List<User>,
-    var followersNumber:Int,
+    var followersCount:Int,
     var following:List<User>,
-    var followingNumber:Int,
+    var followingCount:Int,
     var postIds:List<Int>,
     var postNumber:Int
 
@@ -28,5 +28,11 @@ data class UserReceive(
     var email:String,
     var creationDate: Date,
     var pfp:PostImage?,
-    var postcount:Int
+    var postcount:Int,
+    var followers:List<User>,
+    var followersNumber:Int,
+    var following:List<User>,
+    var followingNumber:Int,
+    var postIds:List<Int>,
+    var postNumber:Int
 )

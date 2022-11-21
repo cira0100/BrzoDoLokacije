@@ -1,5 +1,6 @@
 package com.example.brzodolokacije.Fragments
 
+
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
@@ -19,7 +20,6 @@ import com.example.brzodolokacije.R
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.imageview.ShapeableImageView
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -27,6 +27,7 @@ import okhttp3.ResponseBody
 import retrofit2.Call
 import retrofit2.Response
 import java.io.File
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -38,7 +39,7 @@ private const val ARG_PARAM2 = "param2"
  * Use the [FragmentProfile.newInstance] factory method to
  * create an instance of this fragment.
  */
-class FragmentProfile : Fragment(R.layout.fragment_profile) {
+class FragmentProfile : Fragment(com.example.brzodolokacije.R.layout.fragment_profile) {
     // TODO: Rename and change types of parameters
     private lateinit var username: TextView
     private lateinit var name: TextView
@@ -55,22 +56,31 @@ class FragmentProfile : Fragment(R.layout.fragment_profile) {
     private lateinit var showMyRecensions: Button
     private lateinit var profilePicture: ImageView
     private lateinit var profilePicturePlus: MaterialButton
+    private lateinit var showFollowers: TextView
+
+    var userId:String = "1"
+
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
+        Toast.makeText(
+            activity, "MOJ PROFILLLLLLLLLLLLLLL", Toast.LENGTH_LONG
+        ).show();
         // Inflate the layout for this fragment
-        val view:View= inflater.inflate(R.layout.fragment_profile, container, false)
-        name = view.findViewById<View>(R.id.tvFragmentProfileName) as TextView
-        username = view.findViewById<View>(R.id.tvFragmentProfileUserName) as TextView
-        postsCount = view.findViewById<View>(R.id.tvFragmentProfilePostsNo) as TextView
-        followersCount = view.findViewById<View>(R.id.tvFragmentProfileFollowersNo) as TextView
-        followingCount = view.findViewById<View>(R.id.tvFragmentProfileFollowNo) as TextView
-        showMyPosts=view.findViewById<View>(R.id.btnFragmentProfileShowMyPosts) as Button
-        showMyData=view.findViewById<View>(R.id.btnFragmentProfileShowMyData) as Button
-        showMyRecensions=view.findViewById<View>(R.id.btnFragmentProfileShowMyRecensions) as Button
-        profilePicture=view.findViewById<View>(R.id.tvFragmentProfileProfilePicture) as ImageView
-        profilePicturePlus=view.findViewById<View>(R.id.btnFragmentProfileProfilePicturePlus) as MaterialButton
+        val view:View= inflater.inflate(com.example.brzodolokacije.R.layout.fragment_profile, container, false)
+        name = view.findViewById<View>(com.example.brzodolokacije.R.id.tvFragmentProfileName) as TextView
+        username = view.findViewById<View>(com.example.brzodolokacije.R.id.tvFragmentProfileUserName) as TextView
+        postsCount = view.findViewById<View>(com.example.brzodolokacije.R.id.tvFragmentProfilePostsNo) as TextView
+        followersCount = view.findViewById<View>(com.example.brzodolokacije.R.id.tvFragmentProfileFollowersNo) as TextView
+        followingCount = view.findViewById<View>(com.example.brzodolokacije.R.id.tvFragmentProfileFollowNo) as TextView
+        showMyPosts=view.findViewById<View>(com.example.brzodolokacije.R.id.btnFragmentProfileShowMyPosts) as Button
+        showMyData=view.findViewById<View>(com.example.brzodolokacije.R.id.btnFragmentProfileShowMyData) as Button
+        showMyRecensions=view.findViewById<View>(com.example.brzodolokacije.R.id.btnFragmentProfileShowMyRecensions) as Button
+        profilePicture=view.findViewById<View>(com.example.brzodolokacije.R.id.tvFragmentProfileProfilePicture) as ImageView
+        profilePicturePlus=view.findViewById<View>(com.example.brzodolokacije.R.id.btnFragmentProfileProfilePicturePlus) as MaterialButton
+        showFollowers=view.findViewById(com.example.brzodolokacije.R.id.tvFragmentProfileFollowers)
         //podaci iz baze
 
 
@@ -85,7 +95,7 @@ class FragmentProfile : Fragment(R.layout.fragment_profile) {
 
             var fm: FragmentTransaction =childFragmentManager.beginTransaction()
 
-            fm.replace(R.id.flFragmentProfileFragmentContainer, FragmentMyProfileInfo())
+            fm.replace(com.example.brzodolokacije.R.id.flFragmentProfileFragmentContainer, FragmentMyProfileInfo())
             fm.commit()
         }
 
@@ -93,11 +103,23 @@ class FragmentProfile : Fragment(R.layout.fragment_profile) {
             getProfileInfo()
             var fm: FragmentTransaction =childFragmentManager.beginTransaction()
 
-            fm.replace(R.id.flFragmentProfileFragmentContainer, FragmentMyRecensions())
+            fm.replace(com.example.brzodolokacije.R.id.flFragmentProfileFragmentContainer, FragmentMyRecensions())
             fm.commit()
         }
         profilePicturePlus.setOnClickListener{
             addProfilePicture()
+        }
+
+        showFollowers.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putString("userId",userId ) // Put anything what you want
+            val fragmentFollowers = FragmentFollowers()
+            fragmentFollowers.setArguments(bundle)
+
+            fragmentManager
+                ?.beginTransaction()
+                ?.replace(com.example.brzodolokacije.R.id.flNavigationFragment,fragmentFollowers)
+                ?.commit()
         }
         getProfileInfo()
         openMyPosts()
@@ -106,7 +128,7 @@ class FragmentProfile : Fragment(R.layout.fragment_profile) {
     fun openMyPosts(){
         var fm: FragmentTransaction =childFragmentManager.beginTransaction()
 
-        fm.replace(R.id.flFragmentProfileFragmentContainer, FragmentUserPosts())
+        fm.replace(com.example.brzodolokacije.R.id.flFragmentProfileFragmentContainer, FragmentUserPosts())
         fm.commit()
     }
 
@@ -180,6 +202,8 @@ class FragmentProfile : Fragment(R.layout.fragment_profile) {
 
         followersCount.setText("to do")
         followingCount.setText("to do")
+
+        userId=user._id
 
         //Add Profile image
         if(user.pfp!=null) {

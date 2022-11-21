@@ -16,6 +16,11 @@ namespace Api.Models
         public String password { get; set; }
         public DateTime creationDate { get; set; }
         public File? pfp { get; set; }
+
+        public List<string> followers { get; set; }
+        public List<string> following { get; set; }
+        public int followersCount { get; set; }
+        public int followingCount { get; set; }
     }
 
     public class Login
@@ -58,5 +63,13 @@ namespace Api.Models
         public DateTime creationDate { get; set; }
         public File? pfp { get; set; }
         public int postcount { get; set; }
+
+        public List<String> followers{ get; set; }
+        public List<String> following { get; set; }
+
+        public int followersCount { get; set; }
+        public int followingCount { get; set; } 
+
+
     }
 }
