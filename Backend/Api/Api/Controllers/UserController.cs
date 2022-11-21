@@ -89,7 +89,7 @@ namespace Api.Controllers
             return Ok(await _userService.GetFollowing(id));
         }
 
-        [HttpGet("{id}/addFollower")]
+        [HttpGet("addFollower")]
         [Authorize(Roles = "User")]
         public async Task<ActionResult<List<UserSend>>> AddFollower(string userId, string followerId)
         {
