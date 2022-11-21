@@ -2,6 +2,8 @@ package com.example.brzodolokacije.chat
 
 import android.app.Activity
 import android.util.Log
+import com.exam.DBHelper
+import com.example.brzodolokacije.Models.Message
 import com.example.brzodolokacije.Models.MessageReceive
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
@@ -13,13 +15,17 @@ import com.microsoft.signalr.HubConnectionState
 
 class SignalRListener private constructor(val activity: Activity){
     private var hubConnection:HubConnection
+    private var dbHelper:DBHelper
     init{
+        dbHelper= DBHelper.getInstance(activity)
         hubConnection=HubConnectionBuilder.create(RetrofitHelper.baseUrl+"/chathub")
             .withHeader("access_token",SharedPreferencesHelper.getValue("jwt",activity))
             .build()
         hubConnection.keepAliveInterval=120
         hubConnection.on("Message",
-            Action1 {message:MessageReceive->Log.d("main",message.messagge)},
+            Action1 {
+                    message:MessageReceive->dbHelper.addMessage(Message(message.senderId+message.timestamp,message.senderId,message.senderId,message.messagge,message.timestamp),false)
+                    },
             MessageReceive::class.java
                 )
         hubConnection.start().blockingAwait()
