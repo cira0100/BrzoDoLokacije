@@ -6,7 +6,6 @@ import com.example.brzodolokacije.Models.Auth.Login
 import com.example.brzodolokacije.Models.Auth.Register
 import com.example.brzodolokacije.Models.Auth.ResetPass
 import okhttp3.MultipartBody
-import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -63,6 +62,8 @@ interface IBackendApi {
                         @Query("sorttype") sorttype:Int,
                         @Query("filterdate") filterdate:Int
                         ):PagedPosts
+    @POST("/api/message/add")
+    fun sendMessage(@Header("Authorization") authHeader:String,@Body message:MessageSend):Call<Message>
 //@POST("putanja")
     //fun add(@Body obj:Post,@Header("Authorization") authHeader:String):Call<Post>
 }

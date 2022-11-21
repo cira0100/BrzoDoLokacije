@@ -9,7 +9,6 @@ import com.example.brzodolokacije.Activities.ActivityLoginRegister
 import com.example.brzodolokacije.Activities.NavigationActivity
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
-import com.example.brzodolokacije.chat.SignalRListener
 import retrofit2.Call
 import retrofit2.Response
 
@@ -21,7 +20,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val intent:Intent
-        SignalRListener.getInstance(this@MainActivity)
+
         if(checkLoggedIn()) {
             intent = Intent(this, NavigationActivity::class.java)
         }

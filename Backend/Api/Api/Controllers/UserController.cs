@@ -55,7 +55,7 @@ namespace Api.Controllers
                 return Ok(rez);
             return BadRequest();
         }
-        [HttpGet("{id}/profile")]
+        [HttpGet("{id}/id/profile")]
         [Authorize(Roles = "User")]
         public async Task<ActionResult<UserSend>> GetUserById(string id)
         {

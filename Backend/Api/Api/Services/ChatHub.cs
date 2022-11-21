@@ -13,7 +13,7 @@ namespace Api.Services
         }
         public override async Task OnConnectedAsync()
         {
-            string token = Context.GetHttpContext().Request.Query["access_token"];
+            string token = Context.GetHttpContext().Request.Headers["access_token"];
             if (token == null)
                 return;
             string id = _jwtService.TokenToId(token);

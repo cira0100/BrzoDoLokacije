@@ -2,19 +2,28 @@ package com.example.brzodolokacije.chat
 
 import android.app.Activity
 import android.util.Log
+import com.example.brzodolokacije.Models.MessageReceive
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
+import com.microsoft.signalr.Action1
 import com.microsoft.signalr.HubConnection
 import com.microsoft.signalr.HubConnectionBuilder
-import io.reactivex.rxjava3.core.Single
+import com.microsoft.signalr.HubConnectionState
+
 
 class SignalRListener private constructor(val activity: Activity){
     private var hubConnection:HubConnection
     init{
         hubConnection=HubConnectionBuilder.create(RetrofitHelper.baseUrl+"/chathub")
-            .withAccessTokenProvider(Single.defer{ Single.just(SharedPreferencesHelper.getValue("jwt", activity).toString())})
+            .withHeader("access_token",SharedPreferencesHelper.getValue("jwt",activity))
             .build()
+        hubConnection.keepAliveInterval=120
+        hubConnection.on("Message",
+            Action1 {message:MessageReceive->Log.d("main",message.messagge)},
+            MessageReceive::class.java
+                )
         hubConnection.start().blockingAwait()
+
         Log.d("main", hubConnection.connectionState.toString())
     }
 
@@ -27,6 +36,20 @@ class SignalRListener private constructor(val activity: Activity){
             }
             return instance as SignalRListener
         }
+
+    }
+    fun stopHubConnection(){
+        if(hubConnection.connectionState == HubConnectionState.CONNECTED){
+            hubConnection.stop()
+        }
+    }
+
+    fun getConnectionState(){
+        Log.d("main",hubConnection.connectionState.toString())
+    }
+
+    fun log(){
+        Log.d("Debug infor siganlR ", hubConnection.connectionId)
     }
 
 }
