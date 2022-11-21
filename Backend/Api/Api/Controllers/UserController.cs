@@ -74,5 +74,29 @@ namespace Api.Controllers
                 return Ok(rez);
             return BadRequest();
         }
+
+        [HttpGet("{id}/followers")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<List<UserSend>>> GetFollowers(string id)
+        {
+            return Ok(await _userService.GetFollowers(id));
+        }
+
+        [HttpGet("{id}/following")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<List<UserSend>>> GetFollowing(string id)
+        {
+            return Ok(await _userService.GetFollowing(id));
+        }
+
+        [HttpGet("{id}/addFollower")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<List<UserSend>>> AddFollower(string userId, string followerId)
+        {
+            return Ok(await _userService.AddFollower(userId, followerId));
+        }
+
+
+
     }
 }

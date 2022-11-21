@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Http;
 using System.Security.Claims;
 using MimeKit;
 using MailKit.Net.Smtp;
+using DnsClient;
 
 namespace Api.Services
 {
@@ -16,6 +17,8 @@ namespace Api.Services
         private readonly IJwtService _jwtService;
         private IConfiguration _configuration;
         private readonly IFileService _fileService;
+
+        private readonly IMongoCollection<UserSend> _usersSend; 
         public UserService(IDatabaseConnection settings, IMongoClient mongoClient, IJwtService jwtService, IHttpContextAccessor httpContextAccessor, IConfiguration configuration, IFileService fileService)
         {
             var database = mongoClient.GetDatabase(settings.DatabaseName);
@@ -35,6 +38,7 @@ namespace Api.Services
                 return -2; //username already
                            //
             user.password = hashPassword(user.password);
+  
             await _users.InsertOneAsync(user);
             return 1;
         }
@@ -374,6 +378,84 @@ namespace Api.Services
             var userposts = await _posts.Find(x => x.ownerId == user._id).ToListAsync();
             tosend.postcount = userposts.Count();
             return tosend;
+        }
+
+        public async Task<Boolean> AddFollower(string userId,string followerId)
+        {
+            UserSend u = await _usersSend.Find(user => user._id==userId).FirstOrDefaultAsync();
+            UserSend f = await _usersSend.Find(user => user._id == followerId).FirstOrDefaultAsync();
+
+            if (userId != null && followerId!=null)
+            {
+                u.followers.Add(followerId);
+                f.following.Add(userId);
+                return true;
+            }
+
+
+            return false;
+        }
+
+        public async Task<List<UserSend>> GetFollowers(string id)
+        {
+            User u = await _users.Find(user => user._id == id).FirstOrDefaultAsync();
+            List<UserSend> followers = new List<UserSend>();
+            if (u != null)
+            {
+                //List<UserSend> followers = u.followers;
+                if (u.followers.Count() > 0)
+                {
+                    foreach (string userid in u.followers)
+                    {
+                        User utemp = await _users.Find(user => user._id == userid).FirstOrDefaultAsync();
+                        if (utemp == null)
+                        {
+                            continue;
+                        }
+                        UserSend follower = new UserSend();
+                        follower.pfp = utemp.pfp;
+                        follower.username = utemp.username;
+                        follower.email = utemp.username;
+                        follower.followers = utemp.followers;
+                        follower._id = utemp._id;
+
+                        followers.Add((UserSend)follower);  
+                    }
+                }
+                return followers;
+            }
+            return null;
+        }
+
+        public async Task<List<UserSend>> GetFollowing(string id)
+        {
+            User u = await _users.Find(user => user._id == id).FirstOrDefaultAsync();
+            List<UserSend> following = new List<UserSend>();
+            if (u != null)
+            {
+                
+                if (u.following.Count() > 0)
+                {
+                    foreach (string userid in u.following)
+                    {
+                        User utemp = await _users.Find(user => user._id == userid).FirstOrDefaultAsync();
+                        if (utemp == null)
+                        {
+                            continue;
+                        }
+                        UserSend follower = new UserSend();
+                        follower.pfp = utemp.pfp;
+                        follower.username = utemp.username;
+                        follower.email = utemp.username;
+                        follower.followers = utemp.followers;
+                        follower._id = utemp._id;
+
+                        following.Add((UserSend)follower);
+                    }
+                }
+                return following;
+            }
+            return null;
         }
     }
 }

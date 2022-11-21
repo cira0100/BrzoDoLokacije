@@ -77,9 +77,6 @@ class FragmentHomePageMainScroll : Fragment() {
         var fragment=FragmentShowPostsByLocation()
 
         location_spa.setOnClickListener {
-            Toast.makeText(
-                activity, "BANJAAAAAAAAAAAAAAA", Toast.LENGTH_LONG
-            ).show();
             filter=LocationType.BANJA
             filterString=filter.toString()
             bundle.putString("data",filterString)

@@ -19,6 +19,7 @@ namespace Api.Models
         public List<Comment> comments { get; set; }
         public List<File> images { get; set; }
         public List<string>? tags { get; set; }
+        
     }
     public class PostReceive
     {
