@@ -382,13 +382,19 @@ namespace Api.Services
 
         public async Task<Boolean> AddFollower(string userId,string followerId)
         {
-            UserSend u = await _usersSend.Find(user => user._id==userId).FirstOrDefaultAsync();
-            UserSend f = await _usersSend.Find(user => user._id == followerId).FirstOrDefaultAsync();
+            User u = await _users.Find(user => user._id==userId).FirstOrDefaultAsync();
+            User f = await _users.Find(user => user._id == followerId).FirstOrDefaultAsync();
 
             if (userId != null && followerId!=null)
             {
+                if (u.followers == null)
+                    u.followers = new List<string>();
                 u.followers.Add(followerId);
+                if (f.following == null)
+                    f.following = new List<string>();
                 f.following.Add(userId);
+                _users.ReplaceOne(user=>user._id==userId, u);
+                _users.ReplaceOne(user => user._id == followerId, f);
                 return true;
             }
 
@@ -403,7 +409,7 @@ namespace Api.Services
             if (u != null)
             {
                 //List<UserSend> followers = u.followers;
-                if (u.followers.Count() > 0)
+                if (u.followers!=null &&u.followers.Count() > 0)
                 {
                     foreach (string userid in u.followers)
                     {
@@ -434,7 +440,7 @@ namespace Api.Services
             if (u != null)
             {
                 
-                if (u.following.Count() > 0)
+                if (u.following!=null &&u.following.Count() > 0)
                 {
                     foreach (string userid in u.following)
                     {
