@@ -10,6 +10,7 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.util.TypedValue
 import android.view.View
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
@@ -17,6 +18,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.core.view.setMargins
 import com.example.brzodolokacije.Models.Location
 import com.example.brzodolokacije.Models.LocationType
 import com.example.brzodolokacije.Models.PostPreview
@@ -46,6 +48,12 @@ class ActivityCapturePost : AppCompatActivity() {
     private lateinit var showImage: ImageView
     private var uploadedImages: Uri? = null
     private lateinit var addLocation:Button
+    private lateinit var tagLayout:LinearLayout
+    private lateinit var tagButtons:MutableList<Button>
+    private lateinit var tagText: EditText
+    private lateinit var tagButtonAdd:Button
+    private lateinit var tagList: MutableList<String>
+    private var tagidcounter:Int = 0
 
     val incorectCoord:Double=1000.0
     val LOCATIONREQCODE=123
@@ -56,17 +64,60 @@ class ActivityCapturePost : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_capture_post)
+        tagList = mutableListOf()
+        tagButtons= mutableListOf()
+        tagidcounter = 0
+
         location = findViewById<View>(R.id.etActivityCapturePostLocation) as EditText
         description = findViewById<View>(R.id.etActivityCapturePostDescription) as EditText
         post = findViewById<View>(R.id.btnActivityCapturePostPost) as Button
         showImage = findViewById<View>(R.id.ivActivityCapturePostImage) as ImageView
         takePhoto = findViewById<View>(R.id.btnActivityCapturePostCaptureVisible) as Button
         addLocation=findViewById<View>(R.id.btnActivityCapturePostAddLocation) as Button
+        tagText =findViewById<View>(R.id.acTagsCap) as EditText
+        tagButtonAdd = findViewById<View>(R.id.btnActivityAddPostAddTagCap) as Button
+        tagLayout =  findViewById<View>(R.id.llTagsCap) as LinearLayout
 
         progressDialog= ProgressDialog(this)
         progressDialog!!.setMessage("Molimo sacekajte!!!")
         progressDialog!!.setCancelable(false)
         progressDialog!!.setCanceledOnTouchOutside(false)
+
+
+        //dodavanje i brisanje tagova
+        tagButtonAdd.setOnClickListener {
+            if(tagList.count()<5) {
+                var tagstr = tagText.text.toString()
+                var newbtn = Button(this)
+                newbtn.setId(tagidcounter)
+                newbtn.text = tagstr
+                var layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    50
+                )
+                layoutParams.setMargins(3)
+                newbtn.layoutParams=layoutParams
+                newbtn.setBackgroundColor(Color.parseColor("#1C789A"))
+                newbtn.setTextColor(Color.WHITE)
+                newbtn.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10F)
+                newbtn.setPadding(3,1,3,1)
+
+                newbtn.setOnClickListener {
+                    var btntext = newbtn.text.toString()
+                    tagList.remove(btntext)
+                    tagButtons.remove(newbtn)
+                    tagLayout.removeView(newbtn)
+                }
+
+                tagList.add(tagstr)
+                tagButtons.add(newbtn)
+                tagLayout.addView(newbtn)
+                tagText.text.clear()
+            }
+            else{
+                Toast.makeText(this,"Maksimalno 5 tagova",Toast.LENGTH_LONG)
+            }
+        }
 
 
         //dodavanje sa kamere
@@ -259,6 +310,13 @@ class ActivityCapturePost : AppCompatActivity() {
         var locReq= RequestBody.create("text/plain".toMediaTypeOrNull(),loc)
         var descReq= RequestBody.create("text/plain".toMediaTypeOrNull(),desc)
         var idReq= RequestBody.create("text/plain".toMediaTypeOrNull(),"dsa")
+
+        var tagliststring=""
+        for(tag in tagList){
+            tagliststring=tagliststring+tag+"|"
+        }
+        var tagReq=RequestBody.create("text/plain".toMediaTypeOrNull(),tagliststring)
+
         val imagesParts = arrayOfNulls<MultipartBody.Part>(
             1
         )
@@ -267,7 +325,7 @@ class ActivityCapturePost : AppCompatActivity() {
             imagesParts[0]= MultipartBody.Part.createFormData("images",f!!.name,imageBody)
 
         var jwtString= SharedPreferencesHelper.getValue("jwt",this)
-        var data=api.addPost("Bearer "+jwtString,imagesParts,idReq,descReq,locReq)
+        var data=api.addPost("Bearer "+jwtString,imagesParts,idReq,descReq,locReq,tagReq)
 
 
         data.enqueue(object : retrofit2.Callback<PostPreview?> {

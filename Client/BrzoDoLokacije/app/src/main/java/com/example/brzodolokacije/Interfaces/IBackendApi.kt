@@ -35,6 +35,7 @@ interface IBackendApi {
                                                             ,@Part("_id") _id:RequestBody
                                                             ,@Part("description") description:RequestBody
                                                             ,@Part("locationId") locationId:RequestBody
+                                                            ,@Part("tags") tags:RequestBody
                                                             ):Call<PostPreview>
     @POST("api/Post/posts/{id}/addrating")
     fun addRating(@Header("Authorization") authHeader:String,@Path("id") id:String,@Body rating: RatingReceive):Call<ResponseBody>

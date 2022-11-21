@@ -8,6 +8,7 @@ import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -15,6 +16,7 @@ import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.core.view.setMargins
 import com.example.brzodolokacije.Models.Location
 import com.example.brzodolokacije.Models.LocationType
 import com.example.brzodolokacije.Models.PostPreview
@@ -45,8 +47,11 @@ class ActivityAddPost : AppCompatActivity() {
     private lateinit var post:Button
     private lateinit var addLocation:Button
     private lateinit var tagLayout:LinearLayout
-    private lateinit var tagButtons:List<Button>
-    private lateinit var tagAutoText: AutoCompleteTextView
+    private lateinit var tagButtons:MutableList<Button>
+    private lateinit var tagText: EditText
+    private lateinit var tagButtonAdd:Button
+    private lateinit var tagList: MutableList<String>
+    private var tagidcounter:Int = 0
     val incorectCoord:Double=1000.0
     val LOCATIONREQCODE=123
     var longitude:Double=incorectCoord
@@ -61,7 +66,9 @@ class ActivityAddPost : AppCompatActivity() {
 //            applicationContext, "Add new ", Toast.LENGTH_LONG
 //        ).show();
         uploadedImages= ArrayList()
-
+        tagList = mutableListOf()
+        tagButtons= mutableListOf()
+        tagidcounter = 0
         //paths= ArrayList()
 
         uploadFromGallery=findViewById<View>(R.id.btnActivityAddPostUploadFromGalleryVisible) as Button
@@ -72,12 +79,9 @@ class ActivityAddPost : AppCompatActivity() {
         description=findViewById<View>(R.id.etActivityAddPostDescription) as EditText
         post=findViewById<View>(R.id.btnActivityAddPostPost) as Button
         addLocation=findViewById<View>(R.id.btnActivityAddPostAddLocation) as Button
-
-        val tags=resources.getStringArray(R.array.Tags)
-        //Log.d("Main",tags[0].toString())
-        val tagadapter = ArrayAdapter(this,android.R.layout.simple_list_item_1,tags)
-        tagAutoText= findViewById(R.id.acTags) as AutoCompleteTextView
-        tagAutoText.setAdapter(tagadapter)
+        tagText =findViewById<View>(R.id.acTags) as EditText
+        tagButtonAdd = findViewById<View>(R.id.btnActivityAddPostAddTag) as Button
+        tagLayout =  findViewById<View>(R.id.llTags) as LinearLayout
 
         progressDialog= ProgressDialog(this)
         progressDialog!!.setMessage("Molimo sacekajte!!!")
@@ -95,6 +99,41 @@ class ActivityAddPost : AppCompatActivity() {
             if(location.text!=null && !location.text.trim().equals(""))
                 myIntent.putExtra("search",location.text.toString())
             startActivityForResult(myIntent,LOCATIONREQCODE)
+        }
+
+        //dodavanje i brisanje tagova
+        tagButtonAdd.setOnClickListener {
+            if(tagList.count()<5) {
+                var tagstr = tagText.text.toString()
+                var newbtn = Button(this)
+                newbtn.setId(tagidcounter)
+                newbtn.text = tagstr
+                var layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    50
+                )
+                layoutParams.setMargins(3)
+                newbtn.layoutParams=layoutParams
+                newbtn.setBackgroundColor(Color.parseColor("#1C789A"))
+                newbtn.setTextColor(Color.WHITE)
+                newbtn.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10F)
+                newbtn.setPadding(3,1,3,1)
+
+                newbtn.setOnClickListener {
+                    var btntext = newbtn.text.toString()
+                    tagList.remove(btntext)
+                    tagButtons.remove(newbtn)
+                    tagLayout.removeView(newbtn)
+                }
+
+                tagList.add(tagstr)
+                tagButtons.add(newbtn)
+                tagLayout.addView(newbtn)
+                tagText.text.clear()
+            }
+            else{
+                Toast.makeText(this,"Maksimalno 5 tagova",Toast.LENGTH_LONG)
+            }
         }
 
         //dodavanje iz galerije
@@ -267,6 +306,13 @@ class ActivityAddPost : AppCompatActivity() {
         var locReq=RequestBody.create("text/plain".toMediaTypeOrNull(),loc)
         var descReq=RequestBody.create("text/plain".toMediaTypeOrNull(),desc)
         var idReq=RequestBody.create("text/plain".toMediaTypeOrNull(),"dsa")
+
+        var tagliststring=""
+        for(tag in tagList){
+            tagliststring=tagliststring+tag+"|"
+        }
+        var tagReq=RequestBody.create("text/plain".toMediaTypeOrNull(),tagliststring)
+
         val imagesParts = arrayOfNulls<MultipartBody.Part>(
             uploadedImages!!.size
         )
@@ -285,8 +331,8 @@ class ActivityAddPost : AppCompatActivity() {
             imagesParts[i]=MultipartBody.Part.createFormData("images",file.name,imageBody)
         }
         var jwtString= SharedPreferencesHelper.getValue("jwt",this)
-        var data=api.addPost("Bearer "+jwtString,imagesParts,idReq,descReq,locReq)
-
+        var data=api.addPost("Bearer "+jwtString,imagesParts,idReq,descReq,locReq,tagReq)
+        //multipart formdata : images , _id , description , locationId , tags
 
         data.enqueue(object : retrofit2.Callback<PostPreview?> {
             override fun onResponse(call: Call<PostPreview?>, response: Response<PostPreview?>) {
