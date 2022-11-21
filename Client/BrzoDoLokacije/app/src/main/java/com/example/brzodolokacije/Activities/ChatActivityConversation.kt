@@ -29,7 +29,7 @@ class ChatActivityConversation : AppCompatActivity() {
     var layoutVar: RecyclerView.LayoutManager?=null
     lateinit var binding:ActivityChatConversationBinding
     var userId:String?=null
-    var receiverUsername:String?="jelena"
+    var receiverUsername:String?=null
     var dbConnection: DBHelper?=null
     var webSocketConnection:SignalRListener?=null
     var items:MutableList<Message>?=mutableListOf()
@@ -39,6 +39,7 @@ class ChatActivityConversation : AppCompatActivity() {
         binding= ActivityChatConversationBinding.inflate(layoutInflater)
         setContentView(binding.root)
         userId=intent.extras?.get("userId").toString()
+        receiverUsername=intent.extras?.get("username").toString()
         dbConnection=DBHelper.getInstance(this@ChatActivityConversation)
         setHeader()
         setRecyclerView()
@@ -136,7 +137,7 @@ class ChatActivityConversation : AppCompatActivity() {
             binding.tvFragmentTitle.forceLayout()
         }
         else{
-            binding.tvFragmentTitle.text=userId
+            binding.tvFragmentTitle.text=receiverUsername
             binding.tvFragmentTitle.invalidate()
             binding.cvParentUsername.visibility= View.GONE
             binding.cvParentUsername.forceLayout()

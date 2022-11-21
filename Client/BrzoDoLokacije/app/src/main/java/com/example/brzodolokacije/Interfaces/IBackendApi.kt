@@ -78,5 +78,7 @@ interface IBackendApi {
 
     @POST("/api/user{id}/addFollower")
     fun addFollower(@Header("Authorization") authHeader:String,@Path("id") id:String):Call<UserReceive>
+    @GET("/api/user/{id}/id/profile")
+    fun getProfileFromId(@Header("Authorization") authHeader:String,@Path("id") username:String):Call<UserReceive>
 
 }

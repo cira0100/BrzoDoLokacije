@@ -6,6 +6,7 @@ import android.widget.ImageButton
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.exam.DBHelper
 import com.example.brzodolokacije.Adapters.ChatPreviewsAdapter
 import com.example.brzodolokacije.Models.ChatPreview
@@ -13,7 +14,7 @@ import com.example.brzodolokacije.R
 import com.example.brzodolokacije.chat.SignalRListener
 import com.example.brzodolokacije.databinding.ActivityChatBinding
 
-class ChatActivity : AppCompatActivity() {
+class ChatActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
 
     private var dbConnection:DBHelper?=null
     lateinit var binding: ActivityChatBinding
@@ -22,6 +23,7 @@ class ChatActivity : AppCompatActivity() {
     var adapterVar:ChatPreviewsAdapter?=null
     var layoutVar:LinearLayoutManager?=null
     var items:MutableList<ChatPreview>?= mutableListOf()
+    private var swipeRefreshLayout: SwipeRefreshLayout?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -32,6 +34,18 @@ class ChatActivity : AppCompatActivity() {
         setListeners()
         setRecyclerView()
         requestForChats()
+        swipeRefreshLayout = binding.swipeContainer
+        swipeRefreshLayout?.setOnRefreshListener(this@ChatActivity)
+        swipeRefreshLayout?.setColorSchemeResources(
+            R.color.purple_200,
+            R.color.teal_200,
+            R.color.dark_blue_transparent,
+            R.color.purple_700
+        )
+        swipeRefreshLayout?.post(kotlinx.coroutines.Runnable {
+            swipeRefreshLayout?.isRefreshing=true
+            requestForChats()
+        })
 
     }
     fun setListeners(){
@@ -58,5 +72,10 @@ class ChatActivity : AppCompatActivity() {
         recyclerView?.setHasFixedSize(true)
         recyclerView?.layoutManager=layoutVar
         recyclerView?.adapter=adapterVar
+        swipeRefreshLayout?.isRefreshing=false
+    }
+
+    override fun onRefresh() {
+        requestForChats()
     }
 }
