@@ -65,17 +65,6 @@ class ShowPostsAdapter (val activity:Activity,val items : MutableList<PostPrevie
             var b=Bundle()
             //getItem(position)!!.location.type=LocationType.ADA
             //---------------------------------------------------------------  call back to add view tick
-            val Api= RetrofitHelper.getInstance()
-            val request=Api.addView("Bearer "+token,getItem(position)!!._id)
-            request.enqueue(object : retrofit2.Callback<PostPreview?> {
-                override fun onResponse(call: Call<PostPreview?>, response: Response<PostPreview?>) {
-
-                }
-
-                override fun onFailure(call: Call<PostPreview?>, t: Throwable) {
-
-                }
-            })
             //---------------------------------------------------------------
             b.putParcelable("selectedPost",getItem(position)!!)
             intent.putExtras(b)

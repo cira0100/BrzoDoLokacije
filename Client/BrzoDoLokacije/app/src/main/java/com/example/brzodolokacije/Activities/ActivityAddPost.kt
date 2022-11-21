@@ -260,7 +260,9 @@ class ActivityAddPost : AppCompatActivity() {
         }
         var countryName=loc1[0].countryName
         var address="todo not possible in query"
-        var city=loc1[0].adminArea//not possible
+        var city="its null"
+        if(loc1[0].adminArea!=null)
+            city=loc1[0].adminArea//not possible
         var loc:Location=Location("",locationString,city,countryName,address,latitude,longitude,LocationType.GRAD)
         var jwtString= SharedPreferencesHelper.getValue("jwt",this)
         var data=api.addLocation("Bearer "+jwtString,loc)

@@ -132,6 +132,7 @@ class ActivitySinglePost : AppCompatActivity() {
                 Toast.makeText(this@ActivitySinglePost,"Unesite tekst komentara.",Toast.LENGTH_LONG).show()
             }
         }
+        addView()
 
     }
 
@@ -229,5 +230,20 @@ class ActivitySinglePost : AppCompatActivity() {
             tvDescription.invalidate()
         }
     }
+    fun addView() {
+        var token= SharedPreferencesHelper.getValue("jwt", this).toString()
+        val Api= RetrofitHelper.getInstance()
+        val request=Api.addView("Bearer "+token,post._id)
+        request.enqueue(object : retrofit2.Callback<PostPreview?> {
+            override fun onResponse(call: Call<PostPreview?>, response: Response<PostPreview?>) {
+
+            }
+
+            override fun onFailure(call: Call<PostPreview?>, t: Throwable) {
+
+            }
+        })
+    }
+
 
 }

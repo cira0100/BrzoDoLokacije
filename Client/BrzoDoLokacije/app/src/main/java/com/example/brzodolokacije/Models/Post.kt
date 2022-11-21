@@ -34,7 +34,8 @@ data class PostPreview (
     var views:Int,
     var ratings:Float,
     var comments:List<CommentSend>?,
-    var images:List<PostImage>
+    var images:List<PostImage>,
+    var tags:List<String>?
     //nedostaju datum i vreme kreiranja
 ):Parcelable
 

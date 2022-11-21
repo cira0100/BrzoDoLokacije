@@ -65,6 +65,8 @@ interface IBackendApi {
                         ):PagedPosts
     @POST("/api/message/add")
     fun sendMessage(@Header("Authorization") authHeader:String,@Body message:MessageSend):Call<Message>
+    @GET("/api/user/history")
+    fun getMyHistory(@Header("Authorization") authHeader:String):Call<MutableList<PostPreview>>
 //@POST("putanja")
     //fun add(@Body obj:Post,@Header("Authorization") authHeader:String):Call<Post>
 }
