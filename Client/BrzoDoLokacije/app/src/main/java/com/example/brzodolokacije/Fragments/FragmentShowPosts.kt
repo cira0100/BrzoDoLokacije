@@ -6,7 +6,10 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageButton
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -14,6 +17,7 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.example.brzodolokacije.Activities.ActivityAddPost
 import com.example.brzodolokacije.Activities.ChatActivity
 import com.example.brzodolokacije.Adapters.ShowPostsAdapter
 import com.example.brzodolokacije.Models.SearchParams
@@ -22,6 +26,8 @@ import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.databinding.FragmentShowPostsBinding
 import com.example.brzodolokacije.paging.SearchPostsViewModel
 import com.example.brzodolokacije.paging.SearchPostsViewModelFactory
+import com.google.android.material.bottomsheet.BottomSheetDialog
+import kotlinx.android.synthetic.main.fragment_show_posts.*
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
@@ -37,6 +43,8 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private var swipeRefreshLayout:SwipeRefreshLayout?=null
     private lateinit var searchPostsViewModel:SearchPostsViewModel
     private var searchParams:SearchParams?= SearchParams("6375784fe84e2d53df32bf03",1,1)
+    private lateinit var btnFilter:ImageButton
+    private lateinit var btnSort:ImageButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -107,6 +115,17 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             swipeRefreshLayout?.isRefreshing=true
             requestToBack(searchParams!!)
         })
+
+        btnFilter=rootView.findViewById(R.id.btnSortType)
+        btnSort=rootView.findViewById(R.id.btnSortDirection)
+
+        btnFilter.setOnClickListener{
+            showBottomSheetFilter()
+        }
+
+        btnSort.setOnClickListener{
+            showBottomSheetSort()
+        }
         return rootView
     }
 
@@ -114,4 +133,30 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         requestToBack(searchParams!!)
     }
 
+
+    private fun showBottomSheetFilter() {
+        var bottomSheetDialog: BottomSheetDialog
+        bottomSheetDialog = BottomSheetDialog(requireContext())
+        bottomSheetDialog.setContentView(R.layout.bottom_sheet_filter)
+        bottomSheetDialog.show()
+
+        var dateFrom=bottomSheetDialog.findViewById<View>(R.id.dateFromBSF)as EditText
+        var dateTo=bottomSheetDialog.findViewById<View>(R.id.dateToBSF) as EditText
+        var location=bottomSheetDialog.findViewById<View>(R.id.locationBSF) as EditText
+        var filter = bottomSheetDialog.findViewById<View>(R.id.btnBSFFilter) as Button
+
+
+        filter.setOnClickListener {
+            //povezati sa back-om
+
+
+        }
+    }
+    private fun showBottomSheetSort() {
+        var bottomSheetDialogSort: BottomSheetDialog
+        bottomSheetDialogSort = BottomSheetDialog(requireContext())
+        bottomSheetDialogSort.setContentView(R.layout.bottom_sheet_sort)
+        bottomSheetDialogSort.show()
+
+    }
 }

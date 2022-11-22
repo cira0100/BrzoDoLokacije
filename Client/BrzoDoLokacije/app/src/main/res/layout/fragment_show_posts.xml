@@ -52,10 +52,11 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_alignParentRight="true"
+            android:layout_marginStart="16dp"
             android:background="@color/white"
             android:padding="@dimen/component_padding"
             android:scaleType="centerCrop"
-            android:src="@drawable/filter"
+            android:src="@drawable/button_filter"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -63,12 +64,11 @@
             android:id="@+id/btnSortDirection"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginStart="8dp"
             android:layout_weight="1"
             android:background="@color/white"
             android:padding="@dimen/component_padding"
             android:scaleType="centerCrop"
-            android:src="@drawable/sort"
+            android:src="@drawable/button_sort"
             app:layout_constraintStart_toEndOf="@+id/btnSortType"
             app:layout_constraintTop_toTopOf="parent" />
 

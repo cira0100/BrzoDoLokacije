@@ -6,6 +6,9 @@
     <string name="title_activity_maps">MapsActivity</string>
     <string name="dodaj_objavu">Dodaj objavu</string>
     <string name="todo">TODO</string>
+    <string name="datum">Datum</string>
+
+    <string name="od">Od</string>
 
 
     <!-- example lista tagova, make actual list for app -->
