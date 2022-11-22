@@ -2,6 +2,7 @@ package com.example.brzodolokacije.chat
 
 import android.app.Activity
 import android.util.Log
+import com.auth0.android.jwt.JWT
 import com.exam.DBHelper
 import com.example.brzodolokacije.Models.Message
 import com.example.brzodolokacije.Models.MessageReceive
@@ -24,7 +25,8 @@ class SignalRListener private constructor(val activity: Activity){
         hubConnection.keepAliveInterval=120
         hubConnection.on("Message",
             Action1 {
-                    message:MessageReceive->dbHelper.addMessage(Message(message.senderId+message.timestamp,message.senderId,message.senderId,message.messagge,message.timestamp),false)
+                    message:MessageReceive->dbHelper.addMessage(Message(message.senderId+message.timestamp,message.senderId,
+                JWT(SharedPreferencesHelper.getValue("jwt",activity)!!).claims["id"]?.asString()!!,message.messagge,message.timestamp),false)
                     },
             MessageReceive::class.java
                 )

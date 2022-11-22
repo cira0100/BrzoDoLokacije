@@ -106,8 +106,12 @@ class DBHelper :
             }
         }
     }
-    fun getMessages(userId:String): MutableList<Message>? {
-        var sql="SELECT * FROM "+ MESSAGES_TABLE_NAME+" WHERE senderId='"+userId+"' OR receiverId='"+userId+"'"
+    fun getMessages(userId:String, self:Boolean=false): MutableList<Message>? {
+        var sql:String
+        if(!self)
+            sql="SELECT * FROM "+ MESSAGES_TABLE_NAME+" WHERE senderId='"+userId+"' OR receiverId='"+userId+"'"
+        else
+            sql="SELECT * FROM "+ MESSAGES_TABLE_NAME+" WHERE senderId='"+userId+"' AND receiverId='"+userId+"'"
         var cursor=db?.rawQuery(sql,null)
         if(cursor?.count!! >0){
             var messagesList:MutableList<Message> =mutableListOf()

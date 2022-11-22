@@ -9,6 +9,7 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.auth0.android.jwt.JWT
 import com.exam.DBHelper
 import com.example.brzodolokacije.Adapters.ChatMessagesAdapter
 import com.example.brzodolokacije.Models.Message
@@ -161,8 +162,12 @@ class ChatActivityConversation : AppCompatActivity() {
     }
 
     fun requestMessages(){
-        if(!userId.isNullOrEmpty() && !userId.equals("null"))
-            items=dbConnection?.getMessages(userId!!)
+        if(!userId.isNullOrEmpty() && !userId.equals("null")){
+            if(userId!= JWT(SharedPreferencesHelper.getValue("jwt",this@ChatActivityConversation)!!).claims["id"]?.asString())
+                items=dbConnection?.getMessages(userId!!)
+            else
+                items=dbConnection?.getMessages(userId!!,self = true)
+        }
         adapterVar= items?.let { ChatMessagesAdapter(it,this@ChatActivityConversation) }
         setRecyclerView(setParams = false)
 

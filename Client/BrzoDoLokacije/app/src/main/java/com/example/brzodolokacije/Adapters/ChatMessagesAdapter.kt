@@ -23,9 +23,7 @@ class ChatMessagesAdapter (val items : MutableList<Message>, val activity:Activi
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
-        var token=SharedPreferencesHelper.getValue("jwt",activity)
-        var jwt= JWT(token.toString())
-        currentUser= jwt.getClaim("id").toString()
+
 
         if(viewType==VIEW_TYPE_MESSAGE_RECEIVED){
             bindingOther= ChatMessageOtherBinding.inflate(inflater,parent,false)
@@ -65,6 +63,10 @@ class ChatMessagesAdapter (val items : MutableList<Message>, val activity:Activi
 
     override fun getItemViewType(position: Int): Int {
         var sender=items.get(position).senderId
+        var token= SharedPreferencesHelper.getValue("jwt",activity)
+        var jwt= JWT(token.toString())
+        var claim=jwt.getClaim("id")
+        currentUser= claim.asString()!!
         if(sender==currentUser){
             return VIEW_TYPE_MESSAGE_SENT
         }
