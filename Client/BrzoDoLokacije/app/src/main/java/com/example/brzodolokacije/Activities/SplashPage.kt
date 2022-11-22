@@ -8,7 +8,7 @@ import com.example.brzodolokacije.MainActivity
 import com.example.brzodolokacije.R
 
 class SplashPage : AppCompatActivity() {
-    private val time:Long = 4000
+    private val time:Long = 2000
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
