@@ -65,6 +65,7 @@ class ChatActivityConversation : AppCompatActivity() {
                         if(response.isSuccessful()){
                             //zahtev da se posalje poruka
                             userId=response.body()?._id
+                            setHeader()
                             var message= MessageSend(userId!!,messageContent)
                             val request2=Api.sendMessage("Bearer "+token,
                                 message
@@ -75,8 +76,8 @@ class ChatActivityConversation : AppCompatActivity() {
                                         //zahtev da se posalje poruka
                                         var responseMessage=response.body()
                                         dbConnection?.addMessage(responseMessage!!)
-
-
+                                        requestMessages()
+                                        binding.etNewMessage.text?.clear()
 
                                     }
                                     else{
@@ -112,7 +113,8 @@ class ChatActivityConversation : AppCompatActivity() {
                             //zahtev da se posalje poruka
                             var responseMessage=response.body()
                             dbConnection?.addMessage(responseMessage!!)
-                            //requestMessages()
+                            requestMessages()
+                            binding.etNewMessage.text?.clear()
                         }
                         else{
                             Toast.makeText(this@ChatActivityConversation,"Pogresno korisnicko ime.",Toast.LENGTH_LONG).show()
@@ -130,11 +132,16 @@ class ChatActivityConversation : AppCompatActivity() {
 
     private fun setHeader(){
         if(userId.isNullOrEmpty() || userId.equals("null")){
+            binding.cvParentUsername.visibility= View.VISIBLE
+            binding.cvParentUsername.forceLayout()
             binding.tvFragmentTitle.visibility= View.GONE
             binding.tvFragmentTitle.invalidate()
             binding.tvFragmentTitle.forceLayout()
         }
         else{
+            binding.tvFragmentTitle.visibility= View.VISIBLE
+            binding.tvFragmentTitle.invalidate()
+            binding.tvFragmentTitle.forceLayout()
             binding.tvFragmentTitle.text=receiverUsername
             binding.tvFragmentTitle.invalidate()
             binding.cvParentUsername.visibility= View.GONE
@@ -150,11 +157,14 @@ class ChatActivityConversation : AppCompatActivity() {
         recyclerView?.setHasFixedSize(true)
         recyclerView?.layoutManager=layoutVar
         recyclerView?.adapter=adapterVar
+        recyclerView?.scrollToPosition(items?.size?.minus(1) ?: 0)
     }
 
     fun requestMessages(){
-        items=dbConnection?.getMessages(userId!!)
+        if(!userId.isNullOrEmpty() && !userId.equals("null"))
+            items=dbConnection?.getMessages(userId!!)
         adapterVar= items?.let { ChatMessagesAdapter(it,this@ChatActivityConversation) }
         setRecyclerView(setParams = false)
+
     }
 }
