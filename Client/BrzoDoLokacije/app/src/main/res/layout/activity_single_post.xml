@@ -41,8 +41,8 @@
         android:gravity="top|start"
         android:padding="@dimen/text_padding"
         android:text="Drzava, grad"
-        app:layout_constraintTop_toBottomOf="@+id/tvLocationType"
-        tools:layout_editor_absoluteX="0dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvLocationType" />
 
     <TextView
         android:id="@+id/tvTitle"
@@ -52,7 +52,8 @@
         android:padding="@dimen/text_padding"
         android:text="Naslov"
         android:textSize="@dimen/header1_size"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
         android:id="@+id/tvLocationType"
@@ -61,15 +62,27 @@
         android:gravity="top|start"
         android:padding="@dimen/text_padding"
         android:text="Tip lokacije"
-        app:layout_constraintTop_toBottomOf="@+id/tvTitle"
-        tools:layout_editor_absoluteX="0dp" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+
+    <TextView
+        android:id="@+id/tvUser"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:clickable="true"
+        android:gravity="top|start"
+        android:padding="@dimen/text_padding"
+        android:text="User"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvLocationParent" />
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="36dp"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/tvLocationParent">
 
@@ -161,6 +174,7 @@
                 android:layout_height="wrap_content"
                 android:text="TextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextView"
                 app:layout_constraintTop_toBottomOf="@+id/tvDescriptionLabel" />
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <LinearLayout
@@ -177,9 +191,9 @@
                 android:layout_width="30dp"
                 android:layout_height="40dp"
                 android:layout_gravity="center_vertical"
-                android:scaleType="centerCrop"
                 android:layout_weight="1"
                 android:backgroundTint="@color/white"
+                android:scaleType="centerCrop"
                 android:src="@drawable/empty_star" />
 
             <ImageButton
@@ -187,9 +201,9 @@
                 android:layout_width="30dp"
                 android:layout_height="40dp"
                 android:layout_gravity="center_vertical"
-                android:scaleType="centerCrop"
                 android:layout_weight="1"
                 android:backgroundTint="@color/white"
+                android:scaleType="centerCrop"
                 android:src="@drawable/empty_star" />
 
             <ImageButton
@@ -197,9 +211,9 @@
                 android:layout_width="30dp"
                 android:layout_height="40dp"
                 android:layout_gravity="center_vertical"
-                android:scaleType="centerCrop"
                 android:layout_weight="1"
                 android:backgroundTint="@color/white"
+                android:scaleType="centerCrop"
                 android:src="@drawable/empty_star" />
 
             <ImageButton
@@ -207,9 +221,9 @@
                 android:layout_width="30dp"
                 android:layout_height="40dp"
                 android:layout_gravity="center_vertical"
-                android:scaleType="centerCrop"
                 android:layout_weight="1"
                 android:backgroundTint="@color/white"
+                android:scaleType="centerCrop"
                 android:src="@drawable/empty_star" />
 
             <ImageButton
@@ -217,48 +231,48 @@
                 android:layout_width="30dp"
                 android:layout_height="40dp"
                 android:layout_gravity="center_vertical"
-                android:scaleType="centerCrop"
                 android:layout_weight="1"
                 android:backgroundTint="@color/white"
+                android:scaleType="centerCrop"
                 android:src="@drawable/empty_star" />
 
             <Button
                 android:id="@+id/submitRating"
                 android:layout_width="30dp"
                 android:layout_height="40dp"
+                android:layout_gravity="center_vertical"
                 android:layout_weight="1"
                 android:backgroundTint="@color/white"
                 android:text="ok"
-                android:layout_gravity="center_vertical"
-                android:textColor="@color/black"
-                />
+                android:textColor="@color/black" />
         </LinearLayout>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             app:layout_constraintTop_toBottomOf="@id/linearLayout2">
+
             <LinearLayout
+                android:id="@+id/postCommentLayout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:id="@+id/postCommentLayout"
                 android:orientation="horizontal"
-                app:layout_constraintStart_toStartOf="parent" >
+                app:layout_constraintStart_toStartOf="parent">
+
                 <EditText
+                    android:id="@+id/NewComment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
-                    android:hint="Unesite komentar ovde"
-                    android:id="@+id/NewComment"
-                    />
+                    android:hint="Unesite komentar ovde" />
 
                 <ImageButton
                     android:id="@+id/btnPostComment"
                     android:layout_width="50dp"
-                    android:scaleType="fitCenter"
                     android:layout_height="50dp"
-                    android:src="@drawable/post_comment"
-                    android:backgroundTint="@color/white"/>
+                    android:backgroundTint="@color/white"
+                    android:scaleType="fitCenter"
+                    android:src="@drawable/post_comment" />
             </LinearLayout>
 
 
@@ -266,26 +280,26 @@
                 android:id="@+id/tvCommentLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/postCommentLayout"
                 android:padding="@dimen/text_padding"
                 android:text="Komentari"
-                android:textStyle="bold" />
+                android:textStyle="bold"
+                app:layout_constraintTop_toBottomOf="@id/postCommentLayout" />
 
             <TextView
                 android:id="@+id/tvCommentCount"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:padding="@dimen/text_padding"
-                app:layout_constraintTop_toBottomOf="@id/postCommentLayout"
                 android:text="0"
-                app:layout_constraintStart_toEndOf="@id/tvCommentLabel" />
+                app:layout_constraintStart_toEndOf="@id/tvCommentLabel"
+                app:layout_constraintTop_toBottomOf="@id/postCommentLayout" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvComments"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/tvCommentLabel"
-                android:nestedScrollingEnabled="false">
+                android:nestedScrollingEnabled="false"
+                app:layout_constraintTop_toBottomOf="@id/tvCommentLabel">
 
             </androidx.recyclerview.widget.RecyclerView>
         </androidx.constraintlayout.widget.ConstraintLayout>
