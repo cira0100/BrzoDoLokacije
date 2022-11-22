@@ -1,38 +1,32 @@
 package com.example.brzodolokacije.Fragments
 
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.brzodolokacije.Adapters.FollowersAdapter
-import com.example.brzodolokacije.Adapters.ShowPostsHomePageAdapter
-import com.example.brzodolokacije.Interfaces.IBackendApi
-import com.example.brzodolokacije.Models.PostPreview
 import com.example.brzodolokacije.Models.UserReceive
 import com.example.brzodolokacije.R
 import com.example.brzodolokacije.Services.RetrofitHelper
-import com.example.brzodolokacije.Services.SharedPreferencesHelper
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
-class FragmentFollowers : Fragment() {
+class FragmentFollowing : Fragment() {
     private lateinit var userId:String
-    private lateinit var followers: MutableList<UserReceive>
-    private lateinit var followersRv:RecyclerView
+    private lateinit var following: MutableList<UserReceive>
+    private lateinit var followingRv: RecyclerView
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val view= inflater.inflate(R.layout.fragment_followers, container, false)
+        val view= inflater.inflate(R.layout.fragment_following, container, false)
 
-        followersRv=view.findViewById(R.id.rvFragmentShowFollowers)
+        followingRv=view.findViewById(R.id.rvFragmentShowFollowing)
 
         val bundle = this.arguments
         if (bundle != null) {
@@ -42,15 +36,15 @@ class FragmentFollowers : Fragment() {
             ).show();
         }
 
-        getFollowers()
+        getFollowing()
 
         return view
     }
 
-    fun getFollowers(){
+    fun getFollowing(){
         val api = RetrofitHelper.getInstance()
         val data=api.getFollowers(userId)
-    data.enqueue(object : Callback<MutableList<UserReceive>> {
+        data.enqueue(object : Callback<MutableList<UserReceive>> {
             override fun onResponse(
                 call: Call<MutableList<UserReceive>>,
                 response: Response<MutableList<UserReceive>>
@@ -58,17 +52,17 @@ class FragmentFollowers : Fragment() {
                 if (response.body() == null) {
                     return
                 }
-                followers = response.body()!!.toMutableList<UserReceive>()
-                followersRv.apply {
+                following = response.body()!!.toMutableList<UserReceive>()
+                followingRv.apply {
                     layoutManager= LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL,false)
-                    adapter= FollowersAdapter(followers,requireActivity())
+                    adapter= FollowersAdapter(following,requireActivity())
 
                 }
             }
             override fun onFailure(call: Call<MutableList<UserReceive>>, t: Throwable) {
                 Toast.makeText(
-                    activity,"nema pratilaca", Toast.LENGTH_LONG
-               ).show();
+                    activity,"nema pracenja", Toast.LENGTH_LONG
+                ).show();
             }
         })
     }
