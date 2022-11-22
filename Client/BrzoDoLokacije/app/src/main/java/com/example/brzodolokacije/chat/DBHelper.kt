@@ -78,28 +78,32 @@ class DBHelper :
     }
 
     fun addMessage(message: Message, sent:Boolean=true){
-        if(message._id.isNullOrEmpty()){
-            message._id=message.senderId+message.timestamp
-        }
-        var sql="INSERT INTO "+ MESSAGES_TABLE_NAME+"(_id,senderId,receiverid,messagge,timestamp) VALUES('"+message._id+"','"+
-                        message.senderId+"','"+
-                        message.receiverId+"','"+
-                        message.messagge+ "','"+
-                        message.timestamp+ "')"
-        db?.execSQL(sql)
-        if(sent)
-            sql="SELECT * FROM "+ CONTACTS_TABLE_NAME+" WHERE userId='"+message.receiverId+"'"
-        else
-            sql="SELECT * FROM "+ CONTACTS_TABLE_NAME+" WHERE userId='"+message.senderId+"'"
-        var cursor=db?.rawQuery(sql,null)
-        if(cursor?.count==0){
-            //dodati u kontakte
-            var id:String
-            id = if(sent) message.receiverId else message.senderId
-            var read:Int=if(sent) 1 else 0
-            sql="INSERT INTO "+ CONTACTS_TABLE_NAME+"(userId,read) VALUES('"+id+"','"+
-                    read+"')"
+        if(!message._id.isNullOrEmpty() && message.senderId==message.receiverId){
+            Log.d("main", "ne zapisuje se dupla poruka")
+        } else {
+            if(message._id.isNullOrEmpty()){
+                message._id=message.senderId+message.timestamp
+            }
+            var sql="INSERT INTO "+ MESSAGES_TABLE_NAME+"(_id,senderId,receiverid,messagge,timestamp) VALUES('"+message._id+"','"+
+                    message.senderId+"','"+
+                    message.receiverId+"','"+
+                    message.messagge+ "','"+
+                    message.timestamp+ "')"
             db?.execSQL(sql)
+            if(sent)
+                sql="SELECT * FROM "+ CONTACTS_TABLE_NAME+" WHERE userId='"+message.receiverId+"'"
+            else
+                sql="SELECT * FROM "+ CONTACTS_TABLE_NAME+" WHERE userId='"+message.senderId+"'"
+            var cursor=db?.rawQuery(sql,null)
+            if(cursor?.count==0){
+                //dodati u kontakte
+                var id:String
+                id = if(sent) message.receiverId else message.senderId
+                var read:Int=if(sent) 1 else 0
+                sql="INSERT INTO "+ CONTACTS_TABLE_NAME+"(userId,read) VALUES('"+id+"','"+
+                        read+"')"
+                db?.execSQL(sql)
+            }
         }
     }
     fun getMessages(userId:String): MutableList<Message>? {

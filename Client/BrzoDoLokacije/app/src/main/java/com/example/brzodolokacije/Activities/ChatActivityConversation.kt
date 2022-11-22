@@ -112,9 +112,7 @@ class ChatActivityConversation : AppCompatActivity() {
                             //zahtev da se posalje poruka
                             var responseMessage=response.body()
                             dbConnection?.addMessage(responseMessage!!)
-                            requestMessages()
-
-
+                            //requestMessages()
                         }
                         else{
                             Toast.makeText(this@ChatActivityConversation,"Pogresno korisnicko ime.",Toast.LENGTH_LONG).show()
