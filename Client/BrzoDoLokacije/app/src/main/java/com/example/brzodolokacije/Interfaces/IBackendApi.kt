@@ -65,6 +65,8 @@ interface IBackendApi {
                         ):PagedPosts
     @POST("/api/message/add")
     fun sendMessage(@Header("Authorization") authHeader:String,@Body message:MessageSend):Call<Message>
+    @GET("/api/message/myMessages")
+    fun getNewMessages(@Header("Authorization") authHeader:String):Call<MutableList<MessageReceive>?>
     @GET("/api/user/history")
     fun getMyHistory(@Header("Authorization") authHeader:String):Call<MutableList<PostPreview>>
 //@POST("putanja")
@@ -78,5 +80,7 @@ interface IBackendApi {
 
     @POST("/api/user{id}/addFollower")
     fun addFollower(@Header("Authorization") authHeader:String,@Path("id") id:String):Call<UserReceive>
+    @GET("/api/user/{id}/id/profile")
+    fun getProfileFromId(@Header("Authorization") authHeader:String,@Path("id") username:String):Call<UserReceive>
 
 }
