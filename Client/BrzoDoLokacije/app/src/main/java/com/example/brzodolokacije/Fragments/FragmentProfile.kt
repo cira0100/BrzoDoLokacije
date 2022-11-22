@@ -57,6 +57,7 @@ class FragmentProfile : Fragment(com.example.brzodolokacije.R.layout.fragment_pr
     private lateinit var profilePicture: ImageView
     private lateinit var profilePicturePlus: MaterialButton
     private lateinit var showFollowers: TextView
+    private lateinit var showFollowing: TextView
 
     var userId:String = "1"
 
@@ -65,9 +66,9 @@ class FragmentProfile : Fragment(com.example.brzodolokacije.R.layout.fragment_pr
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        Toast.makeText(
-            activity, "MOJ PROFILLLLLLLLLLLLLLL", Toast.LENGTH_LONG
-        ).show();
+//        Toast.makeText(
+//            activity, "MOJ PROFILLLLLLLLLLLLLLL", Toast.LENGTH_LONG
+//        ).show();
         // Inflate the layout for this fragment
         val view:View= inflater.inflate(com.example.brzodolokacije.R.layout.fragment_profile, container, false)
         name = view.findViewById<View>(com.example.brzodolokacije.R.id.tvFragmentProfileName) as TextView
@@ -81,6 +82,7 @@ class FragmentProfile : Fragment(com.example.brzodolokacije.R.layout.fragment_pr
         profilePicture=view.findViewById<View>(com.example.brzodolokacije.R.id.tvFragmentProfileProfilePicture) as ImageView
         profilePicturePlus=view.findViewById<View>(com.example.brzodolokacije.R.id.btnFragmentProfileProfilePicturePlus) as MaterialButton
         showFollowers=view.findViewById(com.example.brzodolokacije.R.id.tvFragmentProfileFollowers)
+        showFollowing=view.findViewById(com.example.brzodolokacije.R.id.tvFragmentProfileFollow)
         //podaci iz baze
 
 
@@ -112,13 +114,25 @@ class FragmentProfile : Fragment(com.example.brzodolokacije.R.layout.fragment_pr
 
         showFollowers.setOnClickListener {
             val bundle = Bundle()
-            bundle.putString("userId",userId ) // Put anything what you want
+            bundle.putString("userId",userId )
             val fragmentFollowers = FragmentFollowers()
             fragmentFollowers.setArguments(bundle)
 
             fragmentManager
                 ?.beginTransaction()
                 ?.replace(com.example.brzodolokacije.R.id.flNavigationFragment,fragmentFollowers)
+                ?.commit()
+        }
+
+        showFollowing.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putString("userId",userId)
+            val fragmentFollowing = FragmentFollowing()
+            fragmentFollowing.setArguments(bundle)
+
+            fragmentManager
+                ?.beginTransaction()
+                ?.replace(com.example.brzodolokacije.R.id.flNavigationFragment,fragmentFollowing)
                 ?.commit()
         }
         getProfileInfo()

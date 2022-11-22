@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -26,12 +27,13 @@ class FragmentFollowers : Fragment() {
     private lateinit var userId:String
     private lateinit var followers: MutableList<UserReceive>
     private lateinit var followersRv:RecyclerView
+    private lateinit var btnBack:ImageView
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         val view= inflater.inflate(R.layout.fragment_followers, container, false)
-
+        btnBack=view.findViewById(R.id.btnFragmentFollowersBack)
         followersRv=view.findViewById(R.id.rvFragmentShowFollowers)
 
         val bundle = this.arguments
@@ -43,6 +45,13 @@ class FragmentFollowers : Fragment() {
         }
 
         getFollowers()
+
+        btnBack.setOnClickListener {
+            val fragmentProfile = FragmentProfile()
+            fragmentManager?.beginTransaction()
+                ?.replace(com.example.brzodolokacije.R.id.flNavigationFragment,fragmentProfile)
+                ?.commit()
+        }
 
         return view
     }

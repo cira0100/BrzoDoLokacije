@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -20,6 +21,7 @@ class FragmentFollowing : Fragment() {
     private lateinit var userId:String
     private lateinit var following: MutableList<UserReceive>
     private lateinit var followingRv: RecyclerView
+    private lateinit var back:ImageView
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -27,7 +29,7 @@ class FragmentFollowing : Fragment() {
         val view= inflater.inflate(R.layout.fragment_following, container, false)
 
         followingRv=view.findViewById(R.id.rvFragmentShowFollowing)
-
+        back=view.findViewById(R.id.btnFragmentFollowingBack)
         val bundle = this.arguments
         if (bundle != null) {
             userId= bundle.getString("userId").toString()
@@ -38,6 +40,13 @@ class FragmentFollowing : Fragment() {
 
         getFollowing()
 
+        back.setOnClickListener {
+            val fragmentProfile = FragmentProfile()
+            fragmentManager
+                ?.beginTransaction()
+                ?.replace(com.example.brzodolokacije.R.id.flNavigationFragment,fragmentProfile)
+                ?.commit()
+        }
         return view
     }
 
