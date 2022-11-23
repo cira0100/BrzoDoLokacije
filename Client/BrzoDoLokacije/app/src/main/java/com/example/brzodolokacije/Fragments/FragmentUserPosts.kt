@@ -34,6 +34,7 @@ import android.widget.TextView
 import com.example.brzodolokacije.Activities.ActivityAddPost
 import com.example.brzodolokacije.Activities.ActivityCapturePost
 import com.example.brzodolokacije.Activities.ActivityForgottenPassword
+import com.example.brzodolokacije.Adapters.MyPostsAdapter
 
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
@@ -107,7 +108,7 @@ class FragmentUserPosts : Fragment() {
     private fun loadPosts(){//most viewed
         rvPosts.apply {
             layoutManager= GridLayoutManager(requireContext(),2,GridLayoutManager.VERTICAL,false)
-            adapter= ShowPostsAdapter(requireActivity(),posts)
+            adapter= MyPostsAdapter(requireActivity(),posts)
 
         }
     }

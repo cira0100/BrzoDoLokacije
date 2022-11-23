@@ -6,4 +6,48 @@
     <string name="title_activity_maps">MapsActivity</string>
     <string name="dodaj_objavu">Dodaj objavu</string>
     <string name="todo">TODO</string>
+    <string name="datum">Datum</string>
+
+    <string name="od">Od</string>
+
+
+    <!-- example lista tagova, make actual list for app -->
+    <string-array name="Tags">
+        <item>GRAD</item>
+        <item>ULICA</item>
+        <item>JEZERO</item>
+        <item>REKA</item>
+        <item>PLAZA</item>
+        <item>OKEAN</item>
+        <item>MORE</item>
+        <item>MOREUZ</item>
+        <item>MOST</item>
+        <item>BANJA</item>
+        <item>PLANINA</item>
+        <item>VISORAVAN</item>
+        <item>PIRAMIDA</item>
+        <item>LIVADA</item>
+        <item>SELO</item>
+        <item>OSTRVO</item>
+        <item>POLUOSTRVO</item>
+        <item>KLISURA</item>
+        <item>ARHIPELAG</item>
+        <item>ADA</item>
+        <item>DELTA</item>
+        <item>FJORD</item>
+        <item>GEJZIR</item>
+        <item>IZVOR</item>
+        <item>KOTLINA</item>
+        <item>MINERALNI_IZVOR</item>
+        <item>PECINA</item>
+        <item>SUMA</item>
+        <item>VODOPAD</item>
+        <item>VULKAN</item>
+        <item>MUZEJ</item>
+        <item>ZAMAK</item>
+        <item>TRG</item>
+        <item>SPOMENIK</item>
+        <item>PARK</item>
+        <item>ZGRADA</item>
+    </string-array>
 </resources>

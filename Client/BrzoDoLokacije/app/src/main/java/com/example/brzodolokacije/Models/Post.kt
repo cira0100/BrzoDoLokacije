@@ -34,7 +34,8 @@ data class PostPreview (
     var views:Int,
     var ratings:Float,
     var comments:List<CommentSend>?,
-    var images:List<PostImage>
+    var images:List<PostImage>,
+    var tags:List<String>?
     //nedostaju datum i vreme kreiranja
 ):Parcelable
 
@@ -71,4 +72,18 @@ data class Rating(
 data class RatingReceive(
     var rating:Int,
     var postId:String
+)
+
+data class PagedPosts(
+    var page:Int,
+    var index:Int,
+    var totalpages:Int,
+    var totalposts:Int,
+    var posts:MutableList<PostPreview>
+)
+
+data class SearchParams(
+    var locationId: String,
+    var sorttype:Int,
+    var filterdate:Int
 )

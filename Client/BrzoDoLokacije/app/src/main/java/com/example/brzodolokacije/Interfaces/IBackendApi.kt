@@ -6,7 +6,6 @@ import com.example.brzodolokacije.Models.Auth.Login
 import com.example.brzodolokacije.Models.Auth.Register
 import com.example.brzodolokacije.Models.Auth.ResetPass
 import okhttp3.MultipartBody
-import okhttp3.Request
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
 import retrofit2.Call
@@ -26,6 +25,8 @@ interface IBackendApi {
     fun resetpass(@Body obj:ResetPass):Call<ResponseBody>
     @GET("/api/post")
     fun getPosts(@Header("Authorization") authHeader:String):Call<MutableList<PostPreview>>
+    @GET("/api/Post/posts/{id}")
+    fun addView(@Header("Authorization") authHeader:String,@Path("id") id:String):Call<PostPreview>
     @POST("/api/Location/add")
     fun addLocation(@Header("Authorization") authHeader:String,@Body obj: Location ):Call<Location>
     @Multipart
@@ -34,6 +35,7 @@ interface IBackendApi {
                                                             ,@Part("_id") _id:RequestBody
                                                             ,@Part("description") description:RequestBody
                                                             ,@Part("locationId") locationId:RequestBody
+                                                            ,@Part("tags") tags:RequestBody
                                                             ):Call<PostPreview>
     @POST("api/Post/posts/{id}/addrating")
     fun addRating(@Header("Authorization") authHeader:String,@Path("id") id:String,@Body rating: RatingReceive):Call<ResponseBody>
@@ -54,6 +56,31 @@ interface IBackendApi {
     @GET("/api/user/posts")
     fun getMyPosts(@Header("Authorization") authHeader:String):Call<MutableList<PostPreview>>
 
+    @GET("/api/post/locations/{id}/posts")
+    suspend fun getPagedPosts(@Header("Authorization") authHeader: String,
+                        @Path("id") locationId:String,
+                        @Query("page") page:Int,
+                        @Query("sorttype") sorttype:Int,
+                        @Query("filterdate") filterdate:Int
+                        ):PagedPosts
+    @POST("/api/message/add")
+    fun sendMessage(@Header("Authorization") authHeader:String,@Body message:MessageSend):Call<Message>
+    @GET("/api/message/myMessages")
+    fun getNewMessages(@Header("Authorization") authHeader:String):Call<MutableList<MessageReceive>?>
+    @GET("/api/user/history")
+    fun getMyHistory(@Header("Authorization") authHeader:String):Call<MutableList<PostPreview>>
 //@POST("putanja")
     //fun add(@Body obj:Post,@Header("Authorization") authHeader:String):Call<Post>
+
+    @POST("/api/user/{id}/followers")
+    fun getFollowers(@Path("id") id:String):Call <MutableList<UserReceive>>
+
+    @POST("/api/user{id}/following")
+    fun getFollowing(@Path("id") id:String):Call <MutableList<UserReceive>>
+
+    @POST("/api/user{id}/addFollower")
+    fun addFollower(@Header("Authorization") authHeader:String,@Path("id") id:String):Call<UserReceive>
+    @GET("/api/user/{id}/id/profile")
+    fun getProfileFromId(@Header("Authorization") authHeader:String,@Path("id") username:String):Call<UserReceive>
+
 }

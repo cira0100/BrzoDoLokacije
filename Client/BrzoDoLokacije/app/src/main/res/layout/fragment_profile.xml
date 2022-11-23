@@ -151,6 +151,7 @@
                 <TextView
                     android:id="@+id/tvFragmentProfileFollowers"
                     android:gravity="center"
+                    android:clickable="true"
                     android:text="PRATIOCI" />
 
                 <TextView
@@ -231,7 +232,7 @@
             android:layout_marginTop="4dp"
             android:backgroundTint="#FFFFFF"
             android:stateListAnimator="@null"
-            android:text="Recenzije"
+            android:text="Istorija"
             android:textColor="@color/cardview_dark_background"
             app:layout_constraintStart_toEndOf="@+id/btnFragmentProfileShowMyPosts"
             app:layout_constraintTop_toBottomOf="@+id/tvFragmentProfileInfoContainer" />

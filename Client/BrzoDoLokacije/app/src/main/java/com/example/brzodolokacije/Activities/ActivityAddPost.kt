@@ -1,32 +1,35 @@
 package com.example.brzodolokacije.Activities
 
 import android.Manifest
+import android.app.ProgressDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.core.view.setMargins
 import com.example.brzodolokacije.Models.Location
 import com.example.brzodolokacije.Models.LocationType
 import com.example.brzodolokacije.Models.PostPreview
 import com.example.brzodolokacije.R
+import com.example.brzodolokacije.Services.GeocoderHelper
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
-import okhttp3.MediaType
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.Response
 import java.io.File
-import java.io.IOException
 
 
 class ActivityAddPost : AppCompatActivity() {
@@ -42,6 +45,18 @@ class ActivityAddPost : AppCompatActivity() {
     private lateinit var locationString:String
     private lateinit var descriptionString:String
     private lateinit var post:Button
+    private lateinit var addLocation:Button
+    private lateinit var tagLayout:LinearLayout
+    private lateinit var tagButtons:MutableList<Button>
+    private lateinit var tagText: EditText
+    private lateinit var tagButtonAdd:Button
+    private lateinit var tagList: MutableList<String>
+    private var tagidcounter:Int = 0
+    val incorectCoord:Double=1000.0
+    val LOCATIONREQCODE=123
+    var longitude:Double=incorectCoord
+    var latitude:Double=incorectCoord
+    var progressDialog:ProgressDialog?=null
     //private var paths :ArrayList<String?>?=null
     private var place=0;
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -51,7 +66,9 @@ class ActivityAddPost : AppCompatActivity() {
 //            applicationContext, "Add new ", Toast.LENGTH_LONG
 //        ).show();
         uploadedImages= ArrayList()
-
+        tagList = mutableListOf()
+        tagButtons= mutableListOf()
+        tagidcounter = 0
         //paths= ArrayList()
 
         uploadFromGallery=findViewById<View>(R.id.btnActivityAddPostUploadFromGalleryVisible) as Button
@@ -61,6 +78,15 @@ class ActivityAddPost : AppCompatActivity() {
         location=findViewById<View>(R.id.etActivityAddPostLocation) as EditText
         description=findViewById<View>(R.id.etActivityAddPostDescription) as EditText
         post=findViewById<View>(R.id.btnActivityAddPostPost) as Button
+        addLocation=findViewById<View>(R.id.btnActivityAddPostAddLocation) as Button
+        tagText =findViewById<View>(R.id.acTags) as EditText
+        tagButtonAdd = findViewById<View>(R.id.btnActivityAddPostAddTag) as Button
+        tagLayout =  findViewById<View>(R.id.llTags) as LinearLayout
+
+        progressDialog= ProgressDialog(this)
+        progressDialog!!.setMessage("Molimo sacekajte!!!")
+        progressDialog!!.setCancelable(false)
+        progressDialog!!.setCanceledOnTouchOutside(false)
 
 
         switcher?.setFactory{
@@ -68,6 +94,47 @@ class ActivityAddPost : AppCompatActivity() {
             imgView.scaleType = ImageView.ScaleType.CENTER_CROP
             imgView.setPadding(8, 8, 8, 8)
             imgView}
+        addLocation.setOnClickListener {
+            val myIntent = Intent(this, MapsActivity::class.java)
+            if(location.text!=null && !location.text.trim().equals(""))
+                myIntent.putExtra("search",location.text.toString())
+            startActivityForResult(myIntent,LOCATIONREQCODE)
+        }
+
+        //dodavanje i brisanje tagova
+        tagButtonAdd.setOnClickListener {
+            if(tagList.count()<5) {
+                var tagstr = tagText.text.toString()
+                var newbtn = Button(this)
+                newbtn.setId(tagidcounter)
+                newbtn.text = tagstr
+                var layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    50
+                )
+                layoutParams.setMargins(3)
+                newbtn.layoutParams=layoutParams
+                newbtn.setBackgroundColor(Color.parseColor("#1C789A"))
+                newbtn.setTextColor(Color.WHITE)
+                newbtn.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10F)
+                newbtn.setPadding(3,1,3,1)
+
+                newbtn.setOnClickListener {
+                    var btntext = newbtn.text.toString()
+                    tagList.remove(btntext)
+                    tagButtons.remove(newbtn)
+                    tagLayout.removeView(newbtn)
+                }
+
+                tagList.add(tagstr)
+                tagButtons.add(newbtn)
+                tagLayout.addView(newbtn)
+                tagText.text.clear()
+            }
+            else{
+                Toast.makeText(this,"Maksimalno 5 tagova",Toast.LENGTH_LONG)
+            }
+        }
 
         //dodavanje iz galerije
         uploadFromGallery.setOnClickListener{
@@ -116,15 +183,18 @@ class ActivityAddPost : AppCompatActivity() {
             descriptionString=description.text.toString().trim()
             //prazan unos?
             if(locationString.isEmpty()) {
-                location.hint="Unesite lokaciju"
+                location.hint="Unesite naziv lokaciju"
                 location.setHintTextColor(Color.RED)
             }
             if(descriptionString.isEmpty()) {
                 description.hint="Unesite lokaciju"
                 description.setHintTextColor(Color.RED)
             }
+            if(longitude!=incorectCoord && latitude!=incorectCoord){
+                Toast.makeText(this,"Unesite lokaciju klikom na dugme",Toast.LENGTH_LONG)
+            }
 
-            if(!locationString.isEmpty() && !descriptionString.isEmpty()){
+            if(!locationString.isEmpty() && !descriptionString.isEmpty() && longitude!=incorectCoord && latitude!=incorectCoord && uploadedImages!!.size>0){
                 sendPost()
             }
         }
@@ -162,35 +232,57 @@ class ActivityAddPost : AppCompatActivity() {
                 uploadFromGallery.isVisible=false
             }
         }
+        if(requestCode==LOCATIONREQCODE && resultCode== RESULT_OK){
+            var bundle=data!!.extras
+            longitude=bundle!!.getDouble("longitude",incorectCoord)
+            latitude=bundle!!.getDouble("latitude",incorectCoord)
+            var locName=bundle!!.getString("name")
+            if(location.text.toString().trim().equals("") && locName!=null && !locName.toString().trim().equals(""))
+                location.setText(locName,TextView.BufferType.EDITABLE)
+        }
     }
     private fun sendPost(){
         uploadLocation()
 
     }
     fun uploadLocation() {
+        //TO DO SEARCH EXISTING LOCATION FROM DB
+        //IF NOT EXISTS ADD NEW LOCATION
+        progressDialog!!.show()
         val api =RetrofitHelper.getInstance()
-        var loc:Location=Location("",locationString,"","","",0.0,0.0,LocationType.GRAD)
+        var geocoder=GeocoderHelper.getInstance()
+        var loc1=geocoder!!.getFromLocation(latitude,longitude,1)
+        if(loc1==null ||loc1.size<=0)
+        {
+            progressDialog!!.dismiss()
+            Toast.makeText(this,"Lokacija ne postoji",Toast.LENGTH_LONG);
+            return
+        }
+        var countryName=loc1[0].countryName
+        var address="todo not possible in query"
+        var city="its null"
+        if(loc1[0].adminArea!=null)
+            city=loc1[0].adminArea//not possible
+        var loc:Location=Location("",locationString,city,countryName,address,latitude,longitude,LocationType.GRAD)
         var jwtString= SharedPreferencesHelper.getValue("jwt",this)
         var data=api.addLocation("Bearer "+jwtString,loc)
-
 
         data.enqueue(object : retrofit2.Callback<Location?> {
             override fun onResponse(call: Call<Location?>, response: Response<Location?>) {
                 if(response.isSuccessful()){
+
+                    uploadPost(response.body()!!._id)
                     Toast.makeText(
                         applicationContext, "USPEH", Toast.LENGTH_LONG
                     ).show();
-                    uploadPost(response.body()!!._id)
-                    Log.d("MAIN","RADI")
-                    Log.d("MAIN","RADI")
 
                 }else {
+                    progressDialog!!.dismiss()
 
                     if (response.errorBody() != null) {
                         Log.d("Main",response.errorBody()!!.string())
                         Log.d("Main",response.message())
                     }
-                    Log.d("Main","sadadsa")
                     Log.d("Main",response.errorBody()!!.string())
                     Log.d("Main",response.message())
                 }
@@ -203,6 +295,7 @@ class ActivityAddPost : AppCompatActivity() {
                     applicationContext, t.toString(), Toast.LENGTH_LONG
                 ).show();
                 Log.d("Main",t.toString())
+                progressDialog!!.dismiss()
             }
         })
     }
@@ -215,6 +308,13 @@ class ActivityAddPost : AppCompatActivity() {
         var locReq=RequestBody.create("text/plain".toMediaTypeOrNull(),loc)
         var descReq=RequestBody.create("text/plain".toMediaTypeOrNull(),desc)
         var idReq=RequestBody.create("text/plain".toMediaTypeOrNull(),"dsa")
+
+        var tagliststring=""
+        for(tag in tagList){
+            tagliststring=tagliststring+tag+"|"
+        }
+        var tagReq=RequestBody.create("text/plain".toMediaTypeOrNull(),tagliststring)
+
         val imagesParts = arrayOfNulls<MultipartBody.Part>(
             uploadedImages!!.size
         )
@@ -233,11 +333,12 @@ class ActivityAddPost : AppCompatActivity() {
             imagesParts[i]=MultipartBody.Part.createFormData("images",file.name,imageBody)
         }
         var jwtString= SharedPreferencesHelper.getValue("jwt",this)
-        var data=api.addPost("Bearer "+jwtString,imagesParts,idReq,descReq,locReq)
-
+        var data=api.addPost("Bearer "+jwtString,imagesParts,idReq,descReq,locReq,tagReq)
+        //multipart formdata : images , _id , description , locationId , tags
 
         data.enqueue(object : retrofit2.Callback<PostPreview?> {
             override fun onResponse(call: Call<PostPreview?>, response: Response<PostPreview?>) {
+                progressDialog!!.dismiss()
                 if(response.isSuccessful()){
                     Toast.makeText(
                         applicationContext, "USPEH", Toast.LENGTH_LONG
@@ -260,7 +361,8 @@ class ActivityAddPost : AppCompatActivity() {
             override fun onFailure(call: Call<PostPreview?>, t: Throwable) {
                 Toast.makeText(
                     applicationContext, t.toString(), Toast.LENGTH_LONG
-                ).show();
+                ).show()
+                progressDialog!!.dismiss()
                 Log.d("Main",t.toString())
             }
         })

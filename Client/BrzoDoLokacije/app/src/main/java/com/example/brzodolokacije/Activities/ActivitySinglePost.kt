@@ -1,11 +1,11 @@
 package com.example.brzodolokacije.Activities
 
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import android.widget.Adapter
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.brzodolokacije.Adapters.CommentsAdapter
@@ -15,8 +15,9 @@ import com.example.brzodolokacije.R
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
 import com.example.brzodolokacije.databinding.ActivitySinglePostBinding
+import com.google.gson.Gson
+import kotlinx.android.synthetic.main.activity_single_post.*
 import okhttp3.ResponseBody
-import okhttp3.internal.notifyAll
 import retrofit2.Call
 import retrofit2.Response
 
@@ -32,6 +33,8 @@ class ActivitySinglePost : AppCompatActivity() {
     private lateinit var post:PostPreview
     private var comments:MutableList<CommentSend>?=mutableListOf()
     private var starNumber:Number=0
+    private lateinit var userData:UserReceive
+    private lateinit var user:TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +55,14 @@ class ActivitySinglePost : AppCompatActivity() {
         recyclerViewImages?.adapter = adapterImages
         loadTextComponents()
         setRatingListeners()
+        translateOwnerIdToName(post.ownerId)
+
+        binding.tvUser.setOnClickListener {
+            val intent: Intent = Intent(this@ActivitySinglePost,ActivityUserProfile::class.java)
+            var b= Bundle()
+            intent.putExtra("user", Gson().toJson(userData))
+            this.startActivity(intent)
+        }
     }
 
     fun buildRecyclerViewComments(){
@@ -131,6 +142,7 @@ class ActivitySinglePost : AppCompatActivity() {
                 Toast.makeText(this@ActivitySinglePost,"Unesite tekst komentara.",Toast.LENGTH_LONG).show()
             }
         }
+        addView()
 
     }
 
@@ -192,6 +204,9 @@ class ActivitySinglePost : AppCompatActivity() {
         request.enqueue(object : retrofit2.Callback<ResponseBody?> {
             override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
                 if(response.isSuccessful){
+                    //zasad hardkodovano, zameniti te vrednosti sa brojem ocena kada se doda
+                    post.ratings=((post.ratings)*10+rating.rating)/11
+                    binding.tvRating.text=String.format("%.2f",post.ratings)
                     Toast.makeText(
                         this@ActivitySinglePost, "prosao zahtev", Toast.LENGTH_LONG
                     ).show()
@@ -223,7 +238,43 @@ class ActivitySinglePost : AppCompatActivity() {
             tvNumberOfRatings.invalidate()
             tvDescription.text=post.description
             tvDescription.invalidate()
+
         }
+
+    }
+    fun addView() {
+        var token= SharedPreferencesHelper.getValue("jwt", this).toString()
+        val Api= RetrofitHelper.getInstance()
+        val request=Api.addView("Bearer "+token,post._id)
+        request.enqueue(object : retrofit2.Callback<PostPreview?> {
+            override fun onResponse(call: Call<PostPreview?>, response: Response<PostPreview?>) {
+
+            }
+
+            override fun onFailure(call: Call<PostPreview?>, t: Throwable) {
+
+            }
+        })
+    }
+
+    fun translateOwnerIdToName(id:String) {
+        var token= SharedPreferencesHelper.getValue("jwt", this).toString()
+        val api= RetrofitHelper.getInstance()
+        val request= api.getProfileFromId("Bearer " + token, id)
+        request.enqueue(object : retrofit2.Callback<UserReceive>  {
+            override fun onResponse(call: Call<UserReceive>,
+                                    response: Response<UserReceive>) {
+                if (response.body() == null) {
+                    return
+                }
+                userData = response.body()!!
+                binding.tvUser.text= userData!!.username.toString()
+            }
+
+            override fun onFailure(call: Call<UserReceive>, t: Throwable) {
+
+            }
+        })
     }
 
 }

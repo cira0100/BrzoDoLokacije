@@ -18,6 +18,8 @@ namespace Api.Models
         public List<Rating> ratings { get; set; }
         public List<Comment> comments { get; set; }
         public List<File> images { get; set; }
+        public List<string>? tags { get; set; }
+        
     }
     public class PostReceive
     {
@@ -25,8 +27,7 @@ namespace Api.Models
         public string locationId { get; set; }
         public string description { get; set; }
         public List<IFormFile> images { get; set; }
-
-
+        public string? tags { get; set; }
     }
     public class PostSend
     {
@@ -39,6 +40,7 @@ namespace Api.Models
         public double ratings { get; set; }
         public List<CommentSend> comments { get; set; }
         public List<File> images { get; set; }
+        public List<string>? tags { get; set; }
     }
     public class Rating
     {

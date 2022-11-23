@@ -55,5 +55,48 @@ namespace Api.Controllers
                 return Ok(rez);
             return BadRequest();
         }
+        [HttpGet("{id}/id/profile")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<UserSend>> GetUserById(string id)
+        {
+            var rez = await _userService.getUserById(id);
+            if (rez != null)
+                return Ok(rez);
+            return BadRequest();
+        }
+        [HttpGet("history")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<List<PostSend>>> ViewHistory()
+        {
+            var id = await _userService.UserIdFromJwt();
+            var rez = await _postService.UserHistory(id);
+            if (rez != null)
+                return Ok(rez);
+            return BadRequest();
+        }
+
+        [HttpGet("{id}/followers")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<List<UserSend>>> GetFollowers(string id)
+        {
+            return Ok(await _userService.GetFollowers(id));
+        }
+
+        [HttpGet("{id}/following")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<List<UserSend>>> GetFollowing(string id)
+        {
+            return Ok(await _userService.GetFollowing(id));
+        }
+
+        [HttpGet("addFollower")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<List<UserSend>>> AddFollower(string userId, string followerId)
+        {
+            return Ok(await _userService.AddFollower(userId, followerId));
+        }
+
+
+
     }
 }

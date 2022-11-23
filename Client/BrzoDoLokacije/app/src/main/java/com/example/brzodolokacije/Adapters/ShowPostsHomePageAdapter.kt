@@ -1,6 +1,8 @@
 package com.example.brzodolokacije.Adapters
 
 import android.app.Activity
+import android.content.Intent
+import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -9,6 +11,8 @@ import android.widget.TextView
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.brzodolokacije.Activities.ActivitySinglePost
+import com.example.brzodolokacije.Models.LocationType
 import com.example.brzodolokacije.Models.PostPreview
 import com.example.brzodolokacije.R
 import com.example.brzodolokacije.Services.RetrofitHelper
@@ -23,6 +27,15 @@ class ShowPostsHomePageAdapter(var postPreview:MutableList<PostPreview>,val acti
     }
 
     override fun onBindViewHolder(holder: PostViewHolder, position: Int) {
+        holder.itemView.setOnClickListener {
+            //Toast.makeText(activity,item._id,Toast.LENGTH_LONG).show()
+            val intent: Intent = Intent(activity, ActivitySinglePost::class.java)
+            var b= Bundle()
+            postPreview[position].location.type= LocationType.ADA
+            b.putParcelable("selectedPost", postPreview[position])
+            intent.putExtras(b)
+            activity.startActivity(intent)
+        }
         return holder.bindView(postPreview[position] )
     }
 

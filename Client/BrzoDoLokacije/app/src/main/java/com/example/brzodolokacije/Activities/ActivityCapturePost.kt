@@ -1,6 +1,7 @@
 package com.example.brzodolokacije.Activities
 
 import android.Manifest
+import android.app.ProgressDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
@@ -9,20 +10,20 @@ import android.net.Uri
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
+import android.util.TypedValue
 import android.view.View
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ImageView
-import android.widget.Toast
+import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.core.view.setMargins
 import com.example.brzodolokacije.Models.Location
 import com.example.brzodolokacije.Models.LocationType
 import com.example.brzodolokacije.Models.PostPreview
 import com.example.brzodolokacije.R
+import com.example.brzodolokacije.Services.GeocoderHelper
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -46,15 +47,78 @@ class ActivityCapturePost : AppCompatActivity() {
     private lateinit var post: Button
     private lateinit var showImage: ImageView
     private var uploadedImages: Uri? = null
+    private lateinit var addLocation:Button
+    private lateinit var tagLayout:LinearLayout
+    private lateinit var tagButtons:MutableList<Button>
+    private lateinit var tagText: EditText
+    private lateinit var tagButtonAdd:Button
+    private lateinit var tagList: MutableList<String>
+    private var tagidcounter:Int = 0
+
+    val incorectCoord:Double=1000.0
+    val LOCATIONREQCODE=123
+    var longitude:Double=incorectCoord
+    var latitude:Double=incorectCoord
+    var progressDialog: ProgressDialog?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_capture_post)
+        tagList = mutableListOf()
+        tagButtons= mutableListOf()
+        tagidcounter = 0
+
         location = findViewById<View>(R.id.etActivityCapturePostLocation) as EditText
         description = findViewById<View>(R.id.etActivityCapturePostDescription) as EditText
         post = findViewById<View>(R.id.btnActivityCapturePostPost) as Button
         showImage = findViewById<View>(R.id.ivActivityCapturePostImage) as ImageView
         takePhoto = findViewById<View>(R.id.btnActivityCapturePostCaptureVisible) as Button
+        addLocation=findViewById<View>(R.id.btnActivityCapturePostAddLocation) as Button
+        tagText =findViewById<View>(R.id.acTagsCap) as EditText
+        tagButtonAdd = findViewById<View>(R.id.btnActivityAddPostAddTagCap) as Button
+        tagLayout =  findViewById<View>(R.id.llTagsCap) as LinearLayout
+
+        progressDialog= ProgressDialog(this)
+        progressDialog!!.setMessage("Molimo sacekajte!!!")
+        progressDialog!!.setCancelable(false)
+        progressDialog!!.setCanceledOnTouchOutside(false)
+
+
+        //dodavanje i brisanje tagova
+        tagButtonAdd.setOnClickListener {
+            if(tagList.count()<5) {
+                var tagstr = tagText.text.toString()
+                var newbtn = Button(this)
+                newbtn.setId(tagidcounter)
+                newbtn.text = tagstr
+                var layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    50
+                )
+                layoutParams.setMargins(3)
+                newbtn.layoutParams=layoutParams
+                newbtn.setBackgroundColor(Color.parseColor("#1C789A"))
+                newbtn.setTextColor(Color.WHITE)
+                newbtn.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10F)
+                newbtn.setPadding(3,1,3,1)
+
+                newbtn.setOnClickListener {
+                    var btntext = newbtn.text.toString()
+                    tagList.remove(btntext)
+                    tagButtons.remove(newbtn)
+                    tagLayout.removeView(newbtn)
+                }
+
+                tagList.add(tagstr)
+                tagButtons.add(newbtn)
+                tagLayout.addView(newbtn)
+                tagText.text.clear()
+            }
+            else{
+                Toast.makeText(this,"Maksimalno 5 tagova",Toast.LENGTH_LONG)
+            }
+        }
+
 
         //dodavanje sa kamere
 
@@ -101,6 +165,14 @@ class ActivityCapturePost : AppCompatActivity() {
         }
         ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
+
+        addLocation.setOnClickListener {
+            val myIntent = Intent(this, MapsActivity::class.java)
+            if(location.text!=null && !location.text.trim().equals(""))
+                myIntent.putExtra("search",location.text.toString())
+            startActivityForResult(myIntent,LOCATIONREQCODE)
+        }
+
         takePhoto.setOnClickListener {
 
             val APP_TAG = "BrzoDoLokacije"
@@ -136,7 +208,7 @@ class ActivityCapturePost : AppCompatActivity() {
             if (descriptionString.isEmpty()) {
                 description.hint = "Unesite opis"
                 description.setHintTextColor(Color.RED)
-            }else if(f!=null){
+            }else if(f!=null && longitude!=incorectCoord && latitude!=incorectCoord){
                     uploadLocation()
             }
 
@@ -145,7 +217,17 @@ class ActivityCapturePost : AppCompatActivity() {
 
         }
     }
-
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if(requestCode==LOCATIONREQCODE && resultCode== RESULT_OK){
+            var bundle=data!!.extras
+            longitude=bundle!!.getDouble("longitude",incorectCoord)
+            latitude=bundle!!.getDouble("latitude",incorectCoord)
+            var locName=bundle!!.getString("name")
+            if(location.text.toString().trim().equals("") && locName!=null && !locName.toString().trim().equals(""))
+                location.setText(locName, TextView.BufferType.EDITABLE)
+        }
+    }
     var f:File?=null
         private val cameraActivityResultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -168,27 +250,43 @@ class ActivityCapturePost : AppCompatActivity() {
 
         }
     fun uploadLocation() {
-        val api = RetrofitHelper.getInstance()
-        var loc: Location = Location("",locationString,"","","",0.0,0.0, LocationType.GRAD)
+        //TO DO SEARCH EXISTING LOCATION FROM DB
+        //IF NOT EXISTS ADD NEW LOCATION
+        progressDialog!!.show()
+        val api =RetrofitHelper.getInstance()
+        var geocoder= GeocoderHelper.getInstance()
+        var loc1=geocoder!!.getFromLocation(latitude,longitude,1)
+        if(loc1==null ||loc1.size<=0)
+        {
+            progressDialog!!.dismiss()
+            Toast.makeText(this,"Lokacija ne postoji",Toast.LENGTH_LONG);
+            return
+        }
+        var countryName=loc1[0].countryName
+        var address="todo not possible in query"
+        var city=loc1[0].adminArea//not possible
+        //var address=loc1[0].subAdminArea
+        var loc:Location=Location("",locationString,city,countryName,address,latitude,longitude,LocationType.GRAD)
         var jwtString= SharedPreferencesHelper.getValue("jwt",this)
         var data=api.addLocation("Bearer "+jwtString,loc)
-
 
         data.enqueue(object : retrofit2.Callback<Location?> {
             override fun onResponse(call: Call<Location?>, response: Response<Location?>) {
                 if(response.isSuccessful()){
+
+                    uploadPost(response.body()!!._id)
                     Toast.makeText(
                         applicationContext, "USPEH", Toast.LENGTH_LONG
                     ).show();
-                    uploadPost(response.body()!!._id)
-                    Log.d("MAIN","RADI")
-                    Log.d("MAIN","RADI")
 
                 }else {
+                    progressDialog!!.dismiss()
 
                     if (response.errorBody() != null) {
                         Log.d("Main",response.errorBody()!!.string())
+                        Log.d("Main",response.message())
                     }
+                    Log.d("Main",response.errorBody()!!.string())
                     Log.d("Main",response.message())
                 }
 
@@ -196,7 +294,11 @@ class ActivityCapturePost : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<Location?>, t: Throwable) {
+                Toast.makeText(
+                    applicationContext, t.toString(), Toast.LENGTH_LONG
+                ).show();
                 Log.d("Main",t.toString())
+                progressDialog!!.dismiss()
             }
         })
     }
@@ -209,6 +311,13 @@ class ActivityCapturePost : AppCompatActivity() {
         var locReq= RequestBody.create("text/plain".toMediaTypeOrNull(),loc)
         var descReq= RequestBody.create("text/plain".toMediaTypeOrNull(),desc)
         var idReq= RequestBody.create("text/plain".toMediaTypeOrNull(),"dsa")
+
+        var tagliststring=""
+        for(tag in tagList){
+            tagliststring=tagliststring+tag+"|"
+        }
+        var tagReq=RequestBody.create("text/plain".toMediaTypeOrNull(),tagliststring)
+
         val imagesParts = arrayOfNulls<MultipartBody.Part>(
             1
         )
@@ -217,16 +326,18 @@ class ActivityCapturePost : AppCompatActivity() {
             imagesParts[0]= MultipartBody.Part.createFormData("images",f!!.name,imageBody)
 
         var jwtString= SharedPreferencesHelper.getValue("jwt",this)
-        var data=api.addPost("Bearer "+jwtString,imagesParts,idReq,descReq,locReq)
+        var data=api.addPost("Bearer "+jwtString,imagesParts,idReq,descReq,locReq,tagReq)
 
 
         data.enqueue(object : retrofit2.Callback<PostPreview?> {
             override fun onResponse(call: Call<PostPreview?>, response: Response<PostPreview?>) {
                 if(response.isSuccessful()){
+                    progressDialog!!.dismiss()
                     Toast.makeText(
                         applicationContext, "USPEH", Toast.LENGTH_LONG
                     ).show();
                 }else {
+                    progressDialog!!.dismiss()
 
                     if (response.errorBody() != null) {
                         Toast.makeText(
@@ -242,6 +353,7 @@ class ActivityCapturePost : AppCompatActivity() {
             }
 
             override fun onFailure(call: Call<PostPreview?>, t: Throwable) {
+                progressDialog!!.dismiss()
                 Toast.makeText(
                     applicationContext, t.toString(), Toast.LENGTH_LONG
                 ).show();

@@ -1,52 +1,64 @@
 package com.example.brzodolokacije.Fragments
 
-import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Toast
+import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.example.brzodolokacije.Activities.NavigationActivity
-import com.example.brzodolokacije.Adapters.SampleAdapter
+import com.example.brzodolokacije.Activities.ActivityAddPost
+import com.example.brzodolokacije.Activities.ChatActivity
 import com.example.brzodolokacije.Adapters.ShowPostsAdapter
-import com.example.brzodolokacije.Models.*
+import com.example.brzodolokacije.Models.SearchParams
 import com.example.brzodolokacije.R
 import com.example.brzodolokacije.Services.RetrofitHelper
-import com.example.brzodolokacije.Services.SharedPreferencesHelper
-import com.example.brzodolokacije.databinding.FragmentHomeBinding
 import com.example.brzodolokacije.databinding.FragmentShowPostsBinding
+import com.example.brzodolokacije.paging.SearchPostsViewModel
+import com.example.brzodolokacije.paging.SearchPostsViewModelFactory
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import kotlinx.android.synthetic.main.fragment_show_posts.*
-import kotlinx.android.synthetic.main.fragment_show_posts.view.*
-import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Response
+import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.launch
 
 
 class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     private lateinit var binding: FragmentShowPostsBinding
-    private var posts : MutableList<PostPreview> = mutableListOf()
     private var linearManagerVar: RecyclerView.LayoutManager? = null
-    private var adapterVar: RecyclerView.Adapter<ShowPostsAdapter.ViewHolder>? = null
+    private var adapterVar: ShowPostsAdapter? = null
     private var recyclerView: RecyclerView?=null
     private var gridManagerVar: RecyclerView.LayoutManager?=null
     private var swipeRefreshLayout:SwipeRefreshLayout?=null
+    private lateinit var searchPostsViewModel:SearchPostsViewModel
+    private var searchParams:SearchParams?= SearchParams("6375784fe84e2d53df32bf03",1,1)
+    private lateinit var btnFilter:ImageButton
+    private lateinit var btnSort:ImageButton
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        setUpViewModel()
         binding=FragmentShowPostsBinding.inflate(layoutInflater)
         //instantiate adapter and linearLayout
-        adapterVar=ShowPostsAdapter(requireActivity(),posts)
+        adapterVar=ShowPostsAdapter(requireActivity())
         linearManagerVar= LinearLayoutManager(activity)
         gridManagerVar=GridLayoutManager(activity,2)
+    }
+
+    private fun setUpViewModel() {
+        val factory=SearchPostsViewModelFactory(RetrofitHelper.getInstance(),requireActivity())
+        searchPostsViewModel=ViewModelProvider(this@FragmentShowPosts,factory).get(SearchPostsViewModel::class.java)
     }
 
     fun setUpListeners(rootView: View?){
@@ -63,35 +75,20 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             }
             Log.d("main","klik")
         }
+
+        rootView?.findViewById<ImageButton>(R.id.btnChat)?.setOnClickListener() {
+            val intent: Intent = Intent(activity, ChatActivity::class.java)
+            requireActivity().startActivity(intent)
+        }
     }
 
-    fun requestToBack(){
-        val postApi= RetrofitHelper.getInstance()
-        val token=SharedPreferencesHelper.getValue("jwt", requireActivity())
-        val request=postApi.getPosts("Bearer "+token)
-        request.enqueue(object : retrofit2.Callback<MutableList<PostPreview>?> {
-            override fun onResponse(call: Call<MutableList<PostPreview>?>, response: Response<MutableList<PostPreview>?>) {
-                if(response.isSuccessful){
-                    posts=response.body()!!
-                    recyclerView?.adapter=ShowPostsAdapter(requireActivity(),posts)
-                    Toast.makeText(
-                        activity, "prosao zahtev", Toast.LENGTH_LONG
-                    ).show()
-                    swipeRefreshLayout?.isRefreshing=false
-                }else{
-                    if(response.errorBody()!=null)
-                        Toast.makeText(activity, response.errorBody()!!.string(), Toast.LENGTH_LONG).show();
-                }
-
-
+    fun requestToBack(searchParams: SearchParams){
+        lifecycleScope.launch{
+            searchPostsViewModel.fetchPosts(searchParams).distinctUntilChanged().collectLatest {
+                adapterVar?.submitData(lifecycle,it)
+                swipeRefreshLayout?.isRefreshing=false
             }
-
-            override fun onFailure(call: Call<MutableList<PostPreview>?>, t: Throwable) {
-                Toast.makeText(
-                    activity, t.toString(), Toast.LENGTH_LONG
-                ).show();
-            }
-        })
+        }
     }
 
     override fun onCreateView(
@@ -116,13 +113,50 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         )
         swipeRefreshLayout?.post(kotlinx.coroutines.Runnable {
             swipeRefreshLayout?.isRefreshing=true
-            requestToBack()
+            requestToBack(searchParams!!)
         })
+
+        btnFilter=rootView.findViewById(R.id.btnSortType)
+        btnSort=rootView.findViewById(R.id.btnSortDirection)
+
+        btnFilter.setOnClickListener{
+            showBottomSheetFilter()
+        }
+
+        btnSort.setOnClickListener{
+            showBottomSheetSort()
+        }
         return rootView
     }
 
     override fun onRefresh() {
-        requestToBack()
+        requestToBack(searchParams!!)
     }
 
+
+    private fun showBottomSheetFilter() {
+        var bottomSheetDialog: BottomSheetDialog
+        bottomSheetDialog = BottomSheetDialog(requireContext())
+        bottomSheetDialog.setContentView(R.layout.bottom_sheet_filter)
+        bottomSheetDialog.show()
+
+        var dateFrom=bottomSheetDialog.findViewById<View>(R.id.dateFromBSF)as EditText
+        var dateTo=bottomSheetDialog.findViewById<View>(R.id.dateToBSF) as EditText
+        var location=bottomSheetDialog.findViewById<View>(R.id.locationBSF) as EditText
+        var filter = bottomSheetDialog.findViewById<View>(R.id.btnBSFFilter) as Button
+
+
+        filter.setOnClickListener {
+            //povezati sa back-om
+
+
+        }
+    }
+    private fun showBottomSheetSort() {
+        var bottomSheetDialogSort: BottomSheetDialog
+        bottomSheetDialogSort = BottomSheetDialog(requireContext())
+        bottomSheetDialogSort.setContentView(R.layout.bottom_sheet_sort)
+        bottomSheetDialogSort.show()
+
+    }
 }

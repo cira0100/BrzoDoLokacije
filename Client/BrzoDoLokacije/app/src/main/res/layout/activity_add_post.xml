@@ -19,7 +19,7 @@
     <Button
         android:id="@+id/nextImage"
         android:layout_width="78dp"
-        android:layout_height="499dp"
+        android:layout_height="0dp"
         android:background="@drawable/rounded_transparent_button"
         android:gravity="right"
         android:padding="30dp"
@@ -33,7 +33,7 @@
     <Button
         android:id="@+id/previousImage"
         android:layout_width="70dp"
-        android:layout_height="497dp"
+        android:layout_height="0dp"
 
         android:background="@drawable/rounded_transparent_button"
         android:gravity="left"
@@ -73,7 +73,7 @@
 
     <EditText
         android:id="@+id/etActivityAddPostLocation"
-        android:layout_width="match_parent"
+        android:layout_width="200dp"
         android:layout_height="50dp"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
@@ -81,8 +81,21 @@
         android:hint="Reykjavik, Iceland"
         android:inputType="textEmailAddress"
         app:layout_constraintBottom_toTopOf="@+id/tvActivityAddPostDescriptiontext"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/btnActivityAddPostAddLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/rounded_cyan_button"
+        android:backgroundTint="#1C789A"
+        android:text="Dodaj lokaciju"
+        app:layout_constraintBottom_toTopOf="@+id/tvActivityAddPostDescriptiontext"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/etActivityAddPostLocation" />
+
 
     <TextView
         android:id="@+id/tvActivityAddPostDescriptiontext"
@@ -104,7 +117,7 @@
         android:ems="10"
         android:hint="Reykjavik, Iceland"
         android:inputType="textEmailAddress"
-        app:layout_constraintBottom_toTopOf="@+id/btnActivityAddPostPost"
+        app:layout_constraintBottom_toTopOf="@+id/llTags"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -135,6 +148,45 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/isActivityAddPostSwitcher" />
+
+    <LinearLayout
+        android:id="@+id/llTags"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:orientation="horizontal"
+        app:layout_constraintBottom_toTopOf="@+id/acTags"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"></LinearLayout>
+
+    <EditText
+        android:id="@+id/acTags"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="20dp"
+        android:layout_marginRight="20dp"
+        android:hint="Planina,Reka,Park..."
+        android:minHeight="48dp"
+        android:maxLength= "12"
+        app:layout_constraintBottom_toTopOf="@+id/btnActivityAddPostPost"
+        app:layout_constraintEnd_toStartOf="@+id/btnActivityAddPostAddTag"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/btnActivityAddPostAddTag"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_marginTop="5dp"
+        android:layout_marginEnd="20dp"
+        android:layout_marginStart="20dp"
+        android:layout_marginBottom="5dp"
+        android:background="@drawable/rounded_cyan_button"
+        android:backgroundTint="#1C789A"
+        android:text="Dodaj tag"
+        app:layout_constraintBottom_toTopOf="@+id/btnActivityAddPostPost"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/llTags" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

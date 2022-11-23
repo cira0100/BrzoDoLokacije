@@ -31,10 +31,12 @@ namespace Api.Services
         }
         public async Task<Location> add(Location loc)
         {
-            IEnumerable<Address> adresses = await _geocoder.GeocodeAsync(loc.name+" "+loc.address+" "+loc.city+" "+loc.country);
-            loc.country = loc.name;
-            loc.latitude = adresses.First().Coordinates.Latitude;
-            loc.longitude=adresses.First().Coordinates.Longitude;
+
+            //On Client side
+            //IEnumerable<Address> adresses = await _geocoder.GeocodeAsync(loc.name+" "+loc.address+" "+loc.city+" "+loc.country);
+            //loc.country = loc.name;
+            //loc.latitude = adresses.First().Coordinates.Latitude;
+            //loc.longitude=adresses.First().Coordinates.Longitude;
             await _locations.InsertOneAsync(loc);
 
             return loc;

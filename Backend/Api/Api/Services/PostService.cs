@@ -39,6 +39,8 @@ namespace Api.Services
             p.comments = new List<Comment>();
             p.images = new List<Models.File>();
             p.createdAt = DateTime.Now.ToUniversalTime();
+            var tags = post.tags.Split("|").ToList();
+            p.tags = tags;
             var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "Files", p.ownerId);
             if (!Directory.Exists(folderPath))
             {
@@ -82,6 +84,7 @@ namespace Api.Services
             p.images = post.images;
             p.views = post.views.Count();
             p.createdAt = post.createdAt;
+            p.tags = post.tags;
             if (post.ratings.Count() > 0)
             {
                 List<int> ratings = new List<int>();
@@ -346,6 +349,22 @@ namespace Api.Services
             {
                 var x = await postToPostSend(post);
                 tosend.Add(x);
+            }
+            return tosend;
+        }
+        public async Task<List<PostSend>> UserHistory(string userid)
+        {
+            var posts = await _posts.Find(_ => true).ToListAsync();
+            if (posts == null)
+                return null;
+            var tosend = new List<PostSend>();
+            foreach (var post in posts)
+            {
+                if (post.views.Any(x => x.Equals(userid)))
+                {
+                    var x = await postToPostSend(post);
+                    tosend.Add(x);
+                }
             }
             return tosend;
         }

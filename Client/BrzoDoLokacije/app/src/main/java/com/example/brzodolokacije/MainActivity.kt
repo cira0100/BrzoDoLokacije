@@ -1,16 +1,14 @@
 package com.example.brzodolokacije
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import com.auth0.android.jwt.JWT
 import com.example.brzodolokacije.Activities.ActivityLoginRegister
 import com.example.brzodolokacije.Activities.NavigationActivity
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
-import com.example.brzodolokacije.Services.authCheck
 import retrofit2.Call
 import retrofit2.Response
 
