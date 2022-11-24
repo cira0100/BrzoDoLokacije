@@ -66,6 +66,15 @@ namespace Api.Controllers
                 return BadRequest("Slika ne postoji");
             return File(System.IO.File.ReadAllBytes(f.path), "image/*", Path.GetFileName(f.path));
         }
+        [HttpGet("image/compress/{id}")]
+        //[Authorize(Roles = "User")]
+        public async Task<ActionResult> getCompressedImage(string id)
+        {
+            Byte[] f = await _fileService.getCompressedImage(id);
+            if (f == null)
+                return BadRequest("Slika ne postoji");
+            return File(f, "image/*", "tempcompress");
+        }
 
         [HttpPost("posts/{id}/addrating")]
         [Authorize(Roles = "User")]
