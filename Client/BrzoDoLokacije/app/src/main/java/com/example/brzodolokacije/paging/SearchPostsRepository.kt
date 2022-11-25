@@ -4,7 +4,6 @@ import android.app.Activity
 import androidx.paging.Pager
 import androidx.paging.PagingConfig
 import androidx.paging.PagingData
-import androidx.paging.cachedIn
 import com.example.brzodolokacije.Models.PostPreview
 import com.example.brzodolokacije.Models.SearchParams
 import com.example.brzodolokacije.Services.RetrofitHelper
@@ -14,6 +13,7 @@ class SearchPostsRepository(val activity: Activity,val searchParams: SearchParam
     companion object{
         const val DEFAULT_PAGE_SIZE=20
         const val DEFAULT_PAGE_INDEX=1
+        const val PREFETCH_DISTANCE=6
 
         fun getInstance(activity: Activity,searchParams: SearchParams)=SearchPostsRepository(activity,searchParams)
     }
@@ -26,6 +26,6 @@ class SearchPostsRepository(val activity: Activity,val searchParams: SearchParam
     }
 
     private fun getDefaultPageConfig(): PagingConfig {
-        return PagingConfig(pageSize= DEFAULT_PAGE_SIZE, enablePlaceholders = false)
+        return PagingConfig(pageSize= DEFAULT_PAGE_SIZE, prefetchDistance = PREFETCH_DISTANCE, enablePlaceholders = false)
     }
 }
