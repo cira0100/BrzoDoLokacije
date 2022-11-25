@@ -12,6 +12,7 @@
     </style>
     <style name="Circular">
         <item name="cornerSize">20dp</item>
+
     </style>
     <style name="roundedBottom">
         <item name="cornerSizeBottomLeft">20dp</item>

@@ -47,6 +47,8 @@ class ShowPostsHomePageAdapter(var postPreview:MutableList<PostPreview>,val acti
 inner class PostViewHolder(view: View):RecyclerView.ViewHolder(view){
     private val background:com.google.android.material.imageview.ShapeableImageView=view.findViewById(R.id.ivPIHPBackground)
     private val locationName:TextView=view.findViewById(R.id.tvPIHPLocationName)
+    private val locationDetail:TextView=view.findViewById(R.id.tvPIHPLocationDetail)
+    private val rating:TextView=view.findViewById(R.id.tvPIHPRecension)
 
     fun bindView(postPreview:PostPreview){
         //background.setImageURI(postPreview.images[0]._id.to)
@@ -56,6 +58,9 @@ inner class PostViewHolder(view: View):RecyclerView.ViewHolder(view){
                 .into(background)
         }
         locationName.text=postPreview.location.name
+        rating.text=postPreview.ratings.toString()
+        locationDetail.text="Srbija, Kragujevac"
+
     }
 }
     }

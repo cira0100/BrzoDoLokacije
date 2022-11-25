@@ -4,8 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageButton
+import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,6 +20,7 @@ import com.example.brzodolokacije.Models.PostPreview
 import com.example.brzodolokacije.R
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
+import kotlinx.android.synthetic.main.fragment_home_page_main_scroll.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -42,9 +46,11 @@ class FragmentHomePageMainScroll : Fragment() {
     private lateinit var location_amusement_park: ImageButton
     private lateinit var location_attraction: ImageButton
     private lateinit var location_landmark: ImageButton
-
+private lateinit var change:Button
     private lateinit var filter: LocationType
     private lateinit var filterString: String
+    private lateinit var ll1: LinearLayout
+    private lateinit var ll2:LinearLayout
 
 
     override fun onCreateView(
@@ -59,7 +65,9 @@ class FragmentHomePageMainScroll : Fragment() {
         rvPopular=view.findViewById(R.id.rvFragmentHomePagePopular)
         rvNewest=view.findViewById(R.id.rvFragmentHomePageNewest)
         rvBestRated=view.findViewById(R.id.rvFragmentHomePageBestRated)
-
+        //change=view.findViewById(R.id.change)
+        ll1=view.findViewById(R.id.ll1)
+        ll2=view.findViewById(R.id.ll2)
         location_amusement_park=view.findViewById(R.id.btnFragmentHomePagelocation_amusement_park)
         location_attraction=view.findViewById(R.id.btnFragmentHomePagelocation_attraction)
         location_beach=view.findViewById(R.id.btnFragmentHomePagelocation_beach)
@@ -174,9 +182,14 @@ class FragmentHomePageMainScroll : Fragment() {
             parentFrag.setBtnBackVisible()
 
         }
+       /* ll1.isVisible=true
+        ll2.isVisible=false
+        change.setOnClickListener {
+            ll1.isVisible=true
+            ll2.isVisible=false
+        }
 
-
-
+*/
         return view
     }
 

@@ -12,9 +12,14 @@
 
 
     <androidx.cardview.widget.CardView
+        android:backgroundTint="#f6f6f6"
+android:layout_marginTop="16dp"
         android:id="@+id/cvFragmentHomePageText1"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        >
 
         <TextView
             android:id="@+id/tvFragmentHomePagePopular"
@@ -37,12 +42,16 @@
     </androidx.cardview.widget.CardView>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:id="@+id/rvFragmentHomePagePopular"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginBottom="16dp" />
 
     <HorizontalScrollView
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:id="@+id/hsvFragmentHomePageLocationButtonScroll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -128,8 +137,25 @@
 
         </LinearLayout>
     </HorizontalScrollView>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+<LinearLayout
+    android:orientation="vertical"
+    android:id="@+id/ll1"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
 
     <androidx.cardview.widget.CardView
+        android:backgroundTint="#f6f6f6"
+        android:layout_marginStart="25dp"
+        android:layout_marginEnd="16dp"
         android:id="@+id/cvFragmentHomePageText2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -153,11 +179,23 @@
     </androidx.cardview.widget.CardView>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:id="@+id/rvFragmentHomePageNewest"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+</LinearLayout>
+   <LinearLayout
+       android:id="@+id/ll2"
 
+       android:orientation="vertical"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content">
     <androidx.cardview.widget.CardView
+        android:backgroundTint="#f6f6f6"
+
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:id="@+id/cvFragmentHomePageText3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -181,10 +219,13 @@
     </androidx.cardview.widget.CardView>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:id="@+id/rvFragmentHomePageBestRated"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+</LinearLayout></LinearLayout>
 </LinearLayout>
-
+</LinearLayout>
 </ScrollView>
