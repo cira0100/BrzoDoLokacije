@@ -15,7 +15,7 @@ import com.microsoft.signalr.HubConnectionState
 
 
 class SignalRListener private constructor(val activity: Activity){
-    private var hubConnection:HubConnection
+    public var hubConnection:HubConnection
     private var dbHelper:DBHelper
     init{
         dbHelper= DBHelper.getInstance(activity)
@@ -31,7 +31,6 @@ class SignalRListener private constructor(val activity: Activity){
             MessageReceive::class.java
                 )
         hubConnection.start().blockingAwait()
-
         Log.d("main", hubConnection.connectionState.toString())
     }
 

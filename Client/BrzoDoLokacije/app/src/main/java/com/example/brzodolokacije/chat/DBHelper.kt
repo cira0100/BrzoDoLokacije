@@ -59,7 +59,7 @@ class DBHelper :
 
     fun doesTableExist(tableName:String,db: SQLiteDatabase?):Boolean{
         if(db!=null){
-            var sqlString:String="select DISTINCT tbl_name from sqlite_master where tbl_name = '\"+tableName+\"'"
+            var sqlString:String="select DISTINCT tbl_name from sqlite_master where tbl_name = '"+tableName+"'"
             var cursor: Cursor=db.rawQuery(sqlString,null)
             if(cursor!=null){
                 if(cursor.count>0){
@@ -78,6 +78,7 @@ class DBHelper :
     }
 
     fun addMessage(message: Message, sent:Boolean=true){
+        onCreate(db)
         if(!message._id.isNullOrEmpty() && message.senderId==message.receiverId){
             Log.d("main", "ne zapisuje se dupla poruka")
         } else {
@@ -107,6 +108,7 @@ class DBHelper :
         }
     }
     fun getMessages(userId:String, self:Boolean=false): MutableList<Message>? {
+        onCreate(db)
         var sql:String
         if(!self)
             sql="SELECT * FROM "+ MESSAGES_TABLE_NAME+" WHERE senderId='"+userId+"' OR receiverId='"+userId+"'"
@@ -138,6 +140,7 @@ class DBHelper :
     }
 
     fun getContacts(): MutableList<ChatPreview>? {
+        onCreate(db)
         var sql="SELECT * FROM "+ CONTACTS_TABLE_NAME
         var cursor=db?.rawQuery(sql,null)
         if(cursor?.count!! >0){
@@ -151,5 +154,12 @@ class DBHelper :
             return contactList
         }
         return null
+    }
+
+    fun deleteDB() {
+        var sql="DROP TABLE IF EXISTS "+ CONTACTS_TABLE_NAME
+        db?.execSQL(sql)
+        sql="DROP TABLE IF EXISTS "+ MESSAGES_TABLE_NAME
+        db?.execSQL(sql)
     }
 }
