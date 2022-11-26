@@ -32,6 +32,7 @@ class ChatActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
     var layoutVar:LinearLayoutManager?=null
     var items:MutableList<ChatPreview>?= mutableListOf()
     private var swipeRefreshLayout: SwipeRefreshLayout?=null
+    var clickedChat:ChatActivityConversation?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -115,6 +116,10 @@ class ChatActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
         recyclerView?.layoutManager=layoutVar
         recyclerView?.adapter=adapterVar
         swipeRefreshLayout?.isRefreshing=false
+    }
+
+    fun setClickedActivity(activity:ChatActivityConversation){
+        clickedChat=activity
     }
 
     override fun onRefresh() {

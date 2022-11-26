@@ -1,12 +1,12 @@
 package com.example.brzodolokacije.Adapters
 
-import android.app.Activity
 import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.brzodolokacije.Activities.ChatActivity
 import com.example.brzodolokacije.Activities.ChatActivityConversation
 import com.example.brzodolokacije.Interfaces.IBackendApi
 import com.example.brzodolokacije.Models.ChatPreview
@@ -18,7 +18,7 @@ import kotlinx.android.synthetic.main.chat_preview.view.*
 import retrofit2.Call
 import retrofit2.Response
 
-class ChatPreviewsAdapter (val items : MutableList<ChatPreview>,val activity:Activity)
+class ChatPreviewsAdapter (val items : MutableList<ChatPreview>,val activity:ChatActivity)
     : RecyclerView.Adapter<ChatPreviewsAdapter.ViewHolder>(){
     //constructer has one argument - list of objects that need to be displayed
     //it is bound to xml of single item

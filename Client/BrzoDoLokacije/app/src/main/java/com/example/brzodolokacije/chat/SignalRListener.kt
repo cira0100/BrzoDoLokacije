@@ -4,6 +4,7 @@ import android.app.Activity
 import android.util.Log
 import com.auth0.android.jwt.JWT
 import com.exam.DBHelper
+import com.example.brzodolokacije.Activities.ChatActivity
 import com.example.brzodolokacije.Models.Message
 import com.example.brzodolokacije.Models.MessageReceive
 import com.example.brzodolokacije.Services.RetrofitHelper
@@ -25,8 +26,7 @@ class SignalRListener private constructor(val activity: Activity){
         hubConnection.keepAliveInterval=120
         hubConnection.on("Message",
             Action1 {
-                    message:MessageReceive->dbHelper.addMessage(Message(message.senderId+message.timestamp,message.senderId,
-                JWT(SharedPreferencesHelper.getValue("jwt",activity)!!).claims["id"]?.asString()!!,message.messagge,message.timestamp),false)
+                    message:MessageReceive->addToDbAndloadMessageIfInChat(message,activity)
                     },
             MessageReceive::class.java
                 )
@@ -53,6 +53,16 @@ class SignalRListener private constructor(val activity: Activity){
 
     fun getConnectionState(){
         Log.d("main",hubConnection.connectionState.toString())
+    }
+
+    fun addToDbAndloadMessageIfInChat(message:MessageReceive,activity: Activity){
+        dbHelper.addMessage(Message(message.senderId+message.timestamp,message.senderId,
+        JWT(SharedPreferencesHelper.getValue("jwt",activity)!!).claims["id"]?.asString()!!,message.messagge,message.timestamp),false)
+        if(activity is ChatActivity){
+            if(activity.clickedChat?.userId==message.senderId){
+                activity.clickedChat?.requestMessages()
+            }
+        }
     }
 
     fun log(){
