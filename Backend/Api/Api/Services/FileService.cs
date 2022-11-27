@@ -31,11 +31,14 @@ namespace Api.Services
             Models.File f = await getById(id);
             if (f == null || !System.IO.File.Exists(f.path))
                 return res;
+            if (System.IO.File.Exists(f.path + "-compress"))
+                return System.IO.File.ReadAllBytes(f.path + "-compress");
             using (MagickImage image = new MagickImage(f.path))
             {
                 image.Format = image.Format;
                 image.Quality = 30;
                 res= image.ToByteArray();
+                image.Write(f.path + "-compress");
             }
 
 

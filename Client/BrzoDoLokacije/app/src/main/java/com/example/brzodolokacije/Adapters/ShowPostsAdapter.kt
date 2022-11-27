@@ -71,7 +71,7 @@ class ShowPostsAdapter (val activity:Activity,val items : MutableList<PostPrevie
                 tvLocationType.text = "TODO"
                 if(item.images.isNotEmpty()) {
                     Glide.with(activity)
-                        .load(RetrofitHelper.baseUrl + "/api/post/image/" + item.images[0]._id)
+                        .load(RetrofitHelper.baseUrl + "/api/post/image/compress/" + item.images[0]._id)
                         .into(locationImage)
                 }
 

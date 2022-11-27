@@ -54,7 +54,7 @@ inner class PostViewHolder(view: View):RecyclerView.ViewHolder(view){
         //background.setImageURI(postPreview.images[0]._id.to)
         if(postPreview.images.isNotEmpty()) {
             Glide.with(activity)
-                .load(RetrofitHelper.baseUrl + "/api/post/image/" + postPreview.images[0]._id)
+                .load(RetrofitHelper.baseUrl + "/api/post/image/compress/" + postPreview.images[0]._id)
                 .into(background)
         }
         locationName.text=postPreview.location.name

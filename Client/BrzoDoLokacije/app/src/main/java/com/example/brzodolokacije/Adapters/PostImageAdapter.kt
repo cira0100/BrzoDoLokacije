@@ -33,7 +33,7 @@ class PostImageAdapter(val activity: Activity, val items : MutableList<PostImage
             binding.apply {
                 if(item!=null) {
                     Glide.with(activity)
-                        .load(RetrofitHelper.baseUrl + "/api/post/image/" + item._id)
+                        .load(RetrofitHelper.baseUrl + "/api/post/image/compress/" + item._id)
                         .into(locationImage)
                 }
             }
