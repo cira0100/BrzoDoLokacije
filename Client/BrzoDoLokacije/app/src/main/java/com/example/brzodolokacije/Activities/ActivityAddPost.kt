@@ -15,6 +15,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.setMargins
 import com.example.brzodolokacije.Models.Location
@@ -57,6 +58,9 @@ class ActivityAddPost : AppCompatActivity() {
     var longitude:Double=incorectCoord
     var latitude:Double=incorectCoord
     var progressDialog:ProgressDialog?=null
+    private lateinit var addDescription:Button
+
+
     //private var paths :ArrayList<String?>?=null
     private var place=0;
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -75,13 +79,20 @@ class ActivityAddPost : AppCompatActivity() {
         showNextImage=findViewById<View>(R.id.nextImage) as Button
         showPreviousImage=findViewById<View>(R.id.previousImage) as Button
         switcher=findViewById<View>(R.id.isActivityAddPostSwitcher) as ImageSwitcher
-        location=findViewById<View>(R.id.etActivityAddPostLocation) as EditText
+        //location=findViewById<View>(R.id.etActivityAddPostLocation) as EditText
         description=findViewById<View>(R.id.etActivityAddPostDescription) as EditText
         post=findViewById<View>(R.id.btnActivityAddPostPost) as Button
         addLocation=findViewById<View>(R.id.btnActivityAddPostAddLocation) as Button
         tagText =findViewById<View>(R.id.acTags) as EditText
         tagButtonAdd = findViewById<View>(R.id.btnActivityAddPostAddTag) as Button
         tagLayout =  findViewById<View>(R.id.llTags) as LinearLayout
+
+        addDescription=findViewById<View>(R.id.tvActivityAddPostDescriptiontext)as Button
+
+        tagText.isGone=true
+        tagText.isVisible=false
+        description.isGone=true
+        description.isVisible=false
 
         progressDialog= ProgressDialog(this)
         progressDialog!!.setMessage("Molimo sacekajte!!!")
@@ -100,9 +111,15 @@ class ActivityAddPost : AppCompatActivity() {
                 myIntent.putExtra("search",location.text.toString())
             startActivityForResult(myIntent,LOCATIONREQCODE)
         }
-
+        addDescription.setOnClickListener {
+            description.isGone=false
+            description.isVisible=true
+        }
         //dodavanje i brisanje tagova
         tagButtonAdd.setOnClickListener {
+            tagText.isGone=false
+            tagText.isVisible=true
+
             if(tagList.count()<5) {
                 var tagstr = tagText.text.toString()
                 var newbtn = Button(this)
@@ -179,15 +196,15 @@ class ActivityAddPost : AppCompatActivity() {
         }
 
         post.setOnClickListener{
-            locationString=location.text.toString().trim()
+            //locationString=location.text.toString().trim()
             descriptionString=description.text.toString().trim()
             //prazan unos?
-            if(locationString.isEmpty()) {
+           /* if(locationString.isEmpty()) {
                 location.hint="Unesite naziv lokaciju"
                 location.setHintTextColor(Color.RED)
-            }
+            }*/
             if(descriptionString.isEmpty()) {
-                description.hint="Unesite lokaciju"
+                description.hint="Unesite opis"
                 description.setHintTextColor(Color.RED)
             }
             if(longitude!=incorectCoord && latitude!=incorectCoord){

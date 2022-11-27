@@ -17,6 +17,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.setMargins
 import com.example.brzodolokacije.Models.Location
@@ -40,7 +41,7 @@ import java.io.InputStream
 class ActivityCapturePost : AppCompatActivity() {
 
     private lateinit var takePhoto: Button
-    private lateinit var location: EditText
+    //private lateinit var location: EditText
     private lateinit var description: EditText
     private lateinit var locationString: String
     private lateinit var descriptionString: String
@@ -54,6 +55,7 @@ class ActivityCapturePost : AppCompatActivity() {
     private lateinit var tagButtonAdd:Button
     private lateinit var tagList: MutableList<String>
     private var tagidcounter:Int = 0
+    private lateinit var addDescription:Button
 
     val incorectCoord:Double=1000.0
     val LOCATIONREQCODE=123
@@ -68,7 +70,7 @@ class ActivityCapturePost : AppCompatActivity() {
         tagButtons= mutableListOf()
         tagidcounter = 0
 
-        location = findViewById<View>(R.id.etActivityCapturePostLocation) as EditText
+        //location = findViewById<View>(R.id.etActivityCapturePostLocation) as EditText
         description = findViewById<View>(R.id.etActivityCapturePostDescription) as EditText
         post = findViewById<View>(R.id.btnActivityCapturePostPost) as Button
         showImage = findViewById<View>(R.id.ivActivityCapturePostImage) as ImageView
@@ -78,14 +80,28 @@ class ActivityCapturePost : AppCompatActivity() {
         tagButtonAdd = findViewById<View>(R.id.btnActivityAddPostAddTagCap) as Button
         tagLayout =  findViewById<View>(R.id.llTagsCap) as LinearLayout
 
+        addDescription=findViewById<View>(R.id.tvActivityCapturePostDescriptiontext)as Button
+
+
         progressDialog= ProgressDialog(this)
         progressDialog!!.setMessage("Molimo sacekajte!!!")
         progressDialog!!.setCancelable(false)
         progressDialog!!.setCanceledOnTouchOutside(false)
 
+        tagText.isGone=true
+        tagText.isVisible=false
+        description.isGone=true
+        description.isVisible=false
 
+        addDescription.setOnClickListener {
+            description.isGone=false
+            description.isVisible=true
+        }
         //dodavanje i brisanje tagova
         tagButtonAdd.setOnClickListener {
+            tagText.isGone=false
+            tagText.isVisible=true
+
             if(tagList.count()<5) {
                 var tagstr = tagText.text.toString()
                 var newbtn = Button(this)
@@ -168,8 +184,8 @@ class ActivityCapturePost : AppCompatActivity() {
 
         addLocation.setOnClickListener {
             val myIntent = Intent(this, MapsActivity::class.java)
-            if(location.text!=null && !location.text.trim().equals(""))
-                myIntent.putExtra("search",location.text.toString())
+           // if(location.text!=null && !location.text.trim().equals(""))
+              //  myIntent.putExtra("search",location.text.toString())
             startActivityForResult(myIntent,LOCATIONREQCODE)
         }
 
@@ -198,12 +214,12 @@ class ActivityCapturePost : AppCompatActivity() {
         }
 
         post.setOnClickListener {
-            locationString = location.text.toString().trim()
+           // locationString = location.text.toString().trim()
             descriptionString = description.text.toString().trim()
             //prazan unos?
             if (locationString.isEmpty()) {
-                location.hint = "Unesite lokaciju"
-                location.setHintTextColor(Color.RED)
+            //    location.hint = "Unesite lokaciju"
+            //    location.setHintTextColor(Color.RED)
             }else
             if (descriptionString.isEmpty()) {
                 description.hint = "Unesite opis"
@@ -224,8 +240,8 @@ class ActivityCapturePost : AppCompatActivity() {
             longitude=bundle!!.getDouble("longitude",incorectCoord)
             latitude=bundle!!.getDouble("latitude",incorectCoord)
             var locName=bundle!!.getString("name")
-            if(location.text.toString().trim().equals("") && locName!=null && !locName.toString().trim().equals(""))
-                location.setText(locName, TextView.BufferType.EDITABLE)
+            //if(location.text.toString().trim().equals("") && locName!=null && !locName.toString().trim().equals(""))
+            //    location.setText(locName, TextView.BufferType.EDITABLE)
         }
     }
     var f:File?=null

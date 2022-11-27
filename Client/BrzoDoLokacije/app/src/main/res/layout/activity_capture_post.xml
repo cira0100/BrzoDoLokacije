@@ -14,8 +14,10 @@
             android:scaleType="fitCenter"
             app:layout_constraintBottom_toTopOf="@+id/btnActivityCapturePostCapture"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0"
             tools:ignore="ImageContrastCheck"
             tools:srcCompat="@tools:sample/avatars" />
 
@@ -23,68 +25,46 @@
             android:id="@+id/btnActivityCapturePostCapture"
             android:layout_width="68dp"
             android:layout_height="15dp"
+            android:clickable="false"
             android:visibility="invisible"
             app:cornerRadius="30dp"
             app:icon="@android:drawable/ic_menu_camera"
             app:iconTint="#FFFFFF"
-            android:clickable="false"
-            app:layout_constraintBottom_toTopOf="@+id/tvActivityCapturePostLocationtext"
+            app:layout_constraintBottom_toTopOf="@+id/btnActivityCapturePostAddLocation"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.498"
             app:layout_constraintStart_toStartOf="parent"
             tools:ignore="SpeakableTextPresentCheck" />
 
-        <TextView
-            android:id="@+id/tvActivityCapturePostLocationtext"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:text="Lokacija"
-            app:layout_constraintBottom_toTopOf="@+id/etActivityCapturePostLocation"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent" />
 
-        <EditText
-            android:id="@+id/etActivityCapturePostLocation"
-            android:layout_width="200dp"
-            android:layout_height="50dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:ems="10"
-            android:hint="Reykjavik, Iceland"
-            android:importantForAutofill="no"
-            android:inputType="textEmailAddress"
-            app:layout_constraintBottom_toTopOf="@+id/tvActivityCapturePostDescriptiontext"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            tools:ignore="DuplicateSpeakableTextCheck,TextContrastCheck" />
         <Button
             android:id="@+id/btnActivityCapturePostAddLocation"
             android:layout_width="wrap_content"
             android:layout_height="50dp"
-            android:layout_marginStart="16dp"
-            android:layout_marginEnd="16dp"
-            android:background="@drawable/rounded_cyan_button"
-            android:backgroundTint="#1C789A"
+            android:backgroundTint="@color/white"
+            android:drawableLeft="@drawable/ic_baseline_location_on_24"
+            android:stateListAnimator="@null"
             android:text="Dodaj lokaciju"
+            android:textColor="#757471"
             app:layout_constraintBottom_toTopOf="@+id/tvActivityCapturePostDescriptiontext"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/etActivityCapturePostLocation" />
+            app:layout_constraintHorizontal_bias="0.092"
+            app:layout_constraintStart_toStartOf="parent" />
 
-
-        <TextView
+        <Button
             android:id="@+id/tvActivityCapturePostDescriptiontext"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:layout_marginEnd="16dp"
-            android:text="Opis"
+            android:backgroundTint="@color/white"
+            android:drawableLeft="@drawable/ic_baseline_description_24"
+            android:stateListAnimator="@null"
+            android:text="Dodaj opis"
+            android:textColor="#757471"
             app:layout_constraintBottom_toTopOf="@+id/etActivityCapturePostDescription"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
+            app:layout_constraintHorizontal_bias="0.017"
             app:layout_constraintStart_toStartOf="parent" />
 
         <EditText
@@ -95,6 +75,7 @@
             android:layout_marginEnd="16dp"
             android:ems="10"
             android:hint="Reykjavik, Iceland"
+            android:visibility="gone"
             android:importantForAutofill="no"
             android:inputType="textEmailAddress"
             app:layout_constraintBottom_toTopOf="@+id/llTagsCap"
@@ -142,36 +123,38 @@
             android:layout_marginLeft="20dp"
             android:layout_marginRight="20dp"
             android:orientation="horizontal"
-            app:layout_constraintBottom_toTopOf="@+id/acTagsCap"
+            app:layout_constraintBottom_toTopOf="@+id/btnActivityAddPostAddTagCap"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.4"
             app:layout_constraintStart_toStartOf="parent"></LinearLayout>
 
         <EditText
             android:id="@+id/acTagsCap"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="20dp"
-            android:layout_marginRight="20dp"
+            android:layout_marginBottom="28dp"
             android:hint="Planina,Reka,Park..."
+            android:maxLength="12"
             android:minHeight="48dp"
-            android:maxLength= "12"
+            android:visibility="gone"
             app:layout_constraintBottom_toTopOf="@+id/btnActivityCapturePostPost"
-            app:layout_constraintEnd_toStartOf="@+id/btnActivityAddPostAddTagCap"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.08"
             app:layout_constraintStart_toStartOf="parent" />
 
         <Button
             android:id="@+id/btnActivityAddPostAddTagCap"
             android:layout_width="wrap_content"
             android:layout_height="40dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="20dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginBottom="5dp"
-            android:background="@drawable/rounded_cyan_button"
-            android:backgroundTint="#1C789A"
+            android:layout_marginBottom="20dp"
+            android:backgroundTint="@color/white"
+            android:drawableLeft="@drawable/ic_baseline_tag_24"
+            android:stateListAnimator="@null"
             android:text="Dodaj tag"
-            app:layout_constraintBottom_toTopOf="@+id/btnActivityCapturePostPost"
+            android:textColor="#757471"
+            app:layout_constraintBottom_toTopOf="@+id/acTagsCap"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/llTagsCap" />
+            app:layout_constraintHorizontal_bias="0.076"
+            app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

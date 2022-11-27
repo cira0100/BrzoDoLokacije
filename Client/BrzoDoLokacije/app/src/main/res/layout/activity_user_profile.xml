@@ -74,10 +74,10 @@
             android:background="?android:attr/listDivider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnFragmentUserProfileShowPosts" />
+            app:layout_constraintTop_toBottomOf="@+id/btnActivityUserProfileShowPosts" />
 
         <Button
-            android:id="@+id/btnFragmentUserProfileShowPosts"
+            android:id="@+id/btnActivityUserProfileShowPosts"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="20dp"
@@ -116,11 +116,11 @@
             android:stateListAnimator="@null"
             android:text="Recenzije"
             android:textColor="@color/cardview_dark_background"
-            app:layout_constraintStart_toEndOf="@+id/btnFragmentUserProfileShowPosts"
+            app:layout_constraintStart_toEndOf="@+id/btnActivityUserProfileShowPosts"
             app:layout_constraintTop_toBottomOf="@+id/tvFragmentProfileInfoContainer" />
 
         <FrameLayout
-            android:id="@+id/flFragmentProfileFragmentContainer"
+            android:id="@+id/flActivityProfileFragmentContainer"
             android:layout_width="409dp"
             android:layout_height="319dp"
             app:layout_constraintBottom_toBottomOf="parent"
@@ -169,7 +169,7 @@
 
                     <ImageButton
 
-                        android:id="@+id/materialButton"
+                        android:id="@+id/ibActivityUserProfileFollow"
                         android:layout_width="115dp"
                         android:layout_height="40dp"
                         android:layout_marginStart="16dp"
