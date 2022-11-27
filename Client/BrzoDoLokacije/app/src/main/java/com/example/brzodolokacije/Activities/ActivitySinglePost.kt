@@ -1,11 +1,18 @@
 package com.example.brzodolokacije.Activities
 
+import android.app.Dialog
+import android.content.Context
 import android.content.Intent
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
+import android.preference.PreferenceManager
 import android.util.Log
+import android.view.Gravity
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.brzodolokacije.Adapters.CommentsAdapter
@@ -15,9 +22,15 @@ import com.example.brzodolokacije.R
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
 import com.example.brzodolokacije.databinding.ActivitySinglePostBinding
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.activity_single_post.*
 import okhttp3.ResponseBody
+import org.osmdroid.config.Configuration
+import org.osmdroid.tileprovider.tilesource.TileSourceFactory
+import org.osmdroid.util.GeoPoint
+import org.osmdroid.views.MapView
+import org.osmdroid.views.overlay.Marker
 import retrofit2.Call
 import retrofit2.Response
 
@@ -63,7 +76,39 @@ class ActivitySinglePost : AppCompatActivity() {
             intent.putExtra("user", Gson().toJson(userData))
             this.startActivity(intent)
         }
+        binding.tvLocationType.setOnClickListener{
+            getMap()
+
+        }
     }
+    fun getMap(){
+        val mapDialogue = BottomSheetDialog(this@ActivitySinglePost, android.R.style.Theme_Black_NoTitleBar)
+        mapDialogue.getWindow()?.setBackgroundDrawable(ColorDrawable(Color.argb(100, 0, 0, 0)))
+        mapDialogue.setContentView(R.layout.map_dialogue)
+        mapDialogue.setCancelable(true)
+        mapDialogue.setCanceledOnTouchOutside(true)
+        var map: MapView? = null
+        Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
+        map=mapDialogue.findViewById(R.id.MapDialogueMapView)
+            //findViewById(R.id.MapDialogueMapView) as MapView
+        map!!.setTileSource(TileSourceFactory.MAPNIK);
+        map!!.setBuiltInZoomControls(true);
+        map!!.setMultiTouchControls(true);
+        val mapController = map!!.controller
+        mapController.setZoom(15)
+
+        val LocMarker = GeoPoint(post.location.latitude,post.location.longitude)
+        val startMarker = Marker(map)
+        val marker = ContextCompat.getDrawable(this@ActivitySinglePost, R.drawable.ic_baseline_location_on_24);
+        startMarker.icon=marker
+        startMarker.setPosition(LocMarker)
+        startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
+        map!!.getOverlays().add(startMarker)
+        map!!.controller.setCenter(LocMarker)
+        mapDialogue.show()
+
+    }
+
 
     fun buildRecyclerViewComments(){
         recyclerViewComments=binding.rvComments
@@ -228,7 +273,7 @@ class ActivitySinglePost : AppCompatActivity() {
         binding.apply {
             tvTitle.text= post.location.name
             tvTitle.invalidate()
-            tvLocationType.text="TODO"
+            tvLocationType.text="TODO Click to open map"
             tvLocationType.invalidate()
             tvLocationParent.text="TODO"
             tvLocationParent.invalidate()
