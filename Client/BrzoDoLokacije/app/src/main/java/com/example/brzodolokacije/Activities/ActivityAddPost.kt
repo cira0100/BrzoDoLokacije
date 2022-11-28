@@ -255,6 +255,7 @@ class ActivityAddPost : AppCompatActivity() {
             uploadPost(locationId!!)
     }
     fun uploadPost(loc:String){
+        progressDialog!!.show()
         val api =RetrofitHelper.getInstance()
         var desc=descriptionString
         description.text.clear()
