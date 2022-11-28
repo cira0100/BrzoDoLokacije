@@ -178,20 +178,30 @@ namespace Api.Services
             }
             return false;
         }
-        public async Task<Comment> AddComment(CommentReceive cmnt,string userid,string postid)
+        public async Task<CommentSend> AddComment(CommentReceive cmnt,string userid,string postid)
         {
             Post p = await _posts.Find(post => post._id == postid).FirstOrDefaultAsync();
             if (p != null)
             {
-                Comment c= new Comment();
+                Comment c = new Comment();
+                CommentSend c1= new CommentSend();
                 c.parentId = cmnt.parentId;
+                c1.parentId = cmnt.parentId;
                 c.userId = userid;
+                c1.userId = userid;
                 c.comment = cmnt.comment;
+                c1.comment = cmnt.comment;
                 c.timestamp = DateTime.Now.ToUniversalTime();
+                c1.timestamp = c.timestamp;
                 c._id = ObjectId.GenerateNewId().ToString();
+                c1._id = c._id;
+                var user = await _users.Find(x => x._id == c.userId).FirstOrDefaultAsync();
+                if (user != null)
+                    c1.username = user.username;
+                else c1.username = "Deleted user";
                 p.comments.Add(c);
                 await _posts.ReplaceOneAsync(x => x._id == postid, p);
-                return c;
+                return c1;
             }
             return null;
         }

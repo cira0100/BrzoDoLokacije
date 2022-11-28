@@ -1,16 +1,11 @@
 package com.example.brzodolokacije.Activities
 
-import android.app.Dialog
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.provider.ContactsContract.CommonDataKinds.Im
 import android.util.Log
-import android.view.Gravity
-import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -26,7 +21,6 @@ import com.example.brzodolokacije.Services.SharedPreferencesHelper
 import com.example.brzodolokacije.databinding.ActivitySinglePostBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.activity_single_post.*
 import okhttp3.ResponseBody
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -197,10 +191,11 @@ class ActivitySinglePost : AppCompatActivity() {
         val postApi= RetrofitHelper.getInstance()
         val token= SharedPreferencesHelper.getValue("jwt", this@ActivitySinglePost)
         val request=postApi.addComment("Bearer "+token,post._id,comment)
-        request.enqueue(object : retrofit2.Callback<ResponseBody?> {
-            override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
+        request.enqueue(object : retrofit2.Callback<CommentSend?> {
+            override fun onResponse(call: Call<CommentSend?>, response: Response<CommentSend?>) {
                 if(response.isSuccessful){
-                    requestGetComments()
+                    var newComment=response.body()!!
+                    requestGetComments(newComment)
                     binding.NewComment.text.clear()
                 }else{
                     if(response.errorBody()!=null)
@@ -210,38 +205,46 @@ class ActivitySinglePost : AppCompatActivity() {
 
             }
 
-            override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
+            override fun onFailure(call: Call<CommentSend?>, t: Throwable) {
                 Log.d("main2",t.message.toString())
             }
         })
     }
-    fun requestGetComments(){
-        val postApi= RetrofitHelper.getInstance()
-        val token= SharedPreferencesHelper.getValue("jwt", this@ActivitySinglePost)
-        val request=postApi.getComments("Bearer "+token,post._id)
-        request.enqueue(object : retrofit2.Callback<MutableList<CommentSend>?> {
-            override fun onResponse(call: Call<MutableList<CommentSend>?>, response: Response<MutableList<CommentSend>?>) {
-                if(response.isSuccessful){
-                    comments= response.body()!!
-                    if(comments!=null && comments!!.isNotEmpty()){
-                        buildRecyclerViewComments()
-                        if(comments!=null)
-                            binding.tvCommentCount.text=comments?.size.toString()
-                        else
-                            binding.tvCommentCount.text="0"
+    fun requestGetComments(newComment:CommentSend?=null){
+        if(newComment==null){
+            val postApi= RetrofitHelper.getInstance()
+            val token= SharedPreferencesHelper.getValue("jwt", this@ActivitySinglePost)
+            val request=postApi.getComments("Bearer "+token,post._id)
+            request.enqueue(object : retrofit2.Callback<MutableList<CommentSend>?> {
+                override fun onResponse(call: Call<MutableList<CommentSend>?>, response: Response<MutableList<CommentSend>?>) {
+                    if(response.isSuccessful){
+                        comments= response.body()!!
+                        if(comments!=null && comments!!.isNotEmpty()){
+                            buildRecyclerViewComments()
+                            if(comments!=null)
+                                binding.tvCommentCount.text=comments?.size.toString()
+                            else
+                                binding.tvCommentCount.text="0"
+                        }
+                    }else{
+                        if(response.errorBody()!=null)
+                            Log.d("main1",response.message().toString())
                     }
-                }else{
-                    if(response.errorBody()!=null)
-                        Log.d("main1",response.message().toString())
+
+
                 }
 
-
-            }
-
-            override fun onFailure(call: Call<MutableList<CommentSend>?>, t: Throwable) {
-                Log.d("main2",t.message.toString())
-            }
-        })
+                override fun onFailure(call: Call<MutableList<CommentSend>?>, t: Throwable) {
+                    Log.d("main2",t.message.toString())
+                }
+            })
+        }
+        else{
+            (adapterComments as CommentsAdapter).items.add(0,newComment)
+            recyclerViewComments?.adapter=adapterComments
+            Log.d("main",newComment.username)
+            binding.tvCommentCount.text=comments?.size.toString()
+        }
     }
 
     fun requestAddRating(rating:RatingReceive){
@@ -325,6 +328,4 @@ class ActivitySinglePost : AppCompatActivity() {
             }
         })
     }
-
-
 }

@@ -98,7 +98,7 @@ namespace Api.Controllers
 
         [HttpPost("posts/{id}/addcomment")]
         [Authorize(Roles = "User")]
-        public async Task<ActionResult<Comment>> addComment([FromBody] CommentReceive cmnt,string id)
+        public async Task<ActionResult<CommentSend>> addComment([FromBody] CommentReceive cmnt,string id)
         {
             var userid = await _userService.UserIdFromJwt();
             var c = await _postService.AddComment(cmnt, userid, id);

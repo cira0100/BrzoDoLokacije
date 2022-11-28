@@ -40,7 +40,7 @@ interface IBackendApi {
     @POST("api/Post/posts/{id}/addrating")
     fun addRating(@Header("Authorization") authHeader:String,@Path("id") id:String,@Body rating: RatingReceive):Call<ResponseBody>
     @POST("api/Post/posts/{id}/addcomment")
-    fun addComment(@Header("Authorization") authHeader:String,@Path("id") id:String,@Body rating: CommentReceive):Call<ResponseBody>
+    fun addComment(@Header("Authorization") authHeader:String,@Path("id") id:String,@Body rating: CommentReceive):Call<CommentSend>
     @GET("api/Post/posts/{id}/listcomments")
     fun getComments(@Header("Authorization") authHeader:String,@Path("id") id:String):Call<MutableList<CommentSend>>
 
