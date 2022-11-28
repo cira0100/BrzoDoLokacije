@@ -19,5 +19,11 @@ namespace Api.Interfaces
         int DateEnumToDays(int filterdate);
         Task<List<PostSend>> GetUsersPosts(string id);
         Task<List<PostSend>> UserHistory(string userid);
+
+        Task<List<PostSend>> Get10Best();
+
+        Task<List<PostSend>> Get10MostViewed();
+
+        Task<List<PostSend>> Get10Newest();
     }
 }

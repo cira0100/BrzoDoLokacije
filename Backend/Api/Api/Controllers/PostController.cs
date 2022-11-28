@@ -137,5 +137,27 @@ namespace Api.Controllers
             }
             return BadRequest();
         }
+
+        [HttpGet("posts/get10MostViewed")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<List<PostSend>>> Get10MostViewed()
+        {
+            return Ok(await _postService.Get10MostViewed());
+        } 
+        
+        [HttpGet("posts/get10Newest")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<List<PostSend>>> Get10Newest()
+        {
+            return Ok(await _postService.Get10Newest());
+        }
+        
+        [HttpGet("posts/get10Best")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<List<PostSend>>> Get10Best()
+        {
+            return Ok(await _postService.Get10Best());
+        }
+
     }
 }

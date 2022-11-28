@@ -368,5 +368,41 @@ namespace Api.Services
             }
             return tosend;
         }
+
+        public async Task<List<PostSend>> Get10Best()
+        {
+            List<Post> posts = await _posts.Find(_ => true).ToListAsync();
+            List<PostSend> temp = new List<PostSend>();
+            foreach (var post in posts)
+            {
+                temp.Add(await postToPostSend(post));
+            }
+            List<PostSend> best = temp.OrderByDescending(o => o.ratings).Take(10).ToList();
+            return best;
+        }
+
+        public async Task<List<PostSend>> Get10MostViewed()
+        {
+            List<Post> posts = await _posts.Find(_ => true).ToListAsync();
+            List<PostSend> temp = new List<PostSend>();
+            foreach (var post in posts)
+            {
+                temp.Add(await postToPostSend(post));
+            }
+            List<PostSend> mostViewed = temp.OrderByDescending(o => o.views).Take(10).ToList();
+            return mostViewed;
+        }
+
+        public async Task<List<PostSend>> Get10Newest()
+        {
+            List<Post> posts = await _posts.Find(_ => true).ToListAsync();
+            List<PostSend> temp = new List<PostSend>();
+            foreach (var post in posts)
+            {
+                temp.Add(await postToPostSend(post));
+            }
+            List<PostSend> newest = temp.OrderByDescending(o => o.createdAt).Take(10).ToList();
+            return newest;
+        }
     }
 }

@@ -83,4 +83,13 @@ interface IBackendApi {
     @GET("/api/user/{id}/id/profile")
     fun getProfileFromId(@Header("Authorization") authHeader:String,@Path("id") username:String):Call<UserReceive>
 
+    @GET("/api/Post/posts/get10MostViewed")
+    fun get10MostViewed(@Header("Authorization") authHeader:String):Call<MutableList<PostPreview>>
+
+    @GET("/api/Post/posts/get10Best")
+    fun get10Best(@Header("Authorization") authHeader:String):Call<MutableList<PostPreview>>
+
+    @GET("/api/Post/posts/get10Newest")
+    fun get10Newest(@Header("Authorization") authHeader:String):Call<MutableList<PostPreview>>
+
 }

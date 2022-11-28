@@ -154,19 +154,34 @@ android:layout_marginTop="16dp"
 
     <androidx.cardview.widget.CardView
         android:backgroundTint="#f6f6f6"
-        android:layout_marginStart="25dp"
+        android:layout_marginStart="10dp"
         android:layout_marginEnd="16dp"
+
         android:id="@+id/cvFragmentHomePageText2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:stateListAnimator="@null"
+        android:elevation="0dp"
         android:layout_marginTop="16dp">
 
         <TextView
             android:id="@+id/tvFragmentHomePageNewest"
             android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_gravity="left"
+            android:drawableBottom="@drawable/ic_baseline_circle_7"
+            android:text="Najnovije"
+            android:clickable="true"
+            android:textStyle="bold" />
+        <TextView
+            android:id="@+id/tvFragmentHomePageBestRated"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
-            android:text="Najnovije"
+            android:text="Najposećenije"
+            android:layout_marginStart="80dp"
+            android:drawableBottom="@drawable/ic_baseline_circle_7"
+
             android:textStyle="bold" />
 
         <TextView
@@ -201,13 +216,7 @@ android:layout_marginTop="16dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp">
 
-        <TextView
-            android:id="@+id/tvFragmentHomePageBestRated"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="left"
-            android:text="Najposećenije"
-            android:textStyle="bold" />
+
 
         <TextView
             android:id="@+id/tvFragmentHomePageBestRatedShowAll"

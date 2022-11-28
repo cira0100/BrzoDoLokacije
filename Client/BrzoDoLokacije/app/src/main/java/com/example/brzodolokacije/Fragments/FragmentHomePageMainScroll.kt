@@ -194,6 +194,9 @@ private lateinit var change:Button
     }
 
     private fun getAllPosts(){
+        Toast.makeText(
+                    activity," get all", Toast.LENGTH_LONG
+                ).show();
         val api = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl(RetrofitHelper.baseUrl)
@@ -219,9 +222,9 @@ private lateinit var change:Button
 //                    activity, "get all ", Toast.LENGTH_LONG
 //                ).show();
                 posts = response.body()!!.toMutableList<PostPreview>()
-                getPopularPosts(posts)
-                getNewestPosts(posts)
-                getBestRatedPosts(posts)
+                getPopularPosts()
+                getNewestPosts()
+                getBestRatedPosts()
             }
 
             override fun onFailure(call: Call<MutableList<PostPreview>>, t: Throwable) {
@@ -232,41 +235,101 @@ private lateinit var change:Button
         })
     }
 
-    private fun getPopularPosts(allPosts:MutableList<PostPreview>){//most viewed
+    private fun getPopularPosts(){//most viewed
 //        Toast.makeText(
 //            activity, "get all mv ", Toast.LENGTH_LONG
 //        ).show();
-        mostViewedPosts=allPosts
-        mostViewedPosts.sortByDescending { it.views }
-        rvPopular.apply {
-            layoutManager= LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL,false)
-            adapter= ShowPostsHomePageAdapter(mostViewedPosts,requireActivity())
+        Toast.makeText(
+            activity," get popular all", Toast.LENGTH_LONG
+        ).show();
+        val api = RetrofitHelper.getInstance()
+        val token= SharedPreferencesHelper.getValue("jwt", requireActivity())
+        val data=api.get10MostViewed("Bearer "+token)
 
-        }
+        data.enqueue(object : Callback<MutableList<PostPreview>> {
+            override fun onResponse(
+                call: Call<MutableList<PostPreview>>,
+                response: Response<MutableList<PostPreview>>
+            ) {
+                if (response.body() == null) {
+                    return
+                }
+                var mostpopular = response.body()!!.toMutableList<PostPreview>()
+                rvPopular.apply {
+                    layoutManager= LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL,false)
+                    adapter= ShowPostsHomePageAdapter(mostpopular,requireActivity())
+
+                }
+            }
+            override fun onFailure(call: Call<MutableList<PostPreview>>, t: Throwable) {
+
+            }
+        })
+
 
     }
-    private fun getNewestPosts(allPosts:MutableList<PostPreview>){
+    private fun getNewestPosts(){
 //        Toast.makeText(
 //            activity, "get all r ", Toast.LENGTH_LONG
 //        ).show();
-        newestPosts=allPosts/// izmeniti nakon dodavanja datuma u model!!!!!!
-        newestPosts.sortBy { it.ratings}
-        rvNewest.apply {
-            layoutManager= LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL,false)
-            adapter= ShowPostsHomePageAdapter(newestPosts,requireActivity())
-        }
+        Toast.makeText(
+            activity," get all newest", Toast.LENGTH_LONG
+        ).show();
+        val api = RetrofitHelper.getInstance()
+        val token= SharedPreferencesHelper.getValue("jwt", requireActivity())
+        val data=api.get10Newest("Bearer "+token)
+
+        data.enqueue(object : Callback<MutableList<PostPreview>> {
+            override fun onResponse(
+                call: Call<MutableList<PostPreview>>,
+                response: Response<MutableList<PostPreview>>
+            ) {
+                if (response.body() == null) {
+                    return
+                }
+                var newestposts = response.body()!!.toMutableList<PostPreview>()
+                rvNewest.apply {
+                    layoutManager= LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL,false)
+                    adapter= ShowPostsHomePageAdapter(newestposts,requireActivity())
+                }
+            }
+            override fun onFailure(call: Call<MutableList<PostPreview>>, t: Throwable) {
+
+            }
+        })
+
     }
 
-    private fun getBestRatedPosts(allPosts:MutableList<PostPreview>){
+    private fun getBestRatedPosts(){
 //        Toast.makeText(
 //            activity, "get all br ", Toast.LENGTH_LONG
 //        ).show();
-        bestRatedPosts=allPosts
-        bestRatedPosts.sortByDescending { it.ratings }
-        rvBestRated.apply {
-            layoutManager= LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL,false)
-            adapter= ShowPostsHomePageAdapter(bestRatedPosts,requireActivity())
-        }
+        Toast.makeText(
+            activity," get all best", Toast.LENGTH_LONG
+        ).show();
+        val api = RetrofitHelper.getInstance()
+        val token= SharedPreferencesHelper.getValue("jwt", requireActivity())
+        val data=api.get10Best("Bearer "+token)
+
+        data.enqueue(object : Callback<MutableList<PostPreview>> {
+            override fun onResponse(
+                call: Call<MutableList<PostPreview>>,
+                response: Response<MutableList<PostPreview>>
+            ) {
+                if (response.body() == null) {
+                    return
+                }
+                var bestposts = response.body()!!.toMutableList<PostPreview>()
+                rvBestRated.apply {
+                    layoutManager= LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL,false)
+                    adapter= ShowPostsHomePageAdapter(bestposts,requireActivity())
+                }
+            }
+            override fun onFailure(call: Call<MutableList<PostPreview>>, t: Throwable) {
+
+            }
+        })
+
 
     }
 
