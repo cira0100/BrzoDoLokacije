@@ -3,6 +3,7 @@ package com.example.brzodolokacije.Activities
 import android.Manifest
 import android.content.Context
 import android.content.pm.PackageManager
+import android.graphics.Color
 import android.location.Location
 import android.location.LocationManager
 import android.os.Build
@@ -15,17 +16,17 @@ import android.util.Log
 import android.view.KeyEvent
 import android.view.MotionEvent
 import android.view.View
-import android.widget.TextView
-import android.widget.Toast
+import android.widget.*
+import android.widget.AdapterView.OnItemClickListener
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.widget.addTextChangedListener
 import com.example.brzodolokacije.R
 import com.example.brzodolokacije.Services.GeocoderHelper
 import com.google.android.gms.location.*
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-import com.google.android.material.textfield.TextInputEditText
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
@@ -40,6 +41,8 @@ import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class MapsActivity : AppCompatActivity() {
@@ -52,7 +55,9 @@ class MapsActivity : AppCompatActivity() {
     private lateinit var searchButton: MaterialButton
     private lateinit var gpsButton: FloatingActionButton
     private lateinit var confirmButton: FloatingActionButton
-    private lateinit var searchBar: TextInputEditText
+    private lateinit var searchBar: AutoCompleteTextView
+    //private lateinit var seachSpinner:Spinner
+    //private lateinit var autoText:AutoCompleteTextView
     var client: FusedLocationProviderClient? = null
     var locLongitude:Double?=null
     var locLatitude:Double?=null
@@ -68,7 +73,8 @@ class MapsActivity : AppCompatActivity() {
         searchButton=findViewById<View>(R.id.ActivityMapsSearchButton) as MaterialButton
         gpsButton=findViewById<View>(R.id.ActivityMapsMyLocation) as FloatingActionButton
         confirmButton=findViewById<View>(R.id.ActivityMapsConfirmLocation) as FloatingActionButton
-        searchBar=findViewById<View>(R.id.ActivityMapsSearchBar) as TextInputEditText
+        searchBar=findViewById<View>(R.id.ActivityMapsSearchBar) as AutoCompleteTextView
+        //autoText=findViewById<View>(R.id.ActivityMapsAutoCompleteTextView) as AutoCompleteTextView
         client= LocationServices.getFusedLocationProviderClient(this)
         searchButton.setOnClickListener{
             searchMap()
@@ -91,6 +97,9 @@ class MapsActivity : AppCompatActivity() {
             }
             false
         })
+        searchBar.addTextChangedListener{
+            onTextEnter()
+        }
         val extras = intent.extras
         if (extras != null) {
             val value = extras.getString("search")
@@ -98,9 +107,58 @@ class MapsActivity : AppCompatActivity() {
             searchBar.setText(value,TextView.BufferType.EDITABLE)
             searchMap()
         }
+        setUpSpinner()
 
 
 
+    }
+    var arraySpinner :MutableList<String>?=null
+    var spinnerAdapter: ArrayAdapter<String>?=null
+
+    fun setUpSpinner() {
+        arraySpinner=mutableListOf<String>()
+        arraySpinner!!.add("test")
+
+//    spinnerAdapter= ArrayAdapter<String>(
+//        this,
+//        android.R.layout.simple_list_item_1, arraySpinner!!)
+        spinnerAdapter= ArrayAdapter<String>(
+        this,
+        android.R.layout.simple_list_item_1, arraySpinner!!)
+        searchBar.threshold=1
+        searchBar.setAdapter(spinnerAdapter)
+        searchBar.setOnItemClickListener(OnItemClickListener { parent, view, position, id ->
+            val selected = parent.getItemAtPosition(position) as String
+            Log.d("Main",selected)
+        })
+
+
+        //spinnerAdapter!!.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+//        seachSpinner.setAdapter(spinnerAdapter)
+//        seachSpinner.setOnItemSelectedListener(object : OnItemSelectedListener {
+//            override fun onItemSelected(
+//                arg0: AdapterView<*>?,
+//                arg1: View,
+//                position: Int,
+//                id: Long
+//            ) {
+//                // TODO Auto-generated method stub
+//                Toast.makeText(baseContext, arraySpinner!!.get(position), Toast.LENGTH_SHORT).show()
+//            }
+//
+//            override fun onNothingSelected(arg0: AdapterView<*>?) {
+//                // TODO Auto-generated method stub
+//            }
+//        })
+
+    }
+    var test=1
+    fun onTextEnter(){
+        test++
+        spinnerAdapter!!.add("test"+test)
+        spinnerAdapter!!.notifyDataSetChanged()
+        Log.d("Main","test123")
+        //seachSpinner.performClick()
     }
     fun returnValue(){
         val intent = intent
@@ -224,6 +282,7 @@ class MapsActivity : AppCompatActivity() {
         }
     }
     fun searchMap(){
+
         var geocoder= GeocoderHelper.getInstance()
         //Log.d("Main",geocoder!!.getFromLocationName("Paris",1)[0].countryName)
         var locString=searchBar.text.toString().trim()

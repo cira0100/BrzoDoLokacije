@@ -107,8 +107,6 @@ class ActivityAddPost : AppCompatActivity() {
             imgView}
         addLocation.setOnClickListener {
             val myIntent = Intent(this, MapsActivity::class.java)
-            if(location.text!=null && !location.text.trim().equals(""))
-                myIntent.putExtra("search",location.text.toString())
             startActivityForResult(myIntent,LOCATIONREQCODE)
         }
         addDescription.setOnClickListener {
@@ -254,8 +252,6 @@ class ActivityAddPost : AppCompatActivity() {
             longitude=bundle!!.getDouble("longitude",incorectCoord)
             latitude=bundle!!.getDouble("latitude",incorectCoord)
             var locName=bundle!!.getString("name")
-            if(location.text.toString().trim().equals("") && locName!=null && !locName.toString().trim().equals(""))
-                location.setText(locName,TextView.BufferType.EDITABLE)
         }
     }
     private fun sendPost(){
