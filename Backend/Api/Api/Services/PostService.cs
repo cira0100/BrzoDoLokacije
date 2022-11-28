@@ -39,8 +39,11 @@ namespace Api.Services
             p.comments = new List<Comment>();
             p.images = new List<Models.File>();
             p.createdAt = DateTime.Now.ToUniversalTime();
-            var tags = post.tags.Split("|").ToList();
-            p.tags = tags;
+            if (post.tags != null)
+            {
+                var tags = post.tags.Split("|").ToList();
+                p.tags = tags;
+            }
             var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "Files", p.ownerId);
             if (!Directory.Exists(folderPath))
             {

@@ -1,7 +1,9 @@
 package com.example.brzodolokacije.Activities
 
 import android.Manifest
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.location.Location
@@ -22,6 +24,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
+import com.example.brzodolokacije.Models.LocationType
 import com.example.brzodolokacije.Models.PostPreview
 import com.example.brzodolokacije.R
 import com.example.brzodolokacije.Services.GeocoderHelper
@@ -88,8 +91,12 @@ class MapsActivity : AppCompatActivity() {
             getLocation()
         }
         confirmButton.setOnClickListener{
-            if(locLatitude!=null && locLatitude!=null)
+            if(selectedLocation!=null)
                 returnValue()
+            else{
+                addLocation()
+
+            }
         }
         searchBar.setOnKeyListener(View.OnKeyListener { v1, keyCode, event -> // If the event is a key-down event on the "enter" button
             if (event.action === KeyEvent.ACTION_DOWN &&
@@ -116,6 +123,73 @@ class MapsActivity : AppCompatActivity() {
 
 
     }
+    fun addLocation(){
+        var editText=EditText(this)
+        var dialog=AlertDialog.Builder(this).setTitle("Naziv").setMessage("Unesite naziv")
+            .setView(editText)
+        dialog.setPositiveButton("Dodaj") { dialog, which ->
+            uploadLocation(editText.text.toString())
+        }
+        dialog.setNegativeButton("Prekini") { dialog, which ->
+
+        }
+        dialog.show()
+
+    }
+    fun uploadLocation(locationName:String){
+        val api =RetrofitHelper.getInstance()
+        var geocoder=GeocoderHelper.getInstance()
+        var loc1=geocoder!!.getFromLocation(locLatitude!!,locLongitude!!,1)
+        if(loc1==null ||loc1.size<=0)
+        {
+            return
+        }
+        var countryName=loc1[0].countryName
+        var address="todo not possible in query"
+        var city="its null"
+        if(loc1[0].adminArea!=null)
+            city=loc1[0].adminArea//not possible
+        var loc: com.example.brzodolokacije.Models.Location =
+            com.example.brzodolokacije.Models.Location(
+                "",
+                locationName,
+                city,
+                countryName,
+                address,
+                locLatitude!!,
+                locLongitude!!,
+                LocationType.GRAD
+            )
+        var jwtString= SharedPreferencesHelper.getValue("jwt",this)
+        var data=api.addLocation("Bearer "+jwtString,loc)
+
+        data.enqueue(object : retrofit2.Callback<com.example.brzodolokacije.Models.Location?> {
+            override fun onResponse(call: Call<com.example.brzodolokacije.Models.Location?>, response: Response<com.example.brzodolokacije.Models.Location?>) {
+                if(response.isSuccessful()){
+                    selectedLocation=response.body()
+                    returnValue()
+
+                }else {
+
+                    if (response.errorBody() != null) {
+                        Log.d("Main",response.errorBody()!!.string())
+                        Log.d("Main",response.message())
+                    }
+                    Log.d("Main",response.errorBody()!!.string())
+                    Log.d("Main",response.message())
+                }
+
+
+            }
+
+            override fun onFailure(call: Call<com.example.brzodolokacije.Models.Location?>, t: Throwable) {
+                Toast.makeText(
+                    applicationContext, t.toString(), Toast.LENGTH_LONG
+                ).show();
+                Log.d("Main",t.toString())
+            }
+        })
+    }
     var arraySpinner :MutableList<String>?=null
     var spinnerAdapter: ArrayAdapter<String>?=null
 
@@ -128,10 +202,22 @@ class MapsActivity : AppCompatActivity() {
         searchBar.setAdapter(spinnerAdapter)
         searchBar.setOnItemClickListener(OnItemClickListener { parent, view, position, id ->
             val selected = parent.getItemAtPosition(position) as String
-            Log.d("Main",selected)
+            selectedLocation=responseLocations!!.find { location -> location.name==selected }
+            Log.d("main",selectedLocation.toString())
+            confirmButton.visibility=View.VISIBLE
         })
 
 
+    }
+    fun returnValue(){
+        val intent = intent
+        val bundle = Bundle()
+        if(selectedLocation==null)
+            return
+        bundle.putString("locationId",selectedLocation!!._id)
+        intent.putExtras(bundle)
+        setResult(RESULT_OK, intent)
+        finish()
     }
     fun onTextEnter(){
         var api=RetrofitHelper.getInstance()
@@ -164,18 +250,6 @@ class MapsActivity : AppCompatActivity() {
 
 
     }
-    fun returnValue(){
-        val intent = intent
-        val bundle = Bundle()
-        bundle.putDouble("longitude", locLongitude!!)
-        bundle.putDouble("latitude", locLatitude!!)
-        if(searchBar.text!=null && !searchBar.text.toString().equals(""))
-            bundle.putString("name", searchBar.text.toString())
-        intent.putExtras(bundle)
-        setResult(RESULT_OK, intent)
-        finish()
-    }
-
     override fun onResume() {
         super.onResume()
         map!!.onResume()
