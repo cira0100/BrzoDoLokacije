@@ -148,13 +148,34 @@ namespace Api.Services
             return await postToPostSend(p);
         }
         
-        public async Task<Boolean> AddOrReplaceRating(RatingReceive  rating,string userid)
+        public async Task<RatingSend> AddOrReplaceRating(RatingReceive  rating,string userid) //0 return existing flag , -1 rating failed flag
         {
             Post p = await _posts.Find(post => post._id == rating.postId).FirstOrDefaultAsync();
             if (p != null)
             {
+                var tosend = new RatingSend();
+                var ps = await postToPostSend(p);
+                tosend.ratings = ps.ratings;
+                tosend.ratingscount = ps.ratingscount;
+
                 if (p.ownerId == userid)
-                    return false;
+                    return null;
+                if(rating.rating == 0)// ako nema rating staviti 0
+                {
+                    var r = p.ratings.Find(x => x.userId == userid);
+                    if(r != null)
+                    {
+                        tosend.myrating=r.rating;
+                        return tosend;
+                    }
+                    else
+                    {
+                        tosend.myrating = 0;
+                        return tosend;
+                    }
+                }
+                if(rating.rating<1 || rating.rating>5)
+                    return null;
                 if(!p.ratings.Any(x => x.userId == userid))
                 {
                     Rating r = new Rating();
@@ -162,6 +183,7 @@ namespace Api.Services
                     r.userId = userid;
                     p.ratings.Add(r);
                     await _posts.ReplaceOneAsync(x => x._id == p._id, p);
+                    tosend.myrating=rating.rating;
                 }
                 else
                 {
@@ -170,10 +192,15 @@ namespace Api.Services
                     r.rating = rating.rating;
                     p.ratings.Add(r);
                     await _posts.ReplaceOneAsync(x => x._id == p._id, p);
+                    tosend.myrating = rating.rating;
                 }
-                return true;
+                p = await _posts.Find(post => post._id == rating.postId).FirstOrDefaultAsync();
+                ps = await postToPostSend(p);
+                tosend.ratings = ps.ratings;
+                tosend.ratingscount = ps.ratingscount;
+                return tosend;
             }
-            return false;
+            return null;
         }
         public async Task<Boolean> RemoveRating(string postid, string userid)
         {

@@ -49,6 +49,12 @@ namespace Api.Models
         public string userId { get; set; }
         public int rating { get; set; }
     }
+    public class RatingSend
+    {
+        public int ratingscount { get; set; }
+        public double ratings { get; set; }
+        public int myrating { get; set; }
+    }
     public class Comment
     {
         [BsonId]

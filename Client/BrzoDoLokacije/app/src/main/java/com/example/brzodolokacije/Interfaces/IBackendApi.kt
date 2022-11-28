@@ -38,7 +38,7 @@ interface IBackendApi {
                                                             ,@Part("tags") tags:RequestBody
                                                             ):Call<PostPreview>
     @POST("api/Post/posts/{id}/addrating")
-    fun addRating(@Header("Authorization") authHeader:String,@Path("id") id:String,@Body rating: RatingReceive):Call<ResponseBody>
+    fun addRating(@Header("Authorization") authHeader:String,@Path("id") id:String,@Body rating: RatingReceive):Call<RatingData>
     @POST("api/Post/posts/{id}/addcomment")
     fun addComment(@Header("Authorization") authHeader:String,@Path("id") id:String,@Body rating: CommentReceive):Call<CommentSend>
     @GET("api/Post/posts/{id}/listcomments")
