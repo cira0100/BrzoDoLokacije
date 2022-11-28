@@ -2,6 +2,7 @@ package com.example.brzodolokacije.chat
 
 import android.app.Activity
 import android.util.Log
+import android.widget.Toast
 import com.auth0.android.jwt.JWT
 import com.exam.DBHelper
 import com.example.brzodolokacije.Activities.ChatActivity
@@ -30,7 +31,12 @@ class SignalRListener private constructor(val activity: Activity){
                     },
             MessageReceive::class.java
                 )
-        hubConnection.start().blockingAwait()
+        try{
+            hubConnection.start().blockingAwait()
+        }
+        catch(e:Exception){
+            Toast.makeText(activity,"Greska",Toast.LENGTH_LONG).show()
+        }
         Log.d("main", hubConnection.connectionState.toString())
     }
 
@@ -62,6 +68,7 @@ class SignalRListener private constructor(val activity: Activity){
             if(activity.clickedChat?.userId==message.senderId){
                 activity.clickedChat?.requestMessages()
             }
+            activity.requestNewMessages()
         }
     }
 
