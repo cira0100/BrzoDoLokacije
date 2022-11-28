@@ -110,5 +110,11 @@ namespace Api.Controllers
             return Ok(await _userService.CheckIfAlreadyFollow(id));
         }
 
+        [HttpGet("{id}/unfollow")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<Boolean>> Unfollow(string id)
+        {
+            return Ok(await _userService.Unfollow(id));
+        }
     }
 }
