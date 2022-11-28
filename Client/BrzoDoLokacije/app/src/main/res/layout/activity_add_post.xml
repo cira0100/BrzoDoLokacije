@@ -99,7 +99,7 @@
         android:hint="Reykjavik, Iceland"
         android:inputType="textEmailAddress"
         android:visibility="gone"
-        app:layout_constraintBottom_toTopOf="@+id/btnActivityAddPostAddTag"
+        app:layout_constraintBottom_toTopOf="@+id/llTags"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -133,12 +133,12 @@
 
     <LinearLayout
         android:id="@+id/llTags"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/acTags"
+        app:layout_constraintBottom_toTopOf="@+id/btnActivityAddPostAddTag"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"></LinearLayout>
 
