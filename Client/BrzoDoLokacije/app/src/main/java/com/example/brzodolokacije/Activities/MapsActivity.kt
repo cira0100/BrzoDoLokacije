@@ -56,8 +56,6 @@ class MapsActivity : AppCompatActivity() {
     private lateinit var gpsButton: FloatingActionButton
     private lateinit var confirmButton: FloatingActionButton
     private lateinit var searchBar: AutoCompleteTextView
-    //private lateinit var seachSpinner:Spinner
-    //private lateinit var autoText:AutoCompleteTextView
     var client: FusedLocationProviderClient? = null
     var locLongitude:Double?=null
     var locLatitude:Double?=null
@@ -74,7 +72,6 @@ class MapsActivity : AppCompatActivity() {
         gpsButton=findViewById<View>(R.id.ActivityMapsMyLocation) as FloatingActionButton
         confirmButton=findViewById<View>(R.id.ActivityMapsConfirmLocation) as FloatingActionButton
         searchBar=findViewById<View>(R.id.ActivityMapsSearchBar) as AutoCompleteTextView
-        //autoText=findViewById<View>(R.id.ActivityMapsAutoCompleteTextView) as AutoCompleteTextView
         client= LocationServices.getFusedLocationProviderClient(this)
         searchButton.setOnClickListener{
             searchMap()
@@ -119,9 +116,6 @@ class MapsActivity : AppCompatActivity() {
         arraySpinner=mutableListOf<String>()
         arraySpinner!!.add("test")
 
-//    spinnerAdapter= ArrayAdapter<String>(
-//        this,
-//        android.R.layout.simple_list_item_1, arraySpinner!!)
         spinnerAdapter= ArrayAdapter<String>(
         this,
         android.R.layout.simple_list_item_1, arraySpinner!!)
@@ -133,32 +127,12 @@ class MapsActivity : AppCompatActivity() {
         })
 
 
-        //spinnerAdapter!!.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-//        seachSpinner.setAdapter(spinnerAdapter)
-//        seachSpinner.setOnItemSelectedListener(object : OnItemSelectedListener {
-//            override fun onItemSelected(
-//                arg0: AdapterView<*>?,
-//                arg1: View,
-//                position: Int,
-//                id: Long
-//            ) {
-//                // TODO Auto-generated method stub
-//                Toast.makeText(baseContext, arraySpinner!!.get(position), Toast.LENGTH_SHORT).show()
-//            }
-//
-//            override fun onNothingSelected(arg0: AdapterView<*>?) {
-//                // TODO Auto-generated method stub
-//            }
-//        })
-
     }
     var test=1
     fun onTextEnter(){
         test++
         spinnerAdapter!!.add("test"+test)
         spinnerAdapter!!.notifyDataSetChanged()
-        Log.d("Main","test123")
-        //seachSpinner.performClick()
     }
     fun returnValue(){
         val intent = intent
