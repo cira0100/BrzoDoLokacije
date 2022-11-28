@@ -92,4 +92,7 @@ interface IBackendApi {
     @GET("/api/Post/posts/get10Newest")
     fun get10Newest(@Header("Authorization") authHeader:String):Call<MutableList<PostPreview>>
 
+    @GET("api/Location/search")
+    fun searchLocationsQuery(@Header("Authorization") authHeader:String,@Query("query") query: String):Call<MutableList<Location>>
+
 }

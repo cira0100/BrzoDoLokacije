@@ -22,8 +22,11 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
+import com.example.brzodolokacije.Models.PostPreview
 import com.example.brzodolokacije.R
 import com.example.brzodolokacije.Services.GeocoderHelper
+import com.example.brzodolokacije.Services.RetrofitHelper
+import com.example.brzodolokacije.Services.SharedPreferencesHelper
 import com.google.android.gms.location.*
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -41,6 +44,8 @@ import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
+import retrofit2.Call
+import retrofit2.Response
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -59,6 +64,8 @@ class MapsActivity : AppCompatActivity() {
     var client: FusedLocationProviderClient? = null
     var locLongitude:Double?=null
     var locLatitude:Double?=null
+    var selectedLocation:com.example.brzodolokacije.Models.Location?=null
+    var responseLocations:MutableList<com.example.brzodolokacije.Models.Location>?=null
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_maps)
@@ -114,8 +121,6 @@ class MapsActivity : AppCompatActivity() {
 
     fun setUpSpinner() {
         arraySpinner=mutableListOf<String>()
-        arraySpinner!!.add("test")
-
         spinnerAdapter= ArrayAdapter<String>(
         this,
         android.R.layout.simple_list_item_1, arraySpinner!!)
@@ -128,11 +133,36 @@ class MapsActivity : AppCompatActivity() {
 
 
     }
-    var test=1
     fun onTextEnter(){
-        test++
-        spinnerAdapter!!.add("test"+test)
-        spinnerAdapter!!.notifyDataSetChanged()
+        var api=RetrofitHelper.getInstance()
+        var jwtString= SharedPreferencesHelper.getValue("jwt",this)
+        var text=searchBar.text
+        if(text==null ||text.toString().trim()=="")
+            return
+        var data=api.searchLocationsQuery("Bearer "+jwtString,text.toString())
+        data.enqueue(object : retrofit2.Callback<MutableList<com.example.brzodolokacije.Models.Location>> {
+            override fun onResponse(call: Call<MutableList<com.example.brzodolokacije.Models.Location>?>, response: Response<MutableList<com.example.brzodolokacije.Models.Location>>) {
+                if(response.isSuccessful){
+                    var existingLocation=responseLocations
+                    responseLocations=response.body()!!
+                    var tempList=mutableListOf<String>()
+                    if(existingLocation!=null && existingLocation.size>0)
+                    for(loc in existingLocation!!){
+                        spinnerAdapter!!.remove(loc.name)
+                    }
+                    for(loc in responseLocations!!){
+                        spinnerAdapter!!.add(loc.name)
+                    }
+                    spinnerAdapter!!.notifyDataSetChanged()
+                }
+            }
+
+            override fun onFailure(call: Call<MutableList<com.example.brzodolokacije.Models.Location>>, t: Throwable) {
+
+            }
+        })
+
+
     }
     fun returnValue(){
         val intent = intent
