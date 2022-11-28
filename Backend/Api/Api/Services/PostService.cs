@@ -104,6 +104,18 @@ namespace Api.Services
             return p;
         }
 
+        public async Task<Boolean> deletePost(string postid,string userid)
+        {
+            var p = await _posts.Find(x => x._id == postid).FirstOrDefaultAsync();
+            if (p == null || p.ownerId != userid)
+                return false;
+            foreach (var image in p.images)
+                System.IO.File.Delete(image.path);
+
+            await _posts.DeleteOneAsync(postid);
+            return true;
+        }
+
         public async Task<List<PostSend>> getAllPosts()
         {
             List<Post> posts = await _posts.Find(_ => true).ToListAsync();

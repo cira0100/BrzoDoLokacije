@@ -5,6 +5,7 @@ namespace Api.Interfaces
     public interface IPostService
     {
         Task<PostSend> addPost(PostReceive post);
+        Task<Boolean> deletePost(string postid, string userid);
         Task<List<PostSend>> getAllPosts();
         Task<PostSend> getPostById(string id,string userid);
         Task<PostSend> postToPostSend(Post post);

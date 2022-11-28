@@ -56,7 +56,18 @@ namespace Api.Controllers
             }
             return BadRequest();
         }
-
+        [HttpGet("posts/delete/{id}")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<string>> deletePost(string id)
+        {
+            var userid = await _userService.UserIdFromJwt();
+            var res = await _postService.deletePost(id, userid);
+            if (res)
+            {
+                return Ok(res);
+            }
+            return BadRequest("Post ne postoji ili vi niste vlasnik");
+        }
         [HttpGet("image/{id}")]
         //[Authorize(Roles = "User")]
         public async Task<ActionResult> getImage(string id)
