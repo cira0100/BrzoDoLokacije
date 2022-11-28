@@ -38,9 +38,11 @@ namespace Api.Models
         public DateTime createdAt { get; set; }
         public int views { get; set; }
         public double ratings { get; set; }
+        public int ratingscount { get; set; }
         public List<CommentSend> comments { get; set; }
         public List<File> images { get; set; }
         public List<string>? tags { get; set; }
+        public DateTime? lastViewed { get; set; }
     }
     public class Rating
     {

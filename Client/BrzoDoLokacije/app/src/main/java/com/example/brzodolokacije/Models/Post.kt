@@ -4,6 +4,7 @@ import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 import okhttp3.MultipartBody
 import java.time.LocalDateTime
+import java.util.*
 
 data class Post (
     var _id:String,
@@ -35,7 +36,12 @@ data class PostPreview (
     var ratings:Float,
     var comments:List<CommentSend>?,
     var images:List<PostImage>,
+    var ratingscount:Int,
+    var createdAt:Date,
+    var lastViewed: Date?, //samo za istoriju pregleda
     var tags:List<String>?
+
+
     //nedostaju datum i vreme kreiranja
 ):Parcelable
 

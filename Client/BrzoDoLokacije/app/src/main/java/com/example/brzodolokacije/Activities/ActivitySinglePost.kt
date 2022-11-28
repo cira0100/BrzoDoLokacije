@@ -7,8 +7,10 @@ import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.provider.ContactsContract.CommonDataKinds.Im
 import android.util.Log
 import android.view.Gravity
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -122,7 +124,7 @@ class ActivitySinglePost : AppCompatActivity() {
     fun setRatingListeners(){
         val emptyStar=R.drawable.empty_star
         val fullStar=R.drawable.full_star
-
+        //var starlist:List<ImageButton> = mutableListOf()
 
         binding.rateStar1.setOnClickListener {
             Toast.makeText(this,"kliknuta prva zvezdica",Toast.LENGTH_SHORT).show()
