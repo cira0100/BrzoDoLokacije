@@ -233,7 +233,7 @@ class MapsActivity : AppCompatActivity() {
                     responseLocations=response.body()!!
                     var tempList=mutableListOf<String>()
                     if(existingLocation!=null && existingLocation.size>0)
-                    for(loc in existingLocation!!){
+                        for(loc in existingLocation!!){
                         spinnerAdapter!!.remove(loc.name)
                     }
                     for(loc in responseLocations!!){
