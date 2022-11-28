@@ -44,7 +44,7 @@ class FragmentFollowers : Fragment() {
             ).show();
         }
 
-        getFollowers()
+        //getFollowers()
 
         btnBack.setOnClickListener {
             val fragmentProfile = FragmentProfile()
@@ -56,7 +56,7 @@ class FragmentFollowers : Fragment() {
         return view
     }
 
-    fun getFollowers(){
+   /* fun getFollowers(){
         val api = RetrofitHelper.getInstance()
         val data=api.getFollowers(userId)
     data.enqueue(object : Callback<MutableList<UserReceive>> {
@@ -80,5 +80,5 @@ class FragmentFollowers : Fragment() {
                ).show();
             }
         })
-    }
+    }*/
 }

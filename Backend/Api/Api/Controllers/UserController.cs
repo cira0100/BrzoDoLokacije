@@ -89,14 +89,26 @@ namespace Api.Controllers
             return Ok(await _userService.GetFollowing(id));
         }
 
-        [HttpGet("addFollower")]
+        [HttpGet("{id}/addFollower")]
         [Authorize(Roles = "User")]
-        public async Task<ActionResult<List<UserSend>>> AddFollower(string userId, string followerId)
+        public async Task<ActionResult<Boolean>> AddFollower(string id)
         {
-            return Ok(await _userService.AddFollower(userId, followerId));
+            return Ok(await _userService.AddFollower(id));
         }
 
+        [HttpGet("{id}/myFollowings")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<List<UserSend>>> GetMyFollowings()
+        {
+            return Ok(await _userService.GetMyFollowings());
+        }
 
+        [HttpGet("{id}/checkIfAlreadyFollow")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<Boolean>> CheckIfAlreadyFollow(String id)
+        {
+            return Ok(await _userService.CheckIfAlreadyFollow(id));
+        }
 
     }
 }

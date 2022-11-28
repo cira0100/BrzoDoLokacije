@@ -27,8 +27,11 @@ namespace Api.Interfaces
         Task<UserSend> GetUserData(string username);
         Task<UserSend> GetSelfUserData(string id);
 
-        Task<Boolean> AddFollower(string userId,string followerId);
+        Task<Boolean> AddFollower(string followerId);
         Task<List<UserSend>> GetFollowers(string id);
         Task<List<UserSend>> GetFollowing(string id);
+        Task<List<UserSend>> GetMyFollowings();
+
+        Task<Boolean> CheckIfAlreadyFollow(string id);
     }
 }

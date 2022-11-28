@@ -380,20 +380,25 @@ namespace Api.Services
             return tosend;
         }
 
-        public async Task<Boolean> AddFollower(string userId,string followerId)
+        public async Task<Boolean> AddFollower(string followerId)
         {
-            User u = await _users.Find(user => user._id==userId).FirstOrDefaultAsync();
+            string id = null;
+            if (_httpContext.HttpContext.User.FindFirstValue("id") != null)
+            {
+                id = _httpContext.HttpContext.User.FindFirstValue("id").ToString();
+            }
             User f = await _users.Find(user => user._id == followerId).FirstOrDefaultAsync();
-
-            if (userId != null && followerId!=null)
+            User u = await _users.Find(user => user._id == id).FirstOrDefaultAsync();
+           
+            if (id != null && followerId!=null)
             {
                 if (u.followers == null)
                     u.followers = new List<string>();
                 u.followers.Add(followerId);
                 if (f.following == null)
                     f.following = new List<string>();
-                f.following.Add(userId);
-                _users.ReplaceOne(user=>user._id==userId, u);
+                f.following.Add(id);
+                _users.ReplaceOne(user=>user._id==id, u);
                 _users.ReplaceOne(user => user._id == followerId, f);
                 return true;
             }
@@ -428,6 +433,7 @@ namespace Api.Services
                         followers.Add((UserSend)follower);  
                     }
                 }
+                u.followersCount=followers.Count() ;   
                 return followers;
             }
             return null;
@@ -459,9 +465,83 @@ namespace Api.Services
                         following.Add((UserSend)follower);
                     }
                 }
+                u.followersCount = following.Count();
                 return following;
             }
             return null;
+        }
+
+        public async Task<List<UserSend>> GetMyFollowings()
+        {
+            string id = null;
+
+            if (_httpContext.HttpContext.User.FindFirstValue("id") != null)
+            {
+                id = _httpContext.HttpContext.User.FindFirstValue("id").ToString();
+            }
+            User u = await _users.Find(user => user._id == id).FirstOrDefaultAsync();
+            List<UserSend> myFollowings = new List<UserSend>();
+            if (u != null)
+            {
+
+                if (u.following != null && u.following.Count() > 0)
+                {
+                    foreach (string userid in u.following)
+                    {
+                        User utemp = await _users.Find(user => user._id == userid).FirstOrDefaultAsync();
+                        if (utemp == null)
+                        {
+                            continue;
+                        }
+                        UserSend following = new UserSend();
+                        following.pfp = utemp.pfp;
+                        following.username = utemp.username;
+                        following.email = utemp.username;
+                        following.followers = utemp.followers;
+                        following._id = utemp._id;
+
+                        myFollowings.Add((UserSend)following);
+                    }
+                }
+                return myFollowings;
+            }
+            return null;
+        }
+
+        public async Task<bool> CheckIfAlreadyFollow(string id)
+        {
+            string myId = null;
+
+            if (_httpContext.HttpContext.User.FindFirstValue("id") != null)
+            {
+                myId = _httpContext.HttpContext.User.FindFirstValue("id").ToString();
+            }
+
+            User u = await _users.Find(user => user._id == myId).FirstOrDefaultAsync();
+            User f = await _users.Find(user => user._id == id).FirstOrDefaultAsync();
+
+            if (u != null)
+            {
+
+                if (u.following != null && u.following.Count() > 0)
+                {
+                    foreach (string userid in u.following)
+                    {
+                        User utemp = await _users.Find(user => user._id == userid).FirstOrDefaultAsync();
+                        if (utemp == null)
+                        {
+                            continue;
+                        }
+                        if (utemp._id == f._id)
+                        {
+                            return true;
+                        }
+                    }
+                }
+                
+            }
+
+            return false;
         }
     }
 }

@@ -303,6 +303,7 @@ class ActivitySinglePost : AppCompatActivity() {
     }
 
     fun translateOwnerIdToName(id:String) {
+        //binding.tvUser.text="proba"
         var token= SharedPreferencesHelper.getValue("jwt", this).toString()
         val api= RetrofitHelper.getInstance()
         val request= api.getProfileFromId("Bearer " + token, id)
@@ -313,6 +314,7 @@ class ActivitySinglePost : AppCompatActivity() {
                     return
                 }
                 userData = response.body()!!
+
                 binding.tvUser.text= userData!!.username.toString()
             }
 
@@ -321,5 +323,6 @@ class ActivitySinglePost : AppCompatActivity() {
             }
         })
     }
+
 
 }
