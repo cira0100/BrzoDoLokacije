@@ -101,4 +101,7 @@ interface IBackendApi {
     @GET("/api/user/{id}/checkIfAlreadyFollow")
     fun checkIfAlreadyFollow(@Header("Authorization") authHeader:String,@Path("id") id:String):Call<Boolean>
 
+    @GET("/api/user/{id}/unfollow")
+    fun unfollow(@Header("Authorization") authHeader:String,@Path("id") id:String):Call<Boolean>
+
 }
