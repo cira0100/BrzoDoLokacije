@@ -15,7 +15,7 @@
 
             android:id="@+id/imageView3"
             android:layout_width="match_parent"
-            android:layout_height="300dp"
+            android:layout_height="250dp"
             android:foreground="@drawable/b3"
             android:foregroundGravity="center_vertical|center|center_horizontal|fill"
             android:src="@drawable/b3"
@@ -28,9 +28,9 @@
 
             android:id="@+id/tvFragmentProfileInfoContainer"
             android:layout_width="0dp"
-            android:layout_height="199dp"
+            android:layout_height="240dp"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="150dp"
+            android:layout_marginTop="120dp"
             android:layout_marginEnd="20dp"
             android:adjustViewBounds="true"
             android:background="@drawable/profile_view_background"
@@ -46,10 +46,10 @@
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cvFragmentHomePageProfile"
-            android:layout_width="140dp"
-            android:layout_height="140dp"
+            android:layout_width="130dp"
+            android:layout_height="130dp"
             android:layout_gravity="center"
-            android:layout_marginTop="80dp"
+            android:layout_marginTop="60dp"
             android:elevation="10dp"
             app:cardCornerRadius="250dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -125,17 +125,18 @@
             android:layout_height="319dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/divider">
-        </FrameLayout>
+            app:layout_constraintTop_toTopOf="@+id/divider"
+            app:layout_constraintVertical_bias="1.0"></FrameLayout>
 
         <TableLayout
 
             android:layout_width="363dp"
 
-            android:layout_height="122dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="30dp"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="5dp"
             android:layout_marginEnd="30dp"
             android:layout_marginBottom="8dp"
             android:elevation="1dp"
@@ -145,7 +146,8 @@
             app:layout_constraintBottom_toBottomOf="@+id/tvFragmentProfileInfoContainer"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cvFragmentHomePageProfile">
+            app:layout_constraintTop_toBottomOf="@+id/cvFragmentHomePageProfile"
+            app:layout_constraintVertical_bias="0.35000002">
 
             <TableRow
                 android:layout_width="match_parent"
@@ -158,47 +160,13 @@
                     android:layout_height="match_parent"
                     android:layout_column="1"
                     android:layout_gravity="center"
-                    android:layout_marginBottom="5dp"
                     android:text="Petar Petrović"
-                    android:textSize="20sp" />
-            </TableRow>
-
-            <TableRow>
-
-                <androidx.constraintlayout.widget.ConstraintLayout android:layout_span="3">
-
-                    <ImageButton
-
-                        android:id="@+id/ibActivityUserProfileFollow"
-                        android:layout_width="115dp"
-                        android:layout_height="40dp"
-                        android:layout_marginStart="16dp"
-                        android:background="@drawable/rounded_transparent_button"
-                        android:foreground="@drawable/button_follow"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.0"
-                        tools:ignore="TouchTargetSizeCheck" />
-
-                    <ImageButton
-                        android:layout_width="115dp"
-                        android:layout_height="40dp"
-                        android:layout_gravity="center"
-                        android:layout_marginEnd="16dp"
-                        android:height="40dp"
-                        android:background="@drawable/rounded_transparent_button"
-                        android:foreground="@drawable/button_chat"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.0"
-                        tools:ignore="SpeakableTextPresentCheck" />
-                </androidx.constraintlayout.widget.ConstraintLayout>
+                    android:textStyle="bold"
+                    android:textSize="23sp" />
             </TableRow>
 
 
-            <TableRow android:layout_marginTop="5dp">
+            <TableRow android:layout_marginTop="30dp">
 
                 <TextView
                     android:id="@+id/tvFragmentUserProfilePosts"
@@ -220,30 +188,81 @@
                     android:text="PRAĆENJA" />
             </TableRow>
 
-            <TableRow>
-
+            <TableRow
+                android:layout_height="wrap_content"
+                >
                 <TextView
                     android:id="@+id/tvActivityUserProfilePostsNo"
                     android:layout_width="110dp"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="156"
-                    android:textFontWeight="700" />
+                    android:textSize="20dp"
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tvActivityUserProfileFollowersNo"
                     android:layout_width="110dp"
                     android:gravity="center"
-                    android:text="50" />
+                    android:text="50"
+                    android:textSize="20dp"
+                    android:textStyle="bold"/>
 
                 <TextView
                     android:id="@+id/tvActivityUserProfileFollowNo"
                     android:layout_width="110dp"
                     android:gravity="center"
-                    android:text="40" />
+                    android:text="40"
+                    android:textSize="20dp"
+                    android:textStyle="bold"/>
 
             </TableRow>
 
+            <TableRow
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                >
+
+                <androidx.constraintlayout.widget.ConstraintLayout android:layout_span="3">
+
+                    <Button
+
+                        android:id="@+id/btnActivityUserProfileFollow"
+                        android:layout_width="0dp"
+                        android:layout_height="30dp"
+                        android:layout_marginStart="16dp"
+                        android:layout_marginEnd="8dp"
+                        android:drawableLeft="@drawable/ic_outline_person_add_alt_24"
+                        android:text="PRATI"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        app:shapeAppearanceOverlay="@style/Circular"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toStartOf="@+id/activityUserProfileOpenChat"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.13"
+                        tools:ignore="TouchTargetSizeCheck" />
+
+                    <ImageButton
+                        android:id="@+id/activityUserProfileOpenChat"
+                        android:layout_width="35dp"
+                        android:layout_height="30dp"
+                        android:layout_gravity="center"
+                        android:layout_marginEnd="16dp"
+                        android:height="40dp"
+                        android:background="@drawable/rounded_button"
+                        android:backgroundTint="#4DB6AC"
+                        android:src="@drawable/ic_round_message_24"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toEndOf="@+id/btnActivityUserProfileFollow"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.0"
+                        app:shapeAppearanceOverlay="@style/Circular"
+                        tools:ignore="SpeakableTextPresentCheck" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </TableRow>
         </TableLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
