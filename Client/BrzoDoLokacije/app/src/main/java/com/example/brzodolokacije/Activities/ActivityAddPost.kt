@@ -53,33 +53,27 @@ class ActivityAddPost : AppCompatActivity() {
     private lateinit var tagButtonAdd:Button
     private lateinit var tagList: MutableList<String>
     private var tagidcounter:Int = 0
-    val incorectCoord:Double=1000.0
     val LOCATIONREQCODE=123
-    var longitude:Double=incorectCoord
-    var latitude:Double=incorectCoord
+    var locationId:String?=null
     var progressDialog:ProgressDialog?=null
     private lateinit var addDescription:Button
 
 
-    //private var paths :ArrayList<String?>?=null
+
     private var place=0;
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_post)
-//        Toast.makeText(
-//            applicationContext, "Add new ", Toast.LENGTH_LONG
-//        ).show();
+
         uploadedImages= ArrayList()
         tagList = mutableListOf()
         tagButtons= mutableListOf()
         tagidcounter = 0
-        //paths= ArrayList()
 
         uploadFromGallery=findViewById<View>(R.id.btnActivityAddPostUploadFromGalleryVisible) as Button
         showNextImage=findViewById<View>(R.id.nextImage) as Button
         showPreviousImage=findViewById<View>(R.id.previousImage) as Button
         switcher=findViewById<View>(R.id.isActivityAddPostSwitcher) as ImageSwitcher
-        //location=findViewById<View>(R.id.etActivityAddPostLocation) as EditText
         description=findViewById<View>(R.id.etActivityAddPostDescription) as EditText
         post=findViewById<View>(R.id.btnActivityAddPostPost) as Button
         addLocation=findViewById<View>(R.id.btnActivityAddPostAddLocation) as Button
@@ -107,8 +101,6 @@ class ActivityAddPost : AppCompatActivity() {
             imgView}
         addLocation.setOnClickListener {
             val myIntent = Intent(this, MapsActivity::class.java)
-            if(location.text!=null && !location.text.trim().equals(""))
-                myIntent.putExtra("search",location.text.toString())
             startActivityForResult(myIntent,LOCATIONREQCODE)
         }
         addDescription.setOnClickListener {
@@ -207,11 +199,11 @@ class ActivityAddPost : AppCompatActivity() {
                 description.hint="Unesite opis"
                 description.setHintTextColor(Color.RED)
             }
-            if(longitude!=incorectCoord && latitude!=incorectCoord){
+            if(locationId==null || locationId!!.trim()==""){
                 Toast.makeText(this,"Unesite lokaciju klikom na dugme",Toast.LENGTH_LONG)
             }
 
-            if(!locationString.isEmpty() && !descriptionString.isEmpty() && longitude!=incorectCoord && latitude!=incorectCoord && uploadedImages!!.size>0){
+            if(!descriptionString.isEmpty()  && uploadedImages!!.size>0){
                 sendPost()
             }
         }
@@ -251,11 +243,7 @@ class ActivityAddPost : AppCompatActivity() {
         }
         if(requestCode==LOCATIONREQCODE && resultCode== RESULT_OK){
             var bundle=data!!.extras
-            longitude=bundle!!.getDouble("longitude",incorectCoord)
-            latitude=bundle!!.getDouble("latitude",incorectCoord)
-            var locName=bundle!!.getString("name")
-            if(location.text.toString().trim().equals("") && locName!=null && !locName.toString().trim().equals(""))
-                location.setText(locName,TextView.BufferType.EDITABLE)
+            locationId=bundle!!.getString("locationId")
         }
     }
     private fun sendPost(){
@@ -263,60 +251,11 @@ class ActivityAddPost : AppCompatActivity() {
 
     }
     fun uploadLocation() {
-        //TO DO SEARCH EXISTING LOCATION FROM DB
-        //IF NOT EXISTS ADD NEW LOCATION
-        progressDialog!!.show()
-        val api =RetrofitHelper.getInstance()
-        var geocoder=GeocoderHelper.getInstance()
-        var loc1=geocoder!!.getFromLocation(latitude,longitude,1)
-        if(loc1==null ||loc1.size<=0)
-        {
-            progressDialog!!.dismiss()
-            Toast.makeText(this,"Lokacija ne postoji",Toast.LENGTH_LONG);
-            return
-        }
-        var countryName=loc1[0].countryName
-        var address="todo not possible in query"
-        var city="its null"
-        if(loc1[0].adminArea!=null)
-            city=loc1[0].adminArea//not possible
-        var loc:Location=Location("",locationString,city,countryName,address,latitude,longitude,LocationType.GRAD)
-        var jwtString= SharedPreferencesHelper.getValue("jwt",this)
-        var data=api.addLocation("Bearer "+jwtString,loc)
-
-        data.enqueue(object : retrofit2.Callback<Location?> {
-            override fun onResponse(call: Call<Location?>, response: Response<Location?>) {
-                if(response.isSuccessful()){
-
-                    uploadPost(response.body()!!._id)
-                    Toast.makeText(
-                        applicationContext, "USPEH", Toast.LENGTH_LONG
-                    ).show();
-
-                }else {
-                    progressDialog!!.dismiss()
-
-                    if (response.errorBody() != null) {
-                        Log.d("Main",response.errorBody()!!.string())
-                        Log.d("Main",response.message())
-                    }
-                    Log.d("Main",response.errorBody()!!.string())
-                    Log.d("Main",response.message())
-                }
-
-
-            }
-
-            override fun onFailure(call: Call<Location?>, t: Throwable) {
-                Toast.makeText(
-                    applicationContext, t.toString(), Toast.LENGTH_LONG
-                ).show();
-                Log.d("Main",t.toString())
-                progressDialog!!.dismiss()
-            }
-        })
+        if(locationId!=null && locationId!!.trim()!="")
+            uploadPost(locationId!!)
     }
     fun uploadPost(loc:String){
+        progressDialog!!.show()
         val api =RetrofitHelper.getInstance()
         var desc=descriptionString
         description.text.clear()

@@ -41,13 +41,10 @@ import java.io.InputStream
 class ActivityCapturePost : AppCompatActivity() {
 
     private lateinit var takePhoto: Button
-    //private lateinit var location: EditText
     private lateinit var description: EditText
-    private lateinit var locationString: String
     private lateinit var descriptionString: String
     private lateinit var post: Button
     private lateinit var showImage: ImageView
-    private var uploadedImages: Uri? = null
     private lateinit var addLocation:Button
     private lateinit var tagLayout:LinearLayout
     private lateinit var tagButtons:MutableList<Button>
@@ -57,10 +54,10 @@ class ActivityCapturePost : AppCompatActivity() {
     private var tagidcounter:Int = 0
     private lateinit var addDescription:Button
 
-    val incorectCoord:Double=1000.0
+
     val LOCATIONREQCODE=123
-    var longitude:Double=incorectCoord
-    var latitude:Double=incorectCoord
+    var locationId:String?=null
+
     var progressDialog: ProgressDialog?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -70,7 +67,6 @@ class ActivityCapturePost : AppCompatActivity() {
         tagButtons= mutableListOf()
         tagidcounter = 0
 
-        //location = findViewById<View>(R.id.etActivityCapturePostLocation) as EditText
         description = findViewById<View>(R.id.etActivityCapturePostDescription) as EditText
         post = findViewById<View>(R.id.btnActivityCapturePostPost) as Button
         showImage = findViewById<View>(R.id.ivActivityCapturePostImage) as ImageView
@@ -217,14 +213,10 @@ class ActivityCapturePost : AppCompatActivity() {
            // locationString = location.text.toString().trim()
             descriptionString = description.text.toString().trim()
             //prazan unos?
-            if (locationString.isEmpty()) {
-            //    location.hint = "Unesite lokaciju"
-            //    location.setHintTextColor(Color.RED)
-            }else
             if (descriptionString.isEmpty()) {
                 description.hint = "Unesite opis"
                 description.setHintTextColor(Color.RED)
-            }else if(f!=null && longitude!=incorectCoord && latitude!=incorectCoord){
+            }else if(f!=null && locationId!=null && locationId!!.trim()!=""){
                     uploadLocation()
             }
 
@@ -237,11 +229,7 @@ class ActivityCapturePost : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if(requestCode==LOCATIONREQCODE && resultCode== RESULT_OK){
             var bundle=data!!.extras
-            longitude=bundle!!.getDouble("longitude",incorectCoord)
-            latitude=bundle!!.getDouble("latitude",incorectCoord)
-            var locName=bundle!!.getString("name")
-            //if(location.text.toString().trim().equals("") && locName!=null && !locName.toString().trim().equals(""))
-            //    location.setText(locName, TextView.BufferType.EDITABLE)
+            locationId=bundle!!.getString("locationId")
         }
     }
     var f:File?=null
@@ -266,59 +254,11 @@ class ActivityCapturePost : AppCompatActivity() {
 
         }
     fun uploadLocation() {
-        //TO DO SEARCH EXISTING LOCATION FROM DB
-        //IF NOT EXISTS ADD NEW LOCATION
-        progressDialog!!.show()
-        val api =RetrofitHelper.getInstance()
-        var geocoder= GeocoderHelper.getInstance()
-        var loc1=geocoder!!.getFromLocation(latitude,longitude,1)
-        if(loc1==null ||loc1.size<=0)
-        {
-            progressDialog!!.dismiss()
-            Toast.makeText(this,"Lokacija ne postoji",Toast.LENGTH_LONG);
-            return
-        }
-        var countryName=loc1[0].countryName
-        var address="todo not possible in query"
-        var city=loc1[0].adminArea//not possible
-        //var address=loc1[0].subAdminArea
-        var loc:Location=Location("",locationString,city,countryName,address,latitude,longitude,LocationType.GRAD)
-        var jwtString= SharedPreferencesHelper.getValue("jwt",this)
-        var data=api.addLocation("Bearer "+jwtString,loc)
-
-        data.enqueue(object : retrofit2.Callback<Location?> {
-            override fun onResponse(call: Call<Location?>, response: Response<Location?>) {
-                if(response.isSuccessful()){
-
-                    uploadPost(response.body()!!._id)
-                    Toast.makeText(
-                        applicationContext, "USPEH", Toast.LENGTH_LONG
-                    ).show();
-
-                }else {
-                    progressDialog!!.dismiss()
-
-                    if (response.errorBody() != null) {
-                        Log.d("Main",response.errorBody()!!.string())
-                        Log.d("Main",response.message())
-                    }
-                    Log.d("Main",response.errorBody()!!.string())
-                    Log.d("Main",response.message())
-                }
-
-
-            }
-
-            override fun onFailure(call: Call<Location?>, t: Throwable) {
-                Toast.makeText(
-                    applicationContext, t.toString(), Toast.LENGTH_LONG
-                ).show();
-                Log.d("Main",t.toString())
-                progressDialog!!.dismiss()
-            }
-        })
+        if(locationId!=null && locationId!!.trim()!="")
+            uploadPost(locationId!!)
     }
     fun uploadPost(loc:String){
+        progressDialog!!.show()
         val api = RetrofitHelper.getInstance()
         var desc=descriptionString
         description.text.clear()

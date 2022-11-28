@@ -11,11 +11,16 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.bumptech.glide.Glide
 import com.example.brzodolokacije.Fragments.FragmentShowUserPosts
+import com.example.brzodolokacije.Models.PostPreview
 import com.example.brzodolokacije.Models.User
 import com.example.brzodolokacije.Models.UserReceive
 import com.example.brzodolokacije.R
 import com.example.brzodolokacije.Services.RetrofitHelper
+import com.example.brzodolokacije.Services.SharedPreferencesHelper
 import com.google.gson.Gson
+import retrofit2.Call
+import retrofit2.Callback
+import retrofit2.Response
 
 class ActivityUserProfile : AppCompatActivity() {
     private lateinit var name:TextView
@@ -36,7 +41,7 @@ class ActivityUserProfile : AppCompatActivity() {
         followersNumber=findViewById(R.id.tvActivityUserProfileFollowersNo)
         followingNumber=findViewById(R.id.tvActivityUserProfileFollowNo)
         profilePicture=findViewById(R.id.tvActivityProfileProfilePicture)
-        followUser=findViewById(R.id.ibActivityUserProfileFollow)
+        followUser=findViewById(R.id.btnActivityUserProfileFollow)
         showUserPosts=findViewById(R.id.btnActivityUserProfileShowPosts)
         fragmentContainer=findViewById(R.id.flActivityProfileFragmentContainer)
 
@@ -60,6 +65,9 @@ class ActivityUserProfile : AppCompatActivity() {
         }
 
         followUser.setOnClickListener{
+            val api = RetrofitHelper.getInstance()
+            val token= SharedPreferencesHelper.getValue("jwt", this@ActivityUserProfile)
+            api.addFollower("Bearer "+token,myObject._id);
 
         }
 

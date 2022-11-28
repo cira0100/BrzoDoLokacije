@@ -214,8 +214,8 @@ class FragmentProfile : Fragment(com.example.brzodolokacije.R.layout.fragment_pr
         username.setText("@"+user.username)
         postsCount.setText(user.postcount.toString())
 
-        followersCount.setText("to do")
-        followingCount.setText("to do")
+        followersCount.setText(user.followersNumber.toString())
+        followingCount.setText(user.followingNumber.toString())
 
         userId=user._id
 
