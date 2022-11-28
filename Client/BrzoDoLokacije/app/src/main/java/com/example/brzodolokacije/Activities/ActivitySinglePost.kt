@@ -3,9 +3,12 @@ package com.example.brzodolokacije.Activities
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.media.Image
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.provider.ContactsContract.CommonDataKinds.Im
 import android.util.Log
+import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -66,6 +69,9 @@ class ActivitySinglePost : AppCompatActivity() {
         setRatingListeners()
         translateOwnerIdToName(post.ownerId)
 
+        val alreadyrated= RatingReceive(starNumber.toInt(),post._id)
+        requestAddRating(alreadyrated)
+
         binding.tvUser.setOnClickListener {
             val intent: Intent = Intent(this@ActivitySinglePost,ActivityUserProfile::class.java)
             var b= Bundle()
@@ -115,13 +121,29 @@ class ActivitySinglePost : AppCompatActivity() {
         recyclerViewComments!!.adapter= adapterComments
     }
 
-    fun setRatingListeners(){
-        val emptyStar=R.drawable.empty_star
-        val fullStar=R.drawable.full_star
-        //var starlist:List<ImageButton> = mutableListOf()
+    fun setRatingListeners() {
+            val emptyStar = R.drawable.empty_star
+            val fullStar = R.drawable.full_star
+            /*var starlist: ArrayList<ImageButton> = arrayListOf()
+            starlist.add(findViewById(R.id.rateStar1) as ImageButton)
+            starlist.add(findViewById(R.id.rateStar2) as ImageButton)
+            starlist.add(findViewById(R.id.rateStar3) as ImageButton)
+            starlist.add(findViewById(R.id.rateStar4) as ImageButton)
+            starlist.add(findViewById(R.id.rateStar5) as ImageButton)
+            for (i in 0..4) {
+                starlist[i].setOnClickListener {
+                    for (j in 1..i) {
+                        starlist[j].setImageResource(fullStar)
+                    }
+                    for (k in i..5) {
+                        starlist[k].setImageResource(emptyStar)
+                    }
+                    starNumber = i+1;
+                }
+            }*/
 
         binding.rateStar1.setOnClickListener {
-            Toast.makeText(this,"kliknuta prva zvezdica",Toast.LENGTH_SHORT).show()
+            //Toast.makeText(this,"kliknuta prva zvezdica",Toast.LENGTH_SHORT).show()
             binding.rateStar1.setImageResource(fullStar)
             binding.rateStar2.setImageResource(emptyStar)
             binding.rateStar3.setImageResource(emptyStar)
@@ -130,7 +152,7 @@ class ActivitySinglePost : AppCompatActivity() {
             starNumber=1
         }
         binding.rateStar2.setOnClickListener {
-            Toast.makeText(this,"kliknuta druga zvezdica",Toast.LENGTH_SHORT).show()
+            //Toast.makeText(this,"kliknuta druga zvezdica",Toast.LENGTH_SHORT).show()
             binding.rateStar1.setImageResource(fullStar)
             binding.rateStar2.setImageResource(fullStar)
             binding.rateStar3.setImageResource(emptyStar)
@@ -139,7 +161,7 @@ class ActivitySinglePost : AppCompatActivity() {
             starNumber=2
         }
         binding.rateStar3.setOnClickListener {
-            Toast.makeText(this,"kliknuta treca zvezdica",Toast.LENGTH_SHORT).show()
+            //Toast.makeText(this,"kliknuta treca zvezdica",Toast.LENGTH_SHORT).show()
             binding.rateStar1.setImageResource(fullStar)
             binding.rateStar2.setImageResource(fullStar)
             binding.rateStar3.setImageResource(fullStar)
@@ -148,7 +170,7 @@ class ActivitySinglePost : AppCompatActivity() {
             starNumber=3
         }
         binding.rateStar4.setOnClickListener {
-            Toast.makeText(this,"kliknuta cetvrta zvezdica",Toast.LENGTH_SHORT).show()
+            //Toast.makeText(this,"kliknuta cetvrta zvezdica",Toast.LENGTH_SHORT).show()
             binding.rateStar1.setImageResource(fullStar)
             binding.rateStar2.setImageResource(fullStar)
             binding.rateStar3.setImageResource(fullStar)
@@ -157,7 +179,7 @@ class ActivitySinglePost : AppCompatActivity() {
             starNumber=4
         }
         binding.rateStar5.setOnClickListener {
-            Toast.makeText(this,"kliknuta peta zvezdica",Toast.LENGTH_SHORT).show()
+            //Toast.makeText(this,"kliknuta peta zvezdica",Toast.LENGTH_SHORT).show()
             binding.rateStar1.setImageResource(fullStar)
             binding.rateStar2.setImageResource(fullStar)
             binding.rateStar3.setImageResource(fullStar)
@@ -194,6 +216,7 @@ class ActivitySinglePost : AppCompatActivity() {
         request.enqueue(object : retrofit2.Callback<CommentSend?> {
             override fun onResponse(call: Call<CommentSend?>, response: Response<CommentSend?>) {
                 if(response.isSuccessful){
+
                     var newComment=response.body()!!
                     requestGetComments(newComment)
                     binding.NewComment.text.clear()
@@ -251,15 +274,31 @@ class ActivitySinglePost : AppCompatActivity() {
         val postApi= RetrofitHelper.getInstance()
         val token= SharedPreferencesHelper.getValue("jwt", this@ActivitySinglePost)
         val request=postApi.addRating("Bearer "+token,post._id,rating)
-        request.enqueue(object : retrofit2.Callback<ResponseBody?> {
-            override fun onResponse(call: Call<ResponseBody?>, response: Response<ResponseBody?>) {
+        request.enqueue(object : retrofit2.Callback<RatingData?> {
+            override fun onResponse(call: Call<RatingData?>, response: Response<RatingData?>) {
                 if(response.isSuccessful){
-                    //zasad hardkodovano, zameniti te vrednosti sa brojem ocena kada se doda
-                    post.ratings=((post.ratings)*10+rating.rating)/11
-                    binding.tvRating.text=String.format("%.2f",post.ratings)
-                    Toast.makeText(
-                        this@ActivitySinglePost, "prosao zahtev", Toast.LENGTH_LONG
-                    ).show()
+                    var data=response.body()!!
+                    binding.tvRating.text=String.format("%.2f",data.ratings)
+                    binding.tvNumberOfRatings.text=String.format("%d",data.ratingscount)
+                    Log.d("--------------",data.ratings.toString()+" "+data.ratingscount.toString())
+                    when(data.myrating){
+                        1->binding.rateStar1.performClick()
+                        2->binding.rateStar2.performClick()
+                        3->binding.rateStar3.performClick()
+                        4->binding.rateStar4.performClick()
+                        5->binding.rateStar5.performClick()
+                        else->{
+                            val emptyStar = R.drawable.empty_star
+                            binding.rateStar1.setImageResource(emptyStar)
+                            binding.rateStar2.setImageResource(emptyStar)
+                            binding.rateStar3.setImageResource(emptyStar)
+                            binding.rateStar4.setImageResource(emptyStar)
+                            binding.rateStar5.setImageResource(emptyStar)
+                        }
+                    }
+                    /*Toast.makeText(
+                            this@ActivitySinglePost, "prosao zahtev", Toast.LENGTH_LONG
+                    ).show()*/
                 }else{
                     if(response.errorBody()!=null)
                         Log.d("main1",response.errorBody().toString())
@@ -268,7 +307,7 @@ class ActivitySinglePost : AppCompatActivity() {
 
             }
 
-            override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
+            override fun onFailure(call: Call<RatingData?>, t: Throwable) {
                 Log.d("main2",t.message.toString())
             }
         })
@@ -284,7 +323,7 @@ class ActivitySinglePost : AppCompatActivity() {
             tvLocationParent.invalidate()
             tvRating.text=post.ratings.toString()
             tvRating.invalidate()
-            tvNumberOfRatings.text=post.ratings.toString()
+            tvNumberOfRatings.text=post.ratingscount.toString()
             tvNumberOfRatings.invalidate()
             tvDescription.text=post.description
             tvDescription.invalidate()

@@ -92,14 +92,15 @@ namespace Api.Controllers
         public async Task<ActionResult> addRating([FromBody] RatingReceive rating,string id)
         {
             var userid = await _userService.UserIdFromJwt();
-            if (await _postService.AddOrReplaceRating(rating, userid))
-                return Ok();
+            var rez = await _postService.AddOrReplaceRating(rating, userid);
+            if(rez != null)
+                return Ok(rez);
             return BadRequest();
         }
 
         [HttpDelete("posts/{id}/removerating")]
         [Authorize(Roles = "User")]
-        public async Task<ActionResult> removeRating(string id)
+        public async Task<ActionResult<int>> removeRating(string id)
         {
             var userid = await _userService.UserIdFromJwt();
             if (await _postService.RemoveRating(id,userid))
@@ -170,11 +171,20 @@ namespace Api.Controllers
             return Ok(await _postService.Get10Best());
         }
 
+
         [HttpGet("posts/{id}/getUserPosts")]
         [Authorize(Roles = "User")]
         public async Task<ActionResult<List<PostSend>>> GetUsersPosts(string id)
         {
             return Ok(await _postService.GetUsersPosts(id));
+        }
+
+        [HttpGet("posts/recommended")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<List<PostSend>>> Recommended()
+        {
+            var userid = await _userService.UserIdFromJwt();
+            return Ok(await _postService.Recommended(userid));
         }
     }
 }
