@@ -72,14 +72,14 @@ interface IBackendApi {
 //@POST("putanja")
     //fun add(@Body obj:Post,@Header("Authorization") authHeader:String):Call<Post>
 
-    @POST("/api/user/{id}/followers")
-    fun getFollowers(@Path("id") id:String):Call <MutableList<UserReceive>>
+    @GET("/api/user/{id}/followers")
+    fun getFollowers(@Header("Authorization") authHeader:String,@Path("id") id:String):Call <MutableList<UserReceive>>
 
-    @POST("/api/user{id}/following")
-    fun getFollowing(@Path("id") id:String):Call <MutableList<UserReceive>>
+    @GET("/api/user/{id}/following")
+    fun getFollowing(@Header("Authorization") authHeader:String,@Path("id") id:String):Call <MutableList<UserReceive>>
 
-    @POST("/api/user{id}/addFollower")
-    fun addFollower(@Header("Authorization") authHeader:String,@Path("id") id:String):Call<UserReceive>
+    @GET("/api/user/{id}/addFollower")
+    fun addFollower(@Header("Authorization") authHeader:String,@Path("id") id:String):Call<Boolean>
     @GET("/api/user/{id}/id/profile")
     fun getProfileFromId(@Header("Authorization") authHeader:String,@Path("id") username:String):Call<UserReceive>
 
@@ -94,5 +94,11 @@ interface IBackendApi {
 
     @GET("api/Location/search")
     fun searchLocationsQuery(@Header("Authorization") authHeader:String,@Query("query") query: String):Call<MutableList<Location>>
+
+    @GET("/api/user/{id}/myFollowings")
+    fun getMyFollowings(@Header("Authorization") authHeader:String):Call <MutableList<UserReceive>>
+
+    @GET("/api/user/{id}/checkIfAlreadyFollow")
+    fun checkIfAlreadyFollow(@Header("Authorization") authHeader:String,@Path("id") id:String):Call<Boolean>
 
 }

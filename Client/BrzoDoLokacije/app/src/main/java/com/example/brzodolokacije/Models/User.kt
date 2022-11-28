@@ -29,10 +29,10 @@ data class UserReceive(
     var creationDate: Date,
     var pfp:PostImage?,
     var postcount:Int,
-    var followers:List<User>,
-    var followersNumber:Int,
-    var following:List<User>,
-    var followingNumber:Int,
+    var followers:List<String>,
+    var followersCount:Int,
+    var following:List<String>,
+    var followingCount:Int,
     var postIds:List<Int>,
     var postNumber:Int
 )

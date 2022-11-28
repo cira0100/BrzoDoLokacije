@@ -37,8 +37,8 @@ data class PostPreview (
     var comments:List<CommentSend>?,
     var images:List<PostImage>,
     var ratingscount:Int,
-    var createdAt:LocalDateTime,
-    var lastViewed: LocalDateTime?, //samo za istoriju pregleda
+    var createdAt:Date,
+    var lastViewed: Date?, //samo za istoriju pregleda
     var tags:List<String>?
 
 
