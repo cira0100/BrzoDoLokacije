@@ -108,4 +108,10 @@ namespace Api.Models
         public int totalposts { get; set; }
         public List<PostSend> posts { get; set; }
     }
+
+    public class TagR
+    {
+        public int counter { get; set; }
+        public string tag { get; set; } 
+    }
 }

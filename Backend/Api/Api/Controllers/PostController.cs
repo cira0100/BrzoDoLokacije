@@ -171,5 +171,12 @@ namespace Api.Controllers
             return Ok(await _postService.Get10Best());
         }
 
+        [HttpGet("posts/recommended")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<List<PostSend>>> Recommended()
+        {
+            var userid = await _userService.UserIdFromJwt();
+            return Ok(await _postService.Recommended(userid));
+        }
     }
 }

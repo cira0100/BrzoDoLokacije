@@ -26,5 +26,6 @@ namespace Api.Interfaces
         Task<List<PostSend>> Get10MostViewed();
 
         Task<List<PostSend>> Get10Newest();
+        Task<List<PostSend>> Recommended(string userid);
     }
 }

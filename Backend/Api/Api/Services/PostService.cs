@@ -467,5 +467,68 @@ namespace Api.Services
             List<PostSend> newest = temp.OrderByDescending(o => o.createdAt).Take(10).ToList();
             return newest;
         }
+
+        public async Task<List<PostSend>> Recommended(string userid) // momgodb bloat bleh
+        {
+            List<PostSend> posts = await UserHistory(userid);
+            //TODO-LIMIT RECOMMENDED FOR POSTS FROM THIS MONTH ONLY
+            List<TagR> tags = new List<TagR>();
+            foreach (var post in posts)
+            {
+                if (post.tags != null)
+                {
+
+                    foreach (var tagitem in post.tags)
+                    {
+                        if (!tags.Any(x => x.tag == tagitem))
+                        {
+                            var newtag = new TagR();
+                            newtag.tag = tagitem;
+                            newtag.counter = 1;
+                            tags.Add(newtag);
+                        }
+                        else
+                        {
+                            var replace = tags.Find(x => x.tag == tagitem);
+                            tags.Remove(replace);
+                            replace.counter += 1;
+                            tags.Add(replace);
+                        }
+                    }
+                }
+            }
+            var top5tags = tags.OrderByDescending(x => x.counter).Take(5).ToList();
+            
+            var all = await _posts.Find(_ => true).ToListAsync();
+            var recent30 = new List<PostSend>();
+            var fiveoftop5tags = new List<PostSend>();
+            foreach (var elem in all)
+            {
+                if ((DateTime.Now - elem.createdAt).TotalDays < 30)
+                    recent30.Add(await postToPostSend(elem));
+            }
+            recent30 = recent30.OrderByDescending(x => x.createdAt).ToList();
+            foreach (var tag in top5tags) 
+            {
+                var five = new List<PostSend>();
+                foreach (var elem in recent30)
+                {
+                    if (elem.tags != null)
+                    {
+                        if (elem.tags.Any(x => x == tag.tag))
+                            five.Add(elem);
+                    }
+                }
+                five = five.Take(5).ToList();
+                foreach(var elem in five)
+                {
+                    fiveoftop5tags.Add(elem);
+                }
+            }
+
+            var taggedposts = new List<PostSend>();
+            taggedposts = fiveoftop5tags.Distinct().OrderByDescending(x => x.createdAt).ToList();
+            return taggedposts;
+        }
     }
 }
