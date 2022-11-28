@@ -39,7 +39,10 @@ namespace Api.Services
             p.comments = new List<Comment>();
             p.images = new List<Models.File>();
             p.createdAt = DateTime.Now.ToUniversalTime();
-            var tags = post.tags.Split("|").ToList();
+            List<String> tags;
+            if (post.tags != "none")
+                tags = post.tags.Remove(post.tags.Length-1,1).Split("|").ToList();
+            else tags = null;
             p.tags = tags;
             var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "Files", p.ownerId);
             if (!Directory.Exists(folderPath))
@@ -85,6 +88,7 @@ namespace Api.Services
             p.views = post.views.Count();
             p.createdAt = post.createdAt;
             p.tags = post.tags;
+            p.ratingscount = post.ratings.Count();
             if (post.ratings.Count() > 0)
             {
                 List<int> ratings = new List<int>();
@@ -116,9 +120,16 @@ namespace Api.Services
             Post p = await _posts.Find(post => post._id == id).FirstOrDefaultAsync();
             if (p != null)
             {
-                if (!p.views.Any(x => x == userid)) 
+                if (!p.views.Any(x => x.Split("|")[0] == userid)) 
                 {
-                    p.views.Add(userid);
+                    p.views.Add(userid + "|" + DateTime.Now.ToUniversalTime().ToString());
+                    await _posts.ReplaceOneAsync(x => x._id == id, p);
+                }
+                else
+                {
+                    var v = p.views.Find(x => x.Split("|")[0] == userid);
+                    p.views.Remove(v);
+                    p.views.Add(userid + "|" + DateTime.Now.ToUniversalTime().ToString());
                     await _posts.ReplaceOneAsync(x => x._id == id, p);
                 }
             }
@@ -308,7 +319,7 @@ namespace Api.Services
                     xd = ls.OrderByDescending(x => x.createdAt).ToList();
                     break;
                 default:
-
+                    xd = ls.OrderByDescending(x => x.views).ToList();
                     break;
             }
             if(xd != null)
@@ -360,12 +371,15 @@ namespace Api.Services
             var tosend = new List<PostSend>();
             foreach (var post in posts)
             {
-                if (post.views.Any(x => x.Equals(userid)))
+                if (post.views.Any(x => x.Split("|")[0] == userid))
                 {
+                    var t = post.views.Find(x => x.Split("|")[0] == userid);
                     var x = await postToPostSend(post);
+                    x.lastViewed = DateTime.Parse(t.Split("|")[1]).ToUniversalTime();
                     tosend.Add(x);
                 }
             }
+            tosend = tosend.OrderByDescending(x => x.lastViewed).ToList();
             return tosend;
         }
 

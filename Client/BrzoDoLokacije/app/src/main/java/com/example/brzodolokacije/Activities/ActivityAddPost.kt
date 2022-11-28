@@ -120,7 +120,7 @@ class ActivityAddPost : AppCompatActivity() {
             tagText.isGone=false
             tagText.isVisible=true
 
-            if(tagList.count()<5) {
+            if(tagList.count()<4  && tagText.text.toString().length>=3) {
                 var tagstr = tagText.text.toString()
                 var newbtn = Button(this)
                 newbtn.setId(tagidcounter)
@@ -149,7 +149,7 @@ class ActivityAddPost : AppCompatActivity() {
                 tagText.text.clear()
             }
             else{
-                Toast.makeText(this,"Maksimalno 5 tagova",Toast.LENGTH_LONG)
+                Toast.makeText(this,"Maksimalno 4 tagova ( duzine + karaktera)",Toast.LENGTH_LONG)
             }
         }
 
@@ -326,10 +326,12 @@ class ActivityAddPost : AppCompatActivity() {
         var descReq=RequestBody.create("text/plain".toMediaTypeOrNull(),desc)
         var idReq=RequestBody.create("text/plain".toMediaTypeOrNull(),"dsa")
 
-        var tagliststring=""
-        for(tag in tagList){
-            tagliststring=tagliststring+tag+"|"
-        }
+        var tagliststring="none"
+        if(tagList.count()>0){
+            tagliststring=""
+            for(tag in tagList){
+                tagliststring=tagliststring+tag+"|"
+            }}
         var tagReq=RequestBody.create("text/plain".toMediaTypeOrNull(),tagliststring)
 
         val imagesParts = arrayOfNulls<MultipartBody.Part>(
