@@ -39,6 +39,7 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.Projection
 import org.osmdroid.views.overlay.ItemizedIconOverlay
+import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Overlay
 import org.osmdroid.views.overlay.OverlayItem
 import org.osmdroid.views.overlay.ScaleBarOverlay
@@ -205,15 +206,47 @@ class MapsActivity : AppCompatActivity() {
             selectedLocation=responseLocations!!.find { location -> location.name==selected }
             Log.d("main",selectedLocation.toString())
             confirmButton.visibility=View.VISIBLE
+            val locGeopoint=GeoPoint(selectedLocation!!.latitude,selectedLocation!!.longitude)
+            map!!.controller.animateTo(locGeopoint)
+            val marker = ContextCompat.getDrawable(this@MapsActivity, R.drawable.ic_baseline_add_location_24);
+            locLatitude=selectedLocation!!.latitude
+            locLongitude=selectedLocation!!.longitude
+
+
+            val overlayArray = ArrayList<OverlayItem>()
+            val mapItem = OverlayItem(
+                "", "", locGeopoint
+            )
+            mapItem.setMarker(marker)
+            overlayArray.add(mapItem)
+            if (anotherItemizedIconOverlay == null) {
+                anotherItemizedIconOverlay =
+                    ItemizedIconOverlay(applicationContext, overlayArray, null)
+                map!!.overlays.add(anotherItemizedIconOverlay)
+                map!!.invalidate()
+            } else {
+                map!!.overlays.remove(anotherItemizedIconOverlay)
+                map!!.invalidate()
+                anotherItemizedIconOverlay =
+                    ItemizedIconOverlay(applicationContext, overlayArray, null)
+                map!!.overlays.add(anotherItemizedIconOverlay)
+            }
+
         })
 
 
     }
+    var anotherItemizedIconOverlay: ItemizedIconOverlay<OverlayItem>? = null
     fun returnValue(){
         val intent = intent
         val bundle = Bundle()
         if(selectedLocation==null)
             return
+        if(selectedLocation!!.latitude!=locLatitude || selectedLocation!!.longitude!=locLongitude)
+        {
+            addLocation()
+            return
+        }
         bundle.putString("locationId",selectedLocation!!._id)
         intent.putExtras(bundle)
         setResult(RESULT_OK, intent)
@@ -296,7 +329,7 @@ class MapsActivity : AppCompatActivity() {
 
 
         val touchOverlay: Overlay = object : Overlay(this) {
-            var anotherItemizedIconOverlay: ItemizedIconOverlay<OverlayItem>? = null
+
             override fun onSingleTapConfirmed(e: MotionEvent, mapView: MapView): Boolean {
                 val marker = ContextCompat.getDrawable(this@MapsActivity, R.drawable.ic_baseline_add_location_24);
                 val proj: Projection = mapView.projection
