@@ -53,6 +53,7 @@ class ActivityAddPost : AppCompatActivity() {
     private lateinit var tagText: EditText
     private lateinit var tagButtonAdd:Button
     private lateinit var tagList: MutableList<String>
+    private lateinit var locText: EditText
     private var tagidcounter:Int = 0
     val LOCATIONREQCODE=123
     var locationId:String?=null
@@ -81,6 +82,7 @@ class ActivityAddPost : AppCompatActivity() {
         tagText =findViewById<View>(R.id.acTags) as EditText
         tagButtonAdd = findViewById<View>(R.id.btnActivityAddPostAddTag) as Button
         tagLayout =  findViewById<View>(R.id.llTags) as LinearLayout
+        locText=findViewById<View>(R.id.etActivityAddPostLocationText) as EditText
 
         addDescription=findViewById<View>(R.id.tvActivityAddPostDescriptiontext)as Button
 
@@ -257,6 +259,10 @@ class ActivityAddPost : AppCompatActivity() {
         if(requestCode==LOCATIONREQCODE && resultCode== RESULT_OK){
             var bundle=data!!.extras
             locationId=bundle!!.getString("locationId")
+            var name=bundle!!.getString("name")
+            locText.isGone=false
+            locText.isVisible=true
+            locText.setText(name,TextView.BufferType.EDITABLE)
         }
     }
     private fun sendPost(){

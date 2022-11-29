@@ -54,6 +54,7 @@ class ActivityCapturePost : AppCompatActivity() {
     private lateinit var tagList: MutableList<String>
     private var tagidcounter:Int = 0
     private lateinit var addDescription:Button
+    private lateinit var locText: EditText
 
 
     val LOCATIONREQCODE=123
@@ -78,6 +79,7 @@ class ActivityCapturePost : AppCompatActivity() {
         tagLayout =  findViewById<View>(R.id.llTagsCap) as LinearLayout
 
         addDescription=findViewById<View>(R.id.tvActivityCapturePostDescriptiontext)as Button
+        locText=findViewById<View>(R.id.etActivityAddPostLocationText) as EditText
 
 
         progressDialog= ProgressDialog(this)
@@ -243,6 +245,10 @@ class ActivityCapturePost : AppCompatActivity() {
         if(requestCode==LOCATIONREQCODE && resultCode== RESULT_OK){
             var bundle=data!!.extras
             locationId=bundle!!.getString("locationId")
+            var name=bundle!!.getString("name")
+            locText.isGone=false
+            locText.isVisible=true
+            locText.setText(name,TextView.BufferType.EDITABLE)
         }
     }
     var f:File?=null

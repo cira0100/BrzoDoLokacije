@@ -248,6 +248,7 @@ class MapsActivity : AppCompatActivity() {
             return
         }
         bundle.putString("locationId",selectedLocation!!._id)
+        bundle.putString("name",selectedLocation!!.name)
         intent.putExtras(bundle)
         setResult(RESULT_OK, intent)
         finish()
