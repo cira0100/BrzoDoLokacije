@@ -62,27 +62,8 @@ class ActivityShowFollowersAndFollowing : AppCompatActivity() {
         }
 
         back.setOnClickListener {
-            var token= SharedPreferencesHelper.getValue("jwt", this).toString()
-            val api= RetrofitHelper.getInstance()
-            val request= api.getProfileFromId("Bearer " + token, userId)
-            request.enqueue(object : retrofit2.Callback<UserReceive>  {
-                override fun onResponse(call: Call<UserReceive>,
-                                        response: Response<UserReceive>
-                ) {
-                    if (response.body() == null) {
-                        return
-                    }
-                    var userData = response.body()!!
-                    val intent: Intent = Intent(this@ActivityShowFollowersAndFollowing,ActivityUserProfile::class.java)
-                    var b= Bundle()
-                    intent.putExtra("user", Gson().toJson(userData))
-                    startActivity(intent)
-                }
+            finish()
 
-                override fun onFailure(call: Call<UserReceive>, t: Throwable) {
-
-                }
-            })
 
         }
 
