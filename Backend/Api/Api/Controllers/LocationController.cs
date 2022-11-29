@@ -51,10 +51,15 @@ namespace Api.Controllers
             return BadRequest();
         }
 
-        [HttpPost("search")]
+        [HttpGet("search")]
         [Authorize(Roles = "User")]
-        public async Task<ActionResult<List<Location>>> searchLocation(int searchtype ,string? query,Coords? coords)
+        public async Task<ActionResult<List<Location>>> searchLocation(int searchtype ,string? query,double? latitude,double? longitude)
         {
+            Coords coords = new Coords();
+            if (latitude!=null && longitude!=null) {
+                coords.latitude = (double)latitude;
+                coords.longitude = (double)longitude;
+            }
             List<Location> ret = new List<Location>();
             switch (searchtype)
             {

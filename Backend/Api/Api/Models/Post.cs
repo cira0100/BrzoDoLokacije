@@ -38,14 +38,22 @@ namespace Api.Models
         public DateTime createdAt { get; set; }
         public int views { get; set; }
         public double ratings { get; set; }
+        public int ratingscount { get; set; }
         public List<CommentSend> comments { get; set; }
         public List<File> images { get; set; }
         public List<string>? tags { get; set; }
+        public DateTime? lastViewed { get; set; }
     }
     public class Rating
     {
         public string userId { get; set; }
         public int rating { get; set; }
+    }
+    public class RatingSend
+    {
+        public int ratingscount { get; set; }
+        public double ratings { get; set; }
+        public int myrating { get; set; }
     }
     public class Comment
     {
@@ -99,5 +107,11 @@ namespace Api.Models
         public int totalpages { get; set; }
         public int totalposts { get; set; }
         public List<PostSend> posts { get; set; }
+    }
+
+    public class TagR
+    {
+        public int counter { get; set; }
+        public string tag { get; set; } 
     }
 }

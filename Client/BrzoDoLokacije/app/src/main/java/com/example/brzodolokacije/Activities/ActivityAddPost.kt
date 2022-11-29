@@ -9,12 +9,14 @@ import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.util.TypedValue
+import android.view.KeyEvent
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.setMargins
 import com.example.brzodolokacije.Models.Location
@@ -51,37 +53,43 @@ class ActivityAddPost : AppCompatActivity() {
     private lateinit var tagText: EditText
     private lateinit var tagButtonAdd:Button
     private lateinit var tagList: MutableList<String>
+    private lateinit var locText: EditText
     private var tagidcounter:Int = 0
-    val incorectCoord:Double=1000.0
     val LOCATIONREQCODE=123
-    var longitude:Double=incorectCoord
-    var latitude:Double=incorectCoord
+    var locationId:String?=null
     var progressDialog:ProgressDialog?=null
-    //private var paths :ArrayList<String?>?=null
+    private lateinit var addDescription:Button
+
+
+
     private var place=0;
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_post)
-//        Toast.makeText(
-//            applicationContext, "Add new ", Toast.LENGTH_LONG
-//        ).show();
+
         uploadedImages= ArrayList()
         tagList = mutableListOf()
         tagButtons= mutableListOf()
         tagidcounter = 0
-        //paths= ArrayList()
 
         uploadFromGallery=findViewById<View>(R.id.btnActivityAddPostUploadFromGalleryVisible) as Button
         showNextImage=findViewById<View>(R.id.nextImage) as Button
         showPreviousImage=findViewById<View>(R.id.previousImage) as Button
         switcher=findViewById<View>(R.id.isActivityAddPostSwitcher) as ImageSwitcher
-        location=findViewById<View>(R.id.etActivityAddPostLocation) as EditText
         description=findViewById<View>(R.id.etActivityAddPostDescription) as EditText
         post=findViewById<View>(R.id.btnActivityAddPostPost) as Button
         addLocation=findViewById<View>(R.id.btnActivityAddPostAddLocation) as Button
         tagText =findViewById<View>(R.id.acTags) as EditText
         tagButtonAdd = findViewById<View>(R.id.btnActivityAddPostAddTag) as Button
         tagLayout =  findViewById<View>(R.id.llTags) as LinearLayout
+        locText=findViewById<View>(R.id.etActivityAddPostLocationText) as EditText
+
+        addDescription=findViewById<View>(R.id.tvActivityAddPostDescriptiontext)as Button
+
+        tagText.isGone=true
+        tagText.isVisible=false
+        description.isGone=true
+        description.isVisible=false
 
         progressDialog= ProgressDialog(this)
         progressDialog!!.setMessage("Molimo sacekajte!!!")
@@ -96,45 +104,26 @@ class ActivityAddPost : AppCompatActivity() {
             imgView}
         addLocation.setOnClickListener {
             val myIntent = Intent(this, MapsActivity::class.java)
-            if(location.text!=null && !location.text.trim().equals(""))
-                myIntent.putExtra("search",location.text.toString())
             startActivityForResult(myIntent,LOCATIONREQCODE)
         }
-
+        addDescription.setOnClickListener {
+            description.isGone=false
+            description.isVisible=true
+        }
         //dodavanje i brisanje tagova
         tagButtonAdd.setOnClickListener {
-            if(tagList.count()<5) {
-                var tagstr = tagText.text.toString()
-                var newbtn = Button(this)
-                newbtn.setId(tagidcounter)
-                newbtn.text = tagstr
-                var layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    50
-                )
-                layoutParams.setMargins(3)
-                newbtn.layoutParams=layoutParams
-                newbtn.setBackgroundColor(Color.parseColor("#1C789A"))
-                newbtn.setTextColor(Color.WHITE)
-                newbtn.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10F)
-                newbtn.setPadding(3,1,3,1)
-
-                newbtn.setOnClickListener {
-                    var btntext = newbtn.text.toString()
-                    tagList.remove(btntext)
-                    tagButtons.remove(newbtn)
-                    tagLayout.removeView(newbtn)
-                }
-
-                tagList.add(tagstr)
-                tagButtons.add(newbtn)
-                tagLayout.addView(newbtn)
-                tagText.text.clear()
-            }
-            else{
-                Toast.makeText(this,"Maksimalno 5 tagova",Toast.LENGTH_LONG)
-            }
+           addTag()
         }
+        tagText.setOnKeyListener(View.OnKeyListener { v1, keyCode, event -> // If the event is a key-down event on the "enter" button
+            if (event.action === KeyEvent.ACTION_DOWN &&
+                keyCode == KeyEvent.KEYCODE_ENTER
+            ) {
+                // Perform action on key press
+                addTag()
+                return@OnKeyListener true
+            }
+            false
+        })
 
         //dodavanje iz galerije
         uploadFromGallery.setOnClickListener{
@@ -179,27 +168,62 @@ class ActivityAddPost : AppCompatActivity() {
         }
 
         post.setOnClickListener{
-            locationString=location.text.toString().trim()
+            //locationString=location.text.toString().trim()
             descriptionString=description.text.toString().trim()
             //prazan unos?
-            if(locationString.isEmpty()) {
+           /* if(locationString.isEmpty()) {
                 location.hint="Unesite naziv lokaciju"
                 location.setHintTextColor(Color.RED)
-            }
+            }*/
             if(descriptionString.isEmpty()) {
-                description.hint="Unesite lokaciju"
+                description.hint="Unesite opis"
                 description.setHintTextColor(Color.RED)
             }
-            if(longitude!=incorectCoord && latitude!=incorectCoord){
+            if(locationId==null || locationId!!.trim()==""){
                 Toast.makeText(this,"Unesite lokaciju klikom na dugme",Toast.LENGTH_LONG)
             }
 
-            if(!locationString.isEmpty() && !descriptionString.isEmpty() && longitude!=incorectCoord && latitude!=incorectCoord && uploadedImages!!.size>0){
+            if(!descriptionString.isEmpty()  && uploadedImages!!.size>0){
                 sendPost()
             }
         }
     }
+    fun addTag(){
+        tagText.isGone=false
+        tagText.isVisible=true
 
+        if(tagList.count()<4  && tagText.text.toString().length>=3) {
+            var tagstr = tagText.text.toString()
+            var newbtn = Button(this)
+            newbtn.setId(tagidcounter)
+            newbtn.text = tagstr
+            var layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                50
+            )
+            layoutParams.setMargins(3)
+            newbtn.layoutParams=layoutParams
+            newbtn.setBackgroundColor(Color.parseColor("#1C789A"))
+            newbtn.setTextColor(Color.WHITE)
+            newbtn.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10F)
+            newbtn.setPadding(3,1,3,1)
+
+            newbtn.setOnClickListener {
+                var btntext = newbtn.text.toString()
+                tagList.remove(btntext)
+                tagButtons.remove(newbtn)
+                tagLayout.removeView(newbtn)
+            }
+
+            tagList.add(tagstr)
+            tagButtons.add(newbtn)
+            tagLayout.addView(newbtn)
+            tagText.text.clear()
+        }
+        else{
+            Toast.makeText(this,"Maksimalno 4 tagova ( duzine + karaktera)",Toast.LENGTH_LONG)
+        }
+    }
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -234,11 +258,11 @@ class ActivityAddPost : AppCompatActivity() {
         }
         if(requestCode==LOCATIONREQCODE && resultCode== RESULT_OK){
             var bundle=data!!.extras
-            longitude=bundle!!.getDouble("longitude",incorectCoord)
-            latitude=bundle!!.getDouble("latitude",incorectCoord)
-            var locName=bundle!!.getString("name")
-            if(location.text.toString().trim().equals("") && locName!=null && !locName.toString().trim().equals(""))
-                location.setText(locName,TextView.BufferType.EDITABLE)
+            locationId=bundle!!.getString("locationId")
+            var name=bundle!!.getString("name")
+            locText.isGone=false
+            locText.isVisible=true
+            locText.setText(name,TextView.BufferType.EDITABLE)
         }
     }
     private fun sendPost(){
@@ -246,60 +270,11 @@ class ActivityAddPost : AppCompatActivity() {
 
     }
     fun uploadLocation() {
-        //TO DO SEARCH EXISTING LOCATION FROM DB
-        //IF NOT EXISTS ADD NEW LOCATION
-        progressDialog!!.show()
-        val api =RetrofitHelper.getInstance()
-        var geocoder=GeocoderHelper.getInstance()
-        var loc1=geocoder!!.getFromLocation(latitude,longitude,1)
-        if(loc1==null ||loc1.size<=0)
-        {
-            progressDialog!!.dismiss()
-            Toast.makeText(this,"Lokacija ne postoji",Toast.LENGTH_LONG);
-            return
-        }
-        var countryName=loc1[0].countryName
-        var address="todo not possible in query"
-        var city="its null"
-        if(loc1[0].adminArea!=null)
-            city=loc1[0].adminArea//not possible
-        var loc:Location=Location("",locationString,city,countryName,address,latitude,longitude,LocationType.GRAD)
-        var jwtString= SharedPreferencesHelper.getValue("jwt",this)
-        var data=api.addLocation("Bearer "+jwtString,loc)
-
-        data.enqueue(object : retrofit2.Callback<Location?> {
-            override fun onResponse(call: Call<Location?>, response: Response<Location?>) {
-                if(response.isSuccessful()){
-
-                    uploadPost(response.body()!!._id)
-                    Toast.makeText(
-                        applicationContext, "USPEH", Toast.LENGTH_LONG
-                    ).show();
-
-                }else {
-                    progressDialog!!.dismiss()
-
-                    if (response.errorBody() != null) {
-                        Log.d("Main",response.errorBody()!!.string())
-                        Log.d("Main",response.message())
-                    }
-                    Log.d("Main",response.errorBody()!!.string())
-                    Log.d("Main",response.message())
-                }
-
-
-            }
-
-            override fun onFailure(call: Call<Location?>, t: Throwable) {
-                Toast.makeText(
-                    applicationContext, t.toString(), Toast.LENGTH_LONG
-                ).show();
-                Log.d("Main",t.toString())
-                progressDialog!!.dismiss()
-            }
-        })
+        if(locationId!=null && locationId!!.trim()!="")
+            uploadPost(locationId!!)
     }
     fun uploadPost(loc:String){
+        progressDialog!!.show()
         val api =RetrofitHelper.getInstance()
         var desc=descriptionString
         description.text.clear()
@@ -309,10 +284,12 @@ class ActivityAddPost : AppCompatActivity() {
         var descReq=RequestBody.create("text/plain".toMediaTypeOrNull(),desc)
         var idReq=RequestBody.create("text/plain".toMediaTypeOrNull(),"dsa")
 
-        var tagliststring=""
-        for(tag in tagList){
-            tagliststring=tagliststring+tag+"|"
-        }
+        var tagliststring="none"
+        if(tagList.count()>0){
+            tagliststring=""
+            for(tag in tagList){
+                tagliststring=tagliststring+tag+"|"
+            }}
         var tagReq=RequestBody.create("text/plain".toMediaTypeOrNull(),tagliststring)
 
         val imagesParts = arrayOfNulls<MultipartBody.Part>(
@@ -340,9 +317,12 @@ class ActivityAddPost : AppCompatActivity() {
             override fun onResponse(call: Call<PostPreview?>, response: Response<PostPreview?>) {
                 progressDialog!!.dismiss()
                 if(response.isSuccessful()){
-                    Toast.makeText(
-                        applicationContext, "USPEH", Toast.LENGTH_LONG
-                    ).show();
+                    val intent:Intent = Intent(this@ActivityAddPost,ActivitySinglePost::class.java)
+                    var b=Bundle()
+                    b.putParcelable("selectedPost",response.body())
+                    intent.putExtras(b)
+                    startActivity(intent)
+                    finish()
                 }else {
 
                     if (response.errorBody() != null) {

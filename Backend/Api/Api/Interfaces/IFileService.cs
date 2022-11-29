@@ -4,5 +4,6 @@
     {
         Task<Models.File> add(Models.File file);
         Task<Models.File> getById(string id);
+        Task<Byte[]> getCompressedImage(string id);
     }
 }

@@ -41,7 +41,7 @@ class DBHelper :
         if(!doesTableExist(CONTACTS_TABLE_NAME,db)){
             var sql:String="CREATE TABLE "+ CONTACTS_TABLE_NAME+" (" +
                     "userId " +"TEXT PRIMARY KEY,"+
-                    "read " +"INT"+
+                    "read " +"INTEGER"+
                     ")"
             db?.execSQL(sql)
         }
@@ -51,7 +51,7 @@ class DBHelper :
                     "senderId " +"TEXT,"+
                     "receiverId "+"TEXT,"+
                     "messagge " +"TEXT,"+
-                    "timestamp "+"TEXT"+
+                    "timestamp "+"INTEGER"+
                     ")"
             db?.execSQL(sql)
         }
@@ -59,7 +59,7 @@ class DBHelper :
 
     fun doesTableExist(tableName:String,db: SQLiteDatabase?):Boolean{
         if(db!=null){
-            var sqlString:String="select DISTINCT tbl_name from sqlite_master where tbl_name = '\"+tableName+\"'"
+            var sqlString:String="select DISTINCT tbl_name from sqlite_master where tbl_name = '"+tableName+"'"
             var cursor: Cursor=db.rawQuery(sqlString,null)
             if(cursor!=null){
                 if(cursor.count>0){
@@ -78,6 +78,7 @@ class DBHelper :
     }
 
     fun addMessage(message: Message, sent:Boolean=true){
+        onCreate(db)
         if(!message._id.isNullOrEmpty() && message.senderId==message.receiverId){
             Log.d("main", "ne zapisuje se dupla poruka")
         } else {
@@ -87,8 +88,8 @@ class DBHelper :
             var sql="INSERT INTO "+ MESSAGES_TABLE_NAME+"(_id,senderId,receiverid,messagge,timestamp) VALUES('"+message._id+"','"+
                     message.senderId+"','"+
                     message.receiverId+"','"+
-                    message.messagge+ "','"+
-                    message.timestamp+ "')"
+                    message.messagge+ "',"+
+                    message.usableTimeStamp.timeInMillis+")"
             db?.execSQL(sql)
             if(sent)
                 sql="SELECT * FROM "+ CONTACTS_TABLE_NAME+" WHERE userId='"+message.receiverId+"'"
@@ -104,14 +105,19 @@ class DBHelper :
                         read+"')"
                 db?.execSQL(sql)
             }
+            else{
+                if(!sent)
+                    unreadContact(message.senderId)
+            }
         }
     }
     fun getMessages(userId:String, self:Boolean=false): MutableList<Message>? {
+        onCreate(db)
         var sql:String
         if(!self)
-            sql="SELECT * FROM "+ MESSAGES_TABLE_NAME+" WHERE senderId='"+userId+"' OR receiverId='"+userId+"'"
+            sql="SELECT * FROM "+ MESSAGES_TABLE_NAME+" WHERE senderId='"+userId+"' OR receiverId='"+userId+"' ORDER BY timestamp ASC"
         else
-            sql="SELECT * FROM "+ MESSAGES_TABLE_NAME+" WHERE senderId='"+userId+"' AND receiverId='"+userId+"'"
+            sql="SELECT * FROM "+ MESSAGES_TABLE_NAME+" WHERE senderId='"+userId+"' AND receiverId='"+userId+"' ORDER BY timestamp ASC"
         var cursor=db?.rawQuery(sql,null)
         if(cursor?.count!! >0){
             var messagesList:MutableList<Message> =mutableListOf()
@@ -121,23 +127,28 @@ class DBHelper :
             var messageIndex=cursor.getColumnIndexOrThrow("messagge")
             var timestampIndex=cursor.getColumnIndexOrThrow("timestamp")
             while(cursor.moveToNext()){
+                var cal:Calendar= Calendar.getInstance()
+                cal.timeInMillis=cursor.getLong(timestampIndex)
                 messagesList.add(
                     Message(
                         cursor.getString(idIndex),
                         cursor.getString(senderIdIndex),
                         cursor.getString(receiverIdIndex),
                         cursor.getString(messageIndex),
-                        Date()
+                        cal.time,
+                        cal
                         )
                     )
+                Log.d("main",cal.time.toString())
             }
-            Log.d("main",messagesList.size.toString())
+            readContact(userId)
             return messagesList
         }
         return null
     }
 
     fun getContacts(): MutableList<ChatPreview>? {
+        onCreate(db)
         var sql="SELECT * FROM "+ CONTACTS_TABLE_NAME
         var cursor=db?.rawQuery(sql,null)
         if(cursor?.count!! >0){
@@ -151,5 +162,21 @@ class DBHelper :
             return contactList
         }
         return null
+    }
+
+    fun deleteDB() {
+        var sql="DROP TABLE IF EXISTS "+ CONTACTS_TABLE_NAME
+        db?.execSQL(sql)
+        sql="DROP TABLE IF EXISTS "+ MESSAGES_TABLE_NAME
+        db?.execSQL(sql)
+    }
+
+    fun readContact(userId: String){
+        var sql="UPDATE "+ CONTACTS_TABLE_NAME+" SET read=1 WHERE userId='"+userId+"'"
+        db?.execSQL(sql)
+    }
+    fun unreadContact(userId: String){
+        var sql="UPDATE "+ CONTACTS_TABLE_NAME+" SET read=0 WHERE userId='"+userId+"'"
+        db?.execSQL(sql)
     }
 }

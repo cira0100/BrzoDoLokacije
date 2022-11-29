@@ -33,10 +33,10 @@ class FollowersAdapter (var followers:MutableList<UserReceive>, val activity: Ac
         inner class FollowerViewHolder(view: View): RecyclerView.ViewHolder(view){
 
             private val name: TextView =view.findViewById(R.id.tvFollowerItemName)
-            private val username:TextView=view.findViewById(R.id.tvFolloewItemUsername)
+            private val username:TextView=view.findViewById(R.id.tvFollowerItemUsername)
             fun bindView(follower: UserReceive){
                 name.text=follower.name
-                username.text=follower.username
+                username.text="@"+follower.username
             }
         }
 }

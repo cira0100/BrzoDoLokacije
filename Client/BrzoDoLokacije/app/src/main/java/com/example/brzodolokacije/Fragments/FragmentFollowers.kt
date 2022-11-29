@@ -56,9 +56,10 @@ class FragmentFollowers : Fragment() {
         return view
     }
 
-    fun getFollowers(){
+   fun getFollowers(){
         val api = RetrofitHelper.getInstance()
-        val data=api.getFollowers(userId)
+       val token= SharedPreferencesHelper.getValue("jwt", requireActivity())
+       val data=api.getMyFollowers("Bearer "+token)
     data.enqueue(object : Callback<MutableList<UserReceive>> {
             override fun onResponse(
                 call: Call<MutableList<UserReceive>>,

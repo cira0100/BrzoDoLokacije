@@ -2,6 +2,7 @@ package com.example.brzodolokacije.Fragments
 
 import android.Manifest
 import android.content.Context
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
@@ -12,6 +13,7 @@ import android.os.StrictMode
 import android.os.StrictMode.ThreadPolicy
 import android.preference.PreferenceManager
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
@@ -21,8 +23,12 @@ import android.widget.Toast
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.example.brzodolokacije.Activities.ActivitySinglePost
+import com.example.brzodolokacije.Models.PostPreview
 import com.example.brzodolokacije.R
 import com.example.brzodolokacije.Services.GeocoderHelper
+import com.example.brzodolokacije.Services.RetrofitHelper
+import com.example.brzodolokacije.Services.SharedPreferencesHelper
 import com.google.android.gms.location.*
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -32,12 +38,15 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
+import org.osmdroid.views.overlay.Marker.OnMarkerClickListener
 import org.osmdroid.views.overlay.ScaleBarOverlay
 import org.osmdroid.views.overlay.compass.CompassOverlay
 import org.osmdroid.views.overlay.compass.InternalCompassOrientationProvider
 import org.osmdroid.views.overlay.gestures.RotationGestureOverlay
 import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
+import retrofit2.Call
+import retrofit2.Response
 
 
 class FragmentBrowse : Fragment(R.layout.fragment_browse) {
@@ -136,6 +145,8 @@ class FragmentBrowse : Fragment(R.layout.fragment_browse) {
             CompassOverlay(context, InternalCompassOrientationProvider(context), map)
         mCompassOverlay!!.enableCompass()
         map!!.getOverlays().add(this.mCompassOverlay)
+
+        getMarkers()
     }
     fun checkLocPerm(){
         if (ContextCompat.checkSelfPermission(
@@ -179,15 +190,61 @@ class FragmentBrowse : Fragment(R.layout.fragment_browse) {
             else{
                 //move to spot
                 val searchPoint = GeoPoint(result.latitude,result.longitude)
-                val startMarker = Marker(map)
-                startMarker.setPosition(searchPoint)
-                startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
-                map!!.getOverlays().add(startMarker)
                 map!!.controller.animateTo(searchPoint)
 
 
             }
         }
+    }
+    private fun getMarkers(){
+        val startMarker = Marker(map)
+        var api=RetrofitHelper.getInstance()
+        var jwtString= SharedPreferencesHelper.getValue("jwt",requireActivity())
+        var data=api.getPosts("Bearer "+jwtString)
+
+        data.enqueue(object : retrofit2.Callback<MutableList<PostPreview>> {
+            override fun onResponse(call: Call<MutableList<PostPreview>>, response: Response<MutableList<PostPreview>>) {
+                if(response.isSuccessful()){
+                    var postList=response.body()
+                    if (postList != null) {
+                        for(post in postList){
+                            Log.d("main",post.toString())
+                            val startMarker = Marker(map)
+                            startMarker.setPosition(GeoPoint(post.location.latitude,post.location.longitude))
+                            startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                            startMarker.setOnMarkerClickListener(object:OnMarkerClickListener{
+                                override fun onMarkerClick(
+                                    marker: Marker?,
+                                    mapView: MapView?
+                                ): Boolean {
+                                    val intent: Intent = Intent(activity, ActivitySinglePost::class.java)
+                                    var b=Bundle()
+                                    b.putParcelable("selectedPost",post)
+                                    intent.putExtras(b)
+                                    requireActivity().startActivity(intent)
+                                    return true
+                                }
+
+                            })
+                            map!!.getOverlays().add(startMarker)
+
+
+                        }
+                    }
+
+
+
+                }else {
+
+                }
+
+
+            }
+
+            override fun onFailure(call: Call<MutableList<PostPreview>>, t: Throwable) {
+            }
+        })
+
     }
     private fun getLocation() {
         if (ContextCompat.checkSelfPermission(

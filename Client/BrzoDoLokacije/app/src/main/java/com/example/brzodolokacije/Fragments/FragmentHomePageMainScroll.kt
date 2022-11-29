@@ -4,8 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageButton
+import android.widget.LinearLayout
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -17,6 +20,7 @@ import com.example.brzodolokacije.Models.PostPreview
 import com.example.brzodolokacije.R
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
+import kotlinx.android.synthetic.main.fragment_home_page_main_scroll.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -42,9 +46,11 @@ class FragmentHomePageMainScroll : Fragment() {
     private lateinit var location_amusement_park: ImageButton
     private lateinit var location_attraction: ImageButton
     private lateinit var location_landmark: ImageButton
-
+private lateinit var change:Button
     private lateinit var filter: LocationType
     private lateinit var filterString: String
+    private lateinit var ll1: LinearLayout
+    private lateinit var ll2:LinearLayout
 
 
     override fun onCreateView(
@@ -59,7 +65,9 @@ class FragmentHomePageMainScroll : Fragment() {
         rvPopular=view.findViewById(R.id.rvFragmentHomePagePopular)
         rvNewest=view.findViewById(R.id.rvFragmentHomePageNewest)
         rvBestRated=view.findViewById(R.id.rvFragmentHomePageBestRated)
-
+        //change=view.findViewById(R.id.change)
+        ll1=view.findViewById(R.id.ll1)
+        ll2=view.findViewById(R.id.ll2)
         location_amusement_park=view.findViewById(R.id.btnFragmentHomePagelocation_amusement_park)
         location_attraction=view.findViewById(R.id.btnFragmentHomePagelocation_attraction)
         location_beach=view.findViewById(R.id.btnFragmentHomePagelocation_beach)
@@ -174,13 +182,21 @@ class FragmentHomePageMainScroll : Fragment() {
             parentFrag.setBtnBackVisible()
 
         }
+       /* ll1.isVisible=true
+        ll2.isVisible=false
+        change.setOnClickListener {
+            ll1.isVisible=true
+            ll2.isVisible=false
+        }
 
-
-
+*/
         return view
     }
 
     private fun getAllPosts(){
+        Toast.makeText(
+                    activity," get all", Toast.LENGTH_LONG
+                ).show();
         val api = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl(RetrofitHelper.baseUrl)
@@ -206,9 +222,9 @@ class FragmentHomePageMainScroll : Fragment() {
 //                    activity, "get all ", Toast.LENGTH_LONG
 //                ).show();
                 posts = response.body()!!.toMutableList<PostPreview>()
-                getPopularPosts(posts)
-                getNewestPosts(posts)
-                getBestRatedPosts(posts)
+                getPopularPosts()
+                getNewestPosts()
+                getBestRatedPosts()
             }
 
             override fun onFailure(call: Call<MutableList<PostPreview>>, t: Throwable) {
@@ -219,41 +235,101 @@ class FragmentHomePageMainScroll : Fragment() {
         })
     }
 
-    private fun getPopularPosts(allPosts:MutableList<PostPreview>){//most viewed
+    private fun getPopularPosts(){//most viewed
 //        Toast.makeText(
 //            activity, "get all mv ", Toast.LENGTH_LONG
 //        ).show();
-        mostViewedPosts=allPosts
-        mostViewedPosts.sortByDescending { it.views }
-        rvPopular.apply {
-            layoutManager= LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL,false)
-            adapter= ShowPostsHomePageAdapter(mostViewedPosts,requireActivity())
+        Toast.makeText(
+            activity," get popular all", Toast.LENGTH_LONG
+        ).show();
+        val api = RetrofitHelper.getInstance()
+        val token= SharedPreferencesHelper.getValue("jwt", requireActivity())
+        val data=api.get10MostViewed("Bearer "+token)
 
-        }
+        data.enqueue(object : Callback<MutableList<PostPreview>> {
+            override fun onResponse(
+                call: Call<MutableList<PostPreview>>,
+                response: Response<MutableList<PostPreview>>
+            ) {
+                if (response.body() == null) {
+                    return
+                }
+                var mostpopular = response.body()!!.toMutableList<PostPreview>()
+                rvPopular.apply {
+                    layoutManager= LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL,false)
+                    adapter= ShowPostsHomePageAdapter(mostpopular,requireActivity())
+
+                }
+            }
+            override fun onFailure(call: Call<MutableList<PostPreview>>, t: Throwable) {
+
+            }
+        })
+
 
     }
-    private fun getNewestPosts(allPosts:MutableList<PostPreview>){
+    private fun getNewestPosts(){
 //        Toast.makeText(
 //            activity, "get all r ", Toast.LENGTH_LONG
 //        ).show();
-        newestPosts=allPosts/// izmeniti nakon dodavanja datuma u model!!!!!!
-        newestPosts.sortBy { it.ratings}
-        rvNewest.apply {
-            layoutManager= LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL,false)
-            adapter= ShowPostsHomePageAdapter(newestPosts,requireActivity())
-        }
+        Toast.makeText(
+            activity," get all newest", Toast.LENGTH_LONG
+        ).show();
+        val api = RetrofitHelper.getInstance()
+        val token= SharedPreferencesHelper.getValue("jwt", requireActivity())
+        val data=api.get10Newest("Bearer "+token)
+
+        data.enqueue(object : Callback<MutableList<PostPreview>> {
+            override fun onResponse(
+                call: Call<MutableList<PostPreview>>,
+                response: Response<MutableList<PostPreview>>
+            ) {
+                if (response.body() == null) {
+                    return
+                }
+                var newestposts = response.body()!!.toMutableList<PostPreview>()
+                rvNewest.apply {
+                    layoutManager= LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL,false)
+                    adapter= ShowPostsHomePageAdapter(newestposts,requireActivity())
+                }
+            }
+            override fun onFailure(call: Call<MutableList<PostPreview>>, t: Throwable) {
+
+            }
+        })
+
     }
 
-    private fun getBestRatedPosts(allPosts:MutableList<PostPreview>){
+    private fun getBestRatedPosts(){
 //        Toast.makeText(
 //            activity, "get all br ", Toast.LENGTH_LONG
 //        ).show();
-        bestRatedPosts=allPosts
-        bestRatedPosts.sortByDescending { it.ratings }
-        rvBestRated.apply {
-            layoutManager= LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL,false)
-            adapter= ShowPostsHomePageAdapter(bestRatedPosts,requireActivity())
-        }
+        Toast.makeText(
+            activity," get all best", Toast.LENGTH_LONG
+        ).show();
+        val api = RetrofitHelper.getInstance()
+        val token= SharedPreferencesHelper.getValue("jwt", requireActivity())
+        val data=api.get10Best("Bearer "+token)
+
+        data.enqueue(object : Callback<MutableList<PostPreview>> {
+            override fun onResponse(
+                call: Call<MutableList<PostPreview>>,
+                response: Response<MutableList<PostPreview>>
+            ) {
+                if (response.body() == null) {
+                    return
+                }
+                var bestposts = response.body()!!.toMutableList<PostPreview>()
+                rvBestRated.apply {
+                    layoutManager= LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL,false)
+                    adapter= ShowPostsHomePageAdapter(bestposts,requireActivity())
+                }
+            }
+            override fun onFailure(call: Call<MutableList<PostPreview>>, t: Throwable) {
+
+            }
+        })
+
 
     }
 

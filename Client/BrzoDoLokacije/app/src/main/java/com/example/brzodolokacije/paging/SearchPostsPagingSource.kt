@@ -2,9 +2,10 @@ package com.example.brzodolokacije.paging
 
 import android.app.Activity
 import android.util.Log
+import androidx.paging.ExperimentalPagingApi
 import androidx.paging.PagingSource
+import androidx.paging.PagingState
 import com.example.brzodolokacije.Interfaces.IBackendApi
-import com.example.brzodolokacije.Models.PagedPosts
 import com.example.brzodolokacije.Models.PostPreview
 import com.example.brzodolokacije.Models.SearchParams
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
@@ -23,15 +24,23 @@ class SearchPostsPagingSource(
             val response=backend.getPagedPosts("Bearer "+token,searchParams.locationId,
                 page,searchParams.sorttype,searchParams.filterdate
             )
-            Log.d("main",page.toString())
+            Log.d("main","stranicenje: "+page.toString())
             LoadResult.Page(
                 response.posts,prevKey=if(page==0) null else page-1,
-                nextKey=if(response.posts.isEmpty()) null else page+1
+                nextKey=if(page==response.totalpages) null else page+1
             )
         }catch(exception:IOException){
             return LoadResult.Error(exception)
         }catch(exception:HttpException){
             return LoadResult.Error(exception)
+        }
+    }
+
+    @ExperimentalPagingApi
+    override fun getRefreshKey(state: PagingState<Int, PostPreview>): Int? {
+        return state.anchorPosition?.let{ anchorPosition->
+            val anchorPage=state.closestPageToPosition(anchorPosition)
+            anchorPage?.prevKey?.plus(1)?:anchorPage?.nextKey?.minus(1)
         }
     }
 

@@ -20,8 +20,11 @@ import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
 import com.example.brzodolokacije.chat.SignalRListener
 import com.example.brzodolokacije.databinding.ActivityChatConversationBinding
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Response
+import java.util.*
 
 class ChatActivityConversation : AppCompatActivity() {
 
@@ -46,6 +49,7 @@ class ChatActivityConversation : AppCompatActivity() {
         setRecyclerView()
         requestMessages()
         webSocketConnection=SignalRListener.getInstance(this@ChatActivityConversation)
+        (webSocketConnection!!.activity as ChatActivity).setClickedActivity(this@ChatActivityConversation)
         setListeners()
     }
 
@@ -53,7 +57,6 @@ class ChatActivityConversation : AppCompatActivity() {
         findViewById<ImageButton>(R.id.btnSendMessage).setOnClickListener {
             var token=SharedPreferencesHelper.getValue("jwt",this@ChatActivityConversation)
             var messageContent=findViewById<EditText>(R.id.etNewMessage).text.toString()
-            Log.d("main",token!!)
             val Api= RetrofitHelper.getInstance()
             if(userId.isNullOrEmpty() || userId.equals("null")){
                 //zahtev sa username=om
@@ -76,6 +79,9 @@ class ChatActivityConversation : AppCompatActivity() {
                                     if(response.isSuccessful()){
                                         //zahtev da se posalje poruka
                                         var responseMessage=response.body()
+                                        var cal: Calendar = Calendar.getInstance()
+                                        cal.time=responseMessage?.timestamp
+                                        responseMessage?.usableTimeStamp=cal
                                         dbConnection?.addMessage(responseMessage!!)
                                         requestMessages()
                                         binding.etNewMessage.text?.clear()
@@ -113,6 +119,9 @@ class ChatActivityConversation : AppCompatActivity() {
                         if(response.isSuccessful()){
                             //zahtev da se posalje poruka
                             var responseMessage=response.body()
+                            var cal: Calendar = Calendar.getInstance()
+                            cal.time=responseMessage?.timestamp
+                            responseMessage?.usableTimeStamp=cal
                             dbConnection?.addMessage(responseMessage!!)
                             requestMessages()
                             binding.etNewMessage.text?.clear()
@@ -150,15 +159,22 @@ class ChatActivityConversation : AppCompatActivity() {
         }
     }
     fun setRecyclerView(setParams:Boolean=true){
-        if(setParams){
-            adapterVar= items?.let { ChatMessagesAdapter(it,this@ChatActivityConversation) }
-            layoutVar= LinearLayoutManager(this@ChatActivityConversation)
+        MainScope().launch {
+            if (setParams) {
+                adapterVar = items?.let { ChatMessagesAdapter(it, this@ChatActivityConversation) }
+                layoutVar = LinearLayoutManager(this@ChatActivityConversation)
+            }
+            recyclerView = binding.rvMain
+            recyclerView?.setHasFixedSize(true)
+            recyclerView?.layoutManager = layoutVar
+            try {
+                recyclerView?.adapter = adapterVar
+
+            } catch (e: Exception) {
+                Log.d("error", e.message!!)
+            }
+            recyclerView?.scrollToPosition(items?.size?.minus(1) ?: 0)
         }
-        recyclerView = binding.rvMain
-        recyclerView?.setHasFixedSize(true)
-        recyclerView?.layoutManager=layoutVar
-        recyclerView?.adapter=adapterVar
-        recyclerView?.scrollToPosition(items?.size?.minus(1) ?: 0)
     }
 
     fun requestMessages(){
@@ -170,6 +186,6 @@ class ChatActivityConversation : AppCompatActivity() {
         }
         adapterVar= items?.let { ChatMessagesAdapter(it,this@ChatActivityConversation) }
         setRecyclerView(setParams = false)
-
+        dbConnection?.readContact(userId!!)
     }
 }

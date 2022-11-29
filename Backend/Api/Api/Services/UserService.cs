@@ -6,6 +6,7 @@ using System.Security.Claims;
 using MimeKit;
 using MailKit.Net.Smtp;
 using DnsClient;
+using MongoDB.Bson;
 
 namespace Api.Services
 {
@@ -380,21 +381,60 @@ namespace Api.Services
             return tosend;
         }
 
-        public async Task<Boolean> AddFollower(string userId,string followerId)
+        public async Task<Boolean> updateUserFollowerFollowingCount(List<string> followers,List <string> followings,string userId)
         {
-            User u = await _users.Find(user => user._id==userId).FirstOrDefaultAsync();
-            User f = await _users.Find(user => user._id == followerId).FirstOrDefaultAsync();
-
-            if (userId != null && followerId!=null)
+            User u = await _users.Find(user => user._id == userId).FirstOrDefaultAsync();
+            if(u!= null)
             {
-                if (u.followers == null)
-                    u.followers = new List<string>();
-                u.followers.Add(followerId);
-                if (f.following == null)
-                    f.following = new List<string>();
-                f.following.Add(userId);
-                _users.ReplaceOne(user=>user._id==userId, u);
+                u.followersCount = followers.Count();
+                u.followingCount = followings.Count();
+                return true;
+            }
+            return false;
+        }
+
+        public async Task<Boolean> AddFollower(string followerId)
+        {
+            
+            string id = null;
+            if (_httpContext.HttpContext.User.FindFirstValue("id") != null)
+            {
+                id = _httpContext.HttpContext.User.FindFirstValue("id").ToString();
+            }
+
+            if (followerId == id) 
+            {
+                return false;
+            }
+            User f = await _users.Find(user => user._id == followerId).FirstOrDefaultAsync();
+            User u = await _users.Find(user => user._id == id).FirstOrDefaultAsync();
+           
+            if (id != null && followerId!=null)
+            {
+                if (f.followers == null)
+                {
+                    f.followers = new List<string>();
+                    f.followersCount = 0;
+                }
+                f.followers.Add(id);
+                f.followersCount =f.followers.Count();
+
                 _users.ReplaceOne(user => user._id == followerId, f);
+
+                if (u.following == null)
+                {
+                    u.following = new List<string>();
+                    u.followingCount = 0;
+                }
+                u.following.Add(followerId);
+                u.followingCount =u.following.Count();
+
+                _users.ReplaceOne(user=>user._id==id, u);
+                
+
+               // updateUserFollowerFollowingCount(u.followers, u.following, u._id);
+                //updateUserFollowerFollowingCount(f.followers, f.following, f._id);
+
                 return true;
             }
 
@@ -419,15 +459,19 @@ namespace Api.Services
                             continue;
                         }
                         UserSend follower = new UserSend();
+                        follower.creationDate = utemp.creationDate;
+                        follower.name = utemp.name;                        
                         follower.pfp = utemp.pfp;
                         follower.username = utemp.username;
                         follower.email = utemp.username;
+                        follower.following = utemp.following;
                         follower.followers = utemp.followers;
                         follower._id = utemp._id;
 
                         followers.Add((UserSend)follower);  
                     }
                 }
+                u.followersCount=followers.Count() ;   
                 return followers;
             }
             return null;
@@ -450,18 +494,175 @@ namespace Api.Services
                             continue;
                         }
                         UserSend follower = new UserSend();
+                        follower.creationDate = utemp.creationDate;
+                        follower.name = utemp.name;
                         follower.pfp = utemp.pfp;
                         follower.username = utemp.username;
                         follower.email = utemp.username;
+                        follower.following = utemp.following;
                         follower.followers = utemp.followers;
                         follower._id = utemp._id;
 
                         following.Add((UserSend)follower);
                     }
                 }
+                u.followersCount = following.Count();
                 return following;
             }
             return null;
         }
+
+        public async Task<List<UserSend>> GetMyFollowings()
+        {
+            string id = null;
+
+            if (_httpContext.HttpContext.User.FindFirstValue("id") != null)
+            {
+                id = _httpContext.HttpContext.User.FindFirstValue("id").ToString();
+            }
+            User u = await _users.Find(user => user._id == id).FirstOrDefaultAsync();
+            List<UserSend> myFollowings = new List<UserSend>();
+            if (u != null)
+            {
+
+                if (u.following != null && u.following.Count() > 0)
+                {
+                    foreach (string userid in u.following)
+                    {
+                        User utemp = await _users.Find(user => user._id == userid).FirstOrDefaultAsync();
+                        if (utemp == null)
+                        {
+                            continue;
+                        }
+                        UserSend following = new UserSend();
+                        following.creationDate = utemp.creationDate;
+                        following.name = utemp.name;
+                        following.pfp = utemp.pfp;
+                        following.username = utemp.username;
+                        following.email = utemp.username;
+                        following.following = utemp.following;
+                        following.followers = utemp.followers;
+                        following._id = utemp._id;
+
+                        myFollowings.Add((UserSend)following);
+                    }
+                }
+                return myFollowings;
+            }
+            return null;
+        }
+
+        public async Task<bool> CheckIfAlreadyFollow(string id)
+        {
+            string myId = null;
+
+            if (_httpContext.HttpContext.User.FindFirstValue("id") != null)
+            {
+                myId = _httpContext.HttpContext.User.FindFirstValue("id").ToString();
+            }
+
+            User u = await _users.Find(user => user._id == myId).FirstOrDefaultAsync();
+            User f = await _users.Find(user => user._id == id).FirstOrDefaultAsync();
+
+            if (u != null)
+            {
+
+                if (u.following != null && u.following.Count() > 0)
+                {
+                    foreach (string userid in u.following)
+                    {
+                        User utemp = await _users.Find(user => user._id == userid).FirstOrDefaultAsync();
+                        if (utemp == null)
+                        {
+                            continue;
+                        }
+                        if (utemp._id == f._id)
+                        {
+                            return true;
+                        }
+                    }
+                }
+                
+            }
+
+            return false;
+        }
+
+        public async  Task<bool> Unfollow(string id)
+        {
+            string myId = null;
+
+            if (_httpContext.HttpContext.User.FindFirstValue("id") != null)
+            {
+                myId = _httpContext.HttpContext.User.FindFirstValue("id").ToString();
+            }
+
+            User u = await _users.Find(user => user._id == myId).FirstOrDefaultAsync();
+            User f = await _users.Find(user => user._id == id).FirstOrDefaultAsync();
+
+            if (u != null)
+            {
+                if (u.following != null && f.followers!=null)
+                {
+                    u.following.Remove(f._id);
+                    u.followingCount=u.following.Count();
+                    u.followersCount = u.followers.Count();
+                   
+
+                    f.followers.Remove(u._id);
+                    f.followersCount =f.followers.Count();
+                    f.followingCount =f.following.Count();
+
+                    _users.ReplaceOne(user => user._id == myId, u);
+                    _users.ReplaceOne(user => user._id == id, f);
+
+                    //updateUserFollowerFollowingCount(u.followers, u.following, u._id);
+                    //updateUserFollowerFollowingCount(f.followers, f.following, f._id);
+                    return true; 
+                }
+
+            }
+            return false;
+        }
+
+        public async Task<List<UserSend>> GetMyFollowers()
+        {
+           
+            string id = null;
+
+            if (_httpContext.HttpContext.User.FindFirstValue("id") != null)
+            {
+                id = _httpContext.HttpContext.User.FindFirstValue("id").ToString();
+            }
+            User u = await _users.Find(user => user._id == id).FirstOrDefaultAsync();
+            List<UserSend> myfollowers = new List<UserSend>();
+          
+                if (u!=null && u.followers != null && u.followers.Count() > 0)
+                {
+                    foreach (string userid in u.followers)
+                    {
+                        User utemp = await _users.Find(user => user._id == userid).FirstOrDefaultAsync();
+                        if (utemp == null)
+                        {
+                            continue;
+                        }
+                        UserSend follower = new UserSend();
+                        follower.creationDate = utemp.creationDate;
+                        follower.name = utemp.name;
+                        follower.pfp = utemp.pfp;
+                        follower.username = utemp.username;
+                        follower.email = utemp.username;
+                        follower.following = utemp.following;
+                        follower.followers = utemp.followers;
+                        follower._id = utemp._id;
+
+                        myfollowers.Add((UserSend)follower);
+                    }
+                    return myfollowers;
+                }
+            
+            return null;
+        }
     }
+    
 }

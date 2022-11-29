@@ -38,9 +38,9 @@ interface IBackendApi {
                                                             ,@Part("tags") tags:RequestBody
                                                             ):Call<PostPreview>
     @POST("api/Post/posts/{id}/addrating")
-    fun addRating(@Header("Authorization") authHeader:String,@Path("id") id:String,@Body rating: RatingReceive):Call<ResponseBody>
+    fun addRating(@Header("Authorization") authHeader:String,@Path("id") id:String,@Body rating: RatingReceive):Call<RatingData>
     @POST("api/Post/posts/{id}/addcomment")
-    fun addComment(@Header("Authorization") authHeader:String,@Path("id") id:String,@Body rating: CommentReceive):Call<ResponseBody>
+    fun addComment(@Header("Authorization") authHeader:String,@Path("id") id:String,@Body rating: CommentReceive):Call<CommentSend>
     @GET("api/Post/posts/{id}/listcomments")
     fun getComments(@Header("Authorization") authHeader:String,@Path("id") id:String):Call<MutableList<CommentSend>>
 
@@ -72,15 +72,42 @@ interface IBackendApi {
 //@POST("putanja")
     //fun add(@Body obj:Post,@Header("Authorization") authHeader:String):Call<Post>
 
-    @POST("/api/user/{id}/followers")
-    fun getFollowers(@Path("id") id:String):Call <MutableList<UserReceive>>
+    @GET("/api/user/{id}/followers")
+    fun getFollowers(@Header("Authorization") authHeader:String,@Path("id") id:String):Call <MutableList<UserReceive>>
 
-    @POST("/api/user{id}/following")
-    fun getFollowing(@Path("id") id:String):Call <MutableList<UserReceive>>
+    @GET("/api/user/{id}/following")
+    fun getFollowing(@Header("Authorization") authHeader:String,@Path("id") id:String):Call <MutableList<UserReceive>>
 
-    @POST("/api/user{id}/addFollower")
-    fun addFollower(@Header("Authorization") authHeader:String,@Path("id") id:String):Call<UserReceive>
+    @GET("/api/user/{id}/addFollower")
+    fun addFollower(@Header("Authorization") authHeader:String,@Path("id") id:String):Call<Boolean>
     @GET("/api/user/{id}/id/profile")
     fun getProfileFromId(@Header("Authorization") authHeader:String,@Path("id") username:String):Call<UserReceive>
+
+    @GET("/api/Post/posts/get10MostViewed")
+    fun get10MostViewed(@Header("Authorization") authHeader:String):Call<MutableList<PostPreview>>
+
+    @GET("/api/Post/posts/get10Best")
+    fun get10Best(@Header("Authorization") authHeader:String):Call<MutableList<PostPreview>>
+
+    @GET("/api/Post/posts/get10Newest")
+    fun get10Newest(@Header("Authorization") authHeader:String):Call<MutableList<PostPreview>>
+
+    @GET("api/Location/search")
+    fun searchLocationsQuery(@Header("Authorization") authHeader:String,@Query("query") query: String):Call<MutableList<Location>>
+
+    @GET("/api/user/{id}/myFollowings")
+    fun getMyFollowings(@Header("Authorization") authHeader:String):Call <MutableList<UserReceive>>
+
+    @GET("/api/user/{id}/checkIfAlreadyFollow")
+    fun checkIfAlreadyFollow(@Header("Authorization") authHeader:String,@Path("id") id:String):Call<Boolean>
+
+    @GET("/api/user/{id}/unfollow")
+    fun unfollow(@Header("Authorization") authHeader:String,@Path("id") id:String):Call<Boolean>
+
+    @GET("api/Post/posts/{id}/getUserPosts")
+    fun getUsersPosts(@Header("Authorization") authHeader:String,@Path("id") id:String):Call<MutableList<PostPreview>>
+
+    @GET("/api/user/{id}/myFollowers")
+    fun getMyFollowers(@Header("Authorization") authHeader:String):Call <MutableList<UserReceive>>
 
 }

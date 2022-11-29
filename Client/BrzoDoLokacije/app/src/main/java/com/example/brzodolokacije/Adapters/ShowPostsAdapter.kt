@@ -2,8 +2,6 @@ package com.example.brzodolokacije.Adapters
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.BitmapFactory
-import android.os.AsyncTask
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -13,18 +11,11 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.brzodolokacije.Activities.ActivitySinglePost
-import com.example.brzodolokacije.Activities.NavigationActivity
 import com.example.brzodolokacije.Interfaces.IBackendApi
-import com.example.brzodolokacije.Models.LocationType
 import com.example.brzodolokacije.Models.PostPreview
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
 import com.example.brzodolokacije.databinding.PostPreviewBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Response
 
 
 class ShowPostsAdapter (val activity:Activity,val items : MutableList<PostPreview>?=null)
@@ -77,10 +68,10 @@ class ShowPostsAdapter (val activity:Activity,val items : MutableList<PostPrevie
             binding.apply {
                 tvTitle.text = item.location.name
                 tvLocationParent.text = item.location.country
-                tvLocationType.text = "TODO"
+                //tvLocationType.text = "TODO"
                 if(item.images.isNotEmpty()) {
                     Glide.with(activity)
-                        .load(RetrofitHelper.baseUrl + "/api/post/image/" + item.images[0]._id)
+                        .load(RetrofitHelper.baseUrl + "/api/post/image/compress/" + item.images[0]._id)
                         .into(locationImage)
                 }
 

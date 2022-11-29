@@ -3,6 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".Fragments.FragmentHomePageMainScroll">
 
 <LinearLayout
@@ -12,37 +13,47 @@
 
 
     <androidx.cardview.widget.CardView
-        android:id="@+id/cvFragmentHomePageText1"
+        android:backgroundTint="#f6f6f6"
+        android:layout_marginStart="10dp"
+        android:layout_marginEnd="16dp"
+app:cardElevation="0dp"
+        android:id="@+id/cvFragmentHomePageText2"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:stateListAnimator="@null"
+        android:elevation="0dp"
+        android:layout_marginTop="16dp">
 
         <TextView
-            android:id="@+id/tvFragmentHomePagePopular"
+            android:id="@+id/tvFragmentHomePageNewest"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="left"
-            android:text="Popularno"
+            android:text="Najnovije"
+            android:clickable="true"
             android:textStyle="bold" />
 
+
         <TextView
-            android:id="@+id/tvFragmentHomePagePopularShowAll"
+            android:id="@+id/tvFragmentHomePageNewestShowAll"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:clickable="true"
-            android:text="Prikaži sve"
-
-            tools:ignore="TouchTargetSizeCheck" />
-
+            android:text="Prikaži sve" />
     </androidx.cardview.widget.CardView>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvFragmentHomePagePopular"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:id="@+id/rvFragmentHomePageNewest"
+        android:layout_marginBottom="20dp"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp" />
+        android:layout_height="wrap_content" />
 
     <HorizontalScrollView
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:id="@+id/hsvFragmentHomePageLocationButtonScroll"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -128,36 +139,72 @@
 
         </LinearLayout>
     </HorizontalScrollView>
-
-    <androidx.cardview.widget.CardView
-        android:id="@+id/cvFragmentHomePageText2"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp">
+        android:orientation="horizontal">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+<LinearLayout
+    android:orientation="vertical"
+    android:id="@+id/ll1"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+    <androidx.cardview.widget.CardView
+        android:backgroundTint="#f6f6f6"
+        android:layout_marginTop="16dp"
+        android:id="@+id/cvFragmentHomePageText1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:elevation="0dp"
+        app:cardElevation="0dp"
+        >
 
         <TextView
-            android:id="@+id/tvFragmentHomePageNewest"
+            android:id="@+id/tvFragmentHomePagePopular"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_gravity="left"
-            android:text="Najnovije"
+            android:text="Popularno"
             android:textStyle="bold" />
 
         <TextView
-            android:id="@+id/tvFragmentHomePageNewestShowAll"
+            android:id="@+id/tvFragmentHomePagePopularShowAll"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:clickable="true"
-            android:text="Prikaži sve" />
+            android:text="Prikaži sve"
+
+            tools:ignore="TouchTargetSizeCheck" />
+
     </androidx.cardview.widget.CardView>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvFragmentHomePageNewest"
+        android:id="@+id/rvFragmentHomePagePopular"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginBottom="16dp" />
 
+    </LinearLayout>
+   <LinearLayout
+       android:id="@+id/ll2"
+
+       android:orientation="vertical"
+       android:layout_width="match_parent"
+       android:layout_height="wrap_content">
     <androidx.cardview.widget.CardView
+        android:backgroundTint="#f6f6f6"
+app:cardElevation="0dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:id="@+id/cvFragmentHomePageText3"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -168,7 +215,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_gravity="left"
-            android:text="Najposećenije"
+            android:text="Najbolje ocenjeno"
             android:textStyle="bold" />
 
         <TextView
@@ -181,10 +228,13 @@
     </androidx.cardview.widget.CardView>
 
     <androidx.recyclerview.widget.RecyclerView
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
         android:id="@+id/rvFragmentHomePageBestRated"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
+</LinearLayout></LinearLayout>
 </LinearLayout>
-
+</LinearLayout>
 </ScrollView>

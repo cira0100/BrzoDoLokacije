@@ -56,7 +56,18 @@ namespace Api.Controllers
             }
             return BadRequest();
         }
-
+        [HttpGet("posts/delete/{id}")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<string>> deletePost(string id)
+        {
+            var userid = await _userService.UserIdFromJwt();
+            var res = await _postService.deletePost(id, userid);
+            if (res)
+            {
+                return Ok(res);
+            }
+            return BadRequest("Post ne postoji ili vi niste vlasnik");
+        }
         [HttpGet("image/{id}")]
         //[Authorize(Roles = "User")]
         public async Task<ActionResult> getImage(string id)
@@ -66,20 +77,30 @@ namespace Api.Controllers
                 return BadRequest("Slika ne postoji");
             return File(System.IO.File.ReadAllBytes(f.path), "image/*", Path.GetFileName(f.path));
         }
+        [HttpGet("image/compress/{id}")]
+        //[Authorize(Roles = "User")]
+        public async Task<ActionResult> getCompressedImage(string id)
+        {
+            Byte[] f = await _fileService.getCompressedImage(id);
+            if (f == null)
+                return BadRequest("Slika ne postoji");
+            return File(f, "image/*", "tempcompress");
+        }
 
         [HttpPost("posts/{id}/addrating")]
         [Authorize(Roles = "User")]
         public async Task<ActionResult> addRating([FromBody] RatingReceive rating,string id)
         {
             var userid = await _userService.UserIdFromJwt();
-            if (await _postService.AddOrReplaceRating(rating, userid))
-                return Ok();
+            var rez = await _postService.AddOrReplaceRating(rating, userid);
+            if(rez != null)
+                return Ok(rez);
             return BadRequest();
         }
 
         [HttpDelete("posts/{id}/removerating")]
         [Authorize(Roles = "User")]
-        public async Task<ActionResult> removeRating(string id)
+        public async Task<ActionResult<int>> removeRating(string id)
         {
             var userid = await _userService.UserIdFromJwt();
             if (await _postService.RemoveRating(id,userid))
@@ -89,7 +110,7 @@ namespace Api.Controllers
 
         [HttpPost("posts/{id}/addcomment")]
         [Authorize(Roles = "User")]
-        public async Task<ActionResult<Comment>> addComment([FromBody] CommentReceive cmnt,string id)
+        public async Task<ActionResult<CommentSend>> addComment([FromBody] CommentReceive cmnt,string id)
         {
             var userid = await _userService.UserIdFromJwt();
             var c = await _postService.AddComment(cmnt, userid, id);
@@ -127,6 +148,43 @@ namespace Api.Controllers
                 return Ok(res);
             }
             return BadRequest();
+        }
+
+        [HttpGet("posts/get10MostViewed")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<List<PostSend>>> Get10MostViewed()
+        {
+            return Ok(await _postService.Get10MostViewed());
+        } 
+        
+        [HttpGet("posts/get10Newest")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<List<PostSend>>> Get10Newest()
+        {
+            return Ok(await _postService.Get10Newest());
+        }
+        
+        [HttpGet("posts/get10Best")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<List<PostSend>>> Get10Best()
+        {
+            return Ok(await _postService.Get10Best());
+        }
+
+
+        [HttpGet("posts/{id}/getUserPosts")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<List<PostSend>>> GetUsersPosts(string id)
+        {
+            return Ok(await _postService.GetUsersPosts(id));
+        }
+
+        [HttpGet("posts/recommended")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<List<PostSend>>> Recommended()
+        {
+            var userid = await _userService.UserIdFromJwt();
+            return Ok(await _postService.Recommended(userid));
         }
     }
 }

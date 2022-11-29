@@ -39,7 +39,10 @@ namespace Api.Services
             p.comments = new List<Comment>();
             p.images = new List<Models.File>();
             p.createdAt = DateTime.Now.ToUniversalTime();
-            var tags = post.tags.Split("|").ToList();
+            List<String> tags;
+            if (post.tags != "none")
+                tags = post.tags.Remove(post.tags.Length-1,1).Split("|").ToList();
+            else tags = null;
             p.tags = tags;
             var folderPath = Path.Combine(Directory.GetCurrentDirectory(), "Files", p.ownerId);
             if (!Directory.Exists(folderPath))
@@ -85,6 +88,7 @@ namespace Api.Services
             p.views = post.views.Count();
             p.createdAt = post.createdAt;
             p.tags = post.tags;
+            p.ratingscount = post.ratings.Count();
             if (post.ratings.Count() > 0)
             {
                 List<int> ratings = new List<int>();
@@ -98,6 +102,18 @@ namespace Api.Services
 
 
             return p;
+        }
+
+        public async Task<Boolean> deletePost(string postid,string userid)
+        {
+            var p = await _posts.Find(x => x._id == postid).FirstOrDefaultAsync();
+            if (p == null || p.ownerId != userid)
+                return false;
+            foreach (var image in p.images)
+                System.IO.File.Delete(image.path);
+
+            await _posts.DeleteOneAsync(postid);
+            return true;
         }
 
         public async Task<List<PostSend>> getAllPosts()
@@ -116,22 +132,50 @@ namespace Api.Services
             Post p = await _posts.Find(post => post._id == id).FirstOrDefaultAsync();
             if (p != null)
             {
-                if (!p.views.Any(x => x == userid)) 
+                if (!p.views.Any(x => x.Split("|")[0] == userid)) 
                 {
-                    p.views.Add(userid);
+                    p.views.Add(userid + "|" + DateTime.Now.ToUniversalTime().ToString());
+                    await _posts.ReplaceOneAsync(x => x._id == id, p);
+                }
+                else
+                {
+                    var v = p.views.Find(x => x.Split("|")[0] == userid);
+                    p.views.Remove(v);
+                    p.views.Add(userid + "|" + DateTime.Now.ToUniversalTime().ToString());
                     await _posts.ReplaceOneAsync(x => x._id == id, p);
                 }
             }
             return await postToPostSend(p);
         }
         
-        public async Task<Boolean> AddOrReplaceRating(RatingReceive  rating,string userid)
+        public async Task<RatingSend> AddOrReplaceRating(RatingReceive  rating,string userid) //0 return existing flag , -1 rating failed flag
         {
             Post p = await _posts.Find(post => post._id == rating.postId).FirstOrDefaultAsync();
             if (p != null)
             {
+                var tosend = new RatingSend();
+                var ps = await postToPostSend(p);
+                tosend.ratings = ps.ratings;
+                tosend.ratingscount = ps.ratingscount;
+
                 if (p.ownerId == userid)
-                    return false;
+                    return null;
+                if(rating.rating == 0)// ako nema rating staviti 0
+                {
+                    var r = p.ratings.Find(x => x.userId == userid);
+                    if(r != null)
+                    {
+                        tosend.myrating=r.rating;
+                        return tosend;
+                    }
+                    else
+                    {
+                        tosend.myrating = 0;
+                        return tosend;
+                    }
+                }
+                if(rating.rating<1 || rating.rating>5)
+                    return null;
                 if(!p.ratings.Any(x => x.userId == userid))
                 {
                     Rating r = new Rating();
@@ -139,6 +183,7 @@ namespace Api.Services
                     r.userId = userid;
                     p.ratings.Add(r);
                     await _posts.ReplaceOneAsync(x => x._id == p._id, p);
+                    tosend.myrating=rating.rating;
                 }
                 else
                 {
@@ -147,10 +192,15 @@ namespace Api.Services
                     r.rating = rating.rating;
                     p.ratings.Add(r);
                     await _posts.ReplaceOneAsync(x => x._id == p._id, p);
+                    tosend.myrating = rating.rating;
                 }
-                return true;
+                p = await _posts.Find(post => post._id == rating.postId).FirstOrDefaultAsync();
+                ps = await postToPostSend(p);
+                tosend.ratings = ps.ratings;
+                tosend.ratingscount = ps.ratingscount;
+                return tosend;
             }
-            return false;
+            return null;
         }
         public async Task<Boolean> RemoveRating(string postid, string userid)
         {
@@ -167,20 +217,30 @@ namespace Api.Services
             }
             return false;
         }
-        public async Task<Comment> AddComment(CommentReceive cmnt,string userid,string postid)
+        public async Task<CommentSend> AddComment(CommentReceive cmnt,string userid,string postid)
         {
             Post p = await _posts.Find(post => post._id == postid).FirstOrDefaultAsync();
             if (p != null)
             {
-                Comment c= new Comment();
+                Comment c = new Comment();
+                CommentSend c1= new CommentSend();
                 c.parentId = cmnt.parentId;
+                c1.parentId = cmnt.parentId;
                 c.userId = userid;
+                c1.userId = userid;
                 c.comment = cmnt.comment;
+                c1.comment = cmnt.comment;
                 c.timestamp = DateTime.Now.ToUniversalTime();
+                c1.timestamp = c.timestamp;
                 c._id = ObjectId.GenerateNewId().ToString();
+                c1._id = c._id;
+                var user = await _users.Find(x => x._id == c.userId).FirstOrDefaultAsync();
+                if (user != null)
+                    c1.username = user.username;
+                else c1.username = "Deleted user";
                 p.comments.Add(c);
                 await _posts.ReplaceOneAsync(x => x._id == postid, p);
-                return c;
+                return c1;
             }
             return null;
         }
@@ -308,7 +368,7 @@ namespace Api.Services
                     xd = ls.OrderByDescending(x => x.createdAt).ToList();
                     break;
                 default:
-
+                    xd = ls.OrderByDescending(x => x.views).ToList();
                     break;
             }
             if(xd != null)
@@ -360,13 +420,115 @@ namespace Api.Services
             var tosend = new List<PostSend>();
             foreach (var post in posts)
             {
-                if (post.views.Any(x => x.Equals(userid)))
+                if (post.views.Any(x => x.Split("|")[0] == userid))
                 {
+                    var t = post.views.Find(x => x.Split("|")[0] == userid);
                     var x = await postToPostSend(post);
+                    x.lastViewed = DateTime.Parse(t.Split("|")[1]).ToUniversalTime();
                     tosend.Add(x);
                 }
             }
+            tosend = tosend.OrderByDescending(x => x.lastViewed).ToList();
             return tosend;
+        }
+
+        public async Task<List<PostSend>> Get10Best()
+        {
+            List<Post> posts = await _posts.Find(_ => true).ToListAsync();
+            List<PostSend> temp = new List<PostSend>();
+            foreach (var post in posts)
+            {
+                temp.Add(await postToPostSend(post));
+            }
+            List<PostSend> best = temp.OrderByDescending(o => o.ratings).Take(10).ToList();
+            return best;
+        }
+
+        public async Task<List<PostSend>> Get10MostViewed()
+        {
+            List<Post> posts = await _posts.Find(_ => true).ToListAsync();
+            List<PostSend> temp = new List<PostSend>();
+            foreach (var post in posts)
+            {
+                temp.Add(await postToPostSend(post));
+            }
+            List<PostSend> mostViewed = temp.OrderByDescending(o => o.views).Take(10).ToList();
+            return mostViewed;
+        }
+
+        public async Task<List<PostSend>> Get10Newest()
+        {
+            List<Post> posts = await _posts.Find(_ => true).ToListAsync();
+            List<PostSend> temp = new List<PostSend>();
+            foreach (var post in posts)
+            {
+                temp.Add(await postToPostSend(post));
+            }
+            List<PostSend> newest = temp.OrderByDescending(o => o.createdAt).Take(10).ToList();
+            return newest;
+        }
+
+        public async Task<List<PostSend>> Recommended(string userid) // momgodb bloat bleh
+        {
+            List<PostSend> posts = await UserHistory(userid);
+            //TODO-LIMIT RECOMMENDED FOR POSTS FROM THIS MONTH ONLY
+            List<TagR> tags = new List<TagR>();
+            foreach (var post in posts)
+            {
+                if (post.tags != null)
+                {
+
+                    foreach (var tagitem in post.tags)
+                    {
+                        if (!tags.Any(x => x.tag == tagitem))
+                        {
+                            var newtag = new TagR();
+                            newtag.tag = tagitem;
+                            newtag.counter = 1;
+                            tags.Add(newtag);
+                        }
+                        else
+                        {
+                            var replace = tags.Find(x => x.tag == tagitem);
+                            tags.Remove(replace);
+                            replace.counter += 1;
+                            tags.Add(replace);
+                        }
+                    }
+                }
+            }
+            var top5tags = tags.OrderByDescending(x => x.counter).Take(5).ToList();
+            
+            var all = await _posts.Find(_ => true).ToListAsync();
+            var recent30 = new List<PostSend>();
+            var fiveoftop5tags = new List<PostSend>();
+            foreach (var elem in all)
+            {
+                if ((DateTime.Now - elem.createdAt).TotalDays < 30)
+                    recent30.Add(await postToPostSend(elem));
+            }
+            recent30 = recent30.OrderByDescending(x => x.createdAt).ToList();
+            foreach (var tag in top5tags) 
+            {
+                var five = new List<PostSend>();
+                foreach (var elem in recent30)
+                {
+                    if (elem.tags != null)
+                    {
+                        if (elem.tags.Any(x => x == tag.tag))
+                            five.Add(elem);
+                    }
+                }
+                five = five.Take(5).ToList();
+                foreach(var elem in five)
+                {
+                    fiveoftop5tags.Add(elem);
+                }
+            }
+
+            var taggedposts = new List<PostSend>();
+            taggedposts = fiveoftop5tags.Distinct().OrderByDescending(x => x.createdAt).ToList();
+            return taggedposts;
         }
     }
 }

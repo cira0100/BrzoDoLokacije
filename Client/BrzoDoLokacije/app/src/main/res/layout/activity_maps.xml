@@ -33,6 +33,7 @@
         app:rippleColor="#FFFFFF"
         app:srcCompat="@android:drawable/ic_menu_mylocation" />
 
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/ActivityMapsConfirmLocation"
         android:layout_width="wrap_content"
@@ -64,7 +65,7 @@
         app:layout_constraintTop_toTopOf="parent">
 
 
-        <com.google.android.material.textfield.TextInputEditText
+        <AutoCompleteTextView
             android:id="@+id/ActivityMapsSearchBar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -85,5 +86,22 @@
             app:iconTint="#333D70" />
 
     </androidx.cardview.widget.CardView>
+
+<!--    <Spinner-->
+<!--        android:id="@+id/MapsActivitySpinner"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="40dp"-->
+<!--        android:background="@null"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/ActivityMapsCardViewSearch" />-->
+
+<!--    <AutoCompleteTextView-->
+<!--        android:id="@+id/ActivityMapsAutoCompleteTextView"-->
+<!--        android:layout_width="match_parent"-->
+<!--        android:layout_height="40dp"-->
+<!--        app:layout_constraintEnd_toEndOf="parent"-->
+<!--        app:layout_constraintStart_toStartOf="parent"-->
+<!--        app:layout_constraintTop_toBottomOf="@+id/ActivityMapsCardViewSearch" />-->
 
   </androidx.constraintlayout.widget.ConstraintLayout>

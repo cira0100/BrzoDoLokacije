@@ -46,66 +46,57 @@
         tools:ignore="SpeakableTextPresentCheck" />
 
     <Button
-        android:clickable="false"
         android:id="@+id/btnActivityAddPostUploadFromGallery"
         android:layout_width="177dp"
         android:layout_height="19dp"
+        android:clickable="false"
         android:text="Otvori galeriju"
         android:visibility="invisible"
         app:cornerRadius="20dp"
-        app:layout_constraintBottom_toTopOf="@+id/tvActivityAddPostLocationtext"
+        app:layout_constraintBottom_toTopOf="@+id/btnActivityAddPostAddLocation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent" />
 
-    <TextView
-        android:id="@+id/tvActivityAddPostLocationtext"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginBottom="16dp"
-        android:text="Lokacija"
-        app:layout_constraintBottom_toTopOf="@+id/etActivityAddPostLocation"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent" />
-
-    <EditText
-        android:id="@+id/etActivityAddPostLocation"
-        android:layout_width="200dp"
-        android:layout_height="50dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:ems="10"
-        android:hint="Reykjavik, Iceland"
-        android:inputType="textEmailAddress"
-        app:layout_constraintBottom_toTopOf="@+id/tvActivityAddPostDescriptiontext"
-        app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/btnActivityAddPostAddLocation"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:background="@drawable/rounded_cyan_button"
-        android:backgroundTint="#1C789A"
+        android:stateListAnimator="@null"
+        android:backgroundTint="@color/white"
+        android:drawableLeft="@drawable/ic_baseline_location_on_24"
         android:text="Dodaj lokaciju"
+        android:textColor="#757471"
         app:layout_constraintBottom_toTopOf="@+id/tvActivityAddPostDescriptiontext"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toEndOf="@+id/etActivityAddPostLocation" />
+        app:layout_constraintHorizontal_bias="0.074"
+        app:layout_constraintStart_toStartOf="parent" />
 
-
-    <TextView
+    <EditText
+        android:id="@+id/etActivityAddPostLocationText"
+        android:layout_width="wrap_content"
+        android:layout_height="50dp"
+        android:ems="10"
+        android:enabled="false"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="@+id/btnActivityAddPostAddLocation"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/btnActivityAddPostAddLocation" />
+    <Button
         android:id="@+id/tvActivityAddPostDescriptiontext"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:layout_marginEnd="16dp"
-        android:text="Opis"
+        android:backgroundTint="@color/white"
+        android:drawableLeft="@drawable/ic_baseline_description_24"
+        android:stateListAnimator="@null"
+        android:text="Dodaj opis"
+        android:textColor="#757471"
         app:layout_constraintBottom_toTopOf="@+id/etActivityAddPostDescription"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent" />
 
     <EditText
@@ -117,6 +108,7 @@
         android:ems="10"
         android:hint="Reykjavik, Iceland"
         android:inputType="textEmailAddress"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/llTags"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -151,12 +143,12 @@
 
     <LinearLayout
         android:id="@+id/llTags"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:orientation="horizontal"
-        app:layout_constraintBottom_toTopOf="@+id/acTags"
+        app:layout_constraintBottom_toTopOf="@+id/btnActivityAddPostAddTag"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"></LinearLayout>
 
@@ -164,29 +156,27 @@
         android:id="@+id/acTags"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginLeft="20dp"
-        android:layout_marginRight="20dp"
+        android:layout_marginStart="28dp"
         android:hint="Planina,Reka,Park..."
+        android:maxLength="12"
         android:minHeight="48dp"
-        android:maxLength= "12"
+        android:visibility="gone"
         app:layout_constraintBottom_toTopOf="@+id/btnActivityAddPostPost"
-        app:layout_constraintEnd_toStartOf="@+id/btnActivityAddPostAddTag"
         app:layout_constraintStart_toStartOf="parent" />
 
     <Button
         android:id="@+id/btnActivityAddPostAddTag"
         android:layout_width="wrap_content"
         android:layout_height="40dp"
-        android:layout_marginTop="5dp"
-        android:layout_marginEnd="20dp"
-        android:layout_marginStart="20dp"
-        android:layout_marginBottom="5dp"
-        android:background="@drawable/rounded_cyan_button"
-        android:backgroundTint="#1C789A"
+        android:layout_marginStart="16dp"
+        android:backgroundTint="@color/white"
+        android:drawableLeft="@drawable/ic_baseline_tag_24"
+        android:stateListAnimator="@null"
+
         android:text="Dodaj tag"
-        app:layout_constraintBottom_toTopOf="@+id/btnActivityAddPostPost"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/llTags" />
+        android:textColor="#757471"
+        app:layout_constraintBottom_toTopOf="@+id/acTags"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
