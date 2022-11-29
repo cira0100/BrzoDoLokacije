@@ -6,10 +6,12 @@ import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import com.bumptech.glide.Glide
-import com.example.brzodolokacije.Fragments.FragmentShowUserPosts
+import com.example.brzodolokacije.Fragments.FragmentUserPostsProfileActivity
 import com.example.brzodolokacije.Models.UserReceive
+import com.example.brzodolokacije.R
 import com.example.brzodolokacije.R.*
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
@@ -31,8 +33,7 @@ class ActivityUserProfile : AppCompatActivity() {
     private lateinit var userObject:UserReceive
     private lateinit var openChat:ImageButton
     private lateinit var unfollowUser:Button
-    private lateinit var followersList: MutableList<UserReceive>
-    private lateinit var followingList: MutableList<UserReceive>
+
     private var follow:Boolean=false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -137,13 +138,13 @@ class ActivityUserProfile : AppCompatActivity() {
         }
 
         showUserPosts.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putString("user", Gson().toJson(userObject))
-            val fragment = Fragment()
-            fragment.arguments = bundle
-            getSupportFragmentManager().beginTransaction()
-                .replace(id.flActivityProfileFragmentContainer,FragmentShowUserPosts()).commit()
-
+            var fm: FragmentTransaction =supportFragmentManager.beginTransaction()
+            val fragment = FragmentUserPostsProfileActivity()
+            val b = Bundle()
+            b.putString("userId", userObject._id.toString())
+            fragment.arguments = b
+            fm.replace(R.id.flActivityProfileFragmentContainer, fragment)
+            fm.commit()
         }
     }
 

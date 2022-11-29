@@ -104,4 +104,6 @@ interface IBackendApi {
     @GET("/api/user/{id}/unfollow")
     fun unfollow(@Header("Authorization") authHeader:String,@Path("id") id:String):Call<Boolean>
 
+    @GET("api/Post/posts/{id}/getUserPosts")
+    fun getUsersPosts(@Header("Authorization") authHeader:String,@Path("id") id:String):Call<MutableList<PostPreview>>
 }

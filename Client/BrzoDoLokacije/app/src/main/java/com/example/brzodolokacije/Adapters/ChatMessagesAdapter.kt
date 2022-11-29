@@ -2,6 +2,7 @@ package com.example.brzodolokacije.Adapters
 
 import android.app.Activity
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.auth0.android.jwt.JWT
@@ -9,6 +10,7 @@ import com.example.brzodolokacije.Models.Message
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
 import com.example.brzodolokacije.databinding.ChatMessageBinding
 import com.example.brzodolokacije.databinding.ChatMessageOtherBinding
+import java.util.*
 
 class ChatMessagesAdapter (val items : MutableList<Message>, val activity:Activity)
     : RecyclerView.Adapter<RecyclerView.ViewHolder>(){
@@ -49,6 +51,17 @@ class ChatMessagesAdapter (val items : MutableList<Message>, val activity:Activi
         fun bind(item : Message){
             bindingOther?.apply {
                 tvMessage?.text=item.messagge
+                tvTimestamp.text=item.usableTimeStamp.get(Calendar.HOUR_OF_DAY).toString() + ":" + item.usableTimeStamp.get(Calendar.MINUTE).toString()
+                if(layoutPosition==0 || isDifferentDays(items[layoutPosition].usableTimeStamp,items[layoutPosition-1].usableTimeStamp)){
+
+                    tvDate.text=item.usableTimeStamp.get(Calendar.DAY_OF_MONTH).toString()+"/"+
+                            (item.usableTimeStamp.get(Calendar.MONTH)+1).toString()+"/"+
+                            item.usableTimeStamp.get(Calendar.YEAR).toString()
+                }
+                else{
+                    tvDate.visibility= View.GONE
+                    tvDate.forceLayout()
+                }
             }
         }
     }
@@ -56,8 +69,29 @@ class ChatMessagesAdapter (val items : MutableList<Message>, val activity:Activi
         fun bind(item : Message){
             binding?.apply {
                 tvMessage.text=item.messagge
+                tvTimestamp.text=item.usableTimeStamp.get(Calendar.HOUR_OF_DAY).toString() + ":" + item.usableTimeStamp.get(Calendar.MINUTE).toString()
+                if(layoutPosition==0 || isDifferentDays(items[layoutPosition].usableTimeStamp,items[layoutPosition-1].usableTimeStamp)){
+
+                    tvDate.text=item.usableTimeStamp.get(Calendar.DAY_OF_MONTH).toString()+"/"+
+                            (item.usableTimeStamp.get(Calendar.MONTH)+1).toString()+"/"+
+                            item.usableTimeStamp.get(Calendar.YEAR).toString()
+                }
+                else{
+                    tvDate.visibility= View.GONE
+                    tvDate.forceLayout()
+                }
             }
         }
+    }
+
+    fun isDifferentDays(c1:Calendar,c2:Calendar):Boolean{
+        if(c1.get(Calendar.DAY_OF_YEAR)!=c2.get(Calendar.DAY_OF_YEAR)){
+            return true
+        }
+        else if(c1.get(Calendar.YEAR)!=c2.get(Calendar.YEAR)){
+            return true
+        }
+        return false
     }
 
 

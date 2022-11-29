@@ -171,6 +171,14 @@ namespace Api.Controllers
             return Ok(await _postService.Get10Best());
         }
 
+
+        [HttpGet("posts/{id}/getUserPosts")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<List<PostSend>>> GetUsersPosts(string id)
+        {
+            return Ok(await _postService.GetUsersPosts(id));
+        }
+
         [HttpGet("posts/recommended")]
         [Authorize(Roles = "User")]
         public async Task<ActionResult<List<PostSend>>> Recommended()

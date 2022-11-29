@@ -41,7 +41,7 @@ class DBHelper :
         if(!doesTableExist(CONTACTS_TABLE_NAME,db)){
             var sql:String="CREATE TABLE "+ CONTACTS_TABLE_NAME+" (" +
                     "userId " +"TEXT PRIMARY KEY,"+
-                    "read " +"INT"+
+                    "read " +"INTEGER"+
                     ")"
             db?.execSQL(sql)
         }
@@ -51,7 +51,7 @@ class DBHelper :
                     "senderId " +"TEXT,"+
                     "receiverId "+"TEXT,"+
                     "messagge " +"TEXT,"+
-                    "timestamp "+"TEXT"+
+                    "timestamp "+"INTEGER"+
                     ")"
             db?.execSQL(sql)
         }
@@ -88,8 +88,8 @@ class DBHelper :
             var sql="INSERT INTO "+ MESSAGES_TABLE_NAME+"(_id,senderId,receiverid,messagge,timestamp) VALUES('"+message._id+"','"+
                     message.senderId+"','"+
                     message.receiverId+"','"+
-                    message.messagge+ "','"+
-                    message.timestamp+ "')"
+                    message.messagge+ "',"+
+                    message.usableTimeStamp.timeInMillis+")"
             db?.execSQL(sql)
             if(sent)
                 sql="SELECT * FROM "+ CONTACTS_TABLE_NAME+" WHERE userId='"+message.receiverId+"'"
@@ -111,9 +111,9 @@ class DBHelper :
         onCreate(db)
         var sql:String
         if(!self)
-            sql="SELECT * FROM "+ MESSAGES_TABLE_NAME+" WHERE senderId='"+userId+"' OR receiverId='"+userId+"'"
+            sql="SELECT * FROM "+ MESSAGES_TABLE_NAME+" WHERE senderId='"+userId+"' OR receiverId='"+userId+"' ORDER BY timestamp ASC"
         else
-            sql="SELECT * FROM "+ MESSAGES_TABLE_NAME+" WHERE senderId='"+userId+"' AND receiverId='"+userId+"'"
+            sql="SELECT * FROM "+ MESSAGES_TABLE_NAME+" WHERE senderId='"+userId+"' AND receiverId='"+userId+"' ORDER BY timestamp ASC"
         var cursor=db?.rawQuery(sql,null)
         if(cursor?.count!! >0){
             var messagesList:MutableList<Message> =mutableListOf()
@@ -123,17 +123,20 @@ class DBHelper :
             var messageIndex=cursor.getColumnIndexOrThrow("messagge")
             var timestampIndex=cursor.getColumnIndexOrThrow("timestamp")
             while(cursor.moveToNext()){
+                var cal:Calendar= Calendar.getInstance()
+                cal.timeInMillis=cursor.getLong(timestampIndex)
                 messagesList.add(
                     Message(
                         cursor.getString(idIndex),
                         cursor.getString(senderIdIndex),
                         cursor.getString(receiverIdIndex),
                         cursor.getString(messageIndex),
-                        Date()
+                        cal.time,
+                        cal
                         )
                     )
+                Log.d("main",cal.time.toString())
             }
-            Log.d("main",messagesList.size.toString())
             return messagesList
         }
         return null
