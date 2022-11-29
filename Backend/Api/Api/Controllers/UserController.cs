@@ -116,5 +116,12 @@ namespace Api.Controllers
         {
             return Ok(await _userService.Unfollow(id));
         }
+
+        [HttpGet("{id}/myFollowers")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<List<UserSend>>> GetMyFollowers()
+        {
+            return Ok(await _userService.GetMyFollowers());
+        }
     }
 }

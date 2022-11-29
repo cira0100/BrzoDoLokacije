@@ -35,5 +35,7 @@ namespace Api.Interfaces
         Task<Boolean> CheckIfAlreadyFollow(string id);
         Task<Boolean> Unfollow(string id);
 
+        Task<List<UserSend>> GetMyFollowers();
+
     }
 }

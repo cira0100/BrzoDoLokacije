@@ -106,4 +106,8 @@ interface IBackendApi {
 
     @GET("api/Post/posts/{id}/getUserPosts")
     fun getUsersPosts(@Header("Authorization") authHeader:String,@Path("id") id:String):Call<MutableList<PostPreview>>
+
+    @GET("/api/user/{id}/myFollowers")
+    fun getMyFollowers(@Header("Authorization") authHeader:String):Call <MutableList<UserReceive>>
+
 }

@@ -13,6 +13,7 @@ import com.example.brzodolokacije.Adapters.FollowersAdapter
 import com.example.brzodolokacije.Models.UserReceive
 import com.example.brzodolokacije.R
 import com.example.brzodolokacije.Services.RetrofitHelper
+import com.example.brzodolokacije.Services.SharedPreferencesHelper
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -38,7 +39,7 @@ class FragmentFollowing : Fragment() {
             ).show();
         }
 
-        //getFollowing()
+        getFollowing()
 
         back.setOnClickListener {
             val fragmentProfile = FragmentProfile()
@@ -50,9 +51,10 @@ class FragmentFollowing : Fragment() {
         return view
     }
 
-    /*fun getFollowing(){
+    fun getFollowing(){
         val api = RetrofitHelper.getInstance()
-        val data=api.getFollowers(userId)
+        val token= SharedPreferencesHelper.getValue("jwt", requireActivity())
+        val data=api.getMyFollowings("Bearer "+token)
         data.enqueue(object : Callback<MutableList<UserReceive>> {
             override fun onResponse(
                 call: Call<MutableList<UserReceive>>,
@@ -74,5 +76,5 @@ class FragmentFollowing : Fragment() {
                 ).show();
             }
         })
-    }*/
+    }
 }

@@ -535,9 +535,12 @@ namespace Api.Services
                             continue;
                         }
                         UserSend following = new UserSend();
+                        following.creationDate = utemp.creationDate;
+                        following.name = utemp.name;
                         following.pfp = utemp.pfp;
                         following.username = utemp.username;
                         following.email = utemp.username;
+                        following.following = utemp.following;
                         following.followers = utemp.followers;
                         following._id = utemp._id;
 
@@ -621,5 +624,45 @@ namespace Api.Services
             }
             return false;
         }
+
+        public async Task<List<UserSend>> GetMyFollowers()
+        {
+           
+            string id = null;
+
+            if (_httpContext.HttpContext.User.FindFirstValue("id") != null)
+            {
+                id = _httpContext.HttpContext.User.FindFirstValue("id").ToString();
+            }
+            User u = await _users.Find(user => user._id == id).FirstOrDefaultAsync();
+            List<UserSend> myfollowers = new List<UserSend>();
+          
+                if (u!=null && u.followers != null && u.followers.Count() > 0)
+                {
+                    foreach (string userid in u.followers)
+                    {
+                        User utemp = await _users.Find(user => user._id == userid).FirstOrDefaultAsync();
+                        if (utemp == null)
+                        {
+                            continue;
+                        }
+                        UserSend follower = new UserSend();
+                        follower.creationDate = utemp.creationDate;
+                        follower.name = utemp.name;
+                        follower.pfp = utemp.pfp;
+                        follower.username = utemp.username;
+                        follower.email = utemp.username;
+                        follower.following = utemp.following;
+                        follower.followers = utemp.followers;
+                        follower._id = utemp._id;
+
+                        myfollowers.Add((UserSend)follower);
+                    }
+                    return myfollowers;
+                }
+            
+            return null;
         }
+    }
+    
 }
