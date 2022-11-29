@@ -13,6 +13,7 @@ import com.example.brzodolokacije.Models.PostPreview
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
 import com.example.brzodolokacije.databinding.SinglePostHistoryBinding
+import java.text.SimpleDateFormat
 
 
 class PostHistoryAdapter (val activity:Activity,val items : MutableList<PostPreview>)
@@ -39,7 +40,7 @@ class PostHistoryAdapter (val activity:Activity,val items : MutableList<PostPrev
         fun bind(item: PostPreview) {
             binding.apply {
                 tvTitleSinglePostHistory.text = item.location.name
-                tvLocationParentSinglePostHistory.text = "22.11.2022"
+                tvLocationParentSinglePostHistory.text = SimpleDateFormat("dd/MM/yyyy").format(item.lastViewed)
                 tvLocationTypeSinglePostHistory.text = item.location.country
 
             }
