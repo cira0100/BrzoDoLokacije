@@ -46,7 +46,7 @@ class FragmentUserPostsProfileActivity : Fragment() {
                 }
                 var posts = response.body()!!.toMutableList<PostPreview>()
                 recyclerView.apply {
-                    layoutManager= GridLayoutManager(requireContext(),3,
+                    layoutManager= GridLayoutManager(requireContext(),2,
                         GridLayoutManager.VERTICAL,false)
                     adapter= MyPostsAdapter(requireActivity(),posts)
                 }

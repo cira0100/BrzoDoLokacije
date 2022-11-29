@@ -49,7 +49,8 @@ class MyPostsAdapter (val activity:Activity,val items : MutableList<PostPreview>
             binding.apply {
                 tvTitle.text = item.location.name
                 tvLocationParent.text = item.location.country
-                tvLocationType.text = "TODO"
+                tvPostPreviewRating.text=item.ratings.toString()
+               // tvLocationType.text = "TODO"
                 if(item.images.isNotEmpty()) {
                     Glide.with(activity)
                         .load(RetrofitHelper.baseUrl + "/api/post/image/compress/" + item.images[0]._id)

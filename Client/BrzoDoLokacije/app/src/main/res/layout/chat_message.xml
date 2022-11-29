@@ -3,24 +3,27 @@
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:background="@drawable/rounded_cyan_button"
-    android:clipToOutline="true"
     android:id="@+id/clMessage"
     android:layout_margin="@dimen/text_padding"
     android:layout_gravity="end">
-    <androidx.cardview.widget.CardView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:cardBackgroundColor="@color/cardview_dark_background">
 
-        <TextView
+    <androidx.cardview.widget.CardView
+        android:elevation="5dp"
+        android:layout_width="wrap_content"
+        android:layout_height="30dp"
+        android:backgroundTint="@color/unfollow"
+        app:cardCornerRadius="15dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.textview.MaterialTextView
+
+            android:id="@+id/tvMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textColor="@color/white"
-            android:id="@+id/tvMessage"
+            android:padding="5dp"
             android:text="blabla"
-            android:padding="@dimen/component_padding"/>
+         />
     </androidx.cardview.widget.CardView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
