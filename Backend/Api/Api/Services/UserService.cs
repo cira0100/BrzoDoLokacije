@@ -395,10 +395,16 @@ namespace Api.Services
 
         public async Task<Boolean> AddFollower(string followerId)
         {
+            
             string id = null;
             if (_httpContext.HttpContext.User.FindFirstValue("id") != null)
             {
                 id = _httpContext.HttpContext.User.FindFirstValue("id").ToString();
+            }
+
+            if (followerId == id) 
+            {
+                return false;
             }
             User f = await _users.Find(user => user._id == followerId).FirstOrDefaultAsync();
             User u = await _users.Find(user => user._id == id).FirstOrDefaultAsync();
@@ -413,7 +419,8 @@ namespace Api.Services
                 f.followers.Add(id);
                 f.followersCount =f.followers.Count();
 
-                
+                _users.ReplaceOne(user => user._id == followerId, f);
+
                 if (u.following == null)
                 {
                     u.following = new List<string>();
@@ -423,7 +430,7 @@ namespace Api.Services
                 u.followingCount =u.following.Count();
 
                 _users.ReplaceOne(user=>user._id==id, u);
-                _users.ReplaceOne(user => user._id == followerId, f);
+                
 
                // updateUserFollowerFollowingCount(u.followers, u.following, u._id);
                 //updateUserFollowerFollowingCount(f.followers, f.following, f._id);
@@ -452,9 +459,12 @@ namespace Api.Services
                             continue;
                         }
                         UserSend follower = new UserSend();
+                        follower.creationDate = utemp.creationDate;
+                        follower.name = utemp.name;                        
                         follower.pfp = utemp.pfp;
                         follower.username = utemp.username;
                         follower.email = utemp.username;
+                        follower.following = utemp.following;
                         follower.followers = utemp.followers;
                         follower._id = utemp._id;
 
@@ -484,9 +494,12 @@ namespace Api.Services
                             continue;
                         }
                         UserSend follower = new UserSend();
+                        follower.creationDate = utemp.creationDate;
+                        follower.name = utemp.name;
                         follower.pfp = utemp.pfp;
                         follower.username = utemp.username;
                         follower.email = utemp.username;
+                        follower.following = utemp.following;
                         follower.followers = utemp.followers;
                         follower._id = utemp._id;
 

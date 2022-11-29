@@ -1,6 +1,7 @@
 package com.example.brzodolokacije.Activities
 
 import android.annotation.SuppressLint
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.widget.*
@@ -34,6 +35,9 @@ class ActivityUserProfile : AppCompatActivity() {
     private lateinit var openChat:ImageButton
     private lateinit var unfollowUser:Button
 
+    private lateinit var showFollowers:Button
+    private lateinit var showFollowing:Button
+
     private var follow:Boolean=false
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,6 +54,8 @@ class ActivityUserProfile : AppCompatActivity() {
         showUserPosts=findViewById(id.btnActivityUserProfileShowPosts)
         fragmentContainer=findViewById(id.flActivityProfileFragmentContainer)
         openChat=findViewById(id.activityUserProfileOpenChat)
+        showFollowing=findViewById(id.tvActivityUserProfileFollow)
+        showFollowers=findViewById(R.id.tvActivityUserProfileFollowers)
 
         val jsonMyObject: String
         val extras = intent.extras
@@ -65,7 +71,7 @@ class ActivityUserProfile : AppCompatActivity() {
             followingNumber.text=userObject?.followingCount.toString()
 
             if(userObject.pfp!=null) {
-                Glide.with(this)
+                Glide.with(this@ActivityUserProfile)
                     .load(RetrofitHelper.baseUrl + "/api/post/image/" + userObject.pfp!!._id)
                     .circleCrop()//Round image
                     .into(profilePicture)
@@ -91,6 +97,7 @@ class ActivityUserProfile : AppCompatActivity() {
                         followUser.isVisible=false
                         followUser.isClickable=false
                         followUser.isEnabled=false
+
                         updateUserData()
 
                         Toast.makeText(
@@ -107,35 +114,53 @@ class ActivityUserProfile : AppCompatActivity() {
 
         }
         unfollowUser.setOnClickListener {
-                val api = RetrofitHelper.getInstance()
-                val token = SharedPreferencesHelper.getValue("jwt", this@ActivityUserProfile)
-                var data = api.unfollow("Bearer " + token, userObject._id);
-                data.enqueue(object : Callback<Boolean> {
-                    override fun onResponse(
-                        call: Call<Boolean>,
-                        response: Response<Boolean>
-                    ) {
-                        unfollowUser.isVisible=false
-                        unfollowUser.isClickable=false
-                        unfollowUser.isEnabled=false
-                        followUser.isVisible=true
-                        followUser.isClickable=true
-                        followUser.isEnabled=true
-                        updateUserData()
-                        Toast.makeText(
-                            this@ActivityUserProfile, "VIŠE NE PRATITE KORISNIKA", Toast.LENGTH_LONG
-                        ).show();
-                    }
+            val api = RetrofitHelper.getInstance()
+            val token = SharedPreferencesHelper.getValue("jwt", this@ActivityUserProfile)
+            var data = api.unfollow("Bearer " + token, userObject._id);
+            data.enqueue(object : Callback<Boolean> {
+                override fun onResponse(
+                    call: Call<Boolean>,
+                    response: Response<Boolean>
+                ) {
+                    unfollowUser.isVisible = false
+                    unfollowUser.isClickable = false
+                    unfollowUser.isEnabled = false
+                    followUser.isVisible = true
+                    followUser.isClickable = true
+                    followUser.isEnabled = true
+                    updateUserData()
+                    Toast.makeText(
+                        this@ActivityUserProfile, "VIŠE NE PRATITE KORISNIKA", Toast.LENGTH_LONG
+                    ).show();
+                }
 
-                    override fun onFailure(call: Call<Boolean>, t: Throwable) {
-                        Toast.makeText(
-                            this@ActivityUserProfile, t.toString(), Toast.LENGTH_LONG
-                        ).show();
-                    }
-                })
-
-
+                override fun onFailure(call: Call<Boolean>, t: Throwable) {
+                    Toast.makeText(
+                        this@ActivityUserProfile, t.toString(), Toast.LENGTH_LONG
+                    ).show();
+                }
+            })
         }
+            showFollowers.setOnClickListener {
+                val bundle = Bundle()
+                bundle.putString("userId", userObject._id.toString())
+                bundle.putString("show","followers")
+                val intent = Intent(this@ActivityUserProfile,ActivityShowFollowersAndFollowing::class.java)
+                intent.putExtras(bundle)
+                startActivity(intent)
+
+            }
+
+            showFollowing.setOnClickListener {
+                val bundle = Bundle()
+                bundle.putString("userId", userObject._id.toString())
+                bundle.putString("show","following")
+                val intent = Intent(this@ActivityUserProfile,ActivityShowFollowersAndFollowing::class.java)
+                intent.putExtras(bundle)
+                startActivity(intent)
+            }
+
+
 
         showUserPosts.setOnClickListener {
             var fm: FragmentTransaction =supportFragmentManager.beginTransaction()
@@ -212,6 +237,7 @@ class ActivityUserProfile : AppCompatActivity() {
                 response: Response<UserReceive>
             ) {
                 var userData=response.body()!!
+
                 name.text=userData.name
                 postsNumber.text=userData.postNumber.toString()
                 followersNumber.text=userData.followersCount.toString()
