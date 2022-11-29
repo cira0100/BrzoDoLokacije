@@ -188,8 +188,7 @@
         <View
             android:id="@+id/divider"
             android:layout_width="409dp"
-            android:layout_height="1dp"
-            android:background="?android:attr/listDivider"
+            android:layout_height="40dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/btnFragmentProfileShowMyPosts" />
@@ -241,6 +240,7 @@
             android:id="@+id/flFragmentProfileFragmentContainer"
             android:layout_width="409dp"
             android:layout_height="319dp"
+            android:layout_marginTop="40dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
