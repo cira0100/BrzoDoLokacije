@@ -186,5 +186,6 @@ class ChatActivityConversation : AppCompatActivity() {
         }
         adapterVar= items?.let { ChatMessagesAdapter(it,this@ChatActivityConversation) }
         setRecyclerView(setParams = false)
+        dbConnection?.readContact(userId!!)
     }
 }

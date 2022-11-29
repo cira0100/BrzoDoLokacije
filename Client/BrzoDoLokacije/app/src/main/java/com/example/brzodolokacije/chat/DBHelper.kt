@@ -105,6 +105,10 @@ class DBHelper :
                         read+"')"
                 db?.execSQL(sql)
             }
+            else{
+                if(!sent)
+                    unreadContact(message.senderId)
+            }
         }
     }
     fun getMessages(userId:String, self:Boolean=false): MutableList<Message>? {
@@ -137,6 +141,7 @@ class DBHelper :
                     )
                 Log.d("main",cal.time.toString())
             }
+            readContact(userId)
             return messagesList
         }
         return null
@@ -163,6 +168,15 @@ class DBHelper :
         var sql="DROP TABLE IF EXISTS "+ CONTACTS_TABLE_NAME
         db?.execSQL(sql)
         sql="DROP TABLE IF EXISTS "+ MESSAGES_TABLE_NAME
+        db?.execSQL(sql)
+    }
+
+    fun readContact(userId: String){
+        var sql="UPDATE "+ CONTACTS_TABLE_NAME+" SET read=1 WHERE userId='"+userId+"'"
+        db?.execSQL(sql)
+    }
+    fun unreadContact(userId: String){
+        var sql="UPDATE "+ CONTACTS_TABLE_NAME+" SET read=0 WHERE userId='"+userId+"'"
         db?.execSQL(sql)
     }
 }
