@@ -317,7 +317,8 @@ class ActivitySinglePost : AppCompatActivity() {
         binding.apply {
             tvTitle.text= post.location.name
             tvTitle.invalidate()
-            tvLocationType.text="TODO Click to open map"
+            tvLocationType.text="Otvorite Mapu"
+            tvLocationType.setTextColor(Color.BLUE)
             tvLocationType.invalidate()
             tvLocationParent.text="TODO"
             tvLocationParent.invalidate()

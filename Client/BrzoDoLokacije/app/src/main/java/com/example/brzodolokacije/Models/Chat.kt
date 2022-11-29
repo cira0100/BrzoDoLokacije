@@ -18,7 +18,8 @@ data class Message(
     var senderId: String,
     var receiverId: String,
     var messagge: String,
-    var timestamp: Date
+    var timestamp: Date,
+    var usableTimeStamp:Calendar
 )
 
 data class ChatPreview(

@@ -1,11 +1,13 @@
 package com.example.brzodolokacije.Adapters
 
 import android.content.Intent
+import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.exam.DBHelper
 import com.example.brzodolokacije.Activities.ChatActivity
 import com.example.brzodolokacije.Activities.ChatActivityConversation
 import com.example.brzodolokacije.Interfaces.IBackendApi
@@ -25,6 +27,7 @@ class ChatPreviewsAdapter (val items : MutableList<ChatPreview>,val activity:Cha
     private var api: IBackendApi?=null
     private var token:String?=null
     private lateinit var binding: ChatPreviewBinding
+    private var db:DBHelper=DBHelper.getInstance(activity)
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         binding=ChatPreviewBinding.inflate(inflater,parent,false)
@@ -39,6 +42,9 @@ class ChatPreviewsAdapter (val items : MutableList<ChatPreview>,val activity:Cha
             val intent: Intent = Intent(activity, ChatActivityConversation::class.java)
             intent.putExtra("userId",items[position].userId)
             intent.putExtra("username",holder.itemView.tvUsername.text)
+            db.readContact(items[position].userId)
+            items[position].read=true
+            holder.itemView.tvUsername.typeface= Typeface.DEFAULT
             activity.startActivity(intent)
         }
     }
@@ -54,6 +60,8 @@ class ChatPreviewsAdapter (val items : MutableList<ChatPreview>,val activity:Cha
                         if(response.isSuccessful()){
                             //zahtev da se posalje poruka
                             var user=response.body()!!
+                            if(!item.read)
+                                tvUsername.typeface= Typeface.DEFAULT_BOLD
                             tvUsername.text=user.username
                             if(user.pfp!=null) {
                                 Glide.with(activity)

@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Log
 import android.util.TypedValue
+import android.view.KeyEvent
 import android.view.View
 import android.widget.*
 import androidx.activity.result.contract.ActivityResultContracts
@@ -53,6 +54,7 @@ class ActivityCapturePost : AppCompatActivity() {
     private lateinit var tagList: MutableList<String>
     private var tagidcounter:Int = 0
     private lateinit var addDescription:Button
+    private lateinit var locText: EditText
 
 
     val LOCATIONREQCODE=123
@@ -77,6 +79,7 @@ class ActivityCapturePost : AppCompatActivity() {
         tagLayout =  findViewById<View>(R.id.llTagsCap) as LinearLayout
 
         addDescription=findViewById<View>(R.id.tvActivityCapturePostDescriptiontext)as Button
+        locText=findViewById<View>(R.id.etActivityAddPostLocationText) as EditText
 
 
         progressDialog= ProgressDialog(this)
@@ -95,42 +98,18 @@ class ActivityCapturePost : AppCompatActivity() {
         }
         //dodavanje i brisanje tagova
         tagButtonAdd.setOnClickListener {
-            tagText.isGone=false
-            tagText.isVisible=true
-
-            if(tagList.count()<4 && tagText.text.toString().length>=3) {
-                var tagstr = tagText.text.toString()
-                var newbtn = Button(this)
-                newbtn.setId(tagidcounter)
-                newbtn.text = tagstr
-                var layoutParams = LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.WRAP_CONTENT,
-                    50
-                )
-                layoutParams.setMargins(3)
-                newbtn.layoutParams=layoutParams
-                newbtn.setBackgroundColor(Color.parseColor("#1C789A"))
-                newbtn.setTextColor(Color.WHITE)
-                newbtn.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10F)
-                newbtn.setPadding(3,1,3,1)
-
-                newbtn.setOnClickListener {
-                    var btntext = newbtn.text.toString()
-                    tagList.remove(btntext)
-                    tagButtons.remove(newbtn)
-                    tagLayout.removeView(newbtn)
-                }
-
-                tagList.add(tagstr)
-                tagButtons.add(newbtn)
-                tagLayout.addView(newbtn)
-                tagText.text.clear()
-            }
-            else{
-                Toast.makeText(this,"Maksimalno 4 tagova (duzine 3+ karaktera)",Toast.LENGTH_LONG)
-            }
+            addTag()
         }
-
+        tagText.setOnKeyListener(View.OnKeyListener { v1, keyCode, event -> // If the event is a key-down event on the "enter" button
+            if (event.action === KeyEvent.ACTION_DOWN &&
+                keyCode == KeyEvent.KEYCODE_ENTER
+            ) {
+                // Perform action on key press
+                addTag()
+                return@OnKeyListener true
+            }
+            false
+        })
 
         //dodavanje sa kamere
 
@@ -225,11 +204,51 @@ class ActivityCapturePost : AppCompatActivity() {
 
         }
     }
+    fun addTag(){
+        tagText.isGone=false
+        tagText.isVisible=true
+
+        if(tagList.count()<4  && tagText.text.toString().length>=3) {
+            var tagstr = tagText.text.toString()
+            var newbtn = Button(this)
+            newbtn.setId(tagidcounter)
+            newbtn.text = tagstr
+            var layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                50
+            )
+            layoutParams.setMargins(3)
+            newbtn.layoutParams=layoutParams
+            newbtn.setBackgroundColor(Color.parseColor("#1C789A"))
+            newbtn.setTextColor(Color.WHITE)
+            newbtn.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10F)
+            newbtn.setPadding(3,1,3,1)
+
+            newbtn.setOnClickListener {
+                var btntext = newbtn.text.toString()
+                tagList.remove(btntext)
+                tagButtons.remove(newbtn)
+                tagLayout.removeView(newbtn)
+            }
+
+            tagList.add(tagstr)
+            tagButtons.add(newbtn)
+            tagLayout.addView(newbtn)
+            tagText.text.clear()
+        }
+        else{
+            Toast.makeText(this,"Maksimalno 4 tagova ( duzine + karaktera)",Toast.LENGTH_LONG)
+        }
+    }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if(requestCode==LOCATIONREQCODE && resultCode== RESULT_OK){
             var bundle=data!!.extras
             locationId=bundle!!.getString("locationId")
+            var name=bundle!!.getString("name")
+            locText.isGone=false
+            locText.isVisible=true
+            locText.setText(name,TextView.BufferType.EDITABLE)
         }
     }
     var f:File?=null
@@ -291,9 +310,12 @@ class ActivityCapturePost : AppCompatActivity() {
             override fun onResponse(call: Call<PostPreview?>, response: Response<PostPreview?>) {
                 if(response.isSuccessful()){
                     progressDialog!!.dismiss()
-                    Toast.makeText(
-                        applicationContext, "USPEH", Toast.LENGTH_LONG
-                    ).show();
+                    val intent:Intent = Intent(this@ActivityCapturePost,ActivitySinglePost::class.java)
+                    var b=Bundle()
+                    b.putParcelable("selectedPost",response.body())
+                    intent.putExtras(b)
+                    startActivity(intent)
+                    finish()
                 }else {
                     progressDialog!!.dismiss()
 
