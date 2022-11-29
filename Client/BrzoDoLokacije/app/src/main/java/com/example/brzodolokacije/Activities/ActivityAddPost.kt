@@ -311,9 +311,12 @@ class ActivityAddPost : AppCompatActivity() {
             override fun onResponse(call: Call<PostPreview?>, response: Response<PostPreview?>) {
                 progressDialog!!.dismiss()
                 if(response.isSuccessful()){
-                    Toast.makeText(
-                        applicationContext, "USPEH", Toast.LENGTH_LONG
-                    ).show();
+                    val intent:Intent = Intent(this@ActivityAddPost,ActivitySinglePost::class.java)
+                    var b=Bundle()
+                    b.putParcelable("selectedPost",response.body())
+                    intent.putExtras(b)
+                    startActivity(intent)
+                    finish()
                 }else {
 
                     if (response.errorBody() != null) {

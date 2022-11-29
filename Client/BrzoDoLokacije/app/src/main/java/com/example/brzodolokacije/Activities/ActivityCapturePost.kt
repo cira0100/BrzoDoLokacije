@@ -304,9 +304,12 @@ class ActivityCapturePost : AppCompatActivity() {
             override fun onResponse(call: Call<PostPreview?>, response: Response<PostPreview?>) {
                 if(response.isSuccessful()){
                     progressDialog!!.dismiss()
-                    Toast.makeText(
-                        applicationContext, "USPEH", Toast.LENGTH_LONG
-                    ).show();
+                    val intent:Intent = Intent(this@ActivityCapturePost,ActivitySinglePost::class.java)
+                    var b=Bundle()
+                    b.putParcelable("selectedPost",response.body())
+                    intent.putExtras(b)
+                    startActivity(intent)
+                    finish()
                 }else {
                     progressDialog!!.dismiss()
 
