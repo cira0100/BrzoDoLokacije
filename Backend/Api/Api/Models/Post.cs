@@ -49,6 +49,12 @@ namespace Api.Models
         public string userId { get; set; }
         public int rating { get; set; }
     }
+    public class RatingSend
+    {
+        public int ratingscount { get; set; }
+        public double ratings { get; set; }
+        public int myrating { get; set; }
+    }
     public class Comment
     {
         [BsonId]
@@ -101,5 +107,11 @@ namespace Api.Models
         public int totalpages { get; set; }
         public int totalposts { get; set; }
         public List<PostSend> posts { get; set; }
+    }
+
+    public class TagR
+    {
+        public int counter { get; set; }
+        public string tag { get; set; } 
     }
 }

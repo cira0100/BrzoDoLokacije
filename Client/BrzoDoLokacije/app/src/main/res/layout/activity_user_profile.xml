@@ -128,7 +128,7 @@
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="@+id/divider"
-            app:layout_constraintVertical_bias="1.0"></FrameLayout>
+            app:layout_constraintVertical_bias="0.0"></FrameLayout>
 
         <TableLayout
 
@@ -228,21 +228,43 @@
                     <Button
 
                         android:id="@+id/btnActivityUserProfileFollow"
-                        android:layout_width="0dp"
+                        android:layout_width="280dp"
                         android:layout_height="30dp"
                         android:layout_marginStart="16dp"
-                        android:layout_marginEnd="8dp"
+                        android:clickable="true"
                         android:drawableLeft="@drawable/ic_outline_person_add_alt_24"
-                        android:text="PRATI"
                         android:insetTop="0dp"
                         android:insetBottom="0dp"
-                        app:shapeAppearanceOverlay="@style/Circular"
+                        android:backgroundTint="@color/button_main"
+                        android:text="PRATI"
+                        android:visibility="visible"
                         app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toStartOf="@+id/activityUserProfileOpenChat"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintVertical_bias="0.13"
+                        app:shapeAppearanceOverlay="@style/Circular"
                         tools:ignore="TouchTargetSizeCheck" />
+
+                    <Button
+
+                        android:id="@+id/btnActivityUserProfileUnFollow"
+                        android:layout_width="280dp"
+                        android:layout_height="30dp"
+                        android:layout_marginStart="16dp"
+                        android:clickable="false"
+                        android:drawableLeft="@drawable/ic_outline_person_remove_24"
+                        android:insetTop="0dp"
+                        android:insetBottom="0dp"
+                        android:text="NE PRATI više"
+                        android:backgroundTint="@color/unfollow"
+
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:layout_constraintVertical_bias="0.13"
+                        app:shapeAppearanceOverlay="@style/Circular"
+                        tools:ignore="TouchTargetSizeCheck" />
+
 
                     <ImageButton
                         android:id="@+id/activityUserProfileOpenChat"
@@ -252,11 +274,10 @@
                         android:layout_marginEnd="16dp"
                         android:height="40dp"
                         android:background="@drawable/rounded_button"
-                        android:backgroundTint="#4DB6AC"
+                        android:backgroundTint="@color/button_main"
                         android:src="@drawable/ic_round_message_24"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toEndOf="@+id/btnActivityUserProfileFollow"
                         app:layout_constraintTop_toTopOf="parent"
                         app:layout_constraintVertical_bias="0.0"
                         app:shapeAppearanceOverlay="@style/Circular"

@@ -38,7 +38,7 @@ interface IBackendApi {
                                                             ,@Part("tags") tags:RequestBody
                                                             ):Call<PostPreview>
     @POST("api/Post/posts/{id}/addrating")
-    fun addRating(@Header("Authorization") authHeader:String,@Path("id") id:String,@Body rating: RatingReceive):Call<ResponseBody>
+    fun addRating(@Header("Authorization") authHeader:String,@Path("id") id:String,@Body rating: RatingReceive):Call<RatingData>
     @POST("api/Post/posts/{id}/addcomment")
     fun addComment(@Header("Authorization") authHeader:String,@Path("id") id:String,@Body rating: CommentReceive):Call<CommentSend>
     @GET("api/Post/posts/{id}/listcomments")
@@ -101,4 +101,9 @@ interface IBackendApi {
     @GET("/api/user/{id}/checkIfAlreadyFollow")
     fun checkIfAlreadyFollow(@Header("Authorization") authHeader:String,@Path("id") id:String):Call<Boolean>
 
+    @GET("/api/user/{id}/unfollow")
+    fun unfollow(@Header("Authorization") authHeader:String,@Path("id") id:String):Call<Boolean>
+
+    @GET("api/Post/posts/{id}/getUserPosts")
+    fun getUsersPosts(@Header("Authorization") authHeader:String,@Path("id") id:String):Call<MutableList<PostPreview>>
 }

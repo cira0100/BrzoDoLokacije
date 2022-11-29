@@ -1,17 +1,15 @@
 package com.example.brzodolokacije.Activities
 
 import android.annotation.SuppressLint
-import android.graphics.Color
-import android.graphics.PorterDuff
-import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.util.Log
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.ContextCompat
-import androidx.fragment.app.Fragment
+import androidx.core.view.isVisible
+import androidx.fragment.app.FragmentManager
+import androidx.fragment.app.FragmentTransaction
 import com.bumptech.glide.Glide
-import com.example.brzodolokacije.Fragments.FragmentShowUserPosts
+import com.example.brzodolokacije.Fragments.FragmentUserPostsProfileActivity
 import com.example.brzodolokacije.Models.UserReceive
 import com.example.brzodolokacije.R
 import com.example.brzodolokacije.R.*
@@ -21,7 +19,6 @@ import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-import java.security.AccessController.getContext
 
 
 class ActivityUserProfile : AppCompatActivity() {
@@ -35,9 +32,9 @@ class ActivityUserProfile : AppCompatActivity() {
     private lateinit var fragmentContainer: FrameLayout
     private lateinit var userObject:UserReceive
     private lateinit var openChat:ImageButton
+    private lateinit var unfollowUser:Button
 
-    private lateinit var followersList: MutableList<UserReceive>
-    private lateinit var followingList: MutableList<UserReceive>
+    private var follow:Boolean=false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +46,7 @@ class ActivityUserProfile : AppCompatActivity() {
         followingNumber=findViewById(id.tvActivityUserProfileFollowNo)
         profilePicture=findViewById(id.tvActivityProfileProfilePicture)
         followUser=findViewById(id.btnActivityUserProfileFollow)
+        unfollowUser=findViewById(id.btnActivityUserProfileUnFollow)
         showUserPosts=findViewById(id.btnActivityUserProfileShowPosts)
         fragmentContainer=findViewById(id.flActivityProfileFragmentContainer)
         openChat=findViewById(id.activityUserProfileOpenChat)
@@ -74,42 +72,79 @@ class ActivityUserProfile : AppCompatActivity() {
             }
         }
 
+
         checkIfAlreadyFollow()
+        updateUserData()
 
         followUser.setOnClickListener{
+                val api = RetrofitHelper.getInstance()
+                val token = SharedPreferencesHelper.getValue("jwt", this@ActivityUserProfile)
+                var data = api.addFollower("Bearer " + token, userObject._id);
+                data.enqueue(object : Callback<Boolean> {
+                    override fun onResponse(
+                        call: Call<Boolean>,
+                        response: Response<Boolean>
+                    ) {
+                        unfollowUser.isVisible=true
+                        unfollowUser.isClickable=true
+                        unfollowUser.isEnabled=true
+                        followUser.isVisible=false
+                        followUser.isClickable=false
+                        followUser.isEnabled=false
+                        updateUserData()
 
-            checkIfAlreadyFollow()
+                        Toast.makeText(
+                            this@ActivityUserProfile, "PRATITE KORISNIKA", Toast.LENGTH_LONG
+                        ).show();
+                    }
 
+                    override fun onFailure(call: Call<Boolean>, t: Throwable) {
+                        Toast.makeText(
+                            this@ActivityUserProfile, t.toString(), Toast.LENGTH_LONG
+                        ).show();
+                    }
+                })
 
-            val api = RetrofitHelper.getInstance()
-            val token= SharedPreferencesHelper.getValue("jwt", this@ActivityUserProfile)
-            var data=api.addFollower("Bearer "+token,userObject._id);
-            data.enqueue(object : Callback<Boolean> {
-                override fun onResponse(
-                    call: Call<Boolean>,
-                    response: Response<Boolean>
-                ) {
-                    Toast.makeText(
-                        this@ActivityUserProfile, "PRATITE KORISNIKA", Toast.LENGTH_LONG
-                    ).show();
-                }
-                override fun onFailure(call: Call<Boolean>, t: Throwable) {
-                    Toast.makeText(
-                        this@ActivityUserProfile, t.toString(), Toast.LENGTH_LONG
-                    ).show();
-                }
-            })
+        }
+        unfollowUser.setOnClickListener {
+                val api = RetrofitHelper.getInstance()
+                val token = SharedPreferencesHelper.getValue("jwt", this@ActivityUserProfile)
+                var data = api.unfollow("Bearer " + token, userObject._id);
+                data.enqueue(object : Callback<Boolean> {
+                    override fun onResponse(
+                        call: Call<Boolean>,
+                        response: Response<Boolean>
+                    ) {
+                        unfollowUser.isVisible=false
+                        unfollowUser.isClickable=false
+                        unfollowUser.isEnabled=false
+                        followUser.isVisible=true
+                        followUser.isClickable=true
+                        followUser.isEnabled=true
+                        updateUserData()
+                        Toast.makeText(
+                            this@ActivityUserProfile, "VIŠE NE PRATITE KORISNIKA", Toast.LENGTH_LONG
+                        ).show();
+                    }
+
+                    override fun onFailure(call: Call<Boolean>, t: Throwable) {
+                        Toast.makeText(
+                            this@ActivityUserProfile, t.toString(), Toast.LENGTH_LONG
+                        ).show();
+                    }
+                })
+
 
         }
 
         showUserPosts.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putString("user", Gson().toJson(userObject))
-            val fragment = Fragment()
-            fragment.arguments = bundle
-            getSupportFragmentManager().beginTransaction()
-                .replace(id.flActivityProfileFragmentContainer,FragmentShowUserPosts()).commit()
-
+            var fm: FragmentTransaction =supportFragmentManager.beginTransaction()
+            val fragment = FragmentUserPostsProfileActivity()
+            val b = Bundle()
+            b.putString("userId", userObject._id.toString())
+            fragment.arguments = b
+            fm.replace(R.id.flActivityProfileFragmentContainer, fragment)
+            fm.commit()
         }
     }
 
@@ -132,15 +167,34 @@ class ActivityUserProfile : AppCompatActivity() {
                 }
                 var follow = response.body()!!
                 if(follow){
-                    Log.d("success","follow")
-                    followUser.setCompoundDrawablesWithIntrinsicBounds(drawable.ic_outline_person_remove_24,0,0,0)
-                    followUser.text="Ne prati više"
 
+                    Log.d("success","follow")
+                    /*followUser.setCompoundDrawablesWithIntrinsicBounds(drawable.ic_outline_person_remove_24,0,0,0)
+                    followUser.text="Ne prati više"
+                    follow=false
+                    */
+                    unfollowUser.isVisible=true
+                    unfollowUser.isClickable=true
+                    unfollowUser.isEnabled=true
+                    followUser.isVisible=false
+                    followUser.isClickable=false
+                    followUser.isEnabled=false
                 }
-                if(!follow){
+                else{
                     Log.d("success","not follow")
-                    followUser.setCompoundDrawablesWithIntrinsicBounds(drawable.ic_outline_person_add_alt_24,0,0,0)
+                    /*followUser.setCompoundDrawablesWithIntrinsicBounds(drawable.ic_outline_person_add_alt_24,0,0,0)
                     followUser.text="Prati"
+                    follow=true
+                    */
+
+                    unfollowUser.isVisible=false
+                    unfollowUser.isClickable=false
+                    unfollowUser.isEnabled=false
+                    followUser.isVisible=true
+                    followUser.isClickable=true
+                    followUser.isEnabled=true
+
+
                 }
 
             }
@@ -148,7 +202,28 @@ class ActivityUserProfile : AppCompatActivity() {
 
     }
 
-    fun checkIfAlreadyFollowChangeButton(){
+    fun updateUserData(){
+        val api = RetrofitHelper.getInstance()
+        val token = SharedPreferencesHelper.getValue("jwt", this@ActivityUserProfile)
+        var data = api.getProfileFromId("Bearer " + token, userObject._id);
+        data.enqueue(object : Callback<UserReceive> {
+            override fun onResponse(
+                call: Call<UserReceive>,
+                response: Response<UserReceive>
+            ) {
+                var userData=response.body()!!
+                name.text=userData.name
+                postsNumber.text=userData.postNumber.toString()
+                followersNumber.text=userData.followersCount.toString()
+                followingNumber.text=userData.followingCount.toString()
+            }
 
+            override fun onFailure(call: Call<UserReceive>, t: Throwable) {
+                Toast.makeText(
+                    this@ActivityUserProfile, t.toString(), Toast.LENGTH_LONG
+                ).show();
+            }
+        })
     }
+
 }
