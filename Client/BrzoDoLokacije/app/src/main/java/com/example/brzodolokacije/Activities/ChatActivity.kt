@@ -21,6 +21,7 @@ import com.example.brzodolokacije.chat.SignalRListener
 import com.example.brzodolokacije.databinding.ActivityChatBinding
 import retrofit2.Call
 import retrofit2.Response
+import java.util.*
 
 class ChatActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
 
@@ -83,9 +84,11 @@ class ChatActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
                     if(!messages.isNullOrEmpty()){
                         var dbHelper= DBHelper.getInstance(this@ChatActivity)
                         for( message in messages){
+                            var cal: Calendar = Calendar.getInstance()
+                            cal.time=message.timestamp
                             dbHelper.addMessage(
                                 Message(message.senderId+message.timestamp,message.senderId,
-                                JWT(SharedPreferencesHelper.getValue("jwt",this@ChatActivity)!!).claims["id"]?.asString()!!,message.messagge,message.timestamp),false)
+                                JWT(SharedPreferencesHelper.getValue("jwt",this@ChatActivity)!!).claims["id"]?.asString()!!,message.messagge,message.timestamp,cal),false)
                         }
                     }
                     requestForChats()

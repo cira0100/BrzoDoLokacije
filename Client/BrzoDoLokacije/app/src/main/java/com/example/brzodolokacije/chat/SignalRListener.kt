@@ -14,6 +14,7 @@ import com.microsoft.signalr.Action1
 import com.microsoft.signalr.HubConnection
 import com.microsoft.signalr.HubConnectionBuilder
 import com.microsoft.signalr.HubConnectionState
+import java.util.*
 
 
 class SignalRListener private constructor(val activity: Activity){
@@ -62,8 +63,10 @@ class SignalRListener private constructor(val activity: Activity){
     }
 
     fun addToDbAndloadMessageIfInChat(message:MessageReceive,activity: Activity){
+        var cal:Calendar= Calendar.getInstance()
+        cal.time=message.timestamp
         dbHelper.addMessage(Message(message.senderId+message.timestamp,message.senderId,
-        JWT(SharedPreferencesHelper.getValue("jwt",activity)!!).claims["id"]?.asString()!!,message.messagge,message.timestamp),false)
+        JWT(SharedPreferencesHelper.getValue("jwt",activity)!!).claims["id"]?.asString()!!,message.messagge,message.timestamp,cal),false)
         if(activity is ChatActivity){
             if(activity.clickedChat?.userId==message.senderId){
                 activity.clickedChat?.requestMessages()

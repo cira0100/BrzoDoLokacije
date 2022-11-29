@@ -24,6 +24,7 @@ import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Response
+import java.util.*
 
 class ChatActivityConversation : AppCompatActivity() {
 
@@ -78,6 +79,9 @@ class ChatActivityConversation : AppCompatActivity() {
                                     if(response.isSuccessful()){
                                         //zahtev da se posalje poruka
                                         var responseMessage=response.body()
+                                        var cal: Calendar = Calendar.getInstance()
+                                        cal.time=responseMessage?.timestamp
+                                        responseMessage?.usableTimeStamp=cal
                                         dbConnection?.addMessage(responseMessage!!)
                                         requestMessages()
                                         binding.etNewMessage.text?.clear()
@@ -115,6 +119,9 @@ class ChatActivityConversation : AppCompatActivity() {
                         if(response.isSuccessful()){
                             //zahtev da se posalje poruka
                             var responseMessage=response.body()
+                            var cal: Calendar = Calendar.getInstance()
+                            cal.time=responseMessage?.timestamp
+                            responseMessage?.usableTimeStamp=cal
                             dbConnection?.addMessage(responseMessage!!)
                             requestMessages()
                             binding.etNewMessage.text?.clear()
