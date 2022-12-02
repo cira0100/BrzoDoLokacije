@@ -3,12 +3,9 @@ package com.example.brzodolokacije.Activities
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
-import android.media.Image
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.provider.ContactsContract.CommonDataKinds.Im
 import android.util.Log
-import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -24,7 +21,6 @@ import com.example.brzodolokacije.Services.SharedPreferencesHelper
 import com.example.brzodolokacije.databinding.ActivitySinglePostBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
-import okhttp3.ResponseBody
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
@@ -42,7 +38,7 @@ class ActivitySinglePost : AppCompatActivity() {
     private var adapterComments: RecyclerView.Adapter<CommentsAdapter.ViewHolder>? = null
     private var recyclerViewImages: RecyclerView?=null
     private var recyclerViewComments: RecyclerView?=null
-    private lateinit var post:PostPreview
+    public  lateinit var post:PostPreview
     private var comments:MutableList<CommentSend>?=mutableListOf()
     private var starNumber:Number=0
     private lateinit var userData:UserReceive
@@ -114,9 +110,9 @@ class ActivitySinglePost : AppCompatActivity() {
 
     fun buildRecyclerViewComments(){
         recyclerViewComments=binding.rvComments
-        adapterComments=CommentsAdapter(comments as MutableList<CommentSend>)
+        adapterComments=CommentsAdapter(comments as MutableList<CommentSend>,this@ActivitySinglePost)
         layoutManagerComments= LinearLayoutManager(this@ActivitySinglePost,LinearLayoutManager.VERTICAL,false)
-        recyclerViewComments!!.setHasFixedSize(true)
+        recyclerViewComments!!.setHasFixedSize(false)
         recyclerViewComments!!.layoutManager=layoutManagerComments
         recyclerViewComments!!.adapter= adapterComments
     }
@@ -245,9 +241,9 @@ class ActivitySinglePost : AppCompatActivity() {
                         if(comments!=null && comments!!.isNotEmpty()){
                             buildRecyclerViewComments()
                             if(comments!=null)
-                                binding.tvCommentCount.text=comments?.size.toString()
+                                binding.tvCommentCount.text=countComments(comments!!).toString()
                             else
-                                binding.tvCommentCount.text="0"
+                                binding.tvCommentCount.text="12"
                         }
                     }else{
                         if(response.errorBody()!=null)
@@ -265,8 +261,7 @@ class ActivitySinglePost : AppCompatActivity() {
         else{
             (adapterComments as CommentsAdapter).items.add(0,newComment)
             recyclerViewComments?.adapter=adapterComments
-            Log.d("main",newComment.username)
-            binding.tvCommentCount.text=comments?.size.toString()
+            addedComment()
         }
     }
 
@@ -367,5 +362,19 @@ class ActivitySinglePost : AppCompatActivity() {
 
             }
         })
+    }
+    fun countComments(comments:List<CommentSend>):Int{
+        var count:Int=0
+        for(c in comments){
+            if(c.replies!=null)
+                count=count+countComments(c.replies!!)
+            count=count+1
+        }
+        return count
+    }
+
+    public fun addedComment(){
+        binding.tvCommentCount.text=(Integer.parseInt(binding.tvCommentCount.text.toString())+1).toString()
+        binding.tvCommentCount.invalidate()
     }
 }
