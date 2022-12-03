@@ -530,5 +530,30 @@ namespace Api.Services
             taggedposts = fiveoftop5tags.Distinct().OrderByDescending(x => x.createdAt).ToList();
             return taggedposts;
         }
+        public async Task<Boolean> addRemoveFavourite(string postId)
+        {
+            string userId = _httpContext.HttpContext.User.FindFirstValue("id");
+            var result = false;
+            Post post = await _posts.Find(x => x._id == postId).FirstOrDefaultAsync();
+            if (userId == null || post==null)
+                return result;
+            if (post.favorites == null)
+                post.favorites = new List<string>();
+            if (post.favorites.Contains(userId))
+            {
+                post.favorites.Remove(userId);
+                result = false;
+            }
+            else
+            {
+                post.favorites.Add(userId);
+                result = true;
+
+            }
+            await _posts.ReplaceOneAsync(x => x._id == postId, post);
+            return result;
+
+        }
     }
+    
 }

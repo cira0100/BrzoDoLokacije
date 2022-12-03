@@ -186,5 +186,11 @@ namespace Api.Controllers
             var userid = await _userService.UserIdFromJwt();
             return Ok(await _postService.Recommended(userid));
         }
+        [HttpGet("favourite/{id}")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<bool>> addRemoveFavourite(string id)
+        {
+            return Ok(await _postService.addRemoveFavourite(id));
+        }
     }
 }
