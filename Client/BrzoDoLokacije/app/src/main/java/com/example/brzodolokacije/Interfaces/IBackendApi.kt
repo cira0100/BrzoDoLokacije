@@ -109,5 +109,7 @@ interface IBackendApi {
 
     @GET("/api/user/{id}/myFollowers")
     fun getMyFollowers(@Header("Authorization") authHeader:String):Call <MutableList<UserReceive>>
+    @GET("/api/Post/favourite/{id}")
+    fun addRemoveFavourite(@Header("Authorization") authHeader:String,@Path("id") id:String):Call <Boolean>
 
 }

@@ -89,6 +89,7 @@ namespace Api.Services
             p.createdAt = post.createdAt;
             p.tags = post.tags;
             p.ratingscount = post.ratings.Count();
+            p.favourites = post.favourites;
             if (post.ratings.Count() > 0)
             {
                 List<int> ratings = new List<int>();
@@ -537,16 +538,16 @@ namespace Api.Services
             Post post = await _posts.Find(x => x._id == postId).FirstOrDefaultAsync();
             if (userId == null || post==null)
                 return result;
-            if (post.favorites == null)
-                post.favorites = new List<string>();
-            if (post.favorites.Contains(userId))
+            if (post.favourites == null)
+                post.favourites = new List<string>();
+            if (post.favourites.Contains(userId))
             {
-                post.favorites.Remove(userId);
+                post.favourites.Remove(userId);
                 result = false;
             }
             else
             {
-                post.favorites.Add(userId);
+                post.favourites.Add(userId);
                 result = true;
 
             }

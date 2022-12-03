@@ -6,12 +6,14 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.Log
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.auth0.android.jwt.JWT
 import com.example.brzodolokacije.Adapters.CommentsAdapter
 import com.example.brzodolokacije.Adapters.PostImageAdapter
 import com.example.brzodolokacije.Models.*
@@ -38,6 +40,7 @@ class ActivitySinglePost : AppCompatActivity() {
     private var adapterComments: RecyclerView.Adapter<CommentsAdapter.ViewHolder>? = null
     private var recyclerViewImages: RecyclerView?=null
     private var recyclerViewComments: RecyclerView?=null
+    private var favouriteImage:ImageView?=null
     public  lateinit var post:PostPreview
     private var comments:MutableList<CommentSend>?=mutableListOf()
     private var starNumber:Number=0
@@ -56,7 +59,7 @@ class ActivitySinglePost : AppCompatActivity() {
         recyclerViewImages = binding.rvMain
         buildRecyclerViewComments()
         requestGetComments()
-
+        favouriteImage=binding.ivFavourite
         // set recyclerView attributes
         recyclerViewImages?.setHasFixedSize(true)
         recyclerViewImages?.layoutManager = layoutManagerImages
@@ -64,7 +67,7 @@ class ActivitySinglePost : AppCompatActivity() {
         loadTextComponents()
         setRatingListeners()
         translateOwnerIdToName(post.ownerId)
-
+        loadFavourite()
         val alreadyrated= RatingReceive(starNumber.toInt(),post._id)
         requestAddRating(alreadyrated)
 
@@ -78,6 +81,42 @@ class ActivitySinglePost : AppCompatActivity() {
             getMap()
 
         }
+        favouriteImage!!.setOnClickListener{
+            addRemoveFavourite()
+        }
+    }
+    fun loadFavourite(){
+        if(post.favourites!=null){
+            var jwtString=SharedPreferencesHelper.getValue("jwt",this)
+            var jwt: JWT = JWT(jwtString!!)
+            var userId=jwt.getClaim("id").asString()
+            if(post.favourites!!.contains(userId))
+            {
+                favouriteImage!!.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_baseline_favorite_24))
+            }else{
+                favouriteImage!!.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_baseline_favorite_border_24));
+
+            }
+
+        }
+    }
+    fun addRemoveFavourite(){
+        var token= SharedPreferencesHelper.getValue("jwt", this).toString()
+        val Api= RetrofitHelper.getInstance()
+        val request=Api.addRemoveFavourite("Bearer "+token,post._id)
+        request.enqueue(object : retrofit2.Callback<Boolean?> {
+            override fun onResponse(call: Call<Boolean?>, response: Response<Boolean?>) {
+                if(response.isSuccessful && response.body() == true)
+                    favouriteImage!!.setImageDrawable(ContextCompat.getDrawable(this@ActivitySinglePost, R.drawable.ic_baseline_favorite_24))
+                else
+                    favouriteImage!!.setImageDrawable(ContextCompat.getDrawable(this@ActivitySinglePost, R.drawable.ic_baseline_favorite_border_24));
+            }
+
+            override fun onFailure(call: Call<Boolean?>, t: Throwable) {
+
+            }
+        })
+
     }
     fun getMap(){
         val mapDialogue = BottomSheetDialog(this@ActivitySinglePost, android.R.style.Theme_Black_NoTitleBar)
