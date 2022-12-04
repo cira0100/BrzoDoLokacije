@@ -3,6 +3,7 @@ package com.example.brzodolokacije.Fragments
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,6 +29,7 @@ import com.example.brzodolokacije.databinding.FragmentShowPostsBinding
 import com.example.brzodolokacije.paging.SearchPostsViewModel
 import com.example.brzodolokacije.paging.SearchPostsViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import com.google.android.material.button.MaterialButton
 import kotlinx.android.synthetic.main.fragment_show_posts.*
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
@@ -47,6 +49,7 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private var recyclerView: RecyclerView?=null
     private var gridManagerVar: RecyclerView.LayoutManager?=null
     private var swipeRefreshLayout:SwipeRefreshLayout?=null
+    private lateinit var searchButton: MaterialButton
     private lateinit var searchPostsViewModel:SearchPostsViewModel
     private var searchParams:SearchParams?= SearchParams("6385b79d7e1a2c93575e1ef1",1,1)
     private lateinit var btnFilter:ImageButton
@@ -65,6 +68,9 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         linearManagerVar= LinearLayoutManager(activity)
         gridManagerVar=GridLayoutManager(activity,2)
     }
+    fun searchText(){
+        Log.d("MAIN","TODO")
+    }
     fun onTextEnter(){
         var api=RetrofitHelper.getInstance()
         var jwtString= SharedPreferencesHelper.getValue("jwt",requireActivity())
@@ -78,7 +84,6 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 if(response.isSuccessful){
                     var existingLocation=responseLocations
                     responseLocations=response.body()!!
-                    var tempList=mutableListOf<String>()
                     if(existingLocation!=null && existingLocation.size>0)
                         for(loc in existingLocation!!){
                             spinnerAdapter!!.remove(loc.name)
@@ -188,10 +193,25 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             showBottomSheetSort()
         }
         searchBar=rootView.findViewById(R.id.etFragmentShowPostsSearch) as AutoCompleteTextView
+        searchButton=rootView.findViewById<View>(R.id.mbFragmentHomePageSearch) as MaterialButton
         setUpSpinner()
+        searchButton.setOnClickListener{
+            searchText()
+        }
         searchBar.addTextChangedListener{
             onTextEnter()
         }
+        searchBar.setOnKeyListener(View.OnKeyListener { v1, keyCode, event -> // If the event is a key-down event on the "enter" button
+            if (event.action === KeyEvent.ACTION_DOWN &&
+                keyCode == KeyEvent.KEYCODE_ENTER
+            ) {
+                // Perform action on key press
+                searchText()
+                return@OnKeyListener true
+            }
+            false
+        })
+
         return rootView
     }
 
