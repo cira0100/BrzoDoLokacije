@@ -1,11 +1,14 @@
 package com.example.brzodolokacije.Activities
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.Log
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -155,6 +158,10 @@ class ActivitySinglePost : AppCompatActivity() {
         recyclerViewComments!!.layoutManager=layoutManagerComments
         recyclerViewComments!!.adapter= adapterComments
     }
+    fun hideKeyboard(item: EditText){
+        var imm: InputMethodManager =this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(item.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+    }
 
     fun setRatingListeners() {
             val emptyStar = R.drawable.empty_star
@@ -255,6 +262,7 @@ class ActivitySinglePost : AppCompatActivity() {
                     var newComment=response.body()!!
                     requestGetComments(newComment)
                     binding.NewComment.text.clear()
+                    hideKeyboard(binding.NewComment)
                 }else{
                     if(response.errorBody()!=null)
                         Log.d("main1",response.message().toString())
