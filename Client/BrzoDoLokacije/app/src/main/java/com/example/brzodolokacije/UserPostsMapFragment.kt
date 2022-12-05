@@ -9,7 +9,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import com.example.brzodolokacije.Activities.ActivitySinglePost
+import com.example.brzodolokacije.Fragments.FragmentProfile
 import com.example.brzodolokacije.Models.PostPreview
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
@@ -26,6 +28,7 @@ class UserPostsMapFragment : Fragment() {
 
     var map: MapView? = null
     var id:String?=null
+    var backButton:ImageView?=null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -35,9 +38,18 @@ class UserPostsMapFragment : Fragment() {
         val ctx: Context = requireContext()
         Configuration.getInstance().load(ctx, PreferenceManager.getDefaultSharedPreferences(ctx));
         map=view.findViewById(R.id.FragmentUserPostsMapMapView) as MapView
+        backButton=view.findViewById(R.id.btnFragmentUserPostsBack) as ImageView
         map!!.setTileSource(TileSourceFactory.MAPNIK);
         id=this.requireArguments().getString("id");//https://stackoverflow.com/questions/17436298/how-to-pass-a-variable-from-activity-to-fragment-and-pass-it-back
         setUpMap()
+        backButton!!.setOnClickListener{
+            //SUBJECT TO CHANGE
+            val fragmentProfile = FragmentProfile()
+            fragmentManager?.beginTransaction()
+                ?.replace(com.example.brzodolokacije.R.id.flNavigationFragment,fragmentProfile)
+                ?.commit()
+
+        }
         return  view
     }
     fun setUpMap(){
@@ -56,11 +68,17 @@ class UserPostsMapFragment : Fragment() {
                 if(response.isSuccessful()){
                     var postList=response.body()
                     if (postList != null) {
+                        var flag=true
                         for(post in postList){
                             Log.d("main",post.toString())
                             val startMarker = Marker(map)
                             startMarker.setPosition(GeoPoint(post.location.latitude,post.location.longitude))
                             startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                            if(flag){
+                                flag=false
+                                map!!.controller.animateTo(GeoPoint(post.location.latitude,post.location.longitude))
+                            }
+
                             startMarker.setOnMarkerClickListener(object:
                                 Marker.OnMarkerClickListener {
                                 override fun onMarkerClick(
