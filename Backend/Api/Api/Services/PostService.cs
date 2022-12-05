@@ -626,6 +626,31 @@ namespace Api.Services
 
             return tosend;
         }
+
+        public async Task<List<PostSend>> BestPostForAllLocationsInRadius(Coords coords, double radius)
+        {
+            if (coords == null)
+                return null;
+            var lista = await _locations.Find(_ => true).ToListAsync();
+            var inradius = new List<Location>();
+            var tosend = new List<PostSend>();
+            if (lista != null)
+            {
+                foreach (var elem in lista)
+                {
+                    if (Math.Abs(elem.latitude - coords.latitude) < radius && Math.Abs(elem.longitude - coords.longitude) < radius)
+                        inradius.Add(elem);
+                }
+                foreach (var elem in inradius)
+                {
+                    var locposts = await SearchPosts(elem._id, 0, 1, 1);
+                    var best = locposts.posts.Take(1).FirstOrDefault();
+                    if(best != null)
+                        tosend.Add(best);
+                }
+            }
+            return tosend;
+        }
     }
     
 }
