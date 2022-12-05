@@ -23,4 +23,9 @@
         <item name="cornerSizeTopLeft">10dp</item>
         <item name="cornerSizeTopRight">10dp</item>
     </style>
+
+    <style name="title">
+        <item name="android:textSize">@dimen/header1_size</item>
+        <item name="android:textStyle">bold</item>
+    </style>
 </resources>

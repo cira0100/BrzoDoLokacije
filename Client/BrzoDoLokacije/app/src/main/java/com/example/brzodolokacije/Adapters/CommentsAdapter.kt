@@ -125,7 +125,7 @@ class CommentsAdapter (val items : MutableList<CommentSend>,val activity: Activi
             var adapter:CommentsAdapter=rv.adapter as CommentsAdapter
             adapter.items.add(0,newComment)
             rv.adapter=adapter
-            (activity as ActivitySinglePost).addedComment()
+            //(activity as ActivitySinglePost).addedComment()
         }
     }
 }

@@ -6,10 +6,17 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.Log
+import android.view.ViewGroup
+import android.view.ViewGroup.LayoutParams
+import android.widget.Button
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.brzodolokacije.Adapters.CommentsAdapter
@@ -21,6 +28,7 @@ import com.example.brzodolokacije.Services.SharedPreferencesHelper
 import com.example.brzodolokacije.databinding.ActivitySinglePostBinding
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
+import kotlinx.android.synthetic.main.activity_single_post.view.*
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
@@ -43,17 +51,38 @@ class ActivitySinglePost : AppCompatActivity() {
     private var starNumber:Number=0
     private lateinit var userData:UserReceive
     private lateinit var user:TextView
+    private lateinit var linearLayout2:ConstraintLayout
+    private lateinit var btnChangeHeightUp:ImageView
+    private lateinit var btnChangeHeightDown:ImageView
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding=ActivitySinglePostBinding.inflate(layoutInflater)
         setContentView(binding.root)
         post= intent.extras?.getParcelable("selectedPost")!!
+        btnChangeHeightUp=findViewById(R.id.activitySinglePostChangeHeightUp)
+        btnChangeHeightDown=findViewById(R.id.activitySinglePostChangeHeightDown)
+
+        btnChangeHeightDown.isVisible=false
+        btnChangeHeightDown.isGone=true
+        btnChangeHeightDown.isClickable=false
+        btnChangeHeightUp.isVisible=true
+        btnChangeHeightUp.isGone=false
+        btnChangeHeightUp.isClickable=true
+
+        linearLayout2=findViewById(R.id.linearLayout2)
+
+        linearLayout2.setOnClickListener {
+            linearLayout2.getLayoutParams().height= ViewGroup.LayoutParams.MATCH_PARENT;
+        }
+
 
         //instantiate adapter and linearLayout
         adapterImages= PostImageAdapter(this@ActivitySinglePost, post.images as MutableList<PostImage>)
         layoutManagerImages= LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false)
         recyclerViewImages = binding.rvMain
+        /*
         buildRecyclerViewComments()
         requestGetComments()
 
@@ -67,7 +96,7 @@ class ActivitySinglePost : AppCompatActivity() {
 
         val alreadyrated= RatingReceive(starNumber.toInt(),post._id)
         requestAddRating(alreadyrated)
-
+        */
         binding.tvUser.setOnClickListener {
             val intent: Intent = Intent(this@ActivitySinglePost,ActivityUserProfile::class.java)
             var b= Bundle()
@@ -78,16 +107,39 @@ class ActivitySinglePost : AppCompatActivity() {
             getMap()
 
         }
+
+        btnChangeHeightUp.setOnClickListener {
+            btnChangeHeightUp.isVisible=false
+            btnChangeHeightUp.isGone=true
+            btnChangeHeightUp.isClickable=false
+            btnChangeHeightDown.isVisible=true
+            btnChangeHeightDown.isGone=false
+            btnChangeHeightDown.isClickable=true
+            linearLayout2.setMinHeight(0);
+            linearLayout2.setMinimumHeight(0);
+            linearLayout2.getLayoutParams().height= ViewGroup.LayoutParams.MATCH_PARENT;
+        }
+        btnChangeHeightDown.setOnClickListener {
+            btnChangeHeightDown.isVisible=false
+            btnChangeHeightDown.isGone=true
+            btnChangeHeightDown.isClickable=false
+            btnChangeHeightUp.isVisible=true
+            btnChangeHeightUp.isGone=false
+            btnChangeHeightUp.isClickable=true
+            linearLayout2.setMinHeight(0);
+            linearLayout2.setMinimumHeight(0);
+            linearLayout2.getLayoutParams().height= ViewGroup.LayoutParams.WRAP_CONTENT;
+        }
     }
     fun getMap(){
-        val mapDialogue = BottomSheetDialog(this@ActivitySinglePost, android.R.style.Theme_Black_NoTitleBar)
+        /*val mapDialogue = BottomSheetDialog(this@ActivitySinglePost, android.R.style.Theme_Black_NoTitleBar)
         mapDialogue.getWindow()?.setBackgroundDrawable(ColorDrawable(Color.argb(100, 0, 0, 0)))
         mapDialogue.setContentView(R.layout.map_dialogue)
         mapDialogue.setCancelable(true)
-        mapDialogue.setCanceledOnTouchOutside(true)
+        mapDialogue.setCanceledOnTouchOutside(true)*/
         var map: MapView? = null
         Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
-        map=mapDialogue.findViewById(R.id.MapDialogueMapView)
+        map=findViewById(R.id.MapDialogueMapView)
             //findViewById(R.id.MapDialogueMapView) as MapView
         map!!.setTileSource(TileSourceFactory.MAPNIK);
         map!!.setBuiltInZoomControls(true);
@@ -103,11 +155,10 @@ class ActivitySinglePost : AppCompatActivity() {
         startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_CENTER)
         map!!.getOverlays().add(startMarker)
         map!!.controller.setCenter(LocMarker)
-        mapDialogue.show()
+
 
     }
-
-
+/*
     fun buildRecyclerViewComments(){
         recyclerViewComments=binding.rvComments
         adapterComments=CommentsAdapter(comments as MutableList<CommentSend>,this@ActivitySinglePost)
@@ -377,4 +428,6 @@ class ActivitySinglePost : AppCompatActivity() {
         binding.tvCommentCount.text=(Integer.parseInt(binding.tvCommentCount.text.toString())+1).toString()
         binding.tvCommentCount.invalidate()
     }
+
+ */
 }
