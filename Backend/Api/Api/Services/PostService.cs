@@ -651,6 +651,43 @@ namespace Api.Services
             }
             return tosend;
         }
+
+        public async Task<UserStats> UserStats(string userid)
+        {
+            var posts = await GetUsersPosts(userid);
+            var stats = new UserStats();
+            double ratingsum = 0;
+            stats.averagePostRatingOnPosts = 0;
+            stats.numberOfRatingsOnPosts = 0;
+            stats.numberOfPosts = 0;
+            stats.totalViews = 0;
+            stats.monthlyViews = new List<MonthlyViews>();
+
+           
+            if(posts != null)
+            {
+                for(int i = 1; i <= 12; i++)
+                {
+                    var novi = new MonthlyViews();
+                    novi.month = i;
+                    novi.views = 0;
+                    stats.monthlyViews.Add(novi);
+                }
+                
+                foreach (var post in posts)
+                {
+                    var month = post.createdAt.Month;
+                    stats.monthlyViews.FirstOrDefault(x => x.month == month).views += post.views;
+                    stats.totalViews += post.views;
+                    stats.numberOfRatingsOnPosts += post.ratingscount;
+                    stats.numberOfPosts++;
+                    ratingsum += post.ratings * post.ratingscount;
+                }
+                if(stats.numberOfRatingsOnPosts > 0) //don't forget to check div by 0 jesus
+                    stats.averagePostRatingOnPosts = ratingsum / stats.numberOfRatingsOnPosts;
+            }
+            return stats;
+        }
     }
     
 }

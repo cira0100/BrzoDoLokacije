@@ -30,5 +30,6 @@ namespace Api.Interfaces
         Task<Boolean> addRemoveFavourite(string postId);
         Task<List<Trending>> TrendingTags();
         Task<List<PostSend>> BestPostForAllLocationsInRadius(Coords coords, double radius);
+        Task<UserStats> UserStats(string userid);
     }
 }
