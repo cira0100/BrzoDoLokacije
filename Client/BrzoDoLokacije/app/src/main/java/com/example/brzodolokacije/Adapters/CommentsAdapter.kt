@@ -8,15 +8,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.bumptech.glide.Glide
 import com.example.brzodolokacije.Activities.ActivitySinglePost
+import com.example.brzodolokacije.Interfaces.IBackendApi
 import com.example.brzodolokacije.Models.CommentReceive
 import com.example.brzodolokacije.Models.CommentSend
-import com.example.brzodolokacije.R
+import com.example.brzodolokacije.Models.UserReceive
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
 import com.example.brzodolokacije.databinding.SingleCommentBinding
+import kotlinx.android.synthetic.main.single_comment.view.*
 import retrofit2.Call
 import retrofit2.Response
 
@@ -24,10 +28,14 @@ class CommentsAdapter (val items : MutableList<CommentSend>,val activity: Activi
     : RecyclerView.Adapter<CommentsAdapter.ViewHolder>(){
     //constructer has one argument - list of objects that need to be displayed
     //it is bound to xml of single item
+    private var api: IBackendApi?=null
+    private var token:String?=null
     private lateinit var binding: SingleCommentBinding
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         binding=SingleCommentBinding.inflate(inflater,parent,false)
+        api=RetrofitHelper.getInstance()
+        token=SharedPreferencesHelper.getValue("jwt",activity)
         return ViewHolder(binding)
     }
     override fun onBindViewHolder(holder: ViewHolder, position: Int){
@@ -46,24 +54,37 @@ class CommentsAdapter (val items : MutableList<CommentSend>,val activity: Activi
             binding.apply {
                 tvCommentAuthor.text=item.username
                 tvCommentText.text=item.comment
-                etReply.visibility= View.GONE
-                etReply.forceLayout()
+                Log.d("info",tvCommentText.text.toString()+binding.toString())
+                requestProfilePic(item)
+                llReply.visibility=View.GONE
+                llReply.forceLayout()
+                if(item.parentId!=""){
+                    btnReply.visibility=View.GONE
+                    btnReply.forceLayout()
+                }
+                else{
+                    btnReply.setOnClickListener {
+                        llReply.visibility=View.VISIBLE
+                        llReply.forceLayout()
+                        etReply.requestFocus()
+                    }
+                }
                 etReply.showSoftInputOnFocus=true
                 etReply.setOnFocusChangeListener { _, focused ->
                     if(!focused){
-                        etReply.visibility= View.GONE
-                        etReply.forceLayout()
-                        btnReply.setImageResource(R.drawable.reply)
+                        llReply.visibility= View.GONE
+                        llReply.forceLayout()
+                        //btnReply.setImageResource(R.drawable.)
                         hideKeyboard(etReply)
                     }
                     else{
                         showKeyboard(etReply)
-                        btnReply.setImageResource(R.drawable.post_comment)
-                        btnReply.setOnClickListener{
+                        btnPostReply.setOnClickListener{
                             if(etReply.text.isNotEmpty()){
                                 val postId=(activity as ActivitySinglePost).post._id
+                                Log.d("main",binding.toString())
                                 val comment= CommentReceive(etReply.text.toString(),item._id)
-                                requestAddComment(binding,comment,postId)
+                                requestAddComment(comment,postId)
                             }
                             else{
                               Log.d("komentari","greska")
@@ -71,14 +92,10 @@ class CommentsAdapter (val items : MutableList<CommentSend>,val activity: Activi
                         }
                     }
                 }
-                btnReply.setOnClickListener {
-                    etReply.visibility=View.VISIBLE
-                    etReply.forceLayout()
-                    etReply.requestFocus()
-                }
+
 
                 var rv: RecyclerView = rvReplies
-                rv.setHasFixedSize(false)
+                rv.setHasFixedSize(true)
                 rv.layoutManager=LinearLayoutManager(activity,LinearLayoutManager.VERTICAL,false)
                 if(item.replies!=null)
                     rv.adapter=CommentsAdapter(item.replies as MutableList<CommentSend>,activity)
@@ -88,14 +105,14 @@ class CommentsAdapter (val items : MutableList<CommentSend>,val activity: Activi
         }
         fun showKeyboard(item:EditText){
             var imm:InputMethodManager=activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.showSoftInput(item,InputMethodManager.SHOW_FORCED)
+            imm.showSoftInput(item,InputMethodManager.SHOW_IMPLICIT)
         }
 
         fun hideKeyboard(item: EditText){
             var imm:InputMethodManager=activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-            imm.hideSoftInputFromWindow(item.windowToken,InputMethodManager.HIDE_IMPLICIT_ONLY)
+            imm.hideSoftInputFromWindow(item.windowToken,InputMethodManager.HIDE_NOT_ALWAYS)
         }
-        fun requestAddComment(binding:SingleCommentBinding,comment:CommentReceive,postId:String){
+        fun requestAddComment(comment:CommentReceive,postId:String){
             val postApi= RetrofitHelper.getInstance()
             val token= SharedPreferencesHelper.getValue("jwt", activity)
             val request=postApi.addComment("Bearer "+token,postId,comment)
@@ -103,9 +120,10 @@ class CommentsAdapter (val items : MutableList<CommentSend>,val activity: Activi
                 override fun onResponse(call: Call<CommentSend?>, response: Response<CommentSend?>) {
                     if(response.isSuccessful){
                         var newComment=response.body()!!
-                        requestGetComments(binding,newComment)
-                        binding.etReply.text.clear()
-                        hideKeyboard(binding.etReply)
+                        requestGetComments(newComment)
+                        itemView.etReply.text.clear()
+                        hideKeyboard(itemView.etReply)
+                        itemView.etReply.clearFocus()
                     }else{
                         if(response.errorBody()!=null)
                             Log.d("main1",response.message().toString())
@@ -120,12 +138,47 @@ class CommentsAdapter (val items : MutableList<CommentSend>,val activity: Activi
             })
         }
 
-        private fun requestGetComments(binding:SingleCommentBinding,newComment: CommentSend) {
-            var rv: RecyclerView = binding.rvReplies
+        private fun requestGetComments(newComment: CommentSend) {
+            var rv: RecyclerView = itemView.rvReplies
             var adapter:CommentsAdapter=rv.adapter as CommentsAdapter
             adapter.items.add(0,newComment)
             rv.adapter=adapter
             //(activity as ActivitySinglePost).addedComment()
+        }
+
+        private fun requestProfilePic(item:CommentSend){
+            val request2=api?.getProfileFromId("Bearer "+token,
+                item.userId
+            )
+            request2?.enqueue(object : retrofit2.Callback<UserReceive?> {
+                override fun onResponse(
+                    call: Call<UserReceive?>,
+                    response: Response<UserReceive?>
+                ) {
+                    if (response.isSuccessful) {
+                        var user = response.body()!!
+                        if (user.pfp != null) {
+                            Glide.with(activity)
+                                .load(RetrofitHelper.baseUrl + "/api/post/image/compress/" + user.pfp!!._id)
+                                .circleCrop()
+                                .into(itemView.ivPfp)
+                        }
+                    } else {
+                        Toast.makeText(
+                            activity, "los id",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        itemView.tvCommentAuthor.text = "nije nadjen korisnik"
+                    }
+                }
+
+                override fun onFailure(call: Call<UserReceive?>, t: Throwable) {
+                    Toast.makeText(
+                        activity, "neuspesan zahtev",
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+            })
         }
     }
 }

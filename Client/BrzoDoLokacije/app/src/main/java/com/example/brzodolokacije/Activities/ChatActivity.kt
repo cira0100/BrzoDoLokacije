@@ -20,6 +20,7 @@ import com.example.brzodolokacije.Services.SharedPreferencesHelper
 import com.example.brzodolokacije.chat.SignalRListener
 import com.example.brzodolokacije.databinding.ActivityChatBinding
 import retrofit2.Call
+import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
 
@@ -64,6 +65,9 @@ class ChatActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
             intent.putExtra("receiverId","")
             startActivity(intent)
         }
+        findViewById<ImageButton>(R.id.btnBack).setOnClickListener {
+            finish()
+        }
     }
 
     fun requestForChats(){
@@ -77,7 +81,7 @@ class ChatActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
         val api=RetrofitHelper.getInstance()
         val token=SharedPreferencesHelper.getValue("jwt",this@ChatActivity)
         val request2=api?.getNewMessages("Bearer "+token)
-        request2?.enqueue(object : retrofit2.Callback<MutableList<MessageReceive>?> {
+        request2?.enqueue(object : Callback<MutableList<MessageReceive>?> {
             override fun onResponse(call: Call<MutableList<MessageReceive>?>, response: Response<MutableList<MessageReceive>?>) {
                 if(response.isSuccessful()){
                     var messages=response.body()

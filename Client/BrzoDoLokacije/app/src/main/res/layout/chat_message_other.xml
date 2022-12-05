@@ -1,78 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-
-    xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/clMessage"
-    android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-
-    android:layout_marginStart="8dp"
-    android:layout_marginTop="16dp">
+    android:layout_width="match_parent">
 
     <TextView
         android:id="@+id/tvDate"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
-        android:elevation="10dp"
-
+        android:paddingStart="8dp"
         android:paddingTop="4dp"
         android:paddingEnd="8dp"
         android:paddingBottom="4dp"
         android:text="June 10"
         android:textColor="#C0C0C0"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent"/>
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cvContainer"
         android:layout_width="wrap_content"
+        android:minWidth="40dp"
         android:layout_height="30dp"
-        android:layout_margin="5dp"
-        android:elevation="5dp"
-        app:cardCornerRadius="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_marginLeft="10dp"
+        android:backgroundTint="#eef1f6"
+        android:background="@drawable/view_corner_radius"
+        app:cardCornerRadius="15dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvDate">
 
-
-
-        <LinearLayout
-            android:id="@+id/llContainer"
+        <com.google.android.material.textview.MaterialTextView
+            android:id="@+id/tvMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
-            <TextView
-                android:id="@+id/tvMessage"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="5dp"
-                android:text="blabla"
-                app:cardBackgroundColor="#eef1f6"
-                app:cardCornerRadius="12dp"
-                app:cardElevation="0dp"
-                app:cardPreventCornerOverlap="false"
-                app:cardUseCompatPadding="true"
-                app:layout_constraintTop_toBottomOf="@+id/tvDate"/>
-
-        </LinearLayout>
-
+            android:backgroundTint="#eef1f6"
+            android:padding="5dp"
+            android:paddingHorizontal="15dp"
+            android:text="blabla"
+            app:layout_constraintEnd_toEndOf="parent" />
     </androidx.cardview.widget.CardView>
-
 
     <TextView
         android:id="@+id/tvTimestamp"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="4dp"
-        android:layout_marginTop="-5dp"
-        android:text="8:00"
+        android:text="10:00"
         android:textColor="#C0C0C0"
         android:textSize="10sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvDate" />
+        app:layout_constraintBottom_toBottomOf="@+id/cvContainer"
+        app:layout_constraintStart_toEndOf="@+id/cvContainer" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

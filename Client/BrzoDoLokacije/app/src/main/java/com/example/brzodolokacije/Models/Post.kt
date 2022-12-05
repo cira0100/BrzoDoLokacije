@@ -39,7 +39,8 @@ data class PostPreview (
     var ratingscount:Int,
     var createdAt:Date,
     var lastViewed: Date?, //samo za istoriju pregleda
-    var tags:List<String>?
+    var tags:List<String>?,
+    var favourites:List<String>?
 
 
     //nedostaju datum i vreme kreiranja

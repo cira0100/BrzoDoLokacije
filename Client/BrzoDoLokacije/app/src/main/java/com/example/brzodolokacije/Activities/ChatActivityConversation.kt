@@ -1,5 +1,6 @@
 package com.example.brzodolokacije.Activities
 
+import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
 import android.view.View
@@ -37,6 +38,7 @@ class ChatActivityConversation : AppCompatActivity() {
     var dbConnection: DBHelper?=null
     var webSocketConnection:SignalRListener?=null
     var items:MutableList<Message>?=mutableListOf()
+    var userImage:Bitmap?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,6 +46,7 @@ class ChatActivityConversation : AppCompatActivity() {
         setContentView(binding.root)
         userId=intent.extras?.get("userId").toString()
         receiverUsername=intent.extras?.get("username").toString()
+        userImage=intent.extras?.get("pfp") as Bitmap?
         dbConnection=DBHelper.getInstance(this@ChatActivityConversation)
         setHeader()
         setRecyclerView()
@@ -56,85 +59,89 @@ class ChatActivityConversation : AppCompatActivity() {
     private fun setListeners() {
         findViewById<ImageButton>(R.id.btnSendMessage).setOnClickListener {
             var token=SharedPreferencesHelper.getValue("jwt",this@ChatActivityConversation)
-            var messageContent=findViewById<EditText>(R.id.etNewMessage).text.toString()
+            var messageContent=findViewById<EditText>(R.id.etNewMessage).text.trim().toString()
             val Api= RetrofitHelper.getInstance()
-            if(userId.isNullOrEmpty() || userId.equals("null")){
-                //zahtev sa username=om
-                receiverUsername=findViewById<EditText>(R.id.etReceiverUsername).text.toString()
-                val request=Api.getProfile("Bearer "+token,
-                    receiverUsername!!
-                )
-                request.enqueue(object : retrofit2.Callback<UserReceive?> {
-                    override fun onResponse(call: Call<UserReceive?>, response: Response<UserReceive?>) {
-                        if(response.isSuccessful()){
-                            //zahtev da se posalje poruka
-                            userId=response.body()?._id
-                            setHeader()
-                            var message= MessageSend(userId!!,messageContent)
-                            val request2=Api.sendMessage("Bearer "+token,
-                                message
-                            )
-                            request2.enqueue(object : retrofit2.Callback<Message?> {
-                                override fun onResponse(call: Call<Message?>, response: Response<Message?>) {
-                                    if(response.isSuccessful()){
-                                        //zahtev da se posalje poruka
-                                        var responseMessage=response.body()
-                                        var cal: Calendar = Calendar.getInstance()
-                                        cal.time=responseMessage?.timestamp
-                                        responseMessage?.usableTimeStamp=cal
-                                        dbConnection?.addMessage(responseMessage!!)
-                                        requestMessages()
-                                        binding.etNewMessage.text?.clear()
+            if(!messageContent.isNullOrEmpty()){
+                if(userId.isNullOrEmpty() || userId.equals("null")){
+                    //zahtev sa username=om
+                    receiverUsername=findViewById<EditText>(R.id.etReceiverUsername).text.toString()
+                    val request=Api.getProfile("Bearer "+token,
+                        receiverUsername!!
+                    )
+                    request.enqueue(object : retrofit2.Callback<UserReceive?> {
+                        override fun onResponse(call: Call<UserReceive?>, response: Response<UserReceive?>) {
+                            if(response.isSuccessful()){
+                                //zahtev da se posalje poruka
+                                var user:UserReceive=response.body()!!
+                                userId=user._id
+                                setHeader()
+                                var message= MessageSend(userId!!,messageContent)
+                                val request2=Api.sendMessage("Bearer "+token,
+                                    message
+                                )
+                                request2.enqueue(object : retrofit2.Callback<Message?> {
+                                    override fun onResponse(call: Call<Message?>, response: Response<Message?>) {
+                                        if(response.isSuccessful()){
+                                            //zahtev da se posalje poruka
+                                            var responseMessage=response.body()
+                                            var cal: Calendar = Calendar.getInstance()
+                                            cal.time=responseMessage?.timestamp
+                                            responseMessage?.usableTimeStamp=cal
+                                            dbConnection?.addMessage(responseMessage!!,username=user.username)
+                                            requestMessages()
+                                            binding.etNewMessage.text?.clear()
 
+                                        }
+                                        else{
+                                            Toast.makeText(this@ChatActivityConversation,"Pogresno korisnicko ime1.",Toast.LENGTH_LONG).show()
+                                        }
                                     }
-                                    else{
-                                        Toast.makeText(this@ChatActivityConversation,"Pogresno korisnicko ime1.",Toast.LENGTH_LONG).show()
+
+                                    override fun onFailure(call: Call<Message?>, t: Throwable) {
+                                        Toast.makeText(this@ChatActivityConversation,"Pogresno korisnicko ime2.",Toast.LENGTH_LONG).show()
                                     }
-                                }
+                                })
+                            }
+                            else{
+                                Log.d("main",response.message())
+                                //Toast.makeText(this@ChatActivityConversation,"Pogresno korisnicko ime3.",Toast.LENGTH_LONG).show()
+                            }
+                        }
 
-                                override fun onFailure(call: Call<Message?>, t: Throwable) {
-                                    Toast.makeText(this@ChatActivityConversation,"Pogresno korisnicko ime2.",Toast.LENGTH_LONG).show()
-                                }
-                            })
+                        override fun onFailure(call: Call<UserReceive?>, t: Throwable) {
+                            Toast.makeText(this@ChatActivityConversation,"fail.",Toast.LENGTH_LONG).show()
                         }
-                        else{
-                            Log.d("main",response.message())
-                            //Toast.makeText(this@ChatActivityConversation,"Pogresno korisnicko ime3.",Toast.LENGTH_LONG).show()
+                    })
+                }
+                else{
+                    //zahtev da se posalje poruka
+                    var message= MessageSend(userId!!,messageContent)
+                    val request2=Api.sendMessage("Bearer "+token,
+                        message
+                    )
+                    request2.enqueue(object : retrofit2.Callback<Message?> {
+                        override fun onResponse(call: Call<Message?>, response: Response<Message?>) {
+                            if(response.isSuccessful()){
+                                //zahtev da se posalje poruka
+                                var responseMessage=response.body()
+                                var cal: Calendar = Calendar.getInstance()
+                                cal.time=responseMessage?.timestamp
+                                responseMessage?.usableTimeStamp=cal
+                                dbConnection?.addMessage(responseMessage!!,username=receiverUsername)
+                                requestMessages()
+                                binding.etNewMessage.text?.clear()
+                            }
+                            else{
+                                Toast.makeText(this@ChatActivityConversation,"Pogresno korisnicko ime.",Toast.LENGTH_LONG).show()
+                            }
                         }
-                    }
 
-                    override fun onFailure(call: Call<UserReceive?>, t: Throwable) {
-                        Toast.makeText(this@ChatActivityConversation,"fail.",Toast.LENGTH_LONG).show()
-                    }
-                })
-            }
-            else{
-                //zahtev da se posalje poruka
-                var message= MessageSend(userId!!,messageContent)
-                val request2=Api.sendMessage("Bearer "+token,
-                    message
-                )
-                request2.enqueue(object : retrofit2.Callback<Message?> {
-                    override fun onResponse(call: Call<Message?>, response: Response<Message?>) {
-                        if(response.isSuccessful()){
-                            //zahtev da se posalje poruka
-                            var responseMessage=response.body()
-                            var cal: Calendar = Calendar.getInstance()
-                            cal.time=responseMessage?.timestamp
-                            responseMessage?.usableTimeStamp=cal
-                            dbConnection?.addMessage(responseMessage!!)
-                            requestMessages()
-                            binding.etNewMessage.text?.clear()
-                        }
-                        else{
+                        override fun onFailure(call: Call<Message?>, t: Throwable) {
                             Toast.makeText(this@ChatActivityConversation,"Pogresno korisnicko ime.",Toast.LENGTH_LONG).show()
                         }
-                    }
+                    })
+                }
 
-                    override fun onFailure(call: Call<Message?>, t: Throwable) {
-                        Toast.makeText(this@ChatActivityConversation,"Pogresno korisnicko ime.",Toast.LENGTH_LONG).show()
-                    }
-                })
             }
         }
 
@@ -144,19 +151,24 @@ class ChatActivityConversation : AppCompatActivity() {
         if(userId.isNullOrEmpty() || userId.equals("null")){
             binding.cvParentUsername.visibility= View.VISIBLE
             binding.cvParentUsername.forceLayout()
-            binding.tvFragmentTitle.visibility= View.GONE
-            binding.tvFragmentTitle.invalidate()
-            binding.tvFragmentTitle.forceLayout()
+            binding.llHeader.visibility= View.GONE
+            binding.llHeader.invalidate()
+            binding.llHeader.forceLayout()
         }
         else{
-            binding.tvFragmentTitle.visibility= View.VISIBLE
-            binding.tvFragmentTitle.invalidate()
-            binding.tvFragmentTitle.forceLayout()
+            binding.llHeader.visibility= View.VISIBLE
+            binding.llHeader.invalidate()
+            binding.llHeader.forceLayout()
             binding.tvFragmentTitle.text=receiverUsername
             binding.tvFragmentTitle.invalidate()
             binding.cvParentUsername.visibility= View.GONE
             binding.cvParentUsername.forceLayout()
         }
+        binding.btnBack.setOnClickListener {
+            finish()
+        }
+        if(userImage!=null)
+            binding.ivUserImage.setImageBitmap(userImage)
     }
     fun setRecyclerView(setParams:Boolean=true){
         MainScope().launch {
@@ -173,6 +185,7 @@ class ChatActivityConversation : AppCompatActivity() {
             } catch (e: Exception) {
                 Log.d("error", e.message!!)
             }
+            recyclerView?.addOnLayoutChangeListener { _, i, i2, i3, i4, i5, i6, i7, i8 -> recyclerView?.scrollToPosition(items?.size?.minus(1) ?: 0) }
             recyclerView?.scrollToPosition(items?.size?.minus(1) ?: 0)
         }
     }

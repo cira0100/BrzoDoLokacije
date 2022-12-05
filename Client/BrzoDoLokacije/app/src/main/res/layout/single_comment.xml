@@ -3,66 +3,85 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:orientation="vertical"
     android:padding="@dimen/component_padding"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-
-    <ImageView
-        android:layout_width="50dp"
-        android:layout_height="50dp"
-        android:src="@drawable/ic_nav_profile"
-        app:layout_constraintEnd_toStartOf="@+id/tvCommentText"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:layout_editor_absoluteY="27dp" />
-
     <androidx.appcompat.widget.LinearLayoutCompat
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:layout_weight="1">
+        android:orientation="horizontal">
 
-        <TextView
-            android:id="@+id/tvCommentAuthor"
+        <ImageView
+            android:id="@+id/ivPfp"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_nav_profile"
+            app:layout_constraintEnd_toStartOf="@+id/tvCommentText"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            android:scaleType="centerCrop"
+            tools:layout_editor_absoluteY="27dp" />
+        <androidx.appcompat.widget.LinearLayoutCompat
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="autor"
-            android:textStyle="bold"
-            android:padding="@dimen/text_padding"/>
+            android:orientation="vertical"
+            android:layout_weight="1">
 
-        <TextView
-            android:id="@+id/tvCommentText"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:padding="@dimen/text_padding"
-            app:layout_constraintTop_toBottomOf="@id/tvCommentAuthor"
-            tools:layout_editor_absoluteX="54dp" />
-        <androidx.appcompat.widget.LinearLayoutCompat
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layoutDirection="rtl">
-            <ImageButton
-                android:layout_width="50dp"
-                android:layout_height="50dp"
-                android:src="@drawable/reply"
-                android:layout_weight="0"
-                android:id="@+id/btnReply"
-                android:layout_gravity="end"
-                android:backgroundTint="@color/white"
-                android:scaleType="centerCrop"/>
+            <TextView
+                android:id="@+id/tvCommentAuthor"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="autor"
+                android:textStyle="bold"
+                android:padding="@dimen/text_padding"/>
 
-            <EditText
+            <TextView
+                android:id="@+id/tvCommentText"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:id="@+id/etReply"
-                android:layoutDirection="ltr"
-                android:hint="odgovor na komentar"/>
+                android:padding="@dimen/text_padding"
+                app:layout_constraintTop_toBottomOf="@id/tvCommentAuthor"
+                tools:layout_editor_absoluteX="54dp" />
+
         </androidx.appcompat.widget.LinearLayoutCompat>
-        <androidx.recyclerview.widget.RecyclerView
+        <ImageButton
+            android:id="@+id/btnReply"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="end"
+            android:layout_weight="0"
+            android:backgroundTint="@color/white"
+            android:scaleType="centerCrop"
+            android:src="@drawable/reply" />
+
+
+
+    </androidx.appcompat.widget.LinearLayoutCompat>
+    <androidx.appcompat.widget.LinearLayoutCompat
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:id="@+id/llReply">
+
+        <EditText
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/rvReplies"/>
+            android:layout_weight="1"
+            android:id="@+id/etReply"
+            android:hint="odgovor na komentar"/>
+        <ImageButton
+            android:id="@+id/btnPostReply"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_gravity="end"
+            android:layout_weight="0"
+            android:backgroundTint="@color/white"
+            android:scaleType="centerCrop"
+            android:src="@drawable/post_comment" />
     </androidx.appcompat.widget.LinearLayoutCompat>
+    <androidx.recyclerview.widget.RecyclerView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/rvReplies"/>
 
 </androidx.appcompat.widget.LinearLayoutCompat>

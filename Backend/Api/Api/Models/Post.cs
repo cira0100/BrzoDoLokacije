@@ -19,6 +19,7 @@ namespace Api.Models
         public List<Comment> comments { get; set; }
         public List<File> images { get; set; }
         public List<string>? tags { get; set; }
+        public List<string>? favourites { get; set; }
         
     }
     public class PostReceive
@@ -43,6 +44,7 @@ namespace Api.Models
         public List<File> images { get; set; }
         public List<string>? tags { get; set; }
         public DateTime? lastViewed { get; set; }
+        public List<string>? favourites { get; set; }
     }
     public class Rating
     {
@@ -113,5 +115,12 @@ namespace Api.Models
     {
         public int counter { get; set; }
         public string tag { get; set; } 
+        public int? views { get; set; }
+    }
+
+    public class Trending
+    {
+        public TagR tagr { get; set; }
+        public PostSendPage page { get; set; }
     }
 }

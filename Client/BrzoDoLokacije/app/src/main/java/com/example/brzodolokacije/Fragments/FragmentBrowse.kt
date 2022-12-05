@@ -197,7 +197,6 @@ class FragmentBrowse : Fragment(R.layout.fragment_browse) {
         }
     }
     private fun getMarkers(){
-        val startMarker = Marker(map)
         var api=RetrofitHelper.getInstance()
         var jwtString= SharedPreferencesHelper.getValue("jwt",requireActivity())
         var data=api.getPosts("Bearer "+jwtString)

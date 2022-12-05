@@ -72,4 +72,19 @@ namespace Api.Models
 
 
     }
+
+    public class UserStats
+    {
+        public int totalViews { get; set; }
+        public int numberOfPosts { get; set; }
+        public int numberOfRatingsOnPosts { get; set; }
+        public double averagePostRatingOnPosts {get; set; }
+        public List<MonthlyViews> monthlyViews { get; set; }
+    }
+
+    public class MonthlyViews
+    {
+        public int month { get; set; }
+        public int views { get; set; }
+    }
 }
