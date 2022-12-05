@@ -71,7 +71,9 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     fun searchText(){
         if(searchBar.text==null || searchBar.text.toString().trim()=="")
             return
-
+        var act=requireActivity() as NavigationActivity
+        act.searchQuery=searchBar.text.toString()
+        act.searchId=""
         searchParams=SearchParams(searchBar.text.toString(),1,1)
         requestToBack(searchParams!!)
     }
@@ -119,6 +121,9 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         searchBar.setOnItemClickListener(AdapterView.OnItemClickListener { parent, view, position, id ->
             val selected = parent.getItemAtPosition(position) as String
             selectedLocation = responseLocations!!.find { location -> location.name == selected }
+            var act=requireActivity() as NavigationActivity
+            act.searchQuery=selectedLocation!!.name
+            act.searchId=selectedLocation!!._id
             searchParams=SearchParams(selectedLocation!!._id,1,1)//to do sort type
             requestToBack(searchParams!!)
 
