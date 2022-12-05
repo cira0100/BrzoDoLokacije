@@ -19,6 +19,7 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.brzodolokacije.Activities.ActivityAddPost
 import com.example.brzodolokacije.Activities.ChatActivity
+import com.example.brzodolokacije.Activities.NavigationActivity
 import com.example.brzodolokacije.Adapters.ShowPostsAdapter
 import com.example.brzodolokacije.Models.Location
 import com.example.brzodolokacije.Models.SearchParams
@@ -51,7 +52,7 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private var swipeRefreshLayout:SwipeRefreshLayout?=null
     private lateinit var searchButton: MaterialButton
     private lateinit var searchPostsViewModel:SearchPostsViewModel
-    private var searchParams:SearchParams?= SearchParams("6385b79d7e1a2c93575e1ef1",1,1)
+    private var searchParams:SearchParams?= SearchParams("Kragujevac",1,1)
     private lateinit var btnFilter:ImageButton
     private lateinit var btnSort:ImageButton
     private lateinit var searchBar: AutoCompleteTextView
@@ -62,7 +63,6 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         super.onCreate(savedInstanceState)
         setUpViewModel()
         binding=FragmentShowPostsBinding.inflate(layoutInflater)
-
         //instantiate adapter and linearLayout
         adapterVar=ShowPostsAdapter(requireActivity())
         linearManagerVar= LinearLayoutManager(activity)
@@ -215,12 +215,36 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             }
             false
         })
+        refreshSearch()
+
 
         return rootView
     }
 
     override fun onRefresh() {
         requestToBack(searchParams!!)
+        refreshSearch()
+    }
+    override fun onResume() {
+        super.onResume()
+        refreshSearch()
+
+    }
+    private fun refreshSearch(){
+        var act=requireActivity() as NavigationActivity
+        Log.d("TEST","USAO")
+        if(act.searchId!=null && act.searchId.trim()!="")
+        {
+            searchBar.setText(act.searchQuery,TextView.BufferType.EDITABLE)
+            searchParams= SearchParams(act.searchId,1,1)
+            requestToBack(searchParams!!)
+        }else
+            if(act.searchQuery!=null && act.searchQuery.trim()!="")
+            {
+                searchBar.setText(act.searchQuery,TextView.BufferType.EDITABLE)
+                searchParams= SearchParams(act.searchQuery,1,1)
+                requestToBack(searchParams!!)
+            }
     }
 
 

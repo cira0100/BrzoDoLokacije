@@ -18,19 +18,20 @@ class NavigationActivity : AppCompatActivity() {
 
     //lateinit var openAddPost:Button
     //lateinit var capturePost:Button
-
+    public lateinit var bottomNav:BottomNavigationView
+    public lateinit var searchQuery:String
+    public lateinit var searchId:String
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_navigation)
-        Toast.makeText(
-            applicationContext, "Open  ", Toast.LENGTH_LONG
-        ).show();
+        searchQuery=""
+        searchId=""
         val fragmentHomePage=FragmentHomePage()
         val fragmentShowPosts=FragmentShowPosts()
         val browseFragment=FragmentBrowse()
         val addPostFragment= FragmentAddNew()
         val profileFragment=FragmentProfile()
-        val bottomNav=findViewById<View>(R.id.bottomNavigationView) as BottomNavigationView
+        bottomNav=findViewById<View>(R.id.bottomNavigationView) as BottomNavigationView
         setCurrentFragment(fragmentHomePage)
         bottomNav.setOnNavigationItemSelectedListener {
             when(it.itemId){
@@ -44,6 +45,7 @@ class NavigationActivity : AppCompatActivity() {
             }
             true
         }
+
 
 
     }
