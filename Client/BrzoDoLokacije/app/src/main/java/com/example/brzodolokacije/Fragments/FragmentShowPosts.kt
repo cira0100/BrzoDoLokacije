@@ -69,7 +69,11 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         gridManagerVar=GridLayoutManager(activity,2)
     }
     fun searchText(){
-        Log.d("MAIN","TODO")
+        if(searchBar.text==null || searchBar.text.toString().trim()=="")
+            return
+
+        searchParams=SearchParams(searchBar.text.toString(),1,1)
+        requestToBack(searchParams!!)
     }
     fun onTextEnter(){
         var api=RetrofitHelper.getInstance()
