@@ -28,5 +28,6 @@ namespace Api.Interfaces
         Task<List<PostSend>> Get10Newest();
         Task<List<PostSend>> Recommended(string userid);
         Task<Boolean> addRemoveFavourite(string postId);
+        Task<List<Trending>> TrendingTags();
     }
 }

@@ -192,5 +192,12 @@ namespace Api.Controllers
         {
             return Ok(await _postService.addRemoveFavourite(id));
         }
+
+        [HttpGet("trending")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<List<Trending>>> Trending()
+        {
+            return Ok(await _postService.TrendingTags());
+        }
     }
 }
