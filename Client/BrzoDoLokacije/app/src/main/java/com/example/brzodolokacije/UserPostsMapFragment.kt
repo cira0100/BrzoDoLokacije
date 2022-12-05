@@ -48,7 +48,16 @@ class UserPostsMapFragment : Fragment() {
             fragmentManager?.beginTransaction()
                 ?.replace(com.example.brzodolokacije.R.id.flNavigationFragment,fragmentProfile)
                 ?.commit()
-
+//How to call fragment
+//            val bundle = Bundle()
+//            bundle.putString("id",userId )
+//            val fragmentFollowers = UserPostsMapFragment()
+//            fragmentFollowers.setArguments(bundle)
+//
+//            fragmentManager
+//                ?.beginTransaction()
+//                ?.replace(com.example.brzodolokacije.R.id.flNavigationFragment,fragmentFollowers)
+//                ?.commit()
         }
         return  view
     }
