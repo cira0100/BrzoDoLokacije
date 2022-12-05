@@ -24,5 +24,6 @@ data class Message(
 
 data class ChatPreview(
     var userId:String,
-    var read:Boolean
+    var read:Boolean,
+    var username:String
 )
