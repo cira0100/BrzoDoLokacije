@@ -130,6 +130,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="140dp"
         android:text="Izmeni lozinku"
+        app:shapeAppearanceOverlay="@style/Circular"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName3" />
@@ -139,6 +141,8 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="4dp"
+        app:shapeAppearanceOverlay="@style/Circular"
+
         android:text="Sačuvaj izmene"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
