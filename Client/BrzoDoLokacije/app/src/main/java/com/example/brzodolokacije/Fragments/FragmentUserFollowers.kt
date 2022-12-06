@@ -24,6 +24,8 @@ class FragmentUserFollowers : Fragment() {
     private lateinit var followers:MutableList<UserReceive>
     private lateinit var rvFollowers:RecyclerView
     private lateinit var userId:String
+    private lateinit var showMy:String
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -33,12 +35,17 @@ class FragmentUserFollowers : Fragment() {
 
         val bundle = arguments
         userId = bundle!!.getString("userId").toString()
-
+        showMy = bundle!!.getString("showMy").toString().trim()
         rvFollowers=view.findViewById(R.id.rvFragmentUserFollowers)
 
-        getFollowers()
-
+        if(showMy=="yes"){
+            getFollowersWithoutId()
+        }
+        else if(showMy=="no") {
+            getFollowers()
+        }
         return view
+
     }
 
     fun getFollowers(){
@@ -65,6 +72,29 @@ class FragmentUserFollowers : Fragment() {
             override fun onFailure(call: Call<MutableList<UserReceive>>, t: Throwable) {
                 Log.d("Followers","Faillllllllllllllllllllllllll")
                 Log.d("Followers",t.toString())
+            }
+        })
+    }
+
+    fun getFollowersWithoutId(){
+        val api = RetrofitHelper.getInstance()
+        val token= SharedPreferencesHelper.getValue("jwt", requireActivity())
+        val data=api.getMyFollowers("Bearer "+token)
+
+        data.enqueue(object : Callback<MutableList<UserReceive>> {
+            override fun onResponse(call: Call<MutableList<UserReceive>>, response: Response<MutableList<UserReceive>>) {
+                if (response.body() == null) {
+                    return
+                }
+                Log.d("MyFollowers","Successsssssssssssssssssssssssssssss")
+                followers = response.body()!!.toMutableList<UserReceive>()
+                rvFollowers.apply {
+                    layoutManager= LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL,false)
+                    adapter= FollowersAdapter(followers,requireActivity())
+                }
+            }
+            override fun onFailure(call: Call<MutableList<UserReceive>>, t: Throwable) {
+                Log.d("MyFollowers","Faillllllllllllllllllllllllll")
             }
         })
     }
