@@ -12,9 +12,9 @@
         android:layout_height="match_parent">
 
         <ImageView
-
+            android:scaleType="centerCrop"
             android:id="@+id/imageView3"
-            android:layout_width="447dp"
+            android:layout_width="match_parent"
             android:layout_height="180dp"
             android:foreground="@drawable/b3"
             android:foregroundGravity="center_vertical|center|center_horizontal|fill"
@@ -74,51 +74,51 @@
             android:background="?android:attr/listDivider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnActivityUserProfileShowPosts" />
+            app:layout_constraintTop_toBottomOf="@+id/buttons" />
+
+        <LinearLayout
+            android:id="@+id/buttons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvFragmentProfileInfoContainer">
 
         <Button
+            android:layout_weight="1"
             android:id="@+id/btnActivityUserProfileShowPosts"
-            android:layout_width="wrap_content"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="4dp"
             android:backgroundTint="#FFFFFF"
             android:stateListAnimator="@null"
             android:text="Objave"
-
             android:textColor="@color/cardview_dark_background"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvFragmentProfileInfoContainer" />
+             />
 
         <Button
+            android:layout_weight="1"
             android:id="@+id/btnFragmentUserProfileShowData"
-            android:layout_width="wrap_content"
+            android:layout_width="110dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="20dp"
             android:backgroundTint="#FFFFFF"
             android:stateListAnimator="@null"
-            android:text="Podaci"
+            android:text="Nalog"
             android:textColor="@color/cardview_dark_background"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/btnFragmentUserProfileShowRecensions"
-            app:layout_constraintTop_toBottomOf="@+id/tvFragmentProfileInfoContainer" />
+            />
 
         <Button
             android:id="@+id/btnFragmentUserProfileShowRecensions"
-            android:layout_width="wrap_content"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="36dp"
-            android:layout_marginTop="4dp"
             android:backgroundTint="#FFFFFF"
             android:stateListAnimator="@null"
             android:text="Recenzije"
             android:textColor="@color/cardview_dark_background"
-            app:layout_constraintStart_toEndOf="@+id/btnActivityUserProfileShowPosts"
-            app:layout_constraintTop_toBottomOf="@+id/tvFragmentProfileInfoContainer" />
-
+           />
+        </LinearLayout>
         <FrameLayout
+            android:layout_weight="1"
             android:id="@+id/flActivityProfileFragmentContainer"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -181,6 +181,7 @@
                     android:textSize="14sp"
                     android:stateListAnimator="@null"
                     android:text="OBJAVE"
+
                     android:textColor="#757471" />
 
                 <Button

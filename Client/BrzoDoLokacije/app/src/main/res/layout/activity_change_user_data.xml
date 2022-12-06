@@ -90,14 +90,13 @@
         app:layout_constraintTop_toBottomOf="@+id/cvFragmentHomePageProfile" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName2"
+        android:id="@+id/tvActivityChangeUserDataName"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
         android:text="Name"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintEnd_toStartOf="@+id/btnActivityChangeUserDataName"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/changeDataName" />
 
@@ -105,22 +104,22 @@
         android:id="@+id/changeDataUsername"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="40dp"
         android:layout_marginEnd="333dp"
         android:text="Korisničko ime"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName2" />
+        app:layout_constraintTop_toBottomOf="@+id/tvActivityChangeUserDataName" />
 
     <EditText
-        android:id="@+id/editTextTextPersonName3"
+        android:id="@+id/tvActivityChangeUserDataUsername"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:ems="10"
         android:inputType="textPersonName"
         android:text="Name"
-        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/btnActivityChangeUserDataUsername"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/changeDataUsername" />
 
@@ -134,7 +133,7 @@
 
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextTextPersonName3" />
+        app:layout_constraintTop_toBottomOf="@+id/tvActivityChangeUserDataUsername" />
 
     <Button
         android:id="@+id/button2"
@@ -147,5 +146,61 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/button" />
+
+    <ImageView
+        android:clickable="true"
+        android:id="@+id/btnActivityChangeUserDataName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/changeDataName"
+        app:srcCompat="@drawable/ic_outline_edit_24" />
+    <ImageView
+        android:id="@+id/btnActivityChangeUserDataNameConfirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/changeDataName"
+        app:srcCompat="@drawable/ic_round_check_24" />
+
+    <ImageView
+        android:clickable="true"
+        android:id="@+id/btnActivityChangeUserDataUsername"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/changeDataUsername"
+        app:srcCompat="@drawable/ic_outline_edit_24" />
+    <ImageView
+        android:id="@+id/btnActivityChangeUserDataUsernameConfirm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:layout_marginEnd="4dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/changeDataUsername"
+        app:srcCompat="@drawable/ic_round_check_24" />
+
+    <TextView
+        android:id="@+id/btnActivityChangeUserDataNameError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvActivityChangeUserDataName" />
+
+    <TextView
+        android:id="@+id/btnActivityChangeUserDataUsernameError"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/tvActivityChangeUserDataUsername" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

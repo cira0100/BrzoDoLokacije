@@ -146,5 +146,23 @@ namespace Api.Controllers
                 return Ok(tosend);
             return BadRequest();
         }
+
+        [HttpGet("{newUsername}/profile/changeMyUsername")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<int>> ChangeMyProfileUsername(string newUsername)
+        {
+            return await _userService.ChangeMyProfileUsername(newUsername);
+        }
+
+
+        [HttpGet("{id}/changeMyName")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<bool>> ChangeMyProfileName(string newName)
+        {
+            return Ok(await _userService.ChangeMyProfileName(newName));
+        }
+
+
+
     }
 }

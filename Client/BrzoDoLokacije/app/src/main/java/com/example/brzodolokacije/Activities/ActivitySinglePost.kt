@@ -7,14 +7,14 @@ import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.Log
-<<<<<<< HEAD
+
 import android.view.ViewGroup
 import android.view.ViewGroup.LayoutParams
 import android.widget.Button
-=======
+
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
->>>>>>> 951b36b54b106178200cfa4fb2bbc499ca1a2de0
+
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
