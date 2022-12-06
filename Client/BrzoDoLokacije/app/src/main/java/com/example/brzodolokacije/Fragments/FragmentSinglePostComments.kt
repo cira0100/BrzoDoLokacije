@@ -11,6 +11,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.brzodolokacije.Adapters.CommentsAdapter
@@ -56,6 +57,20 @@ class FragmentSinglePostComments : Fragment() {
         newComment=view.findViewById(R.id.NewComment)
         postComment=view.findViewById(R.id.btnPostComment)
 
+        buildRecyclerViewComments()
+        requestGetComments()
+
+        postComment.setOnClickListener {
+            if(newComment.text.isNotEmpty()){
+                val comment=CommentReceive(newComment.text.toString(),"")
+                requestAddComment(comment)
+
+
+            }
+            else{
+                Toast.makeText(requireActivity(),"Unesite tekst komentara.",Toast.LENGTH_LONG).show()
+            }
+        }
 
         return view
     }
@@ -68,10 +83,10 @@ class FragmentSinglePostComments : Fragment() {
             override fun onResponse(call: Call<CommentSend?>, response: Response<CommentSend?>) {
                 if(response.isSuccessful){
 
-                    var newComment=response.body()!!
-                    requestGetComments(newComment)
-                    //newComment.text.clear()
-                    //hideKeyboard(newComment)
+                    var newComment1=response.body()!!
+                    requestGetComments(newComment1)
+                    newComment.text.clear()
+                    hideKeyboard(newComment)
 
                 }else{
                     if(response.errorBody()!=null)
@@ -130,10 +145,10 @@ class FragmentSinglePostComments : Fragment() {
         recyclerViewComments!!.layoutManager=layoutManagerComments
         recyclerViewComments!!.adapter= adapterComments
     }
-    /*fun hideKeyboard(item: EditText){
-        var imm: InputMethodManager =this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+    fun hideKeyboard(item: EditText){
+        var imm: InputMethodManager =activity?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         imm.hideSoftInputFromWindow(item.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
-    }*/
+    }
 
     fun countComments(comments:List<CommentSend>):Int{
         var count:Int=0
@@ -145,7 +160,7 @@ class FragmentSinglePostComments : Fragment() {
         return count
     }
 
-    public fun addedComment(){
+   fun addedComment(){
         commentsCount.text=(Integer.parseInt(commentsCount.text.toString())+1).toString()
         commentsCount.invalidate()
     }

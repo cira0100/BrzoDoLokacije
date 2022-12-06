@@ -57,6 +57,7 @@ class ActivityUserProfile : AppCompatActivity() {
         showFollowing=findViewById(id.tvActivityUserProfileFollow)
         showFollowers=findViewById(R.id.tvActivityUserProfileFollowers)
 
+
         val jsonMyObject: String
         val extras = intent.extras
         if (extras != null) {

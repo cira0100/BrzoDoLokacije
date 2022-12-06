@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageButton
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
@@ -37,6 +38,8 @@ class FragmentSinglePostDescription : Fragment() {
 
         var view=inflater.inflate(R.layout.fragment_single_post_description, container, false)
 
+
+
         //uzmi post prosledjen iz single post
         var args = arguments
         var jsonPostObject = args!!.getString("post")
@@ -53,65 +56,69 @@ class FragmentSinglePostDescription : Fragment() {
         star4=view.findViewById(R.id.rateStar4)
         star5=view.findViewById(R.id.rateStar5)
 
-        fun setRatingListeners() {
-            val emptyStar = R.drawable.ic_round_star_outline_24
-            val fullStar = R.drawable.ic_baseline_star_rate_24
+        setRatingListeners()
+        val alreadyrated= RatingReceive(starNumber.toInt(),post._id)
+        requestAddRating(alreadyrated)
 
-            star1.setOnClickListener {
-                //Toast.makeText(this,"kliknuta prva zvezdica",Toast.LENGTH_SHORT).show()
-                star1.setImageResource(fullStar)
-                star2.setImageResource(emptyStar)
-                star3.setImageResource(emptyStar)
-                star4.setImageResource(emptyStar)
-                star5.setImageResource(emptyStar)
-                starNumber=1
-                rate(starNumber)
-            }
-            star1.setOnClickListener {
-                //Toast.makeText(this,"kliknuta druga zvezdica",Toast.LENGTH_SHORT).show()
-                star1.setImageResource(fullStar)
-                star2.setImageResource(fullStar)
-                star3.setImageResource(emptyStar)
-                star4.setImageResource(emptyStar)
-                star5.setImageResource(emptyStar)
-                starNumber=2
-                rate(starNumber)
-            }
-            star1.setOnClickListener {
-                //Toast.makeText(this,"kliknuta treca zvezdica",Toast.LENGTH_SHORT).show()
-                star1.setImageResource(fullStar)
-                star2.setImageResource(fullStar)
-                star3.setImageResource(fullStar)
-                star4.setImageResource(emptyStar)
-                star5.setImageResource(emptyStar)
-                starNumber=3
-                rate(starNumber)
-            }
-            star1.setOnClickListener {
-                Toast.makeText(requireActivity(),"kliknuta cetvrta zvezdica",Toast.LENGTH_SHORT).show()
-                star1.setImageResource(fullStar)
-                star2.setImageResource(fullStar)
-                star3.setImageResource(fullStar)
-                star4.setImageResource(fullStar)
-                star5.setImageResource(emptyStar)
-                starNumber=4
-                rate(starNumber)
-            }
-            star1.setOnClickListener {
-                //Toast.makeText(this,"kliknuta peta zvezdica",Toast.LENGTH_SHORT).show()
-                star1.setImageResource(fullStar)
-                star2.setImageResource(fullStar)
-                star3.setImageResource(fullStar)
-                star4.setImageResource(fullStar)
-                star5.setImageResource(fullStar)
-                starNumber=5
-                rate(starNumber)
-            }
-
-
-            }
 
         return view
+    }
+    fun setRatingListeners() {
+        val emptyStar = R.drawable.ic_round_star_outline_24
+        val fullStar = R.drawable.ic_baseline_star_rate_24
+
+        star1.setOnClickListener {
+            //Toast.makeText(this,"kliknuta prva zvezdica",Toast.LENGTH_SHORT).show()
+            star1.setImageResource(fullStar)
+            star2.setImageResource(emptyStar)
+            star3.setImageResource(emptyStar)
+            star4.setImageResource(emptyStar)
+            star5.setImageResource(emptyStar)
+            starNumber=1
+            rate(starNumber)
+        }
+        star1.setOnClickListener {
+            //Toast.makeText(this,"kliknuta druga zvezdica",Toast.LENGTH_SHORT).show()
+            star1.setImageResource(fullStar)
+            star2.setImageResource(fullStar)
+            star3.setImageResource(emptyStar)
+            star4.setImageResource(emptyStar)
+            star5.setImageResource(emptyStar)
+            starNumber=2
+            rate(starNumber)
+        }
+        star1.setOnClickListener {
+            //Toast.makeText(this,"kliknuta treca zvezdica",Toast.LENGTH_SHORT).show()
+            star1.setImageResource(fullStar)
+            star2.setImageResource(fullStar)
+            star3.setImageResource(fullStar)
+            star4.setImageResource(emptyStar)
+            star5.setImageResource(emptyStar)
+            starNumber=3
+            rate(starNumber)
+        }
+        star1.setOnClickListener {
+            Toast.makeText(requireActivity(),"kliknuta cetvrta zvezdica",Toast.LENGTH_SHORT).show()
+            star1.setImageResource(fullStar)
+            star2.setImageResource(fullStar)
+            star3.setImageResource(fullStar)
+            star4.setImageResource(fullStar)
+            star5.setImageResource(emptyStar)
+            starNumber=4
+            rate(starNumber)
+        }
+        star1.setOnClickListener {
+            //Toast.makeText(this,"kliknuta peta zvezdica",Toast.LENGTH_SHORT).show()
+            star1.setImageResource(fullStar)
+            star2.setImageResource(fullStar)
+            star3.setImageResource(fullStar)
+            star4.setImageResource(fullStar)
+            star5.setImageResource(fullStar)
+            starNumber=5
+            rate(starNumber)
+        }
+
+
     }
 
     fun rate(starNumber:Number){
@@ -125,12 +132,10 @@ class FragmentSinglePostDescription : Fragment() {
         val postApi = RetrofitHelper.getInstance()
         val token = SharedPreferencesHelper.getValue("jwt", requireActivity())
         val request = postApi.addRating("Bearer " + token, post._id, rating)
-        request.enqueue(object : retrofit2.Callback<RatingData?> {
-            override fun onResponse(call: Call<RatingData?>, response: Response<RatingData?>) {
+        request.enqueue(object : retrofit2.Callback<RatingData> {
+            override fun onResponse(call: Call<RatingData>, response: Response<RatingData>) {
                 if (response.isSuccessful) {
                     var data = response.body()!!
-                    //binding.tvRating.text=String.format("%.2f",data.ratings)
-                    //binding.tvNumberOfRatings.text=String.format("%d",data.ratingscount)
                     Log.d(
                         "--------------",
                         data.ratings.toString() + " " + data.ratingscount.toString()
@@ -161,7 +166,7 @@ class FragmentSinglePostDescription : Fragment() {
 
             }
 
-            override fun onFailure(call: Call<RatingData?>, t: Throwable) {
+            override fun onFailure(call: Call<RatingData>, t: Throwable) {
                 Log.d("main2", t.message.toString())
             }
         })

@@ -25,6 +25,8 @@ import com.example.brzodolokacije.Models.PostImage
 import com.example.brzodolokacije.Models.PostPreview
 import com.example.brzodolokacije.Models.UserReceive
 import com.example.brzodolokacije.R
+import com.example.brzodolokacije.Services.RetrofitHelper
+import com.example.brzodolokacije.Services.SharedPreferencesHelper
 import com.example.brzodolokacije.databinding.ActivitySinglePostBinding
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_single_post_description.*
@@ -33,6 +35,8 @@ import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
+import retrofit2.Call
+import retrofit2.Response
 
 
 class ActivitySinglePost : AppCompatActivity() {
@@ -62,11 +66,10 @@ class ActivitySinglePost : AppCompatActivity() {
         setContentView(binding.root)
         //get post --------------------------------
         post= intent.extras?.getParcelable("selectedPost")!!
-
-
+        addView()
+        getMap()
         btnChangeHeightUp=findViewById(R.id.activitySinglePostChangeHeightUp)
         btnChangeHeightDown=findViewById(R.id.activitySinglePostChangeHeightDown)
-
         btnChangeHeightDown.isVisible=false
         btnChangeHeightDown.isGone=true
         btnChangeHeightDown.isClickable=false
@@ -81,41 +84,43 @@ class ActivitySinglePost : AppCompatActivity() {
         }
 
 
+
         //instantiate adapter and linearLayout
         adapterImages= PostImageAdapter(this@ActivitySinglePost, post.images as MutableList<PostImage>)
         layoutManagerImages= LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false)
         recyclerViewImages = binding.rvMain
 
-
-        loadTextComponents()
-        /*
-
-        buildRecyclerViewComments()
-        requestGetComments()
-        favouriteImage=binding.ivFavourite
-        // set recyclerView attributes
+        //DODATI SLIKE
         recyclerViewImages?.setHasFixedSize(true)
         recyclerViewImages?.layoutManager = layoutManagerImages
         recyclerViewImages?.adapter = adapterImages
 
-        setRatingListeners()
-        translateOwnerIdToName(post.ownerId)
+        loadTextComponents()
+
+        var fm: FragmentTransaction =supportFragmentManager.beginTransaction()
+        val fragment = FragmentSinglePostDescription()
+        val b = Bundle()
+        b.putString("post",  Gson().toJson(post))
+        fragment.arguments = b
+        fm.replace(R.id.flSinglePostFragmentContainer, fragment)
+        fm.commit()
+
+        /*
+        favouriteImage=binding.ivFavourite
+        // set recyclerView attributes
         loadFavourite()
-        val alreadyrated= RatingReceive(starNumber.toInt(),post._id)
-        requestAddRating(alreadyrated)
+
         */
+        translateOwnerIdToName(post.ownerId)
+
         binding.tvUser.setOnClickListener {
             val intent: Intent = Intent(this@ActivitySinglePost,ActivityUserProfile::class.java)
-            var args= Bundle()
-            args.putString("post", Gson().toJson(post))
+            var b= Bundle()
+            intent.putExtra("user", Gson().toJson(userData))
             this.startActivity(intent)
         }
-        binding.tvLocationType.setOnClickListener{
-            getMap()
 
-        }
-
-
+        //DATA CONTAINER PROMENA VISINE
         btnChangeHeightUp.setOnClickListener {
             btnChangeHeightUp.isVisible=false
             btnChangeHeightUp.isGone=true
@@ -126,6 +131,10 @@ class ActivitySinglePost : AppCompatActivity() {
             linearLayout2.setMinHeight(0);
             linearLayout2.setMinimumHeight(0);
             linearLayout2.getLayoutParams().height= ViewGroup.LayoutParams.MATCH_PARENT;
+            recyclerViewImages?.setHasFixedSize(true)
+            recyclerViewImages?.layoutManager = layoutManagerImages
+            recyclerViewImages?.adapter = adapterImages
+
         }
         btnChangeHeightDown.setOnClickListener {
             btnChangeHeightDown.isVisible=false
@@ -137,6 +146,10 @@ class ActivitySinglePost : AppCompatActivity() {
             linearLayout2.setMinHeight(0);
             linearLayout2.setMinimumHeight(0);
             linearLayout2.getLayoutParams().height= ViewGroup.LayoutParams.WRAP_CONTENT;
+            recyclerViewImages?.setHasFixedSize(true)
+            recyclerViewImages?.layoutManager = layoutManagerImages
+            recyclerViewImages?.adapter = adapterImages
+
         }
 
         /*favouriteImage!!.setOnClickListener{
@@ -202,11 +215,6 @@ class ActivitySinglePost : AppCompatActivity() {
     */
 
     fun getMap(){
-        /*val mapDialogue = BottomSheetDialog(this@ActivitySinglePost, android.R.style.Theme_Black_NoTitleBar)
-        mapDialogue.getWindow()?.setBackgroundDrawable(ColorDrawable(Color.argb(100, 0, 0, 0)))
-        mapDialogue.setContentView(R.layout.map_dialogue)
-        mapDialogue.setCancelable(true)
-        mapDialogue.setCanceledOnTouchOutside(true)*/
         var map: MapView? = null
         Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
         map=findViewById(R.id.MapDialogueMapView)
@@ -233,22 +241,22 @@ class ActivitySinglePost : AppCompatActivity() {
         binding.apply {
             tvTitle.text= post.location.name
             tvTitle.invalidate()
-            tvLocationType.text="Otvorite Mapu"
-            tvLocationType.setTextColor(Color.BLUE)
+            tvLocationType.text=post.location.country.toString()
             tvLocationType.invalidate()
-            tvLocationParent.text="TODO"
+            tvLocationParent.text=post.location.city.toString()
             tvLocationParent.invalidate()
             tvRating.text=post.ratings.toString()
             tvRating.invalidate()
             tvNumberOfRatings.text=post.ratingscount.toString()
             tvNumberOfRatings.invalidate()
-            tvDescription.text=post.description
-            tvDescription.invalidate()
+            //tvRating.text=String.format("%.2f",data.ratings)
+            //tvNumberOfRatings.text=String.format("%d",data.ratingscount)
+
 
         }
 
     }
-    /*
+
     fun addView() {
         var token= SharedPreferencesHelper.getValue("jwt", this).toString()
         val Api= RetrofitHelper.getInstance()
@@ -271,12 +279,12 @@ class ActivitySinglePost : AppCompatActivity() {
         val request= api.getProfileFromId("Bearer " + token, id)
         request.enqueue(object : retrofit2.Callback<UserReceive>  {
             override fun onResponse(call: Call<UserReceive>,
-                                    response: Response<UserReceive>) {
+                                    response: Response<UserReceive>
+            ) {
                 if (response.body() == null) {
                     return
                 }
                 userData = response.body()!!
-
                 binding.tvUser.text= userData!!.username.toString()
             }
 
@@ -286,5 +294,4 @@ class ActivitySinglePost : AppCompatActivity() {
         })
     }
 
-*/
 }

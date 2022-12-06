@@ -91,6 +91,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".Activities.ActivitySinglePost"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustPan"
             android:screenOrientation="portrait" />
         <activity
             android:name=".Activities.ActivityAddPost"
