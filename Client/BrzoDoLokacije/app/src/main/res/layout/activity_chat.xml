@@ -18,16 +18,20 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
+<androidx.appcompat.widget.LinearLayoutCompat
+    android:layout_width="match_parent"
+    android:id="@+id/llHeader"
+    android:layout_height="50dp"
+    android:background="@color/unfollow">
 
-    <ImageView
-        android:id="@+id/btnActivityShowFollowersAndFollowingBackToUser"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginTop="16dp"
+    <ImageButton
+        android:id="@+id/btnBack"
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
         android:clickable="true"
         android:src="@drawable/ic_baseline_arrow_back"
-        android:textAllCaps="false"
+        android:background="@null"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
@@ -36,13 +40,23 @@
         android:id="@+id/tvActivityShowFollowersOrFollowingShow"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="268dp"
+        android:layout_gravity="center_vertical"
+        android:layout_weight="1"
         android:text="Poruke"
         android:textSize="25dp"
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+    <ImageButton
+        android:id="@+id/btnNotifications"
+        android:layout_width="50dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_vertical"
+        android:scaleType="centerCrop"
+        android:backgroundTint="@color/unfollow"
+        android:src="@drawable/bell_off"/>
+
+</androidx.appcompat.widget.LinearLayoutCompat>
 
     <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:id="@+id/swipeContainer"
@@ -50,7 +64,7 @@
         android:layout_height="0dp"
         android:layout_marginTop="8dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvActivityShowFollowersOrFollowingShow"
+        app:layout_constraintTop_toBottomOf="@+id/llHeader"
         app:layout_constraintVertical_bias="1.0"
         tools:layout_editor_absoluteX="-27dp">
 

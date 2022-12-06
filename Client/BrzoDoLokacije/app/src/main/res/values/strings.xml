@@ -6,6 +6,8 @@
     <string name="title_activity_maps">MapsActivity</string>
     <string name="dodaj_objavu">Dodaj objavu</string>
     <string name="todo">TODO</string>
+    <string name="channel_name">Ćaskanja</string>
+    <string name="channel_description">Notifikacije o dostavljenim porukama</string>
     <string name="datum">Datum</string>
 
     <string name="od">Od</string>

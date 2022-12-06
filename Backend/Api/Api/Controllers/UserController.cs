@@ -123,5 +123,46 @@ namespace Api.Controllers
         {
             return Ok(await _userService.GetMyFollowers());
         }
+
+        [HttpGet("profile/stats")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<UserStats>> SelfStats()
+        {
+            var id = await _userService.UserIdFromJwt();
+            var tosend = await _postService.UserStats(id);
+            if (tosend != null)
+                return Ok(tosend);
+            return BadRequest();
+        }
+        [HttpGet("{username}/profile/stats")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<UserStats>> GetStats(string username)
+        {
+            var rez = await _userService.GetUserData(username);
+            if (rez == null)
+                return BadRequest();
+            var tosend = await _postService.UserStats(rez._id);
+            if (tosend != null)
+                return Ok(tosend);
+            return BadRequest();
+        }
+
+        [HttpGet("{newUsername}/changeMyUsername")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<int>> ChangeMyProfileUsername(string newUsername)
+        {
+            return await _userService.ChangeMyProfileUsername(newUsername);
+        }
+
+
+        [HttpGet("{newName}/changeMyName")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<bool>> ChangeMyProfileName(string newName)
+        {
+            return Ok(await _userService.ChangeMyProfileName(newName));
+        }
+
+
+
     }
 }

@@ -48,8 +48,10 @@ interface IBackendApi {
     @Multipart
     @POST("/api/user/profile/pfp")
     fun setPfp(@Header("Authorization") authHeader:String, @Part image: MultipartBody.Part):Call<ResponseBody>
+
     @GET("/api/user/profile")
     fun selfProfile(@Header("Authorization") authHeader:String):Call<UserReceive>
+
     @GET("/api/user/{username}/profile")
     fun getProfile(@Header("Authorization") authHeader:String,@Path("username") username:String):Call<UserReceive>
 
@@ -109,5 +111,14 @@ interface IBackendApi {
 
     @GET("/api/user/{id}/myFollowers")
     fun getMyFollowers(@Header("Authorization") authHeader:String):Call <MutableList<UserReceive>>
+
+    @GET("/api/Post/favourite/{id}")
+    fun addRemoveFavourite(@Header("Authorization") authHeader:String,@Path("id") id:String):Call <Boolean>
+
+    @GET("/api/user/{newUsername}/changeMyUsername")
+    fun changeMyUsername(@Header("Authorization") authHeader:String,@Path("newUsername") newUsername:String):Call<Int>
+
+    @GET("/api/user/{newName}/changeMyName")
+    fun changeMyName(@Header("Authorization") authHeader:String,@Path("newName") newName:String):Call<Boolean>
 
 }

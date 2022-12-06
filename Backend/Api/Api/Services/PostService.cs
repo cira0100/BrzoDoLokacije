@@ -15,6 +15,7 @@ namespace Api.Services
         private readonly IFileService _fileService;
         private readonly ILocationService _locationService;
         private readonly IMongoCollection<User> _users;
+        private readonly IMongoCollection<Location> _locations;
         public PostService(IDatabaseConnection settings, IMongoClient mongoClient, IHttpContextAccessor httpContext, IFileService fileService,ILocationService locationService)
         {
             var database = mongoClient.GetDatabase(settings.DatabaseName);
@@ -23,6 +24,7 @@ namespace Api.Services
             _httpContext = httpContext;
             _fileService = fileService;
             _locationService = locationService;
+            _locations = database.GetCollection<Location>(settings.LocationCollectionName);
         }
 
         public async Task<PostSend> addPost(PostReceive post)
@@ -89,6 +91,7 @@ namespace Api.Services
             p.createdAt = post.createdAt;
             p.tags = post.tags;
             p.ratingscount = post.ratings.Count();
+            p.favourites = post.favourites;
             if (post.ratings.Count() > 0)
             {
                 List<int> ratings = new List<int>();
@@ -346,7 +349,27 @@ namespace Api.Services
             var lista = new List<Post>();
             var ls = new List<PostSend>();
             var xd = new List<PostSend>();
-            lista = await _posts.Find(x => x.locationId == locid).ToListAsync();
+            if(ObjectId.TryParse(locid, out _))
+                lista = await _posts.Find(x => x.locationId == locid).ToListAsync();
+            else
+            {
+                lista = await _posts.Find(x => x.tags != null &&  x.tags.Any(y => y.ToLower().Contains(locid.ToLower()))).ToListAsync();
+                if (lista.Count==0)
+                {
+                    var locs = await _locations.Find(x => x.city.ToLower().Contains(locid.ToLower()) || x.name.ToLower().Contains(locid.ToLower())).ToListAsync();
+                    foreach(var loc in locs)
+                    {
+                        var posts =await  _posts.Find(x => x.locationId == loc._id).ToListAsync();
+                        if(posts != null)
+                        {
+                            foreach(var p in posts)
+                            {
+                                lista.Add(p);
+                            }
+                        }
+                    }
+                }
+            }
             if (lista != null)
             {
                 foreach (var elem in lista)
@@ -471,7 +494,7 @@ namespace Api.Services
         public async Task<List<PostSend>> Recommended(string userid) // momgodb bloat bleh
         {
             List<PostSend> posts = await UserHistory(userid);
-            //TODO-LIMIT RECOMMENDED FOR POSTS FROM THIS MONTH ONLY
+            //TODO-LIMIT RECOMMENDED FOR POSTS FROM THIS MONTH 
             List<TagR> tags = new List<TagR>();
             foreach (var post in posts)
             {
@@ -530,5 +553,141 @@ namespace Api.Services
             taggedposts = fiveoftop5tags.Distinct().OrderByDescending(x => x.createdAt).ToList();
             return taggedposts;
         }
+        public async Task<Boolean> addRemoveFavourite(string postId)
+        {
+            string userId = _httpContext.HttpContext.User.FindFirstValue("id");
+            var result = false;
+            Post post = await _posts.Find(x => x._id == postId).FirstOrDefaultAsync();
+            if (userId == null || post==null)
+                return result;
+            if (post.favourites == null)
+                post.favourites = new List<string>();
+            if (post.favourites.Contains(userId))
+            {
+                post.favourites.Remove(userId);
+                result = false;
+            }
+            else
+            {
+                post.favourites.Add(userId);
+                result = true;
+
+            }
+            await _posts.ReplaceOneAsync(x => x._id == postId, post);
+            return result;
+
+        }
+
+        public async Task<List<Trending>> TrendingTags()
+        {
+            var all = await _posts.Find(_ => true).ToListAsync();
+            var posts = new List<PostSend>();
+            foreach (var elem in all)
+            {
+                if ((DateTime.Now - elem.createdAt).TotalDays < 7)
+                    posts.Add(await postToPostSend(elem));
+            }
+            List<TagR> tags = new List<TagR>();
+            foreach (var post in posts)
+            {
+                if (post.tags != null)
+                {
+                    foreach (var tagitem in post.tags)
+                    {
+                        if (!tags.Any(x => x.tag == tagitem))
+                        {
+                            var newtag = new TagR();
+                            newtag.tag = tagitem;
+                            newtag.counter = 1;
+                            newtag.views = post.views;
+                            tags.Add(newtag);
+                        }
+                        else
+                        {
+                            var replace = tags.Find(x => x.tag == tagitem);
+                            tags.Remove(replace);
+                            replace.counter += 1;
+                            replace.views += post.views;
+                            tags.Add(replace);
+                        }
+                    }
+                }
+            }
+            var top10tags = tags.OrderByDescending(x => x.views).Take(10).ToList();
+
+            var tosend = new List<Trending>();
+            foreach(var trending in top10tags)
+            {
+                var novi = new Trending();
+                novi.tagr = trending;
+                novi.page = await SearchPosts(trending.tag, 0, 1, 5);
+                tosend.Add(novi);
+            }
+
+            return tosend;
+        }
+
+        public async Task<List<PostSend>> BestPostForAllLocationsInRadius(Coords coords, double radius)
+        {
+            if (coords == null)
+                return null;
+            var lista = await _locations.Find(_ => true).ToListAsync();
+            var inradius = new List<Location>();
+            var tosend = new List<PostSend>();
+            if (lista != null)
+            {
+                foreach (var elem in lista)
+                {
+                    if (Math.Abs(elem.latitude - coords.latitude) < radius && Math.Abs(elem.longitude - coords.longitude) < radius)
+                        inradius.Add(elem);
+                }
+                foreach (var elem in inradius)
+                {
+                    var locposts = await SearchPosts(elem._id, 0, 1, 1);
+                    var best = locposts.posts.Take(1).FirstOrDefault();
+                    if(best != null)
+                        tosend.Add(best);
+                }
+            }
+            return tosend;
+        }
+
+        public async Task<UserStats> UserStats(string userid)
+        {
+            var posts = await GetUsersPosts(userid);
+            var stats = new UserStats();
+            double ratingsum = 0;
+            stats.averagePostRatingOnPosts = 0;
+            stats.numberOfRatingsOnPosts = 0;
+            stats.numberOfPosts = 0;
+            stats.totalViews = 0;
+            stats.monthlyViews = new List<MonthlyViews>();
+
+           
+            if(posts != null)
+            {
+                for(int i = 1; i <= 12; i++)
+                {
+                    var novi = new MonthlyViews();
+                    novi.month = i;
+                    novi.views = 0;
+                    stats.monthlyViews.Add(novi);
+                }
+                
+                foreach (var post in posts)
+                {
+                    var month = post.createdAt.Month;
+                    stats.monthlyViews.FirstOrDefault(x => x.month == month).views += post.views;
+                    stats.totalViews += post.views;
+                    stats.numberOfRatingsOnPosts += post.ratingscount;
+                    stats.numberOfPosts++;
+                    ratingsum += post.ratings * post.ratingscount;
+                }
+                if(stats.numberOfRatingsOnPosts > 0) //don't forget to check div by 0 jesus
+                    stats.averagePostRatingOnPosts = ratingsum / stats.numberOfRatingsOnPosts;
+            }
+            return stats;
+        }
     }
+    
 }

@@ -360,6 +360,10 @@ namespace Api.Services
             tosend._id= user._id;
             tosend.creationDate = user.creationDate;
             tosend.email="";
+            tosend.followersCount = user.followersCount;
+            tosend.followingCount = user.followingCount;
+            tosend.followers = user.followers;
+            tosend.following = user.following;
             var userposts = await _posts.Find(x => x.ownerId == user._id).ToListAsync();
             tosend.postcount = userposts.Count();
             return tosend;
@@ -376,6 +380,10 @@ namespace Api.Services
             tosend._id = user._id;
             tosend.creationDate = user.creationDate;
             tosend.email = user.email;
+            tosend.followersCount = user.followersCount;
+            tosend.followingCount = user.followingCount;
+            tosend.followers = user.followers;
+            tosend.following = user.following;
             var userposts = await _posts.Find(x => x.ownerId == user._id).ToListAsync();
             tosend.postcount = userposts.Count();
             return tosend;
@@ -466,6 +474,9 @@ namespace Api.Services
                         follower.email = utemp.username;
                         follower.following = utemp.following;
                         follower.followers = utemp.followers;
+                        follower.followersCount = utemp.followersCount;
+                        follower.followingCount = utemp.followingCount;
+                        
                         follower._id = utemp._id;
 
                         followers.Add((UserSend)follower);  
@@ -502,6 +513,8 @@ namespace Api.Services
                         follower.following = utemp.following;
                         follower.followers = utemp.followers;
                         follower._id = utemp._id;
+                        follower.followersCount = utemp.followersCount;
+                        follower.followingCount = utemp.followingCount;
 
                         following.Add((UserSend)follower);
                     }
@@ -543,6 +556,8 @@ namespace Api.Services
                         following.following = utemp.following;
                         following.followers = utemp.followers;
                         following._id = utemp._id;
+                        following.followersCount = utemp.followersCount;
+                        following.followingCount = utemp.followingCount;
 
                         myFollowings.Add((UserSend)following);
                     }
@@ -654,8 +669,9 @@ namespace Api.Services
                         follower.email = utemp.username;
                         follower.following = utemp.following;
                         follower.followers = utemp.followers;
+                        follower.followersCount = utemp.followersCount;
+                        follower.followingCount = utemp.followingCount;
                         follower._id = utemp._id;
-
                         myfollowers.Add((UserSend)follower);
                     }
                     return myfollowers;
@@ -663,6 +679,57 @@ namespace Api.Services
             
             return null;
         }
+
+        public async Task<int> ChangeMyProfileUsername(string newUsername)
+        {
+            string myId = null;
+
+            if (_httpContext.HttpContext.User.FindFirstValue("id") != null)
+            {
+                myId = _httpContext.HttpContext.User.FindFirstValue("id").ToString();
+            }
+            User u = await _users.Find(user => user._id == myId).FirstOrDefaultAsync();
+            if (u != null)
+            {
+            
+                //da li username vec postoji?
+                if (await _users.Find(x => x.username == newUsername).FirstOrDefaultAsync() != null)
+                {
+                    //vec postoji korisnik sa navedenim korisnickim imenom 
+                    return -1;
+                }
+                else
+                {
+                    u.username = newUsername;
+                    await _users.ReplaceOneAsync(x => x._id == u._id, u);
+                    return 1;
+                }
+            
+            }
+            return -2;
+             
+        }
+
+        public async Task<bool> ChangeMyProfileName(string newName)
+        {
+            string myId = null;
+            if (_httpContext.HttpContext.User.FindFirstValue("id") != null)
+            {
+                myId = _httpContext.HttpContext.User.FindFirstValue("id").ToString();
+            }
+            User u = await _users.Find(user => user._id == myId).FirstOrDefaultAsync();
+            if (u != null)
+            {
+      
+                u.name = newName;
+                await _users.ReplaceOneAsync(x => x._id == u._id, u);
+                return true;
+
+            }
+            return false;
+        }
+
+        
     }
     
 }

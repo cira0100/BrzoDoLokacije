@@ -31,10 +31,13 @@ import retrofit2.converter.gson.GsonConverterFactory
 import android.widget.Button
 import android.widget.ImageButton
 import android.widget.TextView
+import com.auth0.android.jwt.JWT
 import com.example.brzodolokacije.Activities.ActivityAddPost
 import com.example.brzodolokacije.Activities.ActivityCapturePost
 import com.example.brzodolokacije.Activities.ActivityForgottenPassword
+import com.example.brzodolokacije.Activities.NavigationActivity
 import com.example.brzodolokacije.Adapters.MyPostsAdapter
+import com.example.brzodolokacije.UserPostsMapFragment
 
 import com.google.android.material.bottomsheet.BottomSheetDialog
 
@@ -56,27 +59,21 @@ class FragmentUserPosts : Fragment() {
 
         addNewPost=view.findViewById<View>(R.id.tvFragmentUserPostsAddPost) as TextView
         addNewPost.setOnClickListener {
-            var bottomSheetDialog2: BottomSheetDialog
-            bottomSheetDialog2= BottomSheetDialog(requireContext())
-            bottomSheetDialog2.setContentView(R.layout.bottom_sheet_add_new_post)
-            bottomSheetDialog2.show()
-
-            var close=bottomSheetDialog2.findViewById<View>(R.id.btnBottomSheetAddNewPostClose) as ImageButton
-            var openAddPost=bottomSheetDialog2.findViewById<View>(R.id.btnBottomSheetAddNewPostOpenAddPost) as ImageButton
-            var capturePost=bottomSheetDialog2.findViewById<View>(R.id.btnBottomSheetAddNewPostOpenCapturePost) as ImageButton
-
-            openAddPost.setOnClickListener{
-                val intent = Intent (getActivity(), ActivityAddPost::class.java)
-                getActivity()?.startActivity(intent)
+            val bundle = Bundle()
+            var jwtString=SharedPreferencesHelper.getValue("jwt",requireActivity())
+            if(jwtString!=null) {
+                var jwt: JWT = JWT(jwtString!!)
+                var userId=jwt.getClaim("id").asString()
+                bundle.putString("id", userId)
+                val userMapFragment = UserPostsMapFragment()
+                userMapFragment.setArguments(bundle)
+                var act=requireActivity()as NavigationActivity
+                act.supportFragmentManager.beginTransaction().replace(
+                    R.id.flNavigationFragment,userMapFragment
+                )
+                    .commit()
             }
 
-            capturePost.setOnClickListener{
-                val intent = Intent (getActivity(), ActivityCapturePost::class.java)
-                getActivity()?.startActivity(intent)
-            }
-            close.setOnClickListener {
-                bottomSheetDialog2.dismiss()
-            }
         }
 
         rvPosts=view.findViewById(R.id.rvFragmentUserPostsPosts) as RecyclerView

@@ -21,8 +21,8 @@
         app:layout_constraintTop_toBottomOf="@+id/tvFragmentHomePageSearch">
 
 
-        <com.google.android.material.textfield.TextInputEditText
-            android:id="@+id/etFragmentHomePageSearch"
+        <AutoCompleteTextView
+            android:id="@+id/etFragmentShowPostsSearch"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="@drawable/rounded_white_button_login"
@@ -31,6 +31,7 @@
             android:inputType="textPersonName" />
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/mbFragmentHomePageSearch"
             android:layout_width="49dp"
             android:layout_height="match_parent"
             android:layout_gravity="right"

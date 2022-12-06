@@ -12,9 +12,11 @@ namespace Api.Controllers
     public class LocationController : ControllerBase
     {
         private readonly ILocationService _locationService;
-        public LocationController(ILocationService locationService)
+        private readonly IPostService _postService;
+        public LocationController(ILocationService locationService, IPostService postService)
         {
             _locationService = locationService;
+            _postService = postService;
         }
 
         [HttpPost("add")]
@@ -73,6 +75,24 @@ namespace Api.Controllers
                     ret = await _locationService.SearchLocation(query);
                     return Ok(ret);
             }
+        }
+
+        [HttpGet("searchradius")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<List<Location>>> bestPostsForLocationInRadius(double latitude, double longitude, double radius)
+        {
+            Coords coords = new Coords();
+            if (latitude != null && longitude != null)
+            {
+                coords.latitude = (double)latitude;
+                coords.longitude = (double)longitude;
+            }
+            List<PostSend> ret = new List<PostSend>();
+            ret = await _postService.BestPostForAllLocationsInRadius(coords, radius);
+            if (ret != null && ret.Count > 0)
+                return Ok(ret);
+            return BadRequest();
+            
         }
     }
 }

@@ -239,9 +239,6 @@ private lateinit var change:Button
 //        Toast.makeText(
 //            activity, "get all mv ", Toast.LENGTH_LONG
 //        ).show();
-        Toast.makeText(
-            activity," get popular all", Toast.LENGTH_LONG
-        ).show();
         val api = RetrofitHelper.getInstance()
         val token= SharedPreferencesHelper.getValue("jwt", requireActivity())
         val data=api.get10MostViewed("Bearer "+token)

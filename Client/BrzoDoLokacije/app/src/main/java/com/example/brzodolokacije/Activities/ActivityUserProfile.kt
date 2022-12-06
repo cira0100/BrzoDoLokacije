@@ -57,6 +57,7 @@ class ActivityUserProfile : AppCompatActivity() {
         showFollowing=findViewById(id.tvActivityUserProfileFollow)
         showFollowers=findViewById(R.id.tvActivityUserProfileFollowers)
 
+
         val jsonMyObject: String
         val extras = intent.extras
         if (extras != null) {
@@ -141,24 +142,27 @@ class ActivityUserProfile : AppCompatActivity() {
                 }
             })
         }
-            showFollowers.setOnClickListener {
-                val bundle = Bundle()
-                bundle.putString("userId", userObject._id.toString())
-                bundle.putString("show","followers")
-                val intent = Intent(this@ActivityUserProfile,ActivityShowFollowersAndFollowing::class.java)
-                intent.putExtras(bundle)
-                startActivity(intent)
 
-            }
+        showFollowers.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putString("userId", userObject._id.toString())
+            bundle.putString("show","followers")
+            bundle.putString("showMy","no")
+            val intent = Intent(this@ActivityUserProfile,ActivityShowFollowersAndFollowing::class.java)
+            intent.putExtras(bundle)
+            startActivity(intent)
 
-            showFollowing.setOnClickListener {
-                val bundle = Bundle()
-                bundle.putString("userId", userObject._id.toString())
-                bundle.putString("show","following")
-                val intent = Intent(this@ActivityUserProfile,ActivityShowFollowersAndFollowing::class.java)
-                intent.putExtras(bundle)
-                startActivity(intent)
-            }
+        }
+
+        showFollowing.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putString("userId", userObject._id.toString())
+            bundle.putString("show","following")
+            bundle.putString("showMy","no")
+            val intent = Intent(this@ActivityUserProfile,ActivityShowFollowersAndFollowing::class.java)
+            intent.putExtras(bundle)
+            startActivity(intent)
+        }
 
 
 

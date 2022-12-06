@@ -9,6 +9,11 @@ import android.database.sqlite.SQLiteOpenHelper
 import android.util.Log
 import com.example.brzodolokacije.Models.ChatPreview
 import com.example.brzodolokacije.Models.Message
+import com.example.brzodolokacije.Models.UserReceive
+import com.example.brzodolokacije.Services.RetrofitHelper
+import com.example.brzodolokacije.Services.SharedPreferencesHelper
+import retrofit2.Call
+import retrofit2.Response
 import java.util.*
 
 
@@ -17,7 +22,7 @@ class DBHelper :
 
     var db:SQLiteDatabase?=null
 
-    constructor(context: Context, factory: SQLiteDatabase.CursorFactory?):super(context, DATABASE_NAME, factory,3){
+    constructor(context: Context, factory: SQLiteDatabase.CursorFactory?):super(context, DATABASE_NAME, factory,5){
         db=readableDatabase
     }
 
@@ -28,8 +33,10 @@ class DBHelper :
         //database tables
         val CONTACTS_TABLE_NAME = "contacts"
         val MESSAGES_TABLE_NAME = "messages"
+        var activity:Activity?=null
         private var instance:DBHelper?=null
         fun getInstance(activity: Activity):DBHelper{
+            this.activity =activity
             if(instance==null){
                 instance= DBHelper(activity,null)
             }
@@ -41,7 +48,8 @@ class DBHelper :
         if(!doesTableExist(CONTACTS_TABLE_NAME,db)){
             var sql:String="CREATE TABLE "+ CONTACTS_TABLE_NAME+" (" +
                     "userId " +"TEXT PRIMARY KEY,"+
-                    "read " +"INTEGER"+
+                    "read " +"INTEGER,"+
+                    "username "+"TEXT"+
                     ")"
             db?.execSQL(sql)
         }
@@ -77,7 +85,7 @@ class DBHelper :
         onCreate(db)
     }
 
-    fun addMessage(message: Message, sent:Boolean=true){
+    fun addMessage(message: Message, sent:Boolean=true,username:String?=null){
         onCreate(db)
         if(!message._id.isNullOrEmpty() && message.senderId==message.receiverId){
             Log.d("main", "ne zapisuje se dupla poruka")
@@ -101,9 +109,41 @@ class DBHelper :
                 var id:String
                 id = if(sent) message.receiverId else message.senderId
                 var read:Int=if(sent) 1 else 0
-                sql="INSERT INTO "+ CONTACTS_TABLE_NAME+"(userId,read) VALUES('"+id+"','"+
-                        read+"')"
-                db?.execSQL(sql)
+                if(username==null){
+                    //request
+                    var api=RetrofitHelper.getInstance()
+                    var token= activity?.let { SharedPreferencesHelper.getValue("jwt", it) }
+                    val request2=api.getProfileFromId("Bearer "+token,
+                        message.senderId
+                    )
+                    request2?.enqueue(object : retrofit2.Callback<UserReceive?> {
+                        override fun onResponse(call: Call<UserReceive?>, response: Response<UserReceive?>) {
+                            if(response.isSuccessful()){
+                                var user=response.body()!!
+                                sql="INSERT INTO "+ CONTACTS_TABLE_NAME+"(userId,read,username) VALUES('"+id+"','"+
+                                        read+"','"+user.username+"')"
+                                db?.execSQL(sql)
+                            }
+                            else{
+                                sql="INSERT INTO "+ CONTACTS_TABLE_NAME+"(userId,read) VALUES('"+id+"','"+
+                                        read+"')"
+                                db?.execSQL(sql)
+                            }
+                        }
+
+                        override fun onFailure(call: Call<UserReceive?>, t: Throwable) {
+                            sql="INSERT INTO "+ CONTACTS_TABLE_NAME+"(userId,read) VALUES('"+id+"','"+
+                                    read+"')"
+                            db?.execSQL(sql)
+                        }
+                    })
+                }
+                else{
+                    sql="INSERT INTO "+ CONTACTS_TABLE_NAME+"(userId,read,username) VALUES('"+id+"','"+
+                            read+"','"+username+"')"
+                    db?.execSQL(sql)
+                }
+
             }
             else{
                 if(!sent)
@@ -111,7 +151,36 @@ class DBHelper :
             }
         }
     }
-    fun getMessages(userId:String, self:Boolean=false): MutableList<Message>? {
+    fun getLastMessage(userId:String): Message? {
+        onCreate(db)
+        var sql:String = "SELECT * FROM "+ MESSAGES_TABLE_NAME+" WHERE senderId='"+userId+"'"+" OR receiverId='"+userId+"'"+" ORDER BY timestamp DESC LIMIT 1"
+        var cursor=db?.rawQuery(sql,null)
+        if(cursor?.count!! >0){
+            var msg:Message
+            var idIndex=cursor.getColumnIndexOrThrow("_id")
+            var senderIdIndex=cursor.getColumnIndexOrThrow("senderId")
+            var receiverIdIndex=cursor.getColumnIndexOrThrow("receiverId")
+            var messageIndex=cursor.getColumnIndexOrThrow("messagge")
+            var timestampIndex=cursor.getColumnIndexOrThrow("timestamp")
+            cursor.moveToNext()
+            var cal:Calendar= Calendar.getInstance()
+            cal.timeInMillis=cursor.getLong(timestampIndex)
+            msg=Message(
+                    cursor.getString(idIndex),
+                    cursor.getString(senderIdIndex),
+                    cursor.getString(receiverIdIndex),
+                    cursor.getString(messageIndex),
+                    cal.time,
+                    cal
+                    )
+
+            Log.d("main",cal.time.toString())
+            readContact(userId)
+            return msg
+        }
+        return null
+    }
+    fun getMessages(userId:String,self:Boolean=false): MutableList<Message>? {
         onCreate(db)
         var sql:String
         if(!self)
@@ -137,8 +206,8 @@ class DBHelper :
                         cursor.getString(messageIndex),
                         cal.time,
                         cal
-                        )
                     )
+                )
                 Log.d("main",cal.time.toString())
             }
             readContact(userId)
@@ -155,8 +224,9 @@ class DBHelper :
             var contactList:MutableList<ChatPreview> =mutableListOf()
             var userIdIndex=cursor.getColumnIndexOrThrow("userId")
             var readIndex=cursor.getColumnIndexOrThrow("read")
+            var usernameIndex=cursor.getColumnIndexOrThrow("username")
             while(cursor.moveToNext()){
-                contactList.add(ChatPreview(cursor.getString(userIdIndex),cursor.getInt(readIndex)==1))
+                contactList.add(ChatPreview(cursor.getString(userIdIndex),cursor.getInt(readIndex)==1,cursor.getString(usernameIndex)))
             }
             Log.d("main",contactList.size.toString())
             return contactList

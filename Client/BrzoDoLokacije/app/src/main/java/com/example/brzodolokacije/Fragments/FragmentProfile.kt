@@ -4,6 +4,7 @@ package com.example.brzodolokacije.Fragments
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +16,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.bumptech.glide.Glide
+import com.example.brzodolokacije.Activities.ActivityShowFollowersAndFollowing
 import com.example.brzodolokacije.Models.UserReceive
 import com.example.brzodolokacije.R
 import com.example.brzodolokacije.Services.RetrofitHelper
@@ -44,8 +46,8 @@ class FragmentProfile : Fragment(com.example.brzodolokacije.R.layout.fragment_pr
     private lateinit var username: TextView
     private lateinit var name: TextView
     private lateinit var postsCount: TextView
-    private lateinit var followersCount: TextView
-    private lateinit var followingCount:TextView
+    private lateinit var followersNumber: TextView
+    private lateinit var followingNumber:TextView
     private lateinit var usernameString: String
     private lateinit var nameString: String
     private lateinit var postsCountString: String
@@ -58,8 +60,6 @@ class FragmentProfile : Fragment(com.example.brzodolokacije.R.layout.fragment_pr
     private lateinit var profilePicturePlus: MaterialButton
     private lateinit var showFollowers: TextView
     private lateinit var showFollowing: TextView
-
-    var userId:String = "1"
 
 
     override fun onCreateView(
@@ -74,8 +74,8 @@ class FragmentProfile : Fragment(com.example.brzodolokacije.R.layout.fragment_pr
         name = view.findViewById<View>(com.example.brzodolokacije.R.id.tvFragmentProfileName) as TextView
         username = view.findViewById<View>(com.example.brzodolokacije.R.id.tvFragmentProfileUserName) as TextView
         postsCount = view.findViewById<View>(com.example.brzodolokacije.R.id.tvFragmentProfilePostsNo) as TextView
-        followersCount = view.findViewById<View>(com.example.brzodolokacije.R.id.tvFragmentProfileFollowersNo) as TextView
-        followingCount = view.findViewById<View>(com.example.brzodolokacije.R.id.tvFragmentProfileFollowNo) as TextView
+        followersNumber = view.findViewById<View>(com.example.brzodolokacije.R.id.tvFragmentProfileFollowersNo) as TextView
+        followingNumber = view.findViewById<View>(com.example.brzodolokacije.R.id.tvFragmentProfileFollowNo) as TextView
         showMyPosts=view.findViewById<View>(com.example.brzodolokacije.R.id.btnFragmentProfileShowMyPosts) as Button
         showMyData=view.findViewById<View>(com.example.brzodolokacije.R.id.btnFragmentProfileShowMyData) as Button
         showMyRecensions=view.findViewById<View>(com.example.brzodolokacije.R.id.btnFragmentProfileShowMyRecensions) as Button
@@ -114,26 +114,22 @@ class FragmentProfile : Fragment(com.example.brzodolokacije.R.layout.fragment_pr
 
         showFollowers.setOnClickListener {
             val bundle = Bundle()
-            bundle.putString("userId",userId )
-            val fragmentFollowers = FragmentFollowers()
-            fragmentFollowers.setArguments(bundle)
-
-            fragmentManager
-                ?.beginTransaction()
-                ?.replace(com.example.brzodolokacije.R.id.flNavigationFragment,fragmentFollowers)
-                ?.commit()
+            bundle.putString("userId","error")
+            bundle.putString("show","followers")
+            bundle.putString("showMy","yes")
+            val intent = Intent(activity, ActivityShowFollowersAndFollowing::class.java)
+            intent.putExtras(bundle)
+            startActivity(intent)
         }
 
         showFollowing.setOnClickListener {
             val bundle = Bundle()
-            bundle.putString("userId",userId)
-            val fragmentFollowing = FragmentFollowing()
-            fragmentFollowing.setArguments(bundle)
-
-            fragmentManager
-                ?.beginTransaction()
-                ?.replace(com.example.brzodolokacije.R.id.flNavigationFragment,fragmentFollowing)
-                ?.commit()
+            bundle.putString("userId","error")
+            bundle.putString("show","following")
+            bundle.putString("showMy","yes")
+            val intent = Intent(activity,ActivityShowFollowersAndFollowing::class.java)
+            intent.putExtras(bundle)
+            startActivity(intent)
         }
         getProfileInfo()
         openMyPosts()
@@ -213,11 +209,11 @@ class FragmentProfile : Fragment(com.example.brzodolokacije.R.layout.fragment_pr
         name.setText(user.name)
         username.setText("@"+user.username)
         postsCount.setText(user.postcount.toString())
+        Log.d("follno",user.followersCount.toString())
+        Log.d("follno","helllllllllllllllllllllppppppppppppppppppppppppppppppp")
+        followersNumber.text=user.followersCount.toString()
+        followingNumber.text=user.followingCount.toString()
 
-        followersCount.setText(user.followersCount.toString())
-        followingCount.setText(user.followingCount.toString())
-
-        userId=user._id
 
         //Add Profile image
         if(user.pfp!=null) {

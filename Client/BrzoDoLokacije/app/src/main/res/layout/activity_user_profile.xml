@@ -12,10 +12,10 @@
         android:layout_height="match_parent">
 
         <ImageView
-
+            android:scaleType="centerCrop"
             android:id="@+id/imageView3"
             android:layout_width="match_parent"
-            android:layout_height="250dp"
+            android:layout_height="180dp"
             android:foreground="@drawable/b3"
             android:foregroundGravity="center_vertical|center|center_horizontal|fill"
             android:src="@drawable/b3"
@@ -28,15 +28,15 @@
 
             android:id="@+id/tvFragmentProfileInfoContainer"
             android:layout_width="0dp"
-            android:layout_height="240dp"
+            android:layout_height="199dp"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="120dp"
+            android:layout_marginTop="90dp"
             android:layout_marginEnd="20dp"
             android:adjustViewBounds="true"
-            android:background="@drawable/profile_view_background"
-
+            android:background="#E8FFFFFF"
             android:elevation="1dp"
             android:scaleType="fitEnd"
+
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
@@ -46,10 +46,10 @@
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cvFragmentHomePageProfile"
-            android:layout_width="130dp"
-            android:layout_height="130dp"
+            android:layout_width="120dp"
+            android:layout_height="120dp"
             android:layout_gravity="center"
-            android:layout_marginTop="60dp"
+            android:layout_marginTop="24dp"
             android:elevation="10dp"
             app:cardCornerRadius="250dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -74,55 +74,54 @@
             android:background="?android:attr/listDivider"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/btnActivityUserProfileShowPosts" />
+            app:layout_constraintTop_toBottomOf="@+id/buttons" />
+
+        <LinearLayout
+            android:id="@+id/buttons"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:weightSum="3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvFragmentProfileInfoContainer">
 
         <Button
+            android:layout_weight="1"
             android:id="@+id/btnActivityUserProfileShowPosts"
-            android:layout_width="wrap_content"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="4dp"
             android:backgroundTint="#FFFFFF"
             android:stateListAnimator="@null"
             android:text="Objave"
-
             android:textColor="@color/cardview_dark_background"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvFragmentProfileInfoContainer" />
+             />
 
         <Button
+            android:layout_weight="1"
             android:id="@+id/btnFragmentUserProfileShowData"
-            android:layout_width="wrap_content"
+            android:layout_width="110dp"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:layout_marginEnd="20dp"
             android:backgroundTint="#FFFFFF"
             android:stateListAnimator="@null"
-            android:text="Podaci"
-
+            android:text="Nalog"
             android:textColor="@color/cardview_dark_background"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="1.0"
-            app:layout_constraintStart_toEndOf="@+id/btnFragmentUserProfileShowRecensions"
-            app:layout_constraintTop_toBottomOf="@+id/tvFragmentProfileInfoContainer" />
+            />
 
         <Button
             android:id="@+id/btnFragmentUserProfileShowRecensions"
-            android:layout_width="wrap_content"
+            android:layout_width="120dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="36dp"
-            android:layout_marginTop="4dp"
             android:backgroundTint="#FFFFFF"
             android:stateListAnimator="@null"
             android:text="Recenzije"
             android:textColor="@color/cardview_dark_background"
-            app:layout_constraintStart_toEndOf="@+id/btnActivityUserProfileShowPosts"
-            app:layout_constraintTop_toBottomOf="@+id/tvFragmentProfileInfoContainer" />
-
+           />
+        </LinearLayout>
         <FrameLayout
+            android:layout_weight="1"
             android:id="@+id/flActivityProfileFragmentContainer"
-            android:layout_width="409dp"
-            android:layout_height="319dp"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
@@ -132,135 +131,156 @@
 
         <TableLayout
 
-            android:layout_width="363dp"
-
-            android:layout_height="wrap_content"
-            android:layout_marginStart="30dp"
-            android:layout_marginTop="5dp"
-            android:layout_marginEnd="30dp"
-            android:layout_marginBottom="8dp"
+            android:layout_width="350dp"
+            android:layout_height="140dp"
+            android:layout_marginStart="35dp"
+            android:layout_marginEnd="35dp"
             android:elevation="1dp"
             android:numColumns="3"
-
-            android:stretchColumns="1"
             app:layout_constraintBottom_toBottomOf="@+id/tvFragmentProfileInfoContainer"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/cvFragmentHomePageProfile"
-            app:layout_constraintVertical_bias="0.35000002">
+            app:layout_constraintTop_toTopOf="@+id/tvFragmentProfileInfoContainer"
+            app:layout_constraintVertical_bias="0.88">
 
             <TableRow
-                android:layout_width="match_parent"
+                                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_column="1">
+                android:layout_column="1"
+                >
 
                 <TextView
                     android:id="@+id/tvActivityUserProfileName"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
-                    android:layout_column="1"
                     android:layout_gravity="center"
                     android:text="Petar Petrović"
-                    android:textStyle="bold"
-                    android:textSize="23sp" />
+                    android:textSize="23sp"
+                    android:textStyle="bold" />
             </TableRow>
 
 
-            <TableRow android:layout_marginTop="20dp">
-
+            <TableRow
+                android:gravity="center"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_marginTop="5dp">
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_height="wrap_content"
+                android:layout_width="wrap_content"
+                android:weightSum="3"
+                >
                 <TextView
                     android:id="@+id/tvFragmentUserProfilePosts"
-                    android:layout_width="105dp"
-                    android:gravity="center"
-                    android:text="OBJAVE"
-                    android:stateListAnimator="@null"
+                    android:layout_weight="1"
                     android:backgroundTint="@color/white"
-                    android:textColor="#757471"/>
+                    android:gravity="center"
+                    android:layout_width="110dp"
+                    android:layout_height="wrap_content"
+                    android:textSize="14sp"
+                    android:stateListAnimator="@null"
+                    android:text="OBJAVE"
+
+                    android:textColor="#757471" />
 
                 <Button
                     android:id="@+id/tvActivityUserProfileFollowers"
                     android:layout_width="110dp"
-                    android:layout_height="28dp"
+                    android:layout_height="27dp"
                     android:layout_margin="0dp"
                     android:backgroundTint="@color/white"
                     android:clickable="true"
+                    android:layout_weight="1"
                     android:gravity="center"
                     android:padding="0dp"
                     android:stateListAnimator="@null"
                     android:text="PRATIOCI"
                     android:textColor="#757471"
-
+                    android:textSize="14sp"
                     tools:ignore="TouchTargetSizeCheck" />
 
                 <Button
+                    android:textSize="14sp"
                     android:id="@+id/tvActivityUserProfileFollow"
                     android:layout_width="110dp"
-                    android:layout_height="28dp"
+                    android:layout_height="27dp"
                     android:layout_margin="0dp"
                     android:backgroundTint="@color/white"
                     android:clickable="true"
+                    android:layout_weight="1"
                     android:gravity="center"
                     android:padding="0dp"
                     android:stateListAnimator="@null"
                     android:text="PRAĆENJA"
                     android:textColor="#757471"
                     tools:ignore="TouchTargetSizeCheck" />
+            </LinearLayout>
+
             </TableRow>
 
             <TableRow
-                android:layout_height="wrap_content"
-                >
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:layout_gravity="center"
+                android:layout_height="wrap_content">
+            <LinearLayout>
                 <TextView
                     android:id="@+id/tvActivityUserProfilePostsNo"
                     android:layout_width="110dp"
                     android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="156"
+
                     android:textSize="20dp"
                     android:textStyle="bold" />
 
                 <TextView
-                    android:id="@+id/tvActivityUserProfileFollowersNo"
                     android:layout_width="110dp"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/tvActivityUserProfileFollowersNo"
                     android:gravity="center"
                     android:text="50"
                     android:textSize="20dp"
-                    android:textStyle="bold"/>
+                    android:textStyle="bold" />
 
                 <TextView
                     android:id="@+id/tvActivityUserProfileFollowNo"
                     android:layout_width="110dp"
+                    android:layout_height="wrap_content"
                     android:gravity="center"
                     android:text="40"
                     android:textSize="20dp"
-                    android:textStyle="bold"/>
-
+                    android:textStyle="bold" />
+            </LinearLayout>
             </TableRow>
 
-            <TableRow
-                android:layout_height="wrap_content"
-                android:layout_marginTop="10dp"
-                >
 
-                <androidx.constraintlayout.widget.ConstraintLayout android:layout_span="3">
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="10dp"
+                    android:layout_marginStart="10dp"
+                    android:layout_marginEnd="10dp"
+                    android:layout_gravity="center">
 
                     <Button
 
                         android:id="@+id/btnActivityUserProfileFollow"
                         android:layout_width="280dp"
-                        android:layout_height="30dp"
-                        android:layout_marginStart="16dp"
+                        android:layout_height="35dp"
+                        android:backgroundTint="@color/button_main"
                         android:clickable="true"
                         android:drawableLeft="@drawable/ic_outline_person_add_alt_24"
                         android:insetTop="0dp"
                         android:insetBottom="0dp"
-                        android:backgroundTint="@color/button_main"
                         android:text="PRATI"
                         android:visibility="visible"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.13"
+                        app:layout_constraintVertical_bias="0.0"
                         app:shapeAppearanceOverlay="@style/Circular"
                         tools:ignore="TouchTargetSizeCheck" />
 
@@ -268,29 +288,26 @@
 
                         android:id="@+id/btnActivityUserProfileUnFollow"
                         android:layout_width="280dp"
-                        android:layout_height="30dp"
-                        android:layout_marginStart="16dp"
+                        android:layout_height="35dp"
+                        android:backgroundTint="@color/unfollow"
                         android:clickable="false"
                         android:drawableLeft="@drawable/ic_outline_person_remove_24"
                         android:insetTop="0dp"
                         android:insetBottom="0dp"
-                        android:text="NE PRATI više"
-                        android:backgroundTint="@color/unfollow"
 
+                        android:text="NE PRATI više"
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.13"
+                        app:layout_constraintVertical_bias="0.0"
                         app:shapeAppearanceOverlay="@style/Circular"
                         tools:ignore="TouchTargetSizeCheck" />
-
 
                     <ImageButton
                         android:id="@+id/activityUserProfileOpenChat"
                         android:layout_width="35dp"
-                        android:layout_height="30dp"
+                        android:layout_height="35dp"
                         android:layout_gravity="center"
-                        android:layout_marginEnd="16dp"
                         android:height="40dp"
                         android:background="@drawable/rounded_button"
                         android:backgroundTint="@color/button_main"
@@ -298,11 +315,10 @@
                         app:layout_constraintBottom_toBottomOf="parent"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="parent"
-                        app:layout_constraintVertical_bias="0.0"
                         app:shapeAppearanceOverlay="@style/Circular"
                         tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
+
                 </androidx.constraintlayout.widget.ConstraintLayout>
-            </TableRow>
         </TableLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

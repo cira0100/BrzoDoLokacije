@@ -22,6 +22,7 @@ class ActivityShowFollowersAndFollowing : AppCompatActivity() {
     private lateinit var fragmentContainer:FrameLayout
     private lateinit var followersOrFollowing:String
     private lateinit var userId:String
+    private lateinit var showMy:String
     private lateinit var text:TextView
     private lateinit var back: ImageView
 
@@ -33,6 +34,8 @@ class ActivityShowFollowersAndFollowing : AppCompatActivity() {
         if (bundle != null){
             userId= bundle.getString("userId").toString().trim()
             followersOrFollowing=bundle.get("show").toString().trim()
+            showMy=bundle.get("showMy").toString().trim()
+
         }
 
         fragmentContainer=findViewById(R.id.flActivityShowFollowerAndFollowing)
@@ -46,6 +49,7 @@ class ActivityShowFollowersAndFollowing : AppCompatActivity() {
             val mFragment = FragmentUserFollowers()
             val mBundle = Bundle()
             mBundle.putString("userId",userId)
+            mBundle.putString("showMy",showMy)
             mFragment.arguments = mBundle
             mFragmentTransaction.replace(R.id.flActivityShowFollowerAndFollowing, mFragment).commit()
         }
@@ -57,32 +61,14 @@ class ActivityShowFollowersAndFollowing : AppCompatActivity() {
             val mFragment = FragmentUserFollowing()
             val mBundle = Bundle()
             mBundle.putString("userId",userId)
+            mBundle.putString("showMy",showMy)
             mFragment.arguments = mBundle
             mFragmentTransaction.replace(R.id.flActivityShowFollowerAndFollowing, mFragment).commit()
         }
 
         back.setOnClickListener {
-            var token= SharedPreferencesHelper.getValue("jwt", this).toString()
-            val api= RetrofitHelper.getInstance()
-            val request= api.getProfileFromId("Bearer " + token, userId)
-            request.enqueue(object : retrofit2.Callback<UserReceive>  {
-                override fun onResponse(call: Call<UserReceive>,
-                                        response: Response<UserReceive>
-                ) {
-                    if (response.body() == null) {
-                        return
-                    }
-                    var userData = response.body()!!
-                    val intent: Intent = Intent(this@ActivityShowFollowersAndFollowing,ActivityUserProfile::class.java)
-                    var b= Bundle()
-                    intent.putExtra("user", Gson().toJson(userData))
-                    startActivity(intent)
-                }
+            finish()
 
-                override fun onFailure(call: Call<UserReceive>, t: Throwable) {
-
-                }
-            })
 
         }
 

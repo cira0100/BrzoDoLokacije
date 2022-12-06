@@ -23,6 +23,7 @@ class FragmentUserFollowing : Fragment() {
     private lateinit var following:MutableList<UserReceive>
     private lateinit var rvFollowing: RecyclerView
     private lateinit var userId:String
+    private lateinit var showMy:String
 
 
     override fun onCreateView(
@@ -33,10 +34,15 @@ class FragmentUserFollowing : Fragment() {
         var view=inflater.inflate(R.layout.fragment_user_following, container, false)
         val bundle = arguments
         userId = bundle!!.getString("userId").toString()
+        showMy = bundle!!.getString("showMy").toString().trim()
         rvFollowing=view.findViewById(R.id.rvFragmentUserFollowing)
 
-        getFollowing()
-
+        if(showMy=="yes"){
+            getFollowingWithoutId()
+        }
+        else if(showMy=="no") {
+            getFollowing()
+        }
         return view
     }
 
@@ -49,7 +55,7 @@ class FragmentUserFollowing : Fragment() {
                 if (response.body() == null) {
                     return
                 }
-                Log.d("Following","Sucesssssssssssssssssssssssssssssss")
+                Log.d("Following","Successsssssssssssssssssssssssssssss")
                 following = response.body()!!.toMutableList<UserReceive>()
                 rvFollowing.apply {
                     layoutManager= LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL,false)
@@ -58,6 +64,28 @@ class FragmentUserFollowing : Fragment() {
             }
             override fun onFailure(call: Call<MutableList<UserReceive>>, t: Throwable) {
                 Log.d("Following","Faillllllllllllllllllllllllll")
+            }
+        })
+    }
+
+    fun getFollowingWithoutId(){
+        val api = RetrofitHelper.getInstance()
+        val token= SharedPreferencesHelper.getValue("jwt", requireActivity())
+        val data=api.getMyFollowings("Bearer "+token)
+        data.enqueue(object : Callback<MutableList<UserReceive>> {
+            override fun onResponse(call: Call<MutableList<UserReceive>>, response: Response<MutableList<UserReceive>>) {
+                if (response.body() == null) {
+                    return
+                }
+                Log.d("MyFollowings","Successsssssssssssssssssssssssssssss")
+                following = response.body()!!.toMutableList<UserReceive>()
+                rvFollowing.apply {
+                    layoutManager= LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL,false)
+                    adapter= FollowersAdapter(following,requireActivity())
+                }
+            }
+            override fun onFailure(call: Call<MutableList<UserReceive>>, t: Throwable) {
+                Log.d("MyFollowings","Faillllllllllllllllllllllllll")
             }
         })
     }

@@ -5,6 +5,8 @@ import android.graphics.Typeface
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.core.content.ContextCompat
+import androidx.core.graphics.drawable.toBitmap
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.exam.DBHelper
@@ -13,12 +15,14 @@ import com.example.brzodolokacije.Activities.ChatActivityConversation
 import com.example.brzodolokacije.Interfaces.IBackendApi
 import com.example.brzodolokacije.Models.ChatPreview
 import com.example.brzodolokacije.Models.UserReceive
+import com.example.brzodolokacije.R
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
 import com.example.brzodolokacije.databinding.ChatPreviewBinding
 import kotlinx.android.synthetic.main.chat_preview.view.*
 import retrofit2.Call
 import retrofit2.Response
+import java.util.*
 
 class ChatPreviewsAdapter (val items : MutableList<ChatPreview>,val activity:ChatActivity)
     : RecyclerView.Adapter<ChatPreviewsAdapter.ViewHolder>(){
@@ -42,6 +46,7 @@ class ChatPreviewsAdapter (val items : MutableList<ChatPreview>,val activity:Cha
             val intent: Intent = Intent(activity, ChatActivityConversation::class.java)
             intent.putExtra("userId",items[position].userId)
             intent.putExtra("username",holder.itemView.tvUsername.text)
+            intent.putExtra("pfp",holder.itemView.ivUserImage.drawable.toBitmap(200,200))
             db.readContact(items[position].userId)
             items[position].read=true
             holder.itemView.tvUsername.typeface= Typeface.DEFAULT
@@ -61,11 +66,12 @@ class ChatPreviewsAdapter (val items : MutableList<ChatPreview>,val activity:Cha
                             //zahtev da se posalje poruka
                             var user=response.body()!!
                             if(!item.read)
-                                tvUsername.typeface= Typeface.DEFAULT_BOLD
+                                setUnread()
                             tvUsername.text=user.username
                             if(user.pfp!=null) {
                                 Glide.with(activity)
                                     .load(RetrofitHelper.baseUrl + "/api/post/image/" + user.pfp!!._id)
+                                    .circleCrop()
                                     .into(ivUserImage)
                             }
                         }
@@ -81,7 +87,41 @@ class ChatPreviewsAdapter (val items : MutableList<ChatPreview>,val activity:Cha
                             Toast.LENGTH_LONG).show()
                     }
                 })
+                var lastMessage=db.getLastMessage(item.userId)
+                tvUsername.text=item.username
+                if(lastMessage!=null){
+                    tvLastMessage.text=lastMessage.messagge
+                    if(layoutPosition==0 || isDifferentDays(lastMessage.usableTimeStamp,Calendar.getInstance())){
+                        tvLastMessageDate.text=lastMessage.usableTimeStamp.get(Calendar.HOUR_OF_DAY).toString() + ":" + lastMessage.usableTimeStamp.get(
+                            Calendar.MINUTE).toString()
+                    }
+                    else{
+                        tvLastMessageDate.text=lastMessage.usableTimeStamp.get(Calendar.DAY_OF_MONTH).toString()+"/"+
+                                (lastMessage.usableTimeStamp.get(Calendar.MONTH)+1).toString()+"/"+
+                                lastMessage.usableTimeStamp.get(Calendar.YEAR).toString()
+                    }
+
+                }
             }
+        }
+        fun isDifferentDays(c1:Calendar,c2:Calendar):Boolean{
+            if(c1.get(Calendar.DAY_OF_YEAR)!=c2.get(Calendar.DAY_OF_YEAR)){
+                return true
+            }
+            else if(c1.get(Calendar.YEAR)!=c2.get(Calendar.YEAR)){
+                return true
+            }
+            return false
+        }
+        fun setUnread(){
+            itemView.tvUsername.typeface= Typeface.DEFAULT_BOLD
+            itemView.tvUsername.invalidate()
+            itemView.tvLastMessage.typeface= Typeface.DEFAULT_BOLD
+            itemView.tvLastMessage.invalidate()
+            itemView.tvLastMessageDate.typeface= Typeface.DEFAULT_BOLD
+            itemView.tvLastMessageDate.invalidate()
+            itemView.readIndicator.background= ContextCompat.getDrawable(activity,R.color.dark_blue_transparent)
+            itemView.readIndicator.invalidate()
         }
     }
 }
