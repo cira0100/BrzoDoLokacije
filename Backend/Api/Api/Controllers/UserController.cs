@@ -147,7 +147,7 @@ namespace Api.Controllers
             return BadRequest();
         }
 
-        [HttpGet("{newUsername}/profile/changeMyUsername")]
+        [HttpGet("{newUsername}/changeMyUsername")]
         [Authorize(Roles = "User")]
         public async Task<ActionResult<int>> ChangeMyProfileUsername(string newUsername)
         {
@@ -155,7 +155,7 @@ namespace Api.Controllers
         }
 
 
-        [HttpGet("{id}/changeMyName")]
+        [HttpGet("{newName}/changeMyName")]
         [Authorize(Roles = "User")]
         public async Task<ActionResult<bool>> ChangeMyProfileName(string newName)
         {

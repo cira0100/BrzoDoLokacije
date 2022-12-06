@@ -8,7 +8,7 @@
     tools:context=".Activities.ActivityChangeUserData">
 
     <ImageView
-        android:id="@+id/btnActivityShowFollowersAndFollowingBackToUser"
+        android:id="@+id/btnBackToUser"
         android:layout_width="35dp"
         android:layout_height="35dp"
         android:clickable="true"
@@ -25,10 +25,11 @@
         android:layout_height="wrap_content"
         android:layout_column="1"
         android:layout_gravity="center"
-        android:layout_marginTop="2dp"
+        android:layout_marginStart="8dp"
 
+        android:layout_marginTop="4dp"
         android:text="Izmeni profil"
-        app:layout_constraintStart_toEndOf="@+id/btnActivityShowFollowersAndFollowingBackToUser"
+        app:layout_constraintStart_toEndOf="@+id/btnBackToUser"
         app:layout_constraintTop_toTopOf="parent" />
 
     <androidx.cardview.widget.CardView
@@ -45,7 +46,7 @@
 
         <ImageView
 
-            android:id="@+id/tvActivityProfileProfilePicture"
+            android:id="@+id/tvActivityChangeUserDataProfilePicture"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:elevation="10dp"
@@ -58,8 +59,8 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/ChangeProfileEditImage"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_gravity="center"
         android:layout_marginTop="90dp"
         android:elevation="5dp"
@@ -69,8 +70,10 @@
         app:layout_constraintTop_toTopOf="@+id/cvFragmentHomePageProfile">
 
         <ImageView
-            android:layout_width="50dp"
-            android:layout_height="50dp"
+            android:id="@+id/ChangeProfileEditImageEdit"
+            android:clickable="true"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:layout_gravity="bottom|right"
             android:background="@color/white"
             android:elevation="20dp"
@@ -129,23 +132,14 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="140dp"
         android:text="Izmeni lozinku"
-        app:shapeAppearanceOverlay="@style/Circular"
-
+        app:layout_constraintBottom_toBottomOf="parent"
+        android:drawableLeft="@drawable/ic_outline_password_24"
+        android:drawableTint="@color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/tvActivityChangeUserDataUsername" />
+        app:layout_constraintTop_toBottomOf="@+id/tvActivityChangeUserDataUsername"
+        app:shapeAppearanceOverlay="@style/Circular" />
 
-    <Button
-        android:id="@+id/button2"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        app:shapeAppearanceOverlay="@style/Circular"
-
-        android:text="Sačuvaj izmene"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/button" />
 
     <ImageView
         android:clickable="true"
