@@ -1,48 +1,38 @@
 package com.example.brzodolokacije.Activities
 
-import android.content.Context
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.preference.PreferenceManager
-import android.util.Log
-
 import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams
-import android.widget.Button
-
-import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-
+import android.widget.FrameLayout
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.auth0.android.jwt.JWT
 import com.example.brzodolokacije.Adapters.CommentsAdapter
 import com.example.brzodolokacije.Adapters.PostImageAdapter
-import com.example.brzodolokacije.Models.*
+import com.example.brzodolokacije.Fragments.FragmentSinglePostComments
+import com.example.brzodolokacije.Fragments.FragmentSinglePostDescription
+import com.example.brzodolokacije.Models.CommentSend
+import com.example.brzodolokacije.Models.PostImage
+import com.example.brzodolokacije.Models.PostPreview
+import com.example.brzodolokacije.Models.UserReceive
 import com.example.brzodolokacije.R
-import com.example.brzodolokacije.Services.RetrofitHelper
-import com.example.brzodolokacije.Services.SharedPreferencesHelper
 import com.example.brzodolokacije.databinding.ActivitySinglePostBinding
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.activity_single_post.view.*
+import kotlinx.android.synthetic.main.fragment_single_post_description.*
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
-import retrofit2.Call
-import retrofit2.Response
 
 
 class ActivitySinglePost : AppCompatActivity() {
@@ -53,22 +43,27 @@ class ActivitySinglePost : AppCompatActivity() {
     private var adapterComments: RecyclerView.Adapter<CommentsAdapter.ViewHolder>? = null
     private var recyclerViewImages: RecyclerView?=null
     private var recyclerViewComments: RecyclerView?=null
-    private var favouriteImage:ImageView?=null
-    public  lateinit var post:PostPreview
+    private var favouriteImage: ImageView?=null
+    public  lateinit var post: PostPreview
+
+
     private var comments:MutableList<CommentSend>?=mutableListOf()
     private var starNumber:Number=0
-    private lateinit var userData:UserReceive
-    private lateinit var user:TextView
-    private lateinit var linearLayout2:ConstraintLayout
+    private lateinit var userData: UserReceive
+    private lateinit var user: TextView
+    private lateinit var linearLayout2: ConstraintLayout
     private lateinit var btnChangeHeightUp:ImageView
     private lateinit var btnChangeHeightDown:ImageView
-
+    private lateinit var fragmentContainer: FrameLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding=ActivitySinglePostBinding.inflate(layoutInflater)
         setContentView(binding.root)
+        //get post --------------------------------
         post= intent.extras?.getParcelable("selectedPost")!!
+
+
         btnChangeHeightUp=findViewById(R.id.activitySinglePostChangeHeightUp)
         btnChangeHeightDown=findViewById(R.id.activitySinglePostChangeHeightDown)
 
@@ -90,7 +85,11 @@ class ActivitySinglePost : AppCompatActivity() {
         adapterImages= PostImageAdapter(this@ActivitySinglePost, post.images as MutableList<PostImage>)
         layoutManagerImages= LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false)
         recyclerViewImages = binding.rvMain
+
+
+        loadTextComponents()
         /*
+
         buildRecyclerViewComments()
         requestGetComments()
         favouriteImage=binding.ivFavourite
@@ -98,7 +97,7 @@ class ActivitySinglePost : AppCompatActivity() {
         recyclerViewImages?.setHasFixedSize(true)
         recyclerViewImages?.layoutManager = layoutManagerImages
         recyclerViewImages?.adapter = adapterImages
-        loadTextComponents()
+
         setRatingListeners()
         translateOwnerIdToName(post.ownerId)
         loadFavourite()
@@ -107,8 +106,8 @@ class ActivitySinglePost : AppCompatActivity() {
         */
         binding.tvUser.setOnClickListener {
             val intent: Intent = Intent(this@ActivitySinglePost,ActivityUserProfile::class.java)
-            var b= Bundle()
-            intent.putExtra("user", Gson().toJson(userData))
+            var args= Bundle()
+            args.putString("post", Gson().toJson(post))
             this.startActivity(intent)
         }
         binding.tvLocationType.setOnClickListener{
@@ -140,10 +139,32 @@ class ActivitySinglePost : AppCompatActivity() {
             linearLayout2.getLayoutParams().height= ViewGroup.LayoutParams.WRAP_CONTENT;
         }
 
-        favouriteImage!!.setOnClickListener{
+        /*favouriteImage!!.setOnClickListener{
             addRemoveFavourite()
         }
+*/
+        binding.btnActivitySinglePostDescription.setOnClickListener {
+            var fm: FragmentTransaction =supportFragmentManager.beginTransaction()
+            val fragment = FragmentSinglePostDescription()
+            val b = Bundle()
+            b.putString("post",  Gson().toJson(post))
+            fragment.arguments = b
+            fm.replace(R.id.flSinglePostFragmentContainer, fragment)
+            fm.commit()
+        }
+        binding.btnActivitySinglePostComments.setOnClickListener{
+            var fm: FragmentTransaction =supportFragmentManager.beginTransaction()
+            val fragment = FragmentSinglePostComments()
+            val b = Bundle()
+            b.putString("post",  Gson().toJson(post))
+            fragment.arguments = b
+            fm.replace(R.id.flSinglePostFragmentContainer, fragment)
+            fm.commit()
+        }
+
+
     }
+    /*
     fun loadFavourite(){
         if(post.favourites!=null){
             var jwtString=SharedPreferencesHelper.getValue("jwt",this)
@@ -178,6 +199,8 @@ class ActivitySinglePost : AppCompatActivity() {
 
 
     }
+    */
+
     fun getMap(){
         /*val mapDialogue = BottomSheetDialog(this@ActivitySinglePost, android.R.style.Theme_Black_NoTitleBar)
         mapDialogue.getWindow()?.setBackgroundDrawable(ColorDrawable(Color.argb(100, 0, 0, 0)))
@@ -205,211 +228,6 @@ class ActivitySinglePost : AppCompatActivity() {
 
 
     }
-/*
-    fun buildRecyclerViewComments(){
-        recyclerViewComments=binding.rvComments
-        adapterComments=CommentsAdapter(comments as MutableList<CommentSend>,this@ActivitySinglePost)
-        layoutManagerComments= LinearLayoutManager(this@ActivitySinglePost,LinearLayoutManager.VERTICAL,false)
-        recyclerViewComments!!.setHasFixedSize(false)
-        recyclerViewComments!!.layoutManager=layoutManagerComments
-        recyclerViewComments!!.adapter= adapterComments
-    }
-    fun hideKeyboard(item: EditText){
-        var imm: InputMethodManager =this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        imm.hideSoftInputFromWindow(item.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
-    }
-
-    fun setRatingListeners() {
-            val emptyStar = R.drawable.empty_star
-            val fullStar = R.drawable.full_star
-            /*var starlist: ArrayList<ImageButton> = arrayListOf()
-            starlist.add(findViewById(R.id.rateStar1) as ImageButton)
-            starlist.add(findViewById(R.id.rateStar2) as ImageButton)
-            starlist.add(findViewById(R.id.rateStar3) as ImageButton)
-            starlist.add(findViewById(R.id.rateStar4) as ImageButton)
-            starlist.add(findViewById(R.id.rateStar5) as ImageButton)
-            for (i in 0..4) {
-                starlist[i].setOnClickListener {
-                    for (j in 1..i) {
-                        starlist[j].setImageResource(fullStar)
-                    }
-                    for (k in i..5) {
-                        starlist[k].setImageResource(emptyStar)
-                    }
-                    starNumber = i+1;
-                }
-            }*/
-
-        binding.rateStar1.setOnClickListener {
-            //Toast.makeText(this,"kliknuta prva zvezdica",Toast.LENGTH_SHORT).show()
-            binding.rateStar1.setImageResource(fullStar)
-            binding.rateStar2.setImageResource(emptyStar)
-            binding.rateStar3.setImageResource(emptyStar)
-            binding.rateStar4.setImageResource(emptyStar)
-            binding.rateStar5.setImageResource(emptyStar)
-            starNumber=1
-        }
-        binding.rateStar2.setOnClickListener {
-            //Toast.makeText(this,"kliknuta druga zvezdica",Toast.LENGTH_SHORT).show()
-            binding.rateStar1.setImageResource(fullStar)
-            binding.rateStar2.setImageResource(fullStar)
-            binding.rateStar3.setImageResource(emptyStar)
-            binding.rateStar4.setImageResource(emptyStar)
-            binding.rateStar5.setImageResource(emptyStar)
-            starNumber=2
-        }
-        binding.rateStar3.setOnClickListener {
-            //Toast.makeText(this,"kliknuta treca zvezdica",Toast.LENGTH_SHORT).show()
-            binding.rateStar1.setImageResource(fullStar)
-            binding.rateStar2.setImageResource(fullStar)
-            binding.rateStar3.setImageResource(fullStar)
-            binding.rateStar4.setImageResource(emptyStar)
-            binding.rateStar5.setImageResource(emptyStar)
-            starNumber=3
-        }
-        binding.rateStar4.setOnClickListener {
-            //Toast.makeText(this,"kliknuta cetvrta zvezdica",Toast.LENGTH_SHORT).show()
-            binding.rateStar1.setImageResource(fullStar)
-            binding.rateStar2.setImageResource(fullStar)
-            binding.rateStar3.setImageResource(fullStar)
-            binding.rateStar4.setImageResource(fullStar)
-            binding.rateStar5.setImageResource(emptyStar)
-            starNumber=4
-        }
-        binding.rateStar5.setOnClickListener {
-            //Toast.makeText(this,"kliknuta peta zvezdica",Toast.LENGTH_SHORT).show()
-            binding.rateStar1.setImageResource(fullStar)
-            binding.rateStar2.setImageResource(fullStar)
-            binding.rateStar3.setImageResource(fullStar)
-            binding.rateStar4.setImageResource(fullStar)
-            binding.rateStar5.setImageResource(fullStar)
-            starNumber=5
-        }
-        binding.submitRating.setOnClickListener{
-            if(starNumber.toInt()>0){
-                val rating= RatingReceive(starNumber.toInt(),post._id)
-                requestAddRating(rating)
-                Toast.makeText(this,"poslato",Toast.LENGTH_SHORT).show()
-            }
-        }
-        binding.btnPostComment.setOnClickListener {
-            if(binding.NewComment.text.isNotEmpty()){
-                val comment=CommentReceive(binding.NewComment.text.toString(),"")
-                requestAddComment(comment)
-
-
-            }
-            else{
-                Toast.makeText(this@ActivitySinglePost,"Unesite tekst komentara.",Toast.LENGTH_LONG).show()
-            }
-        }
-        addView()
-
-    }
-
-    fun requestAddComment(comment:CommentReceive){
-        val postApi= RetrofitHelper.getInstance()
-        val token= SharedPreferencesHelper.getValue("jwt", this@ActivitySinglePost)
-        val request=postApi.addComment("Bearer "+token,post._id,comment)
-        request.enqueue(object : retrofit2.Callback<CommentSend?> {
-            override fun onResponse(call: Call<CommentSend?>, response: Response<CommentSend?>) {
-                if(response.isSuccessful){
-
-                    var newComment=response.body()!!
-                    requestGetComments(newComment)
-                    binding.NewComment.text.clear()
-                    hideKeyboard(binding.NewComment)
-                }else{
-                    if(response.errorBody()!=null)
-                        Log.d("main1",response.message().toString())
-                }
-
-
-            }
-
-            override fun onFailure(call: Call<CommentSend?>, t: Throwable) {
-                Log.d("main2",t.message.toString())
-            }
-        })
-    }
-    fun requestGetComments(newComment:CommentSend?=null){
-        if(newComment==null){
-            val postApi= RetrofitHelper.getInstance()
-            val token= SharedPreferencesHelper.getValue("jwt", this@ActivitySinglePost)
-            val request=postApi.getComments("Bearer "+token,post._id)
-            request.enqueue(object : retrofit2.Callback<MutableList<CommentSend>?> {
-                override fun onResponse(call: Call<MutableList<CommentSend>?>, response: Response<MutableList<CommentSend>?>) {
-                    if(response.isSuccessful){
-                        comments= response.body()!!
-                        if(comments!=null && comments!!.isNotEmpty()){
-                            buildRecyclerViewComments()
-                            if(comments!=null)
-                                binding.tvCommentCount.text=countComments(comments!!).toString()
-                            else
-                                binding.tvCommentCount.text="12"
-                        }
-                    }else{
-                        if(response.errorBody()!=null)
-                            Log.d("main1",response.message().toString())
-                    }
-
-
-                }
-
-                override fun onFailure(call: Call<MutableList<CommentSend>?>, t: Throwable) {
-                    Log.d("main2",t.message.toString())
-                }
-            })
-        }
-        else{
-            (adapterComments as CommentsAdapter).items.add(0,newComment)
-            recyclerViewComments?.adapter=adapterComments
-            addedComment()
-        }
-    }
-
-    fun requestAddRating(rating:RatingReceive){
-        val postApi= RetrofitHelper.getInstance()
-        val token= SharedPreferencesHelper.getValue("jwt", this@ActivitySinglePost)
-        val request=postApi.addRating("Bearer "+token,post._id,rating)
-        request.enqueue(object : retrofit2.Callback<RatingData?> {
-            override fun onResponse(call: Call<RatingData?>, response: Response<RatingData?>) {
-                if(response.isSuccessful){
-                    var data=response.body()!!
-                    binding.tvRating.text=String.format("%.2f",data.ratings)
-                    binding.tvNumberOfRatings.text=String.format("%d",data.ratingscount)
-                    Log.d("--------------",data.ratings.toString()+" "+data.ratingscount.toString())
-                    when(data.myrating){
-                        1->binding.rateStar1.performClick()
-                        2->binding.rateStar2.performClick()
-                        3->binding.rateStar3.performClick()
-                        4->binding.rateStar4.performClick()
-                        5->binding.rateStar5.performClick()
-                        else->{
-                            val emptyStar = R.drawable.empty_star
-                            binding.rateStar1.setImageResource(emptyStar)
-                            binding.rateStar2.setImageResource(emptyStar)
-                            binding.rateStar3.setImageResource(emptyStar)
-                            binding.rateStar4.setImageResource(emptyStar)
-                            binding.rateStar5.setImageResource(emptyStar)
-                        }
-                    }
-                    /*Toast.makeText(
-                            this@ActivitySinglePost, "prosao zahtev", Toast.LENGTH_LONG
-                    ).show()*/
-                }else{
-                    if(response.errorBody()!=null)
-                        Log.d("main1",response.errorBody().toString())
-                }
-
-
-            }
-
-            override fun onFailure(call: Call<RatingData?>, t: Throwable) {
-                Log.d("main2",t.message.toString())
-            }
-        })
-    }
 
     private fun loadTextComponents() {
         binding.apply {
@@ -430,6 +248,7 @@ class ActivitySinglePost : AppCompatActivity() {
         }
 
     }
+    /*
     fun addView() {
         var token= SharedPreferencesHelper.getValue("jwt", this).toString()
         val Api= RetrofitHelper.getInstance()
@@ -466,20 +285,6 @@ class ActivitySinglePost : AppCompatActivity() {
             }
         })
     }
-    fun countComments(comments:List<CommentSend>):Int{
-        var count:Int=0
-        for(c in comments){
-            if(c.replies!=null)
-                count=count+countComments(c.replies!!)
-            count=count+1
-        }
-        return count
-    }
 
-    public fun addedComment(){
-        binding.tvCommentCount.text=(Integer.parseInt(binding.tvCommentCount.text.toString())+1).toString()
-        binding.tvCommentCount.invalidate()
-    }
-
- */
+*/
 }

@@ -23,12 +23,13 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/linearLayout2"
-        android:layout_width="408dp"
-        android:layout_height="723dp"
-        android:layout_marginBottom="8dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:background="@drawable/view_top_corner_radius"
         android:elevation="30dp"
-        android:padding="16dp"
+        android:paddingBottom="0dp"
+        android:paddingTop="16dp"
+        android:paddingHorizontal="16dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
@@ -37,13 +38,13 @@
 
         <TextView
             android:id="@+id/tvTitle"
+            style="@style/title"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:gravity="top|start"
             android:padding="@dimen/text_padding"
             android:text="Naslov"
-            style="@style/title"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -142,9 +143,11 @@
             app:layout_constraintTop_toBottomOf="@+id/tvUser" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/singlePostDetail"
             android:layout_width="match_parent"
-            android:layout_height="400dp"
+            android:layout_height="0dp"
             android:layout_marginTop="8dp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/MapDialogueMapView">
@@ -160,7 +163,6 @@
                 android:stateListAnimator="@null"
                 android:text="opis"
                 android:textColor="@color/cardview_dark_background"
-                app:layout_constraintBottom_toTopOf="@+id/flFragmentProfileFragmentContainer"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
@@ -175,14 +177,14 @@
                 android:stateListAnimator="@null"
                 android:text="Komentari"
                 android:textColor="@color/cardview_dark_background"
-                app:layout_constraintBottom_toTopOf="@+id/flFragmentProfileFragmentContainer"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
             <FrameLayout
-                android:id="@+id/flFragmentProfileFragmentContainer"
-                android:layout_width="409dp"
-                android:layout_height="330dp"
+                android:id="@+id/flSinglePostFragmentContainer"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:paddingHorizontal="16dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -191,4 +193,4 @@
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
- </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
