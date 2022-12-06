@@ -1,10 +1,17 @@
 package com.example.brzodolokacije.Activities
 
+import android.Manifest
+import android.app.AlertDialog
 import android.content.Intent
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
 import android.widget.ImageButton
 import android.widget.Toast
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -24,8 +31,10 @@ import retrofit2.Callback
 import retrofit2.Response
 import java.util.*
 
+
 class ChatActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
 
+    private lateinit var permissionLauncher: ActivityResultLauncher<String>
     private var dbConnection:DBHelper?=null
     lateinit var binding: ActivityChatBinding
     var ws:SignalRListener?=null
@@ -39,6 +48,41 @@ class ChatActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityChatBinding.inflate(layoutInflater)
+        permissionLauncher=registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (!isGranted) {
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    if (Build.VERSION.SDK_INT >= 33) {
+                        //ako je  upravo odbijena dozvola na uredjaju na kome je ona neophodna
+                        binding.btnNotifications.setImageResource(R.drawable.bell_off)
+                    }
+                    else{
+                        //ako je  upravo odbijena dozvola na uredjaju na kome nije ona neophodna
+                        binding.btnNotifications.setImageResource(R.drawable.bell_on)
+                    }
+                }
+                else{
+                    //ako je  upravo odbijena dozvola na uredjaju na kome nije ona neophodna
+                    binding.btnNotifications.setImageResource(R.drawable.bell_on)
+                }
+            }
+            else{
+                //ako je  upravo prihvacena dozvola na uredjaju na kome nije ona neophodna
+                binding.btnNotifications.setImageResource(R.drawable.bell_on)
+            }
+        }
+        //provera da li je dozvoljeno
+        when {
+            ContextCompat.checkSelfPermission(this,Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED -> {
+                binding.btnNotifications.setImageResource(R.drawable.bell_on)
+            }
+            else -> {
+                binding.btnNotifications.setImageResource(R.drawable.bell_off)
+            }
+        }
+
+
         setContentView(binding.root)
         dbConnection= DBHelper(this@ChatActivity,null)
         ws=SignalRListener.getInstance(this@ChatActivity)
@@ -59,6 +103,21 @@ class ChatActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
         })
 
     }
+
+    fun launchNotificationPermissionPrompt(){
+        permissionLauncher.launch(android.Manifest.permission.POST_NOTIFICATIONS)
+    }
+
+    fun launchInfoDialog(){
+        val alertDialog: AlertDialog = AlertDialog.Builder(this@ChatActivity).create()
+        alertDialog.setTitle("Obaveštenje")
+        alertDialog.setMessage("Potrebno je restartovati aplikaciju da bi se sačuvale promene.")
+        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK"
+        ) { dialog, _ -> dialog.dismiss() }
+        alertDialog.show()
+    }
+
+
     fun setListeners(){
         findViewById<ImageButton>(R.id.addNewMessage).setOnClickListener {
             val intent: Intent = Intent(this@ChatActivity,ChatActivityConversation::class.java)
@@ -67,6 +126,19 @@ class ChatActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
         }
         findViewById<ImageButton>(R.id.btnBack).setOnClickListener {
             finish()
+        }
+        findViewById<ImageButton>(R.id.btnNotifications).setOnClickListener {
+            when {
+                ContextCompat.checkSelfPermission(this,Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED -> {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                        revokeSelfPermissionOnKill(Manifest.permission.POST_NOTIFICATIONS)
+                    }
+                    launchInfoDialog()
+                }
+                else -> {
+                    launchNotificationPermissionPrompt()
+                }
+            }
         }
     }
 

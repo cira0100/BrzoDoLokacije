@@ -47,11 +47,14 @@
         android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
-<!--
     <ImageButton
+        android:id="@+id/btnNotifications"
         android:layout_width="50dp"
         android:layout_height="match_parent"
-        android:layout_gravity="center_vertical"/>-->
+        android:layout_gravity="center_vertical"
+        android:scaleType="centerCrop"
+        android:backgroundTint="@color/unfollow"
+        android:src="@drawable/bell_off"/>
 
 </androidx.appcompat.widget.LinearLayoutCompat>
 
