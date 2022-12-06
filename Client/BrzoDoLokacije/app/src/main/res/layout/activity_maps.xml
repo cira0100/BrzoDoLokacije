@@ -6,6 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".Activities.MapsActivity">
+
     <org.osmdroid.views.MapView
         android:id="@+id/ActivityMapsMapView"
         android:layout_width="fill_parent"
@@ -13,8 +14,7 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        />
-
+        app:layout_constraintTop_toTopOf="parent" />
 
 
     <com.google.android.material.floatingactionbutton.FloatingActionButton
@@ -22,9 +22,9 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
+        android:layout_marginEnd="32dp"
+        android:layout_marginBottom="32dp"
         android:backgroundTint="#FFFFFF"
-        android:layout_marginRight="10dp"
-        android:layout_marginBottom="80dp"
         android:clickable="true"
         android:focusable="true"
         android:tint="#FFFFFF"
@@ -39,17 +39,17 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentStart="true"
-        android:layout_marginBottom="80dp"
-        android:layout_marginLeft="10dp"
+        android:layout_marginStart="32dp"
+        android:layout_marginBottom="32dp"
         android:backgroundTint="#FFFFFF"
         android:clickable="true"
         android:focusable="true"
         android:tint="#FFFFFF"
+        android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@+id/ActivityMapsMapView"
         app:layout_constraintStart_toStartOf="parent"
         app:rippleColor="#FFFFFF"
-        app:srcCompat="@drawable/ic_baseline_check_24"
-        android:visibility="invisible"/>
+        app:srcCompat="@drawable/ic_baseline_check_24" />
 
     <androidx.cardview.widget.CardView
         android:id="@+id/ActivityMapsCardViewSearch"
@@ -69,7 +69,7 @@
             android:id="@+id/ActivityMapsSearchBar"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@drawable/rounded_white_button_login"
+            android:background="@drawable/rounded_picture_background"
             android:hint="  Pretraga"
             android:inputType="textPersonName"
             android:paddingLeft="15dp" />

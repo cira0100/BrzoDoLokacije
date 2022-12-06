@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-   xmlns:tools="http://schemas.android.com/tools"
-    android:orientation="vertical"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-   xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
     tools:context=".Activities.ActivitySinglePost">
 
     <androidx.recyclerview.widget.RecyclerView
@@ -23,8 +23,9 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/linearLayout2"
-        android:layout_width="match_parent"
-        android:layout_height="308dp"
+        android:layout_width="410dp"
+        android:textSize="15dp"
+        android:layout_height="729dp"
         android:background="@drawable/view_top_corner_radius"
         android:elevation="30dp"
         android:paddingHorizontal="16dp"
@@ -33,7 +34,8 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        tools:backgroundTint="@color/white">
 
 
         <TextView
@@ -62,6 +64,7 @@
             android:layout_height="wrap_content"
             android:gravity="top|start"
             android:padding="@dimen/text_padding"
+            android:textSize="15dp"
             android:text="Drzava, grad"
             app:layout_constraintStart_toEndOf="@+id/imageView12"
             app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
@@ -86,11 +89,14 @@
             android:gravity="top|start"
             android:padding="@dimen/text_padding"
             android:text="User"
+            android:textSize="17dp"
+            android:textStyle="bold"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/tvLocationType" />
 
         <TextView
             android:id="@+id/tvRating"
+            android:textSize="15dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
@@ -107,6 +113,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:padding="@dimen/text_padding"
+            android:textSize="15dp"
             android:text="(10,500)"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
@@ -133,14 +140,22 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <org.osmdroid.views.MapView
+        <androidx.cardview.widget.CardView
             android:id="@+id/MapDialogueMapView"
             android:layout_width="match_parent"
             android:layout_height="150dp"
             android:layout_marginTop="8dp"
+            app:cardCornerRadius="10dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvUser" />
+            app:layout_constraintTop_toBottomOf="@+id/tvUser">
+
+            <org.osmdroid.views.MapView
+                android:id="@+id/MapDialogueMap"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+
+        </androidx.cardview.widget.CardView>
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/singlePostDetail"
@@ -188,8 +203,18 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnActivitySinglePostComments"
+                app:layout_constraintTop_toBottomOf="@+id/divider5"
                 app:layout_constraintVertical_bias="1.0"></FrameLayout>
+
+            <View
+                android:id="@+id/divider5"
+                android:layout_width="376dp"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider"
+                android:elevation="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/btnActivitySinglePostDescription" />
         </androidx.constraintlayout.widget.ConstraintLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 
