@@ -82,7 +82,7 @@
         app:layout_constraintTop_toBottomOf="@+id/brzodolokacije">
 
 
-        <com.google.android.material.textfield.TextInputEditText
+        <AutoCompleteTextView
             android:id="@+id/etFragmentHomePageSearch"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
@@ -92,6 +92,7 @@
             android:paddingLeft="15dp" />
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/mbFragmentHomePageSearchButton"
             android:layout_width="49dp"
             android:layout_height="match_parent"
             android:layout_gravity="right"

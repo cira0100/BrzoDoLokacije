@@ -37,5 +37,9 @@ namespace Api.Interfaces
 
         Task<List<UserSend>> GetMyFollowers();
 
+        Task<int> ChangeMyProfileUsername(String newUsername);
+        Task<bool> ChangeMyProfileName(String newUsername);
+
+
     }
 }

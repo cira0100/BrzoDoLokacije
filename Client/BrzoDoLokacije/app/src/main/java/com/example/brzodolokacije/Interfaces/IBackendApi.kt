@@ -112,4 +112,7 @@ interface IBackendApi {
     @GET("/api/Post/favourite/{id}")
     fun addRemoveFavourite(@Header("Authorization") authHeader:String,@Path("id") id:String):Call <Boolean>
 
+    @GET("/api/user/{newUsername}/changeMyUsername")
+    fun changeMyUsername(@Header("Authorization") authHeader:String,@Path("newUsername") newUsername:String):Call<Int>
+
 }

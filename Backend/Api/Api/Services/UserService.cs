@@ -663,6 +663,57 @@ namespace Api.Services
             
             return null;
         }
+
+        public async Task<int> ChangeMyProfileUsername(string newUsername)
+        {
+            string myId = null;
+
+            if (_httpContext.HttpContext.User.FindFirstValue("id") != null)
+            {
+                myId = _httpContext.HttpContext.User.FindFirstValue("id").ToString();
+            }
+            User u = await _users.Find(user => user._id == myId).FirstOrDefaultAsync();
+            if (u != null)
+            {
+            
+                //da li username vec postoji?
+                if (await _users.Find(x => x.username == newUsername).FirstOrDefaultAsync() != null)
+                {
+                    //vec postoji korisnik sa navedenim korisnickim imenom 
+                    return -1;
+                }
+                else
+                {
+                    u.username = newUsername;
+                    await _users.ReplaceOneAsync(x => x._id == u._id, u);
+                    return 1;
+                }
+            
+            }
+            return -2;
+             
+        }
+
+        public async Task<bool> ChangeMyProfileName(string newName)
+        {
+            string myId = null;
+            if (_httpContext.HttpContext.User.FindFirstValue("id") != null)
+            {
+                myId = _httpContext.HttpContext.User.FindFirstValue("id").ToString();
+            }
+            User u = await _users.Find(user => user._id == myId).FirstOrDefaultAsync();
+            if (u != null)
+            {
+      
+                u.name = newName;
+                await _users.ReplaceOneAsync(x => x._id == u._id, u);
+                return true;
+
+            }
+            return false;
+        }
+
+        
     }
     
 }

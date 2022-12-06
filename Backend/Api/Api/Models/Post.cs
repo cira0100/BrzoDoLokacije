@@ -115,5 +115,12 @@ namespace Api.Models
     {
         public int counter { get; set; }
         public string tag { get; set; } 
+        public int? views { get; set; }
+    }
+
+    public class Trending
+    {
+        public TagR tagr { get; set; }
+        public PostSendPage page { get; set; }
     }
 }
