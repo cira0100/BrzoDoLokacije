@@ -21,6 +21,7 @@ namespace Api.Models
         public List<string> following { get; set; }
         public int followersCount { get; set; }
         public int followingCount { get; set; }
+        public List<string>? favourites { get; set; }
     }
 
     public class Login
@@ -68,7 +69,8 @@ namespace Api.Models
         public List<String> following { get; set; }
 
         public int followersCount { get; set; }
-        public int followingCount { get; set; } 
+        public int followingCount { get; set; }
+        public List<string>? favourites { get; set; }
 
 
     }

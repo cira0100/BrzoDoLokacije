@@ -34,5 +34,6 @@ data class UserReceive(
     var following:List<String>,
     var followingCount:Int,
     var postIds:List<Int>,
-    var postNumber:Int
+    var postNumber:Int,
+    var favourites:List<String>?
 )

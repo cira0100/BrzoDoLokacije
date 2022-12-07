@@ -17,9 +17,7 @@ namespace Api.Services
         private readonly IMongoCollection<Post> _posts;
         private readonly IJwtService _jwtService;
         private IConfiguration _configuration;
-        private readonly IFileService _fileService;
-
-        private readonly IMongoCollection<UserSend> _usersSend; 
+        private readonly IFileService _fileService; 
         public UserService(IDatabaseConnection settings, IMongoClient mongoClient, IJwtService jwtService, IHttpContextAccessor httpContextAccessor, IConfiguration configuration, IFileService fileService)
         {
             var database = mongoClient.GetDatabase(settings.DatabaseName);
@@ -364,6 +362,7 @@ namespace Api.Services
             tosend.followingCount = user.followingCount;
             tosend.followers = user.followers;
             tosend.following = user.following;
+            tosend.favourites = user.favourites;
             var userposts = await _posts.Find(x => x.ownerId == user._id).ToListAsync();
             tosend.postcount = userposts.Count();
             return tosend;
@@ -384,6 +383,7 @@ namespace Api.Services
             tosend.followingCount = user.followingCount;
             tosend.followers = user.followers;
             tosend.following = user.following;
+            tosend.favourites = user.favourites;
             var userposts = await _posts.Find(x => x.ownerId == user._id).ToListAsync();
             tosend.postcount = userposts.Count();
             return tosend;
@@ -476,6 +476,7 @@ namespace Api.Services
                         follower.followers = utemp.followers;
                         follower.followersCount = utemp.followersCount;
                         follower.followingCount = utemp.followingCount;
+                        follower.favourites = utemp.favourites;
                         
                         follower._id = utemp._id;
 
@@ -515,6 +516,7 @@ namespace Api.Services
                         follower._id = utemp._id;
                         follower.followersCount = utemp.followersCount;
                         follower.followingCount = utemp.followingCount;
+                        follower.favourites = utemp.favourites;
 
                         following.Add((UserSend)follower);
                     }
@@ -558,6 +560,7 @@ namespace Api.Services
                         following._id = utemp._id;
                         following.followersCount = utemp.followersCount;
                         following.followingCount = utemp.followingCount;
+                        following.favourites=utemp.favourites;
 
                         myFollowings.Add((UserSend)following);
                     }
@@ -672,6 +675,7 @@ namespace Api.Services
                         follower.followersCount = utemp.followersCount;
                         follower.followingCount = utemp.followingCount;
                         follower._id = utemp._id;
+                        follower.favourites = utemp.favourites;
                         myfollowers.Add((UserSend)follower);
                     }
                     return myfollowers;
