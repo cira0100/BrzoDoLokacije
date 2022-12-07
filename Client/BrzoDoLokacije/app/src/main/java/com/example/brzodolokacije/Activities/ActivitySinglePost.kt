@@ -16,6 +16,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.auth0.android.jwt.JWT
 import com.example.brzodolokacije.Adapters.CommentsAdapter
 import com.example.brzodolokacije.Adapters.PostImageAdapter
 import com.example.brzodolokacije.Fragments.FragmentSinglePostComments
@@ -105,12 +106,12 @@ class ActivitySinglePost : AppCompatActivity() {
         fm.replace(R.id.flSinglePostFragmentContainer, fragment)
         fm.commit()
 
-        /*
+
         favouriteImage=binding.ivFavourite
         // set recyclerView attributes
         loadFavourite()
 
-        */
+
         translateOwnerIdToName(post.ownerId)
 
         binding.tvUser.setOnClickListener {
@@ -152,10 +153,10 @@ class ActivitySinglePost : AppCompatActivity() {
 
         }
 
-        /*favouriteImage!!.setOnClickListener{
+        favouriteImage!!.setOnClickListener{
             addRemoveFavourite()
         }
-*/
+
         binding.btnActivitySinglePostDescription.setOnClickListener {
             var fm: FragmentTransaction =supportFragmentManager.beginTransaction()
             val fragment = FragmentSinglePostDescription()
@@ -177,7 +178,7 @@ class ActivitySinglePost : AppCompatActivity() {
 
 
     }
-    /*
+
     fun loadFavourite(){
         if(post.favourites!=null){
             var jwtString=SharedPreferencesHelper.getValue("jwt",this)
@@ -212,7 +213,7 @@ class ActivitySinglePost : AppCompatActivity() {
 
 
     }
-    */
+
 
     fun getMap(){
         var map: MapView? = null
