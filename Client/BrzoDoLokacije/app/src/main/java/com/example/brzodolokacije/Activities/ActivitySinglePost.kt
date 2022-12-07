@@ -217,7 +217,7 @@ class ActivitySinglePost : AppCompatActivity() {
     fun getMap(){
         var map: MapView? = null
         Configuration.getInstance().load(this, PreferenceManager.getDefaultSharedPreferences(this));
-        map=findViewById(R.id.MapDialogueMapView)
+        map=findViewById(R.id.MapDialogueMap)
             //findViewById(R.id.MapDialogueMapView) as MapView
         map!!.setTileSource(TileSourceFactory.MAPNIK);
         map!!.setBuiltInZoomControls(true);
