@@ -91,7 +91,7 @@ class ChatPreviewsAdapter (val items : MutableList<ChatPreview>,val activity:Cha
                 tvUsername.text=item.username
                 if(lastMessage!=null){
                     tvLastMessage.text=lastMessage.messagge
-                    if(layoutPosition==0 || isDifferentDays(lastMessage.usableTimeStamp,Calendar.getInstance())){
+                    if(!isDifferentDays(lastMessage.usableTimeStamp,Calendar.getInstance())){
                         tvLastMessageDate.text=lastMessage.usableTimeStamp.get(Calendar.HOUR_OF_DAY).toString() + ":" + lastMessage.usableTimeStamp.get(
                             Calendar.MINUTE).toString()
                     }
