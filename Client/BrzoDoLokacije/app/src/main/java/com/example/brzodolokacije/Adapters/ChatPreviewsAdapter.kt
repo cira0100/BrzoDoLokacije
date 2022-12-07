@@ -90,10 +90,14 @@ class ChatPreviewsAdapter (val items : MutableList<ChatPreview>,val activity:Cha
                 var lastMessage=db.getLastMessage(item.userId)
                 tvUsername.text=item.username
                 if(lastMessage!=null){
-                    tvLastMessage.text=lastMessage.messagge
+                    //var msg=lastMessage.messagge.dropLast(if(lastMessage.messagge.length>20) lastMessage.messagge.length-20 else 0)
+                    tvLastMessage.text=lastMessage.messagge//msg+if(lastMessage.messagge.length>20) "..." else ""
                     if(!isDifferentDays(lastMessage.usableTimeStamp,Calendar.getInstance())){
-                        tvLastMessageDate.text=lastMessage.usableTimeStamp.get(Calendar.HOUR_OF_DAY).toString() + ":" + lastMessage.usableTimeStamp.get(
-                            Calendar.MINUTE).toString()
+                        var hour=lastMessage.usableTimeStamp.get(Calendar.HOUR_OF_DAY)
+                        var hourStr=if(hour<10) "0"+hour.toString() else hour.toString()
+                        var minute=lastMessage.usableTimeStamp.get(Calendar.MINUTE)
+                        var minuteStr=if(minute<10) "0"+minute.toString() else minute.toString()
+                        tvLastMessageDate.text= hourStr + ":" + minuteStr
                     }
                     else{
                         tvLastMessageDate.text=lastMessage.usableTimeStamp.get(Calendar.DAY_OF_MONTH).toString()+"/"+
