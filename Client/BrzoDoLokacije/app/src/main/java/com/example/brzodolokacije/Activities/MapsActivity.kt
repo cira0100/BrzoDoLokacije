@@ -128,6 +128,8 @@ class MapsActivity : AppCompatActivity() {
         var editText=EditText(this)
         var dialog=AlertDialog.Builder(this).setTitle("Naziv").setMessage("Unesite naziv")
             .setView(editText)
+        if(searchBar.text!=null && searchBar.text.toString().trim()!="")
+            editText.setText(searchBar.text.toString())
         dialog.setPositiveButton("Dodaj") { dialog, which ->
             uploadLocation(editText.text.toString())
         }
