@@ -209,8 +209,10 @@ class FragmentBrowse : Fragment(R.layout.fragment_browse) {
                         for(post in postList){
                             Log.d("main",post.toString())
                             val startMarker = Marker(map)
+
                             startMarker.setPosition(GeoPoint(post.location.latitude,post.location.longitude))
                             startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                            startMarker.icon=ContextCompat.getDrawable(requireContext(), R.drawable.ic_baseline_location_on_24)
                             startMarker.setOnMarkerClickListener(object:OnMarkerClickListener{
                                 override fun onMarkerClick(
                                     marker: Marker?,

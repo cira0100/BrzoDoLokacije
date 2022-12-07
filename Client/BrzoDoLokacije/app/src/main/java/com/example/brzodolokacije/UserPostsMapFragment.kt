@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import com.example.brzodolokacije.Activities.ActivitySinglePost
 import com.example.brzodolokacije.Fragments.FragmentProfile
 import com.example.brzodolokacije.Models.PostPreview
@@ -83,6 +84,7 @@ class UserPostsMapFragment : Fragment() {
                             val startMarker = Marker(map)
                             startMarker.setPosition(GeoPoint(post.location.latitude,post.location.longitude))
                             startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                            startMarker.icon= ContextCompat.getDrawable(requireContext(), R.drawable.ic_baseline_location_on_24)
                             if(flag){
                                 flag=false
                                 map!!.controller.animateTo(GeoPoint(post.location.latitude,post.location.longitude))
