@@ -70,7 +70,7 @@ class ChatPreviewsAdapter (val items : MutableList<ChatPreview>,val activity:Cha
                             tvUsername.text=user.username
                             if(user.pfp!=null) {
                                 Glide.with(activity)
-                                    .load(RetrofitHelper.baseUrl + "/api/post/image/" + user.pfp!!._id)
+                                    .load(RetrofitHelper.baseUrl + "/api/post/image/compress/" + user.pfp!!._id)
                                     .circleCrop()
                                     .into(ivUserImage)
                             }
