@@ -9,13 +9,13 @@
         android:icon="@drawable/ic_baseline_list_24"
         android:title="Sve objave" />
     <item
+        android:id="@+id/navAddPost"
+        android:title="Dodaj"
+        android:icon="@drawable/add_post_red_image"/>
+    <item
         android:id="@+id/navBrowse"
         android:title="Pretraga"
         android:icon="@drawable/ic_nav_browse"/>
-    <item
-        android:id="@+id/navAddPost"
-        android:title="Dodaj"
-        android:icon="@drawable/ic_nav_addpost"/>
     <item
         android:id="@+id/navProfile"
         android:title="Profil"
