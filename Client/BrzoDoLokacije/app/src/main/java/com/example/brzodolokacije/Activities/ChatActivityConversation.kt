@@ -73,34 +73,39 @@ class ChatActivityConversation : AppCompatActivity() {
                             if(response.isSuccessful()){
                                 //zahtev da se posalje poruka
                                 var user:UserReceive=response.body()!!
-                                userId=user._id
-                                setHeader()
-                                var message= MessageSend(userId!!,messageContent)
-                                val request2=Api.sendMessage("Bearer "+token,
-                                    message
-                                )
-                                request2.enqueue(object : retrofit2.Callback<Message?> {
-                                    override fun onResponse(call: Call<Message?>, response: Response<Message?>) {
-                                        if(response.isSuccessful()){
-                                            //zahtev da se posalje poruka
-                                            var responseMessage=response.body()
-                                            var cal: Calendar = Calendar.getInstance()
-                                            cal.time=responseMessage?.timestamp
-                                            responseMessage?.usableTimeStamp=cal
-                                            dbConnection?.addMessage(responseMessage!!,username=user.username)
-                                            requestMessages()
-                                            binding.etNewMessage.text?.clear()
+                                if(user._id==JWT(SharedPreferencesHelper.getValue("jwt",this@ChatActivityConversation)!!).claims["id"]?.asString()!!){
+                                    Toast.makeText(this@ChatActivityConversation,"Ne mozete slati poruku sami sebi.",Toast.LENGTH_LONG).show()
+                                }
+                                else{
+                                    userId=user._id
+                                    setHeader()
+                                    var message= MessageSend(userId!!,messageContent)
+                                    val request2=Api.sendMessage("Bearer "+token,
+                                        message
+                                    )
+                                    request2.enqueue(object : retrofit2.Callback<Message?> {
+                                        override fun onResponse(call: Call<Message?>, response: Response<Message?>) {
+                                            if(response.isSuccessful()){
+                                                //zahtev da se posalje poruka
+                                                var responseMessage=response.body()
+                                                var cal: Calendar = Calendar.getInstance()
+                                                cal.time=responseMessage?.timestamp
+                                                responseMessage?.usableTimeStamp=cal
+                                                dbConnection?.addMessage(responseMessage!!,username=user.username)
+                                                requestMessages()
+                                                binding.etNewMessage.text?.clear()
 
+                                            }
+                                            else{
+                                                Toast.makeText(this@ChatActivityConversation,"Pogresno korisnicko ime1.",Toast.LENGTH_LONG).show()
+                                            }
                                         }
-                                        else{
-                                            Toast.makeText(this@ChatActivityConversation,"Pogresno korisnicko ime1.",Toast.LENGTH_LONG).show()
-                                        }
-                                    }
 
-                                    override fun onFailure(call: Call<Message?>, t: Throwable) {
-                                        Toast.makeText(this@ChatActivityConversation,"Pogresno korisnicko ime2.",Toast.LENGTH_LONG).show()
-                                    }
-                                })
+                                        override fun onFailure(call: Call<Message?>, t: Throwable) {
+                                            Toast.makeText(this@ChatActivityConversation,"Pogresno korisnicko ime2.",Toast.LENGTH_LONG).show()
+                                        }
+                                    })
+                                }
                             }
                             else{
                                 Log.d("main",response.message())
