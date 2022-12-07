@@ -23,7 +23,7 @@
         android:id="@+id/cvContainer"
         android:layout_width="wrap_content"
         android:minWidth="40dp"
-        android:layout_height="30dp"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="10dp"
         android:layout_marginLeft="10dp"
         android:backgroundTint="#eef1f6"
@@ -37,10 +37,12 @@
             android:id="@+id/tvMessage"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:maxLines="50"
+            android:maxWidth="300dp"
             android:backgroundTint="#eef1f6"
             android:padding="5dp"
             android:paddingHorizontal="15dp"
-            android:text="blabla"
+            app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent" />
     </androidx.cardview.widget.CardView>
 
