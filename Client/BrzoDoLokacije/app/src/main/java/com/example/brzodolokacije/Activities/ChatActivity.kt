@@ -88,7 +88,6 @@ class ChatActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
         ws=SignalRListener.getInstance(this@ChatActivity)
         setListeners()
         setRecyclerView()
-        requestNewMessages()
         swipeRefreshLayout = binding.swipeContainer
         swipeRefreshLayout?.setOnRefreshListener(this@ChatActivity)
         swipeRefreshLayout?.setColorSchemeResources(
@@ -97,11 +96,12 @@ class ChatActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
             R.color.dark_blue_transparent,
             R.color.purple_700
         )
-        swipeRefreshLayout?.post(kotlinx.coroutines.Runnable {
-            swipeRefreshLayout?.isRefreshing=true
-            requestNewMessages()
-        })
+    }
 
+    override fun onResume() {
+        super.onResume()
+        clickedChat=null
+        requestNewMessages()
     }
 
     fun launchNotificationPermissionPrompt(){

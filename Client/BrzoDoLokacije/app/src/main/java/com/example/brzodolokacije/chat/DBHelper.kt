@@ -175,7 +175,6 @@ class DBHelper :
                     )
 
             Log.d("main",cal.time.toString())
-            readContact(userId)
             return msg
         }
         return null

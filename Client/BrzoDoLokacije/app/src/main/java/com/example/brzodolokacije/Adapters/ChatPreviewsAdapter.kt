@@ -42,16 +42,6 @@ class ChatPreviewsAdapter (val items : MutableList<ChatPreview>,val activity:Cha
     override fun onBindViewHolder(holder: ViewHolder, position: Int){
         //sets components of particular item
         holder.bind(items[position])
-        holder.itemView.setOnClickListener {
-            val intent: Intent = Intent(activity, ChatActivityConversation::class.java)
-            intent.putExtra("userId",items[position].userId)
-            intent.putExtra("username",holder.itemView.tvUsername.text)
-            intent.putExtra("pfp",holder.itemView.ivUserImage.drawable.toBitmap(200,200))
-            db.readContact(items[position].userId)
-            items[position].read=true
-            holder.itemView.tvUsername.typeface= Typeface.DEFAULT
-            activity.startActivity(intent)
-        }
     }
     override fun getItemCount() = items.size
     inner class ViewHolder(itemView : ChatPreviewBinding) : RecyclerView.ViewHolder(itemView.root){
@@ -106,6 +96,16 @@ class ChatPreviewsAdapter (val items : MutableList<ChatPreview>,val activity:Cha
                     }
 
                 }
+                itemView.setOnClickListener {
+                    val intent: Intent = Intent(activity, ChatActivityConversation::class.java)
+                    intent.putExtra("userId",items[position].userId)
+                    intent.putExtra("username",itemView.tvUsername.text)
+                    intent.putExtra("pfp",itemView.ivUserImage.drawable.toBitmap(200,200))
+                    db.readContact(items[position].userId)
+                    items[position].read=true
+                    setRead()
+                    activity.startActivity(intent)
+                }
             }
         }
         fun isDifferentDays(c1:Calendar,c2:Calendar):Boolean{
@@ -125,6 +125,17 @@ class ChatPreviewsAdapter (val items : MutableList<ChatPreview>,val activity:Cha
             itemView.tvLastMessageDate.typeface= Typeface.DEFAULT_BOLD
             itemView.tvLastMessageDate.invalidate()
             itemView.readIndicator.background= ContextCompat.getDrawable(activity,R.color.dark_blue_transparent)
+            itemView.readIndicator.invalidate()
+        }
+
+        fun setRead(){
+            itemView.tvUsername.typeface= Typeface.DEFAULT
+            itemView.tvUsername.invalidate()
+            itemView.tvLastMessage.typeface= Typeface.DEFAULT
+            itemView.tvLastMessage.invalidate()
+            itemView.tvLastMessageDate.typeface= Typeface.DEFAULT
+            itemView.tvLastMessageDate.invalidate()
+            itemView.readIndicator.background= ContextCompat.getDrawable(activity,R.color.white)
             itemView.readIndicator.invalidate()
         }
     }
