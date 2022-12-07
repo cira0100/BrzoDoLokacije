@@ -51,7 +51,11 @@ class ChatMessagesAdapter (val items : MutableList<Message>, val activity:Activi
         fun bind(item : Message){
             bindingOther?.apply {
                 tvMessage?.text=item.messagge
-                tvTimestamp.text=item.usableTimeStamp.get(Calendar.HOUR_OF_DAY).toString() + ":" + item.usableTimeStamp.get(Calendar.MINUTE).toString()
+                var hour=item.usableTimeStamp.get(Calendar.HOUR_OF_DAY)
+                var hourStr=if(hour<10) "0"+hour.toString() else hour.toString()
+                var minute=item.usableTimeStamp.get(Calendar.MINUTE)
+                var minuteStr=if(minute<10) "0"+minute.toString() else minute.toString()
+                tvTimestamp.text= hourStr + ":" + minuteStr
                 if(layoutPosition==0 || isDifferentDays(items[layoutPosition].usableTimeStamp,items[layoutPosition-1].usableTimeStamp)){
 
                     tvDate.text=item.usableTimeStamp.get(Calendar.DAY_OF_MONTH).toString()+"/"+
@@ -69,7 +73,11 @@ class ChatMessagesAdapter (val items : MutableList<Message>, val activity:Activi
         fun bind(item : Message){
             binding?.apply {
                 tvMessage.text=item.messagge
-                tvTimestamp.text=item.usableTimeStamp.get(Calendar.HOUR_OF_DAY).toString() + ":" + item.usableTimeStamp.get(Calendar.MINUTE).toString()
+                var hour=item.usableTimeStamp.get(Calendar.HOUR_OF_DAY)
+                var hourStr=if(hour<10) "0"+hour.toString() else hour.toString()
+                var minute=item.usableTimeStamp.get(Calendar.MINUTE)
+                var minuteStr=if(minute<10) "0"+minute.toString() else minute.toString()
+                tvTimestamp.text= hourStr + ":" + minuteStr
                 if(layoutPosition==0 || isDifferentDays(items[layoutPosition].usableTimeStamp,items[layoutPosition-1].usableTimeStamp)){
 
                     tvDate.text=item.usableTimeStamp.get(Calendar.DAY_OF_MONTH).toString()+"/"+
