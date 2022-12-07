@@ -4,15 +4,16 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.util.TypedValue
+import android.view.View
 import android.view.ViewGroup
-import android.widget.FrameLayout
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
+import androidx.core.view.setMargins
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -49,6 +50,7 @@ class ActivitySinglePost : AppCompatActivity() {
     private var recyclerViewImages: RecyclerView?=null
     private var recyclerViewComments: RecyclerView?=null
     private var favouriteImage: ImageView?=null
+    private lateinit var tagLayout: LinearLayout
     public  lateinit var post: PostPreview
 
 
@@ -77,7 +79,6 @@ class ActivitySinglePost : AppCompatActivity() {
         btnChangeHeightUp.isVisible=true
         btnChangeHeightUp.isGone=false
         btnChangeHeightUp.isClickable=true
-
         linearLayout2=findViewById(R.id.linearLayout2)
 
         linearLayout2.setOnClickListener {
@@ -108,8 +109,12 @@ class ActivitySinglePost : AppCompatActivity() {
 
 
         favouriteImage=binding.ivFavourite
-        // set recyclerView attributes
+        tagLayout =  binding.llTags
+        loadTags()
         loadFavourite()
+
+        // set recyclerView attributes
+
 
 
         translateOwnerIdToName(post.ownerId)
@@ -176,6 +181,26 @@ class ActivitySinglePost : AppCompatActivity() {
             fm.commit()
         }
 
+
+    }
+    fun loadTags(){
+        if(post.tags!=null)
+        for( item in post.tags!!){
+            var newbtn = Button(this)
+            newbtn.text = item
+            var layoutParams = LinearLayout.LayoutParams(
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                50
+            )
+            layoutParams.setMargins(3)
+            newbtn.layoutParams=layoutParams
+            newbtn.setBackgroundColor(Color.parseColor("#1C789A"))
+            newbtn.setTextColor(Color.WHITE)
+            newbtn.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10F)
+            newbtn.setPadding(3,1,3,1)
+            newbtn.isClickable=false
+            tagLayout.addView(newbtn)
+        }
 
     }
 
