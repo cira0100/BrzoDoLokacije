@@ -80,7 +80,7 @@ class CommentsAdapter (val items : MutableList<CommentSend>,val activity: Activi
                     else{
                         showKeyboard(etReply)
                         btnPostReply.setOnClickListener{
-                            if(etReply.text.isNotEmpty()){
+                            if(etReply.text!!.isNotEmpty()){
                                 val postId=(activity as ActivitySinglePost).post._id
                                 Log.d("main",binding.toString())
                                 val comment= CommentReceive(etReply.text.toString(),item._id)
@@ -121,7 +121,7 @@ class CommentsAdapter (val items : MutableList<CommentSend>,val activity: Activi
                     if(response.isSuccessful){
                         var newComment=response.body()!!
                         requestGetComments(newComment)
-                        itemView.etReply.text.clear()
+                        itemView.etReply.text!!.clear()
                         hideKeyboard(itemView.etReply)
                         itemView.etReply.clearFocus()
                     }else{
