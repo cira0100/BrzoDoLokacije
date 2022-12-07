@@ -557,22 +557,28 @@ namespace Api.Services
         {
             string userId = _httpContext.HttpContext.User.FindFirstValue("id");
             var result = false;
+            var user = await _users.Find(x => x._id == userId).FirstOrDefaultAsync();
             Post post = await _posts.Find(x => x._id == postId).FirstOrDefaultAsync();
             if (userId == null || post==null)
                 return result;
             if (post.favourites == null)
                 post.favourites = new List<string>();
+            if(user.favourites==null)
+                user.favourites= new List<string>();
             if (post.favourites.Contains(userId))
             {
                 post.favourites.Remove(userId);
+                user.favourites.Remove(post._id);
                 result = false;
             }
             else
             {
                 post.favourites.Add(userId);
+                user.favourites.Add(post._id);
                 result = true;
 
             }
+            await _users.ReplaceOneAsync(x => x._id == user._id, user);
             await _posts.ReplaceOneAsync(x => x._id == postId, post);
             return result;
 
