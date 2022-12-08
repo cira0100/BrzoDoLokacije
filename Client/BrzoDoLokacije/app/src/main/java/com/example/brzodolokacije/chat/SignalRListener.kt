@@ -82,7 +82,7 @@ class SignalRListener private constructor(val activity: Activity){
             if(activity.clickedChat?.userId==message.senderId){
                 activity.clickedChat?.requestMessages()
             }
-            activity.requestNewMessages()
+            activity.onRefresh()
         }
         when {
             ContextCompat.checkSelfPermission(activity,

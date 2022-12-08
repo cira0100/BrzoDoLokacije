@@ -26,6 +26,8 @@ import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
 import com.example.brzodolokacije.chat.SignalRListener
 import com.example.brzodolokacije.databinding.ActivityChatBinding
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -143,10 +145,11 @@ class ChatActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     fun requestForChats(){
-        var dbHelper= DBHelper.getInstance(this@ChatActivity)
-        items=dbHelper.getContacts()
-        adapterVar= items?.let { ChatPreviewsAdapter(it,this@ChatActivity) }
-        setRecyclerView(setParams = false)
+        MainScope().launch{
+            var dbHelper= DBHelper.getInstance(this@ChatActivity)
+            items=dbHelper.getContacts()
+            setRecyclerView()
+        }
     }
 
     fun requestNewMessages(){
@@ -164,7 +167,8 @@ class ChatActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
                             cal.time=message.timestamp
                             dbHelper.addMessage(
                                 Message(message.senderId+message.timestamp,message.senderId,
-                                JWT(SharedPreferencesHelper.getValue("jwt",this@ChatActivity)!!).claims["id"]?.asString()!!,message.messagge,message.timestamp,cal),false)
+                                    JWT(SharedPreferencesHelper.getValue("jwt",this@ChatActivity)!!).claims["id"]?.asString()!!,message.messagge,message.timestamp,cal),false)
+
                         }
                     }
                     requestForChats()
