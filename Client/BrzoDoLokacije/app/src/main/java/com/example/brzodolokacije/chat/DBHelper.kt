@@ -216,6 +216,8 @@ class DBHelper :
     }
 
     fun getContacts(): MutableList<ChatPreview>? {
+        var mapChats:Map<Long,ChatPreview>
+        mapChats= mutableMapOf()
         onCreate(db)
         var sql="SELECT * FROM "+ CONTACTS_TABLE_NAME
         var cursor=db?.rawQuery(sql,null)
@@ -225,10 +227,14 @@ class DBHelper :
             var readIndex=cursor.getColumnIndexOrThrow("read")
             var usernameIndex=cursor.getColumnIndexOrThrow("username")
             while(cursor.moveToNext()){
-                contactList.add(ChatPreview(cursor.getString(userIdIndex),cursor.getInt(readIndex)==1,cursor.getString(usernameIndex)))
+                var chat=ChatPreview(cursor.getString(userIdIndex),cursor.getInt(readIndex)==1,cursor.getString(usernameIndex))
+                var lastMessage=getLastMessage(chat.userId)?.usableTimeStamp!!.timeInMillis
+                mapChats[lastMessage]=chat
+                contactList.add(chat)
             }
+            var sorted=mapChats.toSortedMap(kotlin.Comparator { o1, o2 -> (o2-o1).toInt() })
             Log.d("main",contactList.size.toString())
-            return contactList
+            return ArrayList<ChatPreview>(sorted.values).toMutableList()
         }
         return null
     }
