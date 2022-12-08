@@ -40,6 +40,8 @@ namespace Api.Interfaces
         Task<int> ChangeMyProfileUsername(String newUsername);
         Task<bool> ChangeMyProfileName(String newUsername);
 
+        Task<int> ChangePass(string currentPass, string newPass);
+
 
     }
 }

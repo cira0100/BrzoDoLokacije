@@ -10,6 +10,7 @@ import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
 import com.exam.DBHelper
+import com.example.brzodolokacije.Activities.ActivityChangePassword
 import com.example.brzodolokacije.Activities.ActivityChangeUserData
 import com.example.brzodolokacije.Activities.ActivityLoginRegister
 import com.example.brzodolokacije.FragmentProfileStatistics
@@ -21,6 +22,7 @@ class FragmentMyProfileInfo : Fragment() {
     private lateinit var logout:Button
     private lateinit var changeAccount:Button
     private lateinit var statistics:Button
+    private lateinit var changePassword:Button
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,6 +34,7 @@ class FragmentMyProfileInfo : Fragment() {
         logout=view.findViewById<View>(R.id.buttonLogOut) as Button
         changeAccount=view.findViewById(R.id.changeAccountData)
         statistics=view.findViewById<View>(R.id.getAccoutStatistics) as Button
+        changePassword=view.findViewById(R.id.ChangePassword)
 
         logout.setOnClickListener{
             logOut()
@@ -41,6 +44,7 @@ class FragmentMyProfileInfo : Fragment() {
             val intent = Intent (getActivity(), ActivityChangeUserData::class.java)
             getActivity()?.startActivity(intent)
         }
+
         statistics.setOnClickListener {
 
             val manager: androidx.fragment.app.FragmentManager? = fragmentManager
@@ -54,6 +58,11 @@ class FragmentMyProfileInfo : Fragment() {
 
         }
 
+
+        changePassword.setOnClickListener {
+            val intent = Intent (getActivity(), ActivityChangePassword::class.java)
+            getActivity()?.startActivity(intent)
+        }
 
         return view
     }

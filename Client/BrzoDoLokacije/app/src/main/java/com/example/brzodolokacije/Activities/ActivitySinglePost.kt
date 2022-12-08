@@ -184,8 +184,10 @@ class ActivitySinglePost : AppCompatActivity() {
 
     }
     fun loadTags(){
-        if(post.tags!=null) {
-            for (item in post.tags!!) {
+
+
+        if(post.tags!=null)
+            for( item in post.tags!!){
                 var newbtn = Button(this)
                 newbtn.text = item
                 var layoutParams = LinearLayout.LayoutParams(
@@ -193,6 +195,7 @@ class ActivitySinglePost : AppCompatActivity() {
                     50
                 )
                 layoutParams.setMargins(3)
+
                 newbtn.layoutParams = layoutParams
                 newbtn.setBackgroundColor(Color.parseColor("#1C789A"))
                 newbtn.setTextColor(Color.WHITE)
@@ -203,7 +206,8 @@ class ActivitySinglePost : AppCompatActivity() {
             }
         }
 
-    }
+
+
 
     fun loadFavourite(){
         if(post.favourites!=null){
