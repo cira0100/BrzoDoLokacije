@@ -49,7 +49,17 @@ class FragmentMyProfileInfo : Fragment() {
 
             val manager: androidx.fragment.app.FragmentManager? = fragmentManager
             val transaction: FragmentTransaction = manager!!.beginTransaction()
-            transaction.replace(R.id.flFragmentProfileFragmentContainer, FragmentProfileStatistics())
+
+            var fragment:FragmentProfileStatistics=FragmentProfileStatistics()
+            val bundle = Bundle()
+            var parentFragment:FragmentProfile=parentFragment as FragmentProfile
+            var username=parentFragment.usernameStringSend
+            bundle.putString("username", username)
+            fragment.arguments=bundle
+
+
+
+            transaction.replace(R.id.flFragmentProfileFragmentContainer,fragment )
             transaction.commit()
 
 

@@ -672,6 +672,7 @@ namespace Api.Services
             stats.numberOfPosts = 0;
             stats.totalViews = 0;
             stats.monthlyViews = new List<MonthlyViews>();
+            stats.numberOfFavouritePosts = 0;
 
            
             if(posts != null)
@@ -691,6 +692,8 @@ namespace Api.Services
                     stats.totalViews += post.views;
                     stats.numberOfRatingsOnPosts += post.ratingscount;
                     stats.numberOfPosts++;
+                    if(post.favourites!=null)
+                        stats.numberOfFavouritePosts+=post.favourites.Count;
                     ratingsum += post.ratings * post.ratingscount;
                 }
                 if(stats.numberOfRatingsOnPosts > 0) //don't forget to check div by 0 jesus

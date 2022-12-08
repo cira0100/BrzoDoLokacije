@@ -60,6 +60,7 @@ class FragmentProfile : Fragment(com.example.brzodolokacije.R.layout.fragment_pr
     private lateinit var profilePicturePlus: MaterialButton
     private lateinit var showFollowers: TextView
     private lateinit var showFollowing: TextView
+    public  var usernameStringSend:String?=null
 
 
     override fun onCreateView(
@@ -208,6 +209,7 @@ class FragmentProfile : Fragment(com.example.brzodolokacije.R.layout.fragment_pr
     private fun setUserInfo(user:UserReceive){
         name.setText(user.name)
         username.setText("@"+user.username)
+        usernameStringSend=user.username
         postsCount.setText(user.postcount.toString())
         Log.d("follno",user.followersCount.toString())
         Log.d("follno","helllllllllllllllllllllppppppppppppppppppppppppppppppp")

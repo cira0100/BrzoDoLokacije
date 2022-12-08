@@ -124,5 +124,7 @@ interface IBackendApi {
 
     @POST("/api/user/changePass")
     fun changePass(@Header("Authorization") authHeader:String):Call<Int>
+    @GET("/api/user/{username}/profile/stats")
+    fun getUserStatsFromUsername(@Header("Authorization") authHeader:String,@Path("username") username:String):Call<Statistics>
 
 }
