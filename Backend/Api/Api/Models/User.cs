@@ -82,6 +82,7 @@ namespace Api.Models
         public int numberOfRatingsOnPosts { get; set; }
         public double averagePostRatingOnPosts {get; set; }
         public List<MonthlyViews> monthlyViews { get; set; }
+        public int numberOfFavouritePosts { get; set; }
     }
 
     public class MonthlyViews

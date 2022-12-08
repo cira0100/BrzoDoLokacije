@@ -23,7 +23,17 @@
 
         <TextView
             android:layout_width="100dp"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_marginRight="5dp"
+            android:text="Broj pregleda"
+            android:gravity="center"/>
+        <TextView
+            android:id="@+id/tvProfileStatisticsViews"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="0"
+            android:textSize="20dp"
+            android:gravity="center"/>
 
     </LinearLayout>
 
@@ -39,11 +49,21 @@
         <ImageView
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/ic_total_views" />
+            android:src="@drawable/ic_baseline_star_24" />
 
         <TextView
             android:layout_width="100dp"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_marginRight="5dp"
+            android:text="Broj ocena"
+            android:gravity="center"/>
+        <TextView
+            android:id="@+id/tvProfileStatisticsRatingNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="0"
+            android:textSize="20dp"
+            android:gravity="center"/>
 
     </LinearLayout>
 
@@ -59,16 +79,26 @@
         <ImageView
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/ic_total_views" />
+            android:src="@drawable/ic_baseline_star_half_24" />
 
         <TextView
             android:layout_width="100dp"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_marginRight="5dp"
+            android:text="Prosečna ocena po objavi"
+            android:gravity="center"/>
+        <TextView
+            android:id="@+id/tvProfileStatisticsAverageRating"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="0"
+            android:textSize="20dp"
+            android:gravity="center"/>
+
 
     </LinearLayout>
-
     <LinearLayout
-        android:id="@+id/linearLayout6"
+        android:id="@+id/linearLayout7"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -79,13 +109,55 @@
         <ImageView
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:src="@drawable/ic_total_views" />
+            android:src="@drawable/ic_baseline_favorite_24" />
 
         <TextView
             android:layout_width="100dp"
-            android:layout_height="match_parent" />
+            android:layout_height="match_parent"
+            android:layout_marginRight="5dp"
+            android:text="Broj omiljenih objava"
+            android:gravity="center"/>
+        <TextView
+            android:id="@+id/tvProfileStatisticsFavouriteNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
+            android:text="0"
+            android:textSize="20dp"
+            android:gravity="center"/>
+
 
     </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayout6"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout7">
+
+        <ImageView
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:src="@drawable/ic_baseline_calendar_month_24" />
+
+        <TextView
+            android:layout_width="100dp"
+            android:layout_marginRight="5dp"
+            android:layout_height="match_parent"
+            android:text="Pregledi po mesecima"
+            android:gravity="center"/>
+
+    </LinearLayout>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/rvFragmentProfileStatisticsMonths"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/linearLayout6" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
