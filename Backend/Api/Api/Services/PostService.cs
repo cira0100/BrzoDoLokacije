@@ -162,7 +162,11 @@ namespace Api.Services
                 tosend.ratingscount = ps.ratingscount;
 
                 if (p.ownerId == userid)
-                    return null;
+                {
+                    tosend.myrating = -1;
+                    return tosend;
+                }
+                   
                 if(rating.rating == 0)// ako nema rating staviti 0
                 {
                     var r = p.ratings.Find(x => x.userId == userid);

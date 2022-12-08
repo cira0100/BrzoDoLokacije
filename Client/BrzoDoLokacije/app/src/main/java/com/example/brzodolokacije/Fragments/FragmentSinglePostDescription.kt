@@ -77,7 +77,7 @@ class FragmentSinglePostDescription : Fragment() {
             starNumber=1
             rate(starNumber)
         }
-        star1.setOnClickListener {
+        star2.setOnClickListener {
             //Toast.makeText(this,"kliknuta druga zvezdica",Toast.LENGTH_SHORT).show()
             star1.setImageResource(fullStar)
             star2.setImageResource(fullStar)
@@ -87,7 +87,7 @@ class FragmentSinglePostDescription : Fragment() {
             starNumber=2
             rate(starNumber)
         }
-        star1.setOnClickListener {
+        star3.setOnClickListener {
             //Toast.makeText(this,"kliknuta treca zvezdica",Toast.LENGTH_SHORT).show()
             star1.setImageResource(fullStar)
             star2.setImageResource(fullStar)
@@ -97,8 +97,8 @@ class FragmentSinglePostDescription : Fragment() {
             starNumber=3
             rate(starNumber)
         }
-        star1.setOnClickListener {
-            Toast.makeText(requireActivity(),"kliknuta cetvrta zvezdica",Toast.LENGTH_SHORT).show()
+        star4.setOnClickListener {
+            //Toast.makeText(requireActivity(),"kliknuta cetvrta zvezdica",Toast.LENGTH_SHORT).show()
             star1.setImageResource(fullStar)
             star2.setImageResource(fullStar)
             star3.setImageResource(fullStar)
@@ -107,7 +107,7 @@ class FragmentSinglePostDescription : Fragment() {
             starNumber=4
             rate(starNumber)
         }
-        star1.setOnClickListener {
+        star5.setOnClickListener {
             //Toast.makeText(this,"kliknuta peta zvezdica",Toast.LENGTH_SHORT).show()
             star1.setImageResource(fullStar)
             star2.setImageResource(fullStar)
@@ -140,19 +140,52 @@ class FragmentSinglePostDescription : Fragment() {
                         "--------------",
                         data.ratings.toString() + " " + data.ratingscount.toString()
                     )
-                    when (data.myrating) {
-                        1 -> star1.performClick()
-                        2 -> star1.performClick()
-                        3 -> star3.performClick()
-                        4 -> star4.performClick()
-                        5 -> star5.performClick()
-                        else -> {
-                            val emptyStar = R.drawable.empty_star
-                            star1.setImageResource(emptyStar)
-                            star2.setImageResource(emptyStar)
-                            star3.setImageResource(emptyStar)
-                            star4.setImageResource(emptyStar)
-                            star5.setImageResource(emptyStar)
+                    if(rating.rating==0) {
+                        val emptyStar = R.drawable.empty_star
+                        val fullStar = R.drawable.ic_baseline_star_rate_24
+                        when (data.myrating) {
+                            1 -> {
+                                star1.setImageResource(fullStar)
+                                star2.setImageResource(emptyStar)
+                                star3.setImageResource(emptyStar)
+                                star4.setImageResource(emptyStar)
+                                star5.setImageResource(emptyStar)
+                            }
+                            2 -> {
+                                star1.setImageResource(fullStar)
+                                star2.setImageResource(fullStar)
+                                star3.setImageResource(emptyStar)
+                                star4.setImageResource(emptyStar)
+                                star5.setImageResource(emptyStar)
+                            }
+                            3 -> {
+                                star1.setImageResource(fullStar)
+                                star2.setImageResource(fullStar)
+                                star3.setImageResource(fullStar)
+                                star4.setImageResource(emptyStar)
+                                star5.setImageResource(emptyStar)
+                            }
+                            4 -> {
+                                star1.setImageResource(fullStar)
+                                star2.setImageResource(fullStar)
+                                star3.setImageResource(fullStar)
+                                star4.setImageResource(fullStar)
+                                star5.setImageResource(emptyStar)
+                            }
+                            5 -> {
+                                star1.setImageResource(fullStar)
+                                star2.setImageResource(fullStar)
+                                star3.setImageResource(fullStar)
+                                star4.setImageResource(fullStar)
+                                star5.setImageResource(fullStar)
+                            }
+                            else -> {
+                                star1.setImageResource(emptyStar)
+                                star2.setImageResource(emptyStar)
+                                star3.setImageResource(emptyStar)
+                                star4.setImageResource(emptyStar)
+                                star5.setImageResource(emptyStar)
+                            }
                         }
                     }
                     /*Toast.makeText(

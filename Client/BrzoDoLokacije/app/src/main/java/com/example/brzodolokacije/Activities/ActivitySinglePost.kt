@@ -185,22 +185,22 @@ class ActivitySinglePost : AppCompatActivity() {
     }
     fun loadTags(){
         if(post.tags!=null)
-        for( item in post.tags!!){
-            var newbtn = Button(this)
-            newbtn.text = item
-            var layoutParams = LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.WRAP_CONTENT,
-                50
-            )
-            layoutParams.setMargins(3)
-            newbtn.layoutParams=layoutParams
-            newbtn.setBackgroundColor(Color.parseColor("#1C789A"))
-            newbtn.setTextColor(Color.WHITE)
-            newbtn.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10F)
-            newbtn.setPadding(3,1,3,1)
-            newbtn.isClickable=false
-            tagLayout.addView(newbtn)
-        }
+            for( item in post.tags!!){
+                var newbtn = Button(this)
+                newbtn.text = item
+                var layoutParams = LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.WRAP_CONTENT,
+                    50
+                )
+                layoutParams.setMargins(3)
+                newbtn.layoutParams=layoutParams
+                newbtn.setBackgroundColor(Color.parseColor("#1C789A"))
+                newbtn.setTextColor(Color.WHITE)
+                newbtn.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10F)
+                newbtn.setPadding(3,1,3,1)
+                newbtn.isClickable=false
+                tagLayout.addView(newbtn)
+            }
 
     }
 
