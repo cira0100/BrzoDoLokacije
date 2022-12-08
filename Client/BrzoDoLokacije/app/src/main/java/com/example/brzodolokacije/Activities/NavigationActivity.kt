@@ -1,18 +1,19 @@
 package com.example.brzodolokacije.Activities
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
-import android.widget.Button
 import android.widget.ImageButton
 import android.widget.Toast
-import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.brzodolokacije.Fragments.*
 import com.example.brzodolokacije.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
 
 class NavigationActivity : AppCompatActivity() {
 
@@ -33,6 +34,7 @@ class NavigationActivity : AppCompatActivity() {
         val profileFragment=FragmentProfile()
         bottomNav=findViewById<View>(R.id.bottomNavigationView) as BottomNavigationView
         setCurrentFragment(fragmentHomePage)
+        KeyboardEvents()
         bottomNav.setOnNavigationItemSelectedListener {
             when(it.itemId){
                 R.id.navHomePage->setCurrentFragment(fragmentHomePage)
@@ -115,5 +117,21 @@ class NavigationActivity : AppCompatActivity() {
         }
     }
 
+    fun KeyboardEvents(){
+        KeyboardVisibilityEvent.setEventListener(
+            this
+        ) { isOpen ->
+                if (isOpen) {
+                    bottomNav.visibility = View.GONE
+                    bottomNav.forceLayout()
+
+                } else {
+                    MainScope().launch {
+                        bottomNav.visibility = View.VISIBLE
+                        bottomNav.forceLayout()
+                    }
+                }
+        }
+    }
 
 }
