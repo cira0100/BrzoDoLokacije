@@ -8,7 +8,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import android.widget.Toast
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.brzodolokacije.Adapters.MonthViewsAdapter
+import com.example.brzodolokacije.Adapters.MyPostsAdapter
+import com.example.brzodolokacije.Models.MonthlyViews
 import com.example.brzodolokacije.Models.Statistics
 import com.example.brzodolokacije.Models.UserReceive
 import com.example.brzodolokacije.Services.RetrofitHelper
@@ -61,6 +65,7 @@ class FragmentProfileStatistics : Fragment() {
                 if(response.isSuccessful()){
                     stats=response.body()
                     loadText()
+                    loadMonths()
 
 
                 }
@@ -78,6 +83,15 @@ class FragmentProfileStatistics : Fragment() {
         numberOfRatings.text=stats!!.numberOfRatingsOnPosts.toString()
         averageRatings.text=stats!!.averagePostRatingOnPosts.toString()
         numberOfFavourite.text=stats!!.numberOfFavouritePosts.toString()
+    }
+    private fun loadMonths(){
+        rcMonths.apply {
+            layoutManager= GridLayoutManager(requireContext(),1, GridLayoutManager.HORIZONTAL,false)
+            adapter= MonthViewsAdapter(requireActivity(),
+                stats!!.monthlyViews as MutableList<MonthlyViews>
+            )
+
+        }
     }
 
 
