@@ -162,6 +162,12 @@ namespace Api.Controllers
             return Ok(await _userService.ChangeMyProfileName(newName));
         }
 
+        [HttpPost("changePass")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<int>> ChangePass(string currentPass, string newPass)
+        {
+            return Ok(await _userService.ChangePass(currentPass,newPass));
+        }
 
 
     }

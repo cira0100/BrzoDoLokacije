@@ -9,6 +9,7 @@ import android.widget.Button
 import androidx.core.content.ContextCompat.startActivity
 import androidx.fragment.app.Fragment
 import com.exam.DBHelper
+import com.example.brzodolokacije.Activities.ActivityChangePassword
 import com.example.brzodolokacije.Activities.ActivityChangeUserData
 import com.example.brzodolokacije.Activities.ActivityForgottenPassword
 import com.example.brzodolokacije.Activities.ActivityLoginRegister
@@ -19,6 +20,7 @@ import com.example.brzodolokacije.Services.SharedPreferencesHelper
 class FragmentMyProfileInfo : Fragment() {
     private lateinit var logout:Button
     private lateinit var changeAccount:Button
+    private lateinit var changePassword:Button
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -29,6 +31,7 @@ class FragmentMyProfileInfo : Fragment() {
 
         logout=view.findViewById<View>(R.id.buttonLogOut) as Button
         changeAccount=view.findViewById(R.id.changeAccountData)
+        changePassword=view.findViewById(R.id.ChangePassword)
 
         logout.setOnClickListener{
             logOut()
@@ -36,6 +39,10 @@ class FragmentMyProfileInfo : Fragment() {
 
         changeAccount.setOnClickListener {
             val intent = Intent (getActivity(), ActivityChangeUserData::class.java)
+            getActivity()?.startActivity(intent)
+        }
+        changePassword.setOnClickListener {
+            val intent = Intent (getActivity(), ActivityChangePassword::class.java)
             getActivity()?.startActivity(intent)
         }
 

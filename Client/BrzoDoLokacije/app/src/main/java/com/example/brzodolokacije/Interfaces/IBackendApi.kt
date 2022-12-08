@@ -121,4 +121,8 @@ interface IBackendApi {
     @GET("/api/user/{newName}/changeMyName")
     fun changeMyName(@Header("Authorization") authHeader:String,@Path("newName") newName:String):Call<Boolean>
 
+
+    @POST("/api/user/changePass")
+    fun changePass(@Header("Authorization") authHeader:String):Call<Int>
+
 }

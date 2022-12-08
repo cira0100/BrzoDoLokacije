@@ -733,6 +733,30 @@ namespace Api.Services
             return false;
         }
 
+        public async Task<int> ChangePass(string currentPass,string newPass)
+        {
+
+            string myId = null;
+            if (_httpContext.HttpContext.User.FindFirstValue("id") != null)
+            {
+                myId = _httpContext.HttpContext.User.FindFirstValue("id").ToString();
+            }
+
+            User u = await _users.Find(user => user._id == myId).FirstOrDefaultAsync();
+
+            if (u != null)
+            {
+                if (checkPassword(currentPass, u.password))
+                {
+                    u.password = hashPassword(newPass);
+                    await _users.ReplaceOneAsync(x => x._id == u._id, u);
+                    return 1;
+                }
+                return -1;
+            }
+            return -2;
+        }
+
         
     }
     
