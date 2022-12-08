@@ -9,7 +9,6 @@ import com.example.brzodolokacije.Activities.ActivityLoginRegister
 import com.example.brzodolokacije.Activities.NavigationActivity
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
-import com.example.brzodolokacije.chat.Notifications
 import retrofit2.Call
 import retrofit2.Response
 
@@ -23,7 +22,6 @@ class MainActivity : AppCompatActivity() {
         val intent:Intent
 
         if(checkLoggedIn()) {
-            Notifications.makeChannel(this)
             intent = Intent(this, NavigationActivity::class.java)
         }
         else
