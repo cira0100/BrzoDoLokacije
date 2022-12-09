@@ -1,17 +1,16 @@
 package com.example.brzodolokacije.Adapters
 
 import android.app.Activity
-import android.graphics.BitmapFactory
-import android.media.Image
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
-import com.example.brzodolokacije.Models.Post
+import com.example.brzodolokacije.Activities.ActivityOpenedImages
+import com.example.brzodolokacije.Activities.ActivitySinglePost
 import com.example.brzodolokacije.Models.PostImage
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.databinding.PostImageBinding
-import com.example.brzodolokacije.databinding.PostPreviewBinding
 
 class PostImageAdapter(val activity: Activity, val items : MutableList<PostImage>)
     : RecyclerView.Adapter<PostImageAdapter.ViewHolder>(){
@@ -36,6 +35,11 @@ class PostImageAdapter(val activity: Activity, val items : MutableList<PostImage
                         .load(RetrofitHelper.baseUrl + "/api/post/image/compress/" + item._id)
                         .into(locationImage)
                 }
+            }
+            itemView.setOnClickListener {
+                val intent: Intent = Intent(activity, ActivityOpenedImages::class.java)
+                intent.putExtra("post",(activity as ActivitySinglePost).post)
+                activity.startActivity(intent)
             }
         }
     }
