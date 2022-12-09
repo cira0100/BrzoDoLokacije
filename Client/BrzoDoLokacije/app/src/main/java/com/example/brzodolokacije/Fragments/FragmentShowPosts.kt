@@ -151,10 +151,7 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             Log.d("main","klik")
         }
 
-        rootView?.findViewById<ImageButton>(R.id.btnChat)?.setOnClickListener() {
-            val intent: Intent = Intent(activity, ChatActivity::class.java)
-            requireActivity().startActivity(intent)
-        }
+
     }
 
     fun requestToBack(searchParams: SearchParams){

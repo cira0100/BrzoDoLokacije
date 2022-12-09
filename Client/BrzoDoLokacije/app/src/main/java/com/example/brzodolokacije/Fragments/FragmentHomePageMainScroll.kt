@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
+import com.example.brzodolokacije.Activities.NavigationActivity
 import com.example.brzodolokacije.Adapters.ShowPostsHomePageAdapter
 import com.example.brzodolokacije.Interfaces.IBackendApi
 import com.example.brzodolokacije.Models.LocationType
@@ -85,101 +86,44 @@ private lateinit var change:Button
         var fragment=FragmentShowPostsByLocation()
 
         location_spa.setOnClickListener {
-            filter=LocationType.BANJA
-            filterString=filter.toString()
-            bundle.putString("data",filterString)
-            fragment.arguments=bundle
+                tagSearch("Banja")
 
-            val parentFrag: FragmentHomePage = this@FragmentHomePageMainScroll.getParentFragment() as FragmentHomePage
-            parentFrag.changeScrollVIewToLocationView()
-            parentFrag.setBtnBackVisible()
+
 
 
         }
         location_waterfall.setOnClickListener {
-            filter=LocationType.VODOPAD
-            filterString=filter.toString()
-            bundle.putString("data",filterString)
-            fragment.arguments=bundle
-
-            val parentFrag: FragmentHomePage = this@FragmentHomePageMainScroll.getParentFragment() as FragmentHomePage
-            parentFrag.changeScrollVIewToLocationView()
-            parentFrag.setBtnBackVisible()
+            tagSearch("Vodopad")
 
 
         }
         location_mountain.setOnClickListener {
-            filter=LocationType.PLANINA
-            filterString=filter.toString()
-            bundle.putString("data",filterString)
-            fragment.arguments=bundle
-
-            val parentFrag: FragmentHomePage = this@FragmentHomePageMainScroll.getParentFragment() as FragmentHomePage
-            parentFrag.changeScrollVIewToLocationView()
-            parentFrag.setBtnBackVisible()
+            tagSearch("Planina")
 
 
         }
         location_landmark.setOnClickListener {
-            filter=LocationType.LOKALITET
-            filterString=filter.toString()
-            bundle.putString("data",filterString)
-            fragment.arguments=bundle
-
-            val parentFrag: FragmentHomePage = this@FragmentHomePageMainScroll.getParentFragment() as FragmentHomePage
-            parentFrag.changeScrollVIewToLocationView()
-            parentFrag.setBtnBackVisible()
+            tagSearch("Lokalitet")
 
 
         }
         location_city.setOnClickListener {
-            filter=LocationType.GRAD
-            filterString=filter.toString()
-            bundle.putString("data",filterString)
-            fragment.arguments=bundle
-
-            val parentFrag: FragmentHomePage = this@FragmentHomePageMainScroll.getParentFragment() as FragmentHomePage
-            parentFrag.changeScrollVIewToLocationView()
-            parentFrag.setBtnBackVisible()
+            tagSearch("Grad")
 
         }
         location_lake.setOnClickListener {
-            filter=LocationType.JEZERO
-            filterString=filter.toString()
-            bundle.putString("data",filterString)
-            fragment.arguments=bundle
-            val parentFrag: FragmentHomePage = this@FragmentHomePageMainScroll.getParentFragment() as FragmentHomePage
-            parentFrag.changeScrollVIewToLocationView()
-            parentFrag.setBtnBackVisible()
+            tagSearch("Jezero")
 
         }
         location_attraction.setOnClickListener {
-            filter=LocationType.ATRAKCIJA
-            filterString=filter.toString()
-            bundle.putString("data",filterString)
-            fragment.arguments=bundle
-            val parentFrag: FragmentHomePage = this@FragmentHomePageMainScroll.getParentFragment() as FragmentHomePage
-            parentFrag.changeScrollVIewToLocationView()
-            parentFrag.setBtnBackVisible()
+            tagSearch("Atrakcija")
         }
         location_amusement_park.setOnClickListener {
-            filter=LocationType.ZABAVNI_PARK
-            filterString=filter.toString()
-            bundle.putString("data",filterString)
-            fragment.arguments=bundle
-            val parentFrag: FragmentHomePage = this@FragmentHomePageMainScroll.getParentFragment() as FragmentHomePage
-            parentFrag.changeScrollVIewToLocationView()
-            parentFrag.setBtnBackVisible()
+            tagSearch("Zabavni park")
 
         }
         location_beach.setOnClickListener {
-            filter=LocationType.PLAZA
-            filterString=filter.toString()
-            bundle.putString("data",filterString)
-            fragment.arguments=bundle
-            val parentFrag: FragmentHomePage = this@FragmentHomePageMainScroll.getParentFragment() as FragmentHomePage
-            parentFrag.changeScrollVIewToLocationView()
-            parentFrag.setBtnBackVisible()
+            tagSearch("Plaza")
 
         }
        /* ll1.isVisible=true
@@ -349,6 +293,12 @@ private lateinit var change:Button
         })
 
 
+    }
+    private fun tagSearch(tag:String){
+        var act = requireActivity() as NavigationActivity
+        act.searchQuery = tag
+        act.searchId = ""
+        act.bottomNav.selectedItemId = R.id.navAllPosts
     }
 
 }
