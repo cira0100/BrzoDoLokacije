@@ -38,6 +38,14 @@
         android:usesCleartextTraffic="true"
         tools:targetApi="31">
         <activity
+            android:name=".Activities.ActivityOpenedImages"
+            android:screenOrientation="portrait"
+            android:exported="false">
+            <meta-data
+                android:name="android.app.lib_name"
+                android:value="" />
+        </activity>
+        <activity
             android:name=".Activities.ActivityChangePassword"
             android:exported="false">
             <meta-data
@@ -92,7 +100,8 @@
 
         <activity
             android:name=".Activities.MapsActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
         <activity
             android:name=".Activities.ActivityCapturePost"
             android:screenOrientation="portrait" />
@@ -128,7 +137,8 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".Activities.NavigationActivity"
-            android:screenOrientation="portrait" />
+            android:screenOrientation="portrait"
+            android:windowSoftInputMode="stateAlwaysHidden|adjustResize" />
         <activity
             android:name=".MainActivity"
             android:screenOrientation="portrait" />

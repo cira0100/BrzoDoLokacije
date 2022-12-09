@@ -416,7 +416,9 @@ namespace Api.Services
             }
             User f = await _users.Find(user => user._id == followerId).FirstOrDefaultAsync();
             User u = await _users.Find(user => user._id == id).FirstOrDefaultAsync();
-           
+            if(await CheckIfAlreadyFollow(followerId))
+                return false;
+
             if (id != null && followerId!=null)
             {
                 if (f.followers == null)
@@ -617,27 +619,33 @@ namespace Api.Services
 
             User u = await _users.Find(user => user._id == myId).FirstOrDefaultAsync();
             User f = await _users.Find(user => user._id == id).FirstOrDefaultAsync();
-
+            if(await CheckIfAlreadyFollow(id))
             if (u != null)
             {
-                if (u.following != null && f.followers!=null)
-                {
                     u.following.Remove(f._id);
+                    if (u.following == null)
+                        u.following = new List<string>();
                     u.followingCount=u.following.Count();
+                    if (u.followers == null)
+                        u.followers = new List<string>();
                     u.followersCount = u.followers.Count();
                    
 
                     f.followers.Remove(u._id);
+                    if (f.followers == null)
+                        f.followers = new List<string>();
                     f.followersCount =f.followers.Count();
+                    if (f.following == null)
+                        f.following = new List<string>();
                     f.followingCount =f.following.Count();
 
-                    _users.ReplaceOne(user => user._id == myId, u);
-                    _users.ReplaceOne(user => user._id == id, f);
+                    await _users.ReplaceOneAsync(user => user._id == myId, u);
+                    await _users.ReplaceOneAsync(user => user._id == id, f);
 
                     //updateUserFollowerFollowingCount(u.followers, u.following, u._id);
                     //updateUserFollowerFollowingCount(f.followers, f.following, f._id);
                     return true; 
-                }
+                
 
             }
             return false;

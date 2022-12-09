@@ -24,6 +24,7 @@ import com.example.brzodolokacije.Models.MessageReceive
 import com.example.brzodolokacije.R
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
+import com.example.brzodolokacije.chat.Notifications
 import com.example.brzodolokacije.chat.SignalRListener
 import com.example.brzodolokacije.databinding.ActivityChatBinding
 import kotlinx.coroutines.MainScope
@@ -50,41 +51,9 @@ class ChatActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityChatBinding.inflate(layoutInflater)
-        permissionLauncher=registerForActivityResult(
-            ActivityResultContracts.RequestPermission()
-        ) { isGranted: Boolean ->
-            if (!isGranted) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (Build.VERSION.SDK_INT >= 33) {
-                        //ako je  upravo odbijena dozvola na uredjaju na kome je ona neophodna
-                        binding.btnNotifications.setImageResource(R.drawable.bell_off)
-                    }
-                    else{
-                        //ako je  upravo odbijena dozvola na uredjaju na kome nije ona neophodna
-                        binding.btnNotifications.setImageResource(R.drawable.bell_on)
-                    }
-                }
-                else{
-                    //ako je  upravo odbijena dozvola na uredjaju na kome nije ona neophodna
-                    binding.btnNotifications.setImageResource(R.drawable.bell_on)
-                }
-            }
-            else{
-                //ako je  upravo prihvacena dozvola na uredjaju na kome nije ona neophodna
-                binding.btnNotifications.setImageResource(R.drawable.bell_on)
-            }
-        }
-        //provera da li je dozvoljeno
-        when {
-            ContextCompat.checkSelfPermission(this,Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED -> {
-                binding.btnNotifications.setImageResource(R.drawable.bell_on)
-            }
-            else -> {
-                binding.btnNotifications.setImageResource(R.drawable.bell_off)
-            }
-        }
-
-
+        Notifications.makeChannel(this)
+        setPermissionLauncher()
+        checkPermissions()
         setContentView(binding.root)
         dbConnection= DBHelper(this@ChatActivity,null)
         ws=SignalRListener.getInstance(this@ChatActivity)
@@ -104,6 +73,46 @@ class ChatActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
         super.onResume()
         clickedChat=null
         requestNewMessages()
+    }
+
+    fun setPermissionLauncher(){
+        permissionLauncher=registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (!isGranted) {
+                binding.btnNotifications.setImageResource(R.drawable.bell_off)
+            }
+            else{
+                binding.btnNotifications.setImageResource(R.drawable.bell_on)
+            }
+        }
+    }
+
+    fun checkPermissions(){
+        when {
+            //treba proveriti permisije
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU-> {
+                if(ContextCompat.checkSelfPermission(this,Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+                    binding.btnNotifications.setImageResource(R.drawable.bell_on)
+                }
+                else{
+                    binding.btnNotifications.setImageResource(R.drawable.bell_off)
+                }
+            }
+            //treba proveriti preference
+            else-> {
+                if(SharedPreferencesHelper.getValue("notifications",this)==null){
+                    SharedPreferencesHelper.addValue("notifications","false",this@ChatActivity)
+                }
+                else if (SharedPreferencesHelper.getValue("notifications",this)=="true") {
+                    binding.btnNotifications.setImageResource(R.drawable.bell_on)
+                }
+                else{
+                    binding.btnNotifications.setImageResource(R.drawable.bell_off)
+                }
+            }
+
+        }
     }
 
     fun launchNotificationPermissionPrompt(){
@@ -131,15 +140,28 @@ class ChatActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
         }
         findViewById<ImageButton>(R.id.btnNotifications).setOnClickListener {
             when {
-                ContextCompat.checkSelfPermission(this,Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED -> {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                //treba proveriti permisije
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU-> {
+                    if(ContextCompat.checkSelfPermission(this,Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
                         revokeSelfPermissionOnKill(Manifest.permission.POST_NOTIFICATIONS)
+                        launchInfoDialog()
                     }
-                    launchInfoDialog()
+                     else{
+                        launchNotificationPermissionPrompt()
+                    }
                 }
-                else -> {
-                    launchNotificationPermissionPrompt()
+                //treba proveriti preference
+                else-> {
+                    if (SharedPreferencesHelper.getValue("notifications",this)=="true") {
+                        SharedPreferencesHelper.addValue("notifications","false",this@ChatActivity)
+                        binding.btnNotifications.setImageResource(R.drawable.bell_off)
+                    }
+                    else{
+                        SharedPreferencesHelper.addValue("notifications","true",this@ChatActivity)
+                        binding.btnNotifications.setImageResource(R.drawable.bell_on)
+                    }
                 }
+
             }
         }
     }

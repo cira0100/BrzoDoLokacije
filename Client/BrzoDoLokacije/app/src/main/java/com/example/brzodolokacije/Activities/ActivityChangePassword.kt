@@ -3,34 +3,41 @@ package com.example.brzodolokacije.Activities
 import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+
+import com.example.brzodolokacije.R
 import android.widget.Button
+import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.isVisible
 import com.exam.DBHelper.Companion.activity
+import com.example.brzodolokacije.Models.Auth.ChangePass
 import com.example.brzodolokacije.Models.UserReceive
-import com.example.brzodolokacije.R
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
+import kotlinx.android.synthetic.main.fragment_my_profile_info.*
 import retrofit2.Call
 import retrofit2.Response
 
+
 class ActivityChangePassword : AppCompatActivity() {
 
-    private lateinit var oldPass:TextView
+    private lateinit var oldPass:EditText
     private lateinit var oldPassError:TextView
-    private lateinit var newPass:TextView
+    private lateinit var newPass:EditText
     private lateinit var newPassError:TextView
-    private lateinit var confirmPass:TextView
+    private lateinit var confirmPass:EditText
     private lateinit var confirmPassError:TextView
     private lateinit var forgotten:TextView
     private lateinit var submit:Button
+    private lateinit var backButton:ImageView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_change_password)
 
-        oldPass=findViewById(R.id.changeDataOldPassword)
+        oldPass=findViewById(R.id.tvActivityChangePasswordCurrentPass)
         oldPassError=findViewById(R.id.ActivityChangePasswordOldError)
         newPass=findViewById(R.id.tvActivityChangePasswordNewPass)
         newPassError=findViewById(R.id.btnActivityChangePasswordNewError)
@@ -38,10 +45,14 @@ class ActivityChangePassword : AppCompatActivity() {
         confirmPassError=findViewById(R.id.btnActivityChangePasswordConfirmError)
         forgotten=findViewById(R.id.btnActivityChangePasswordForgottenPass)
         submit=findViewById(R.id.ActivityChangePasswordChangePassword)
+        backButton=findViewById(R.id.btnBackToUser)
 
         oldPassError.isVisible=false
         newPassError.isVisible=false
         confirmPassError.isVisible=false
+        backButton.setOnClickListener{
+            finish()
+        }
 
         submit.setOnClickListener{
             oldPassError.isVisible=false
@@ -54,10 +65,10 @@ class ActivityChangePassword : AppCompatActivity() {
                 if(newPass.text.toString().trim() == confirmPass.text.toString().trim()){
 
                 //PROVERI DA LI JE TRENUTA LOZINKA ISTA KAO TRENUTNI UNOS
-
+                    var cp= ChangePass(oldPass.text.toString(),newPass.text.toString())
                     val authApi= RetrofitHelper.getInstance()
                     val token= SharedPreferencesHelper.getValue("jwt",this@ActivityChangePassword)
-                    val request=authApi.changePass("Bearer "+token)
+                    val request=authApi.changePass("Bearer "+token,cp)
 
                     request.enqueue(object : retrofit2.Callback<Int> {
                         override fun onResponse(call: Call<Int>, response: Response<Int>) {

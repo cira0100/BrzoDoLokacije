@@ -92,14 +92,16 @@ class ActivityUserProfile : AppCompatActivity() {
                         call: Call<Boolean>,
                         response: Response<Boolean>
                     ) {
-                        unfollowUser.isVisible=true
-                        unfollowUser.isClickable=true
-                        unfollowUser.isEnabled=true
-                        followUser.isVisible=false
-                        followUser.isClickable=false
-                        followUser.isEnabled=false
+                        if(response.body()==true) {
+                            unfollowUser.isVisible = true
+                            unfollowUser.isClickable = true
+                            unfollowUser.isEnabled = true
+                            followUser.isVisible = false
+                            followUser.isClickable = false
+                            followUser.isEnabled = false
 
-                        updateUserData()
+                            updateUserData()
+                        }
 
                         Toast.makeText(
                             this@ActivityUserProfile, "PRATITE KORISNIKA", Toast.LENGTH_LONG
@@ -123,13 +125,15 @@ class ActivityUserProfile : AppCompatActivity() {
                     call: Call<Boolean>,
                     response: Response<Boolean>
                 ) {
-                    unfollowUser.isVisible = false
-                    unfollowUser.isClickable = false
-                    unfollowUser.isEnabled = false
-                    followUser.isVisible = true
-                    followUser.isClickable = true
-                    followUser.isEnabled = true
-                    updateUserData()
+                    if(response.body()==true) {
+                        unfollowUser.isVisible = false
+                        unfollowUser.isClickable = false
+                        unfollowUser.isEnabled = false
+                        followUser.isVisible = true
+                        followUser.isClickable = true
+                        followUser.isEnabled = true
+                        updateUserData()
+                    }
                     Toast.makeText(
                         this@ActivityUserProfile, "VIŠE NE PRATITE KORISNIKA", Toast.LENGTH_LONG
                     ).show();

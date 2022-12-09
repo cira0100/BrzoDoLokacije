@@ -120,5 +120,15 @@ namespace Api.Controllers
                 return base.Content(html, "text/html");
             }
         }
+        [HttpGet("jwttoid")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<string>> JwtToUserId()
+        {
+            var userid = await _userService.UserIdFromJwt();
+            if (userid != null)
+                return Ok(userid);
+            return BadRequest();
+        }
+
     }
 }

@@ -115,7 +115,7 @@ namespace Api.Services
             foreach (var image in p.images)
                 System.IO.File.Delete(image.path);
 
-            await _posts.DeleteOneAsync(postid);
+            await _posts.FindOneAndDeleteAsync(x => x._id==postid);
             return true;
         }
 
@@ -672,6 +672,7 @@ namespace Api.Services
             stats.numberOfPosts = 0;
             stats.totalViews = 0;
             stats.monthlyViews = new List<MonthlyViews>();
+            stats.numberOfFavouritePosts = 0;
 
            
             if(posts != null)
@@ -691,6 +692,8 @@ namespace Api.Services
                     stats.totalViews += post.views;
                     stats.numberOfRatingsOnPosts += post.ratingscount;
                     stats.numberOfPosts++;
+                    if(post.favourites!=null)
+                        stats.numberOfFavouritePosts+=post.favourites.Count;
                     ratingsum += post.ratings * post.ratingscount;
                 }
                 if(stats.numberOfRatingsOnPosts > 0) //don't forget to check div by 0 jesus

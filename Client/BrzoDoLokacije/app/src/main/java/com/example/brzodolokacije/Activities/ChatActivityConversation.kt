@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.auth0.android.jwt.JWT
+import com.bumptech.glide.Glide
 import com.exam.DBHelper
 import com.example.brzodolokacije.Adapters.ChatMessagesAdapter
 import com.example.brzodolokacije.Models.Message
@@ -39,6 +40,7 @@ class ChatActivityConversation : AppCompatActivity() {
     var webSocketConnection:SignalRListener?=null
     var items:MutableList<Message>?=mutableListOf()
     var userImage:Bitmap?=null
+    var userImageId:String?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,7 +48,12 @@ class ChatActivityConversation : AppCompatActivity() {
         setContentView(binding.root)
         userId=intent.extras?.get("userId").toString()
         receiverUsername=intent.extras?.get("username").toString()
-        userImage=intent.extras?.get("pfp") as Bitmap?
+        if(intent.extras?.get("pfp") is Bitmap){
+            userImage=intent.extras?.get("pfp") as Bitmap?
+        }
+        else{
+            userImageId=intent.extras?.get("pfp") as String?
+        }
         dbConnection=DBHelper.getInstance(this@ChatActivityConversation)
         setHeader()
         setRecyclerView()
@@ -172,8 +179,15 @@ class ChatActivityConversation : AppCompatActivity() {
         binding.btnBack.setOnClickListener {
             finish()
         }
-        if(userImage!=null)
+        if(userImage!=null){
             binding.ivUserImage.setImageBitmap(userImage)
+        }
+        else if(userImageId!=null){
+            Glide.with(this)
+                .load(RetrofitHelper.baseUrl + "/api/post/image/compress/" + userImageId!!)
+                .circleCrop()
+                .into(binding.ivUserImage)
+        }
     }
     fun setRecyclerView(setParams:Boolean=true){
         MainScope().launch {

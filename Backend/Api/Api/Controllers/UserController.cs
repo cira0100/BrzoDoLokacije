@@ -164,9 +164,9 @@ namespace Api.Controllers
 
         [HttpPost("changePass")]
         [Authorize(Roles = "User")]
-        public async Task<ActionResult<int>> ChangePass(string currentPass, string newPass)
+        public async Task<ActionResult<int>> ChangePass([FromBody] ChangePass cp)
         {
-            return Ok(await _userService.ChangePass(currentPass,newPass));
+            return Ok(await _userService.ChangePass(cp.currentPass,cp.newPass));
         }
 
 

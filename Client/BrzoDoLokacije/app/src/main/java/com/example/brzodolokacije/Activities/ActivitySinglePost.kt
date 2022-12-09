@@ -5,7 +5,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.TypedValue
-import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -16,7 +15,9 @@ import androidx.core.view.isVisible
 import androidx.core.view.setMargins
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SnapHelper
 import com.auth0.android.jwt.JWT
 import com.example.brzodolokacije.Adapters.CommentsAdapter
 import com.example.brzodolokacije.Adapters.PostImageAdapter
@@ -31,7 +32,6 @@ import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
 import com.example.brzodolokacije.databinding.ActivitySinglePostBinding
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.fragment_single_post_description.*
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
@@ -51,8 +51,11 @@ class ActivitySinglePost : AppCompatActivity() {
     private var recyclerViewComments: RecyclerView?=null
     private var favouriteImage: ImageView?=null
     private lateinit var tagLayout: LinearLayout
+    private lateinit var createdAt:TextView
     public  lateinit var post: PostPreview
 
+    public lateinit var ratings:TextView
+    public lateinit var ratingscount:TextView
 
     private var comments:MutableList<CommentSend>?=mutableListOf()
     private var starNumber:Number=0
@@ -94,6 +97,8 @@ class ActivitySinglePost : AppCompatActivity() {
 
         //DODATI SLIKE
         recyclerViewImages?.setHasFixedSize(true)
+        var snap: SnapHelper = PagerSnapHelper()
+        snap.attachToRecyclerView(recyclerViewImages)
         recyclerViewImages?.layoutManager = layoutManagerImages
         recyclerViewImages?.adapter = adapterImages
 
@@ -140,7 +145,6 @@ class ActivitySinglePost : AppCompatActivity() {
             recyclerViewImages?.setHasFixedSize(true)
             recyclerViewImages?.layoutManager = layoutManagerImages
             recyclerViewImages?.adapter = adapterImages
-
         }
         btnChangeHeightDown.setOnClickListener {
             btnChangeHeightDown.isVisible=false
@@ -184,6 +188,8 @@ class ActivitySinglePost : AppCompatActivity() {
 
     }
     fun loadTags(){
+
+
         if(post.tags!=null)
             for( item in post.tags!!){
                 var newbtn = Button(this)
@@ -193,16 +199,22 @@ class ActivitySinglePost : AppCompatActivity() {
                     50
                 )
                 layoutParams.setMargins(3)
-                newbtn.layoutParams=layoutParams
+
+                newbtn.layoutParams = layoutParams
                 newbtn.setBackgroundColor(Color.parseColor("#1C789A"))
                 newbtn.setTextColor(Color.WHITE)
                 newbtn.setTextSize(TypedValue.COMPLEX_UNIT_SP, 10F)
-                newbtn.setPadding(3,1,3,1)
-                newbtn.isClickable=false
+                newbtn.setPadding(3, 1, 3, 1)
+                newbtn.isClickable = false
                 tagLayout.addView(newbtn)
             }
+        }
 
+    public fun updateratings(rc:Int,r:Double){
+        binding.tvRating.text=r.toString()
+        binding.tvNumberOfRatings.text=rc.toString()
     }
+
 
     fun loadFavourite(){
         if(post.favourites!=null){
@@ -277,7 +289,8 @@ class ActivitySinglePost : AppCompatActivity() {
             tvNumberOfRatings.invalidate()
             //tvRating.text=String.format("%.2f",data.ratings)
             //tvNumberOfRatings.text=String.format("%d",data.ratingscount)
-
+            tvDatePosted.text=post.createdAt.toLocaleString()
+            tvDatePosted.invalidate()
 
         }
 
