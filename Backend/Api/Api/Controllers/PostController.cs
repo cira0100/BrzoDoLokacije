@@ -56,7 +56,7 @@ namespace Api.Controllers
             }
             return BadRequest();
         }
-        [HttpGet("posts/delete/{id}")]
+        [HttpDelete("posts/delete/{id}")]
         [Authorize(Roles = "User")]
         public async Task<ActionResult<string>> deletePost(string id)
         {

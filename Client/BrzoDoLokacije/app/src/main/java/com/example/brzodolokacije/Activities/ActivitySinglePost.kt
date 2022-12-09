@@ -51,8 +51,11 @@ class ActivitySinglePost : AppCompatActivity() {
     private var recyclerViewComments: RecyclerView?=null
     private var favouriteImage: ImageView?=null
     private lateinit var tagLayout: LinearLayout
+    private lateinit var createdAt:TextView
     public  lateinit var post: PostPreview
 
+    public lateinit var ratings:TextView
+    public lateinit var ratingscount:TextView
 
     private var comments:MutableList<CommentSend>?=mutableListOf()
     private var starNumber:Number=0
@@ -140,7 +143,6 @@ class ActivitySinglePost : AppCompatActivity() {
             recyclerViewImages?.setHasFixedSize(true)
             recyclerViewImages?.layoutManager = layoutManagerImages
             recyclerViewImages?.adapter = adapterImages
-
         }
         btnChangeHeightDown.setOnClickListener {
             btnChangeHeightDown.isVisible=false
@@ -206,7 +208,10 @@ class ActivitySinglePost : AppCompatActivity() {
             }
         }
 
-
+    public fun updateratings(rc:Int,r:Double){
+        binding.tvRating.text=r.toString()
+        binding.tvNumberOfRatings.text=rc.toString()
+    }
 
 
     fun loadFavourite(){
@@ -282,7 +287,8 @@ class ActivitySinglePost : AppCompatActivity() {
             tvNumberOfRatings.invalidate()
             //tvRating.text=String.format("%.2f",data.ratings)
             //tvNumberOfRatings.text=String.format("%d",data.ratingscount)
-
+            tvDatePosted.text=post.createdAt.toLocaleString()
+            tvDatePosted.invalidate()
 
         }
 

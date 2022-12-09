@@ -115,7 +115,7 @@ namespace Api.Services
             foreach (var image in p.images)
                 System.IO.File.Delete(image.path);
 
-            await _posts.DeleteOneAsync(postid);
+            await _posts.FindOneAndDeleteAsync(x => x._id==postid);
             return true;
         }
 

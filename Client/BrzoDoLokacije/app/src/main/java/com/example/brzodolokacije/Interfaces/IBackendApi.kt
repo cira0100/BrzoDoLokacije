@@ -126,5 +126,8 @@ interface IBackendApi {
     fun changePass(@Header("Authorization") authHeader:String):Call<Int>
     @GET("/api/user/{username}/profile/stats")
     fun getUserStatsFromUsername(@Header("Authorization") authHeader:String,@Path("username") username:String):Call<Statistics>
-
+    @GET("/api/auth/jwttoid")
+    fun getUserId(@Header("Authorization") authHeader:String):Call<String>
+    @DELETE("api/Post/posts/delete/{id}")
+    fun DeletePost(@Header("Authorization") authHeader:String,@Path("id") id:String):Call<String>
 }
