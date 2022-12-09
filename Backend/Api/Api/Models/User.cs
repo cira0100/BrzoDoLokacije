@@ -65,7 +65,7 @@ namespace Api.Models
         public File? pfp { get; set; }
         public int postcount { get; set; }
 
-        public List<String> followers{ get; set; }
+        public List<String> followers { get; set; }
         public List<String> following { get; set; }
 
         public int followersCount { get; set; }
@@ -80,7 +80,7 @@ namespace Api.Models
         public int totalViews { get; set; }
         public int numberOfPosts { get; set; }
         public int numberOfRatingsOnPosts { get; set; }
-        public double averagePostRatingOnPosts {get; set; }
+        public double averagePostRatingOnPosts { get; set; }
         public List<MonthlyViews> monthlyViews { get; set; }
         public int numberOfFavouritePosts { get; set; }
     }
@@ -89,5 +89,10 @@ namespace Api.Models
     {
         public int month { get; set; }
         public int views { get; set; }
+    }
+    public class ChangePass
+    {
+        public string currentPass { get; set; }
+        public string newPass { get; set; }
     }
 }

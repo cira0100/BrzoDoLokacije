@@ -1,10 +1,7 @@
 package com.example.brzodolokacije.Interfaces
 
 import com.example.brzodolokacije.Models.*
-import com.example.brzodolokacije.Models.Auth.JustMail
-import com.example.brzodolokacije.Models.Auth.Login
-import com.example.brzodolokacije.Models.Auth.Register
-import com.example.brzodolokacije.Models.Auth.ResetPass
+import com.example.brzodolokacije.Models.Auth.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
@@ -123,7 +120,7 @@ interface IBackendApi {
 
 
     @POST("/api/user/changePass")
-    fun changePass(@Header("Authorization") authHeader:String):Call<Int>
+    fun changePass(@Header("Authorization") authHeader:String,@Body changePass:ChangePass):Call<Int>
     @GET("/api/user/{username}/profile/stats")
     fun getUserStatsFromUsername(@Header("Authorization") authHeader:String,@Path("username") username:String):Call<Statistics>
     @GET("/api/auth/jwttoid")
