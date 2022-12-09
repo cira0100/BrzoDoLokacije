@@ -23,6 +23,7 @@ class FragmentMyProfileInfo : Fragment() {
     private lateinit var changeAccount:Button
     private lateinit var statistics:Button
     private lateinit var changePassword:Button
+    private lateinit var favouritePosts:Button
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -35,7 +36,7 @@ class FragmentMyProfileInfo : Fragment() {
         changeAccount=view.findViewById(R.id.changeAccountData)
         statistics=view.findViewById<View>(R.id.getAccoutStatistics) as Button
         changePassword=view.findViewById(R.id.ChangePassword)
-
+        favouritePosts=view.findViewById(R.id.getMyFavorite)
         logout.setOnClickListener{
             logOut()
         }
@@ -45,6 +46,24 @@ class FragmentMyProfileInfo : Fragment() {
             getActivity()?.startActivity(intent)
         }
 
+        favouritePosts.setOnClickListener {
+
+            val manager: androidx.fragment.app.FragmentManager? = fragmentManager
+            val transaction: FragmentTransaction = manager!!.beginTransaction()
+
+            var fragment:FragmentUserPosts=FragmentUserPosts()
+            val bundle = Bundle()
+            var parentFragment:FragmentProfile=parentFragment as FragmentProfile
+            var username=parentFragment.usernameStringSend
+            bundle.putString("username", username)
+            fragment.arguments=bundle
+
+
+
+            transaction.replace(R.id.flFragmentProfileFragmentContainer,fragment )
+            transaction.commit()
+
+        }
         statistics.setOnClickListener {
 
             val manager: androidx.fragment.app.FragmentManager? = fragmentManager
@@ -61,10 +80,6 @@ class FragmentMyProfileInfo : Fragment() {
 
             transaction.replace(R.id.flFragmentProfileFragmentContainer,fragment )
             transaction.commit()
-
-
-
-
 
         }
 

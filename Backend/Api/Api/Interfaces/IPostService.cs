@@ -31,5 +31,6 @@ namespace Api.Interfaces
         Task<List<Trending>> TrendingTags();
         Task<List<PostSend>> BestPostForAllLocationsInRadius(Coords coords, double radius);
         Task<UserStats> UserStats(string userid);
+        Task<List<PostSend>> userFavouritePosts();
     }
 }

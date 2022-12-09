@@ -54,6 +54,8 @@ interface IBackendApi {
 
     @GET("/api/user/posts")
     fun getMyPosts(@Header("Authorization") authHeader:String):Call<MutableList<PostPreview>>
+    @GET("/api/post/userFavouritePosts")
+    fun getMyFavouritePosts(@Header("Authorization") authHeader:String):Call<MutableList<PostPreview>>
 
     @GET("/api/post/locations/{id}/posts")
     suspend fun getPagedPosts(@Header("Authorization") authHeader: String,

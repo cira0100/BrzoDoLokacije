@@ -77,8 +77,33 @@ class FragmentUserPosts : Fragment() {
         }
 
         rvPosts=view.findViewById(R.id.rvFragmentUserPostsPosts) as RecyclerView
-        getPosts()
+        if(this.arguments==null)
+            getPosts()
+        else
+            getFavouritePosts()
         return view
+    }
+    fun getFavouritePosts(){
+        val api = RetrofitHelper.getInstance()
+        val token= SharedPreferencesHelper.getValue("jwt", requireActivity())
+        val data=api.getMyFavouritePosts("Bearer "+token)
+
+        data.enqueue(object : Callback<MutableList<PostPreview>> {
+            override fun onResponse(
+                call: Call<MutableList<PostPreview>>,
+                response: Response<MutableList<PostPreview>>
+            ) {
+                if (response.body() == null) {
+                    return
+                }
+                posts = response.body()!!.toMutableList<PostPreview>()
+                loadPosts()
+            }
+            override fun onFailure(call: Call<MutableList<PostPreview>>, t: Throwable) {
+
+            }
+        })
+
     }
 
     fun getPosts(){
