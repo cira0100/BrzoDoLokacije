@@ -62,6 +62,9 @@ class MainActivity : AppCompatActivity() {
                 }else{
                     if(response.errorBody()!=null)
                         Toast.makeText(applicationContext, response.errorBody()!!.string(), Toast.LENGTH_LONG).show();
+                    intent= Intent(this@MainActivity, ActivityLoginRegister::class.java)
+                    SharedPreferencesHelper.removeValue("jwt",this@MainActivity)
+                    startActivity(intent)
                 }
 
 
