@@ -3,8 +3,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
+    android:id="@+id/llroot"
     android:orientation="vertical"
-    android:padding="@dimen/component_padding"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
@@ -111,9 +111,23 @@
                 tools:ignore="SpeakableTextPresentCheck" />
         </androidx.cardview.widget.CardView>
     </androidx.appcompat.widget.LinearLayoutCompat>
-    <androidx.recyclerview.widget.RecyclerView
+    <androidx.appcompat.widget.LinearLayoutCompat
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/rvReplies"/>
+        android:layout_height="wrap_content">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:layout_width="2dp"
+            android:layout_height="match_parent"
+            android:backgroundTint="@color/unfollow"
+            android:layout_marginHorizontal="23dp"
+            android:background="@drawable/rounded_picture_background"
+            />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:id="@+id/rvReplies"/>
+    </androidx.appcompat.widget.LinearLayoutCompat>
 
 </androidx.appcompat.widget.LinearLayoutCompat>
