@@ -23,9 +23,9 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/linearLayout2"
-        android:layout_width="410dp"
+        android:layout_width="match_parent"
         android:textSize="15dp"
-        android:layout_height="729dp"
+        android:layout_height="330dp"
         android:background="@drawable/view_top_corner_radius"
         android:elevation="30dp"
         android:paddingHorizontal="16dp"
