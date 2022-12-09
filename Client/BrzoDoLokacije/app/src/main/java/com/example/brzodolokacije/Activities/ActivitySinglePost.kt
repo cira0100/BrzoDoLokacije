@@ -5,7 +5,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.TypedValue
-import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -16,7 +15,9 @@ import androidx.core.view.isVisible
 import androidx.core.view.setMargins
 import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SnapHelper
 import com.auth0.android.jwt.JWT
 import com.example.brzodolokacije.Adapters.CommentsAdapter
 import com.example.brzodolokacije.Adapters.PostImageAdapter
@@ -31,7 +32,6 @@ import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
 import com.example.brzodolokacije.databinding.ActivitySinglePostBinding
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.fragment_single_post_description.*
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
@@ -97,6 +97,8 @@ class ActivitySinglePost : AppCompatActivity() {
 
         //DODATI SLIKE
         recyclerViewImages?.setHasFixedSize(true)
+        var snap: SnapHelper = PagerSnapHelper()
+        snap.attachToRecyclerView(recyclerViewImages)
         recyclerViewImages?.layoutManager = layoutManagerImages
         recyclerViewImages?.adapter = adapterImages
 
