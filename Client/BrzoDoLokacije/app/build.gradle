@@ -76,4 +76,7 @@ dependencies {
 
     //KeyboardVisibilityEvents
     implementation 'net.yslibrary.keyboardvisibilityevent:keyboardvisibilityevent:3.0.0-RC3'
+
+    //zoom
+    implementation 'com.github.piasy:GlideImageLoader:1.8.1'
 }
