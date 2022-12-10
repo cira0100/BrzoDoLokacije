@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentTransaction
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
@@ -41,6 +42,7 @@ class ActivityUserProfile : AppCompatActivity(),OnRefreshListener {
     private lateinit var openChat:ImageButton
     private lateinit var unfollowUser:Button
     private lateinit var btnSendMessage:ImageButton
+    private lateinit var followChatRow:ConstraintLayout
 
     private lateinit var showFollowers:Button
     private lateinit var showFollowing:Button
@@ -64,6 +66,7 @@ class ActivityUserProfile : AppCompatActivity(),OnRefreshListener {
         showFollowing=findViewById(id.tvActivityUserProfileFollow)
         showFollowers=findViewById(R.id.tvActivityUserProfileFollowers)
         btnSendMessage=findViewById(R.id.activityUserProfileOpenChat)
+        followChatRow=findViewById(R.id.clActivityUserProfileFollow_Chat_Row)
 
 
         val jsonMyObject: String
@@ -88,9 +91,60 @@ class ActivityUserProfile : AppCompatActivity(),OnRefreshListener {
         }
 
 
+        showFollowers.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putString("userId", userObject._id.toString())
+            bundle.putString("show","followers")
+            bundle.putString("showMy","no")
+            val intent = Intent(this@ActivityUserProfile,ActivityShowFollowersAndFollowing::class.java)
+            intent.putExtras(bundle)
+            startActivity(intent)
+
+        }
+
+        showFollowing.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putString("userId", userObject._id.toString())
+            bundle.putString("show","following")
+            bundle.putString("showMy","no")
+            val intent = Intent(this@ActivityUserProfile,ActivityShowFollowersAndFollowing::class.java)
+            intent.putExtras(bundle)
+            startActivity(intent)
+        }
+
+        setFollowerChatRow()
 
 
-        followUser.setOnClickListener{
+        showUserPosts.setOnClickListener {
+            showUserPostsFragment()
+        }
+
+        swipeRefreshLayout = findViewById<View>(R.id.ProfileSwipeRefresh) as SwipeRefreshLayout
+        swipeRefreshLayout.setOnRefreshListener(this@ActivityUserProfile)
+        swipeRefreshLayout.setColorSchemeResources(
+            R.color.purple_200,
+            R.color.teal_200,
+            R.color.dark_blue_transparent,
+            R.color.purple_700
+        )
+    }
+    fun setFollowerChatRow(){
+        if(userObject._id != SharedPreferencesHelper.getValue("jwt",this@ActivityUserProfile)
+                ?.let { it1 -> JWT(it1).claims["id"]?.asString() }){
+            followChatRow.visibility=View.VISIBLE
+            followChatRow.forceLayout()
+
+
+            btnSendMessage.setOnClickListener{
+                val intent: Intent = Intent(this@ActivityUserProfile, ChatActivityConversation::class.java)
+                intent.putExtra("userId",userObject._id)
+                intent.putExtra("username",userObject.username)
+                intent.putExtra("pfp",userObject.pfp?._id)
+                DBHelper.getInstance(this).readContact(userObject._id)
+                this.startActivity(intent)
+            }
+
+            followUser.setOnClickListener{
                 val api = RetrofitHelper.getInstance()
                 val token = SharedPreferencesHelper.getValue("jwt", this@ActivityUserProfile)
                 var data = api.addFollower("Bearer " + token, userObject._id);
@@ -122,88 +176,38 @@ class ActivityUserProfile : AppCompatActivity(),OnRefreshListener {
                     }
                 })
 
-        }
-        unfollowUser.setOnClickListener {
-            val api = RetrofitHelper.getInstance()
-            val token = SharedPreferencesHelper.getValue("jwt", this@ActivityUserProfile)
-            var data = api.unfollow("Bearer " + token, userObject._id);
-            data.enqueue(object : Callback<Boolean> {
-                override fun onResponse(
-                    call: Call<Boolean>,
-                    response: Response<Boolean>
-                ) {
-                    if(response.body()==true) {
-                        unfollowUser.isVisible = false
-                        unfollowUser.isClickable = false
-                        unfollowUser.isEnabled = false
-                        followUser.isVisible = true
-                        followUser.isClickable = true
-                        followUser.isEnabled = true
-                        updateUserData()
+            }
+            unfollowUser.setOnClickListener {
+                val api = RetrofitHelper.getInstance()
+                val token = SharedPreferencesHelper.getValue("jwt", this@ActivityUserProfile)
+                var data = api.unfollow("Bearer " + token, userObject._id);
+                data.enqueue(object : Callback<Boolean> {
+                    override fun onResponse(
+                        call: Call<Boolean>,
+                        response: Response<Boolean>
+                    ) {
+                        if(response.body()==true) {
+                            unfollowUser.isVisible = false
+                            unfollowUser.isClickable = false
+                            unfollowUser.isEnabled = false
+                            followUser.isVisible = true
+                            followUser.isClickable = true
+                            followUser.isEnabled = true
+                            updateUserData()
+                        }
+                        Toast.makeText(
+                            this@ActivityUserProfile, "VIŠE NE PRATITE KORISNIKA", Toast.LENGTH_LONG
+                        ).show();
                     }
-                    Toast.makeText(
-                        this@ActivityUserProfile, "VIŠE NE PRATITE KORISNIKA", Toast.LENGTH_LONG
-                    ).show();
-                }
 
-                override fun onFailure(call: Call<Boolean>, t: Throwable) {
-                    Toast.makeText(
-                        this@ActivityUserProfile, t.toString(), Toast.LENGTH_LONG
-                    ).show();
-                }
-            })
-        }
-
-        showFollowers.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putString("userId", userObject._id.toString())
-            bundle.putString("show","followers")
-            bundle.putString("showMy","no")
-            val intent = Intent(this@ActivityUserProfile,ActivityShowFollowersAndFollowing::class.java)
-            intent.putExtras(bundle)
-            startActivity(intent)
-
-        }
-
-        showFollowing.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putString("userId", userObject._id.toString())
-            bundle.putString("show","following")
-            bundle.putString("showMy","no")
-            val intent = Intent(this@ActivityUserProfile,ActivityShowFollowersAndFollowing::class.java)
-            intent.putExtras(bundle)
-            startActivity(intent)
-        }
-
-        btnSendMessage.setOnClickListener{
-            if(userObject._id != SharedPreferencesHelper.getValue("jwt",this@ActivityUserProfile)
-                    ?.let { it1 -> JWT(it1).claims["id"]?.asString() }){
-                val intent: Intent = Intent(this@ActivityUserProfile, ChatActivityConversation::class.java)
-                intent.putExtra("userId",userObject._id)
-                intent.putExtra("username",userObject.username)
-                intent.putExtra("pfp",userObject.pfp?._id)
-                DBHelper.getInstance(this).readContact(userObject._id)
-                this.startActivity(intent)
-            }
-            else{
-                Toast.makeText(this,"Ne močete slati poruku samom sebi.",Toast.LENGTH_LONG).show()
+                    override fun onFailure(call: Call<Boolean>, t: Throwable) {
+                        Toast.makeText(
+                            this@ActivityUserProfile, t.toString(), Toast.LENGTH_LONG
+                        ).show();
+                    }
+                })
             }
         }
-
-
-
-        showUserPosts.setOnClickListener {
-            showUserPostsFragment()
-        }
-
-        swipeRefreshLayout = findViewById<View>(R.id.ProfileSwipeRefresh) as SwipeRefreshLayout
-        swipeRefreshLayout.setOnRefreshListener(this@ActivityUserProfile)
-        swipeRefreshLayout.setColorSchemeResources(
-            R.color.purple_200,
-            R.color.teal_200,
-            R.color.dark_blue_transparent,
-            R.color.purple_700
-        )
     }
 
     override fun onRefresh() {
