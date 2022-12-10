@@ -10,12 +10,17 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentTransaction
+import androidx.recyclerview.widget.GridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.auth0.android.jwt.JWT
 import com.bumptech.glide.Glide
 import com.exam.DBHelper
+import com.example.brzodolokacije.Adapters.MyPostsAdapter
+import com.example.brzodolokacije.FragmentProfileStatistics
+import com.example.brzodolokacije.Fragments.FragmentProfile
 import com.example.brzodolokacije.Fragments.FragmentUserPostsProfileActivity
+import com.example.brzodolokacije.Models.PostPreview
 import com.example.brzodolokacije.Models.UserReceive
 import com.example.brzodolokacije.R
 import com.example.brzodolokacije.R.id
@@ -43,6 +48,8 @@ class ActivityUserProfile : AppCompatActivity(),OnRefreshListener {
     private lateinit var unfollowUser:Button
     private lateinit var btnSendMessage:ImageButton
     private lateinit var followChatRow:ConstraintLayout
+    private lateinit var mapButton:Button
+    private lateinit var statisticsButton:Button
 
     private lateinit var showFollowers:Button
     private lateinit var showFollowing:Button
@@ -67,6 +74,8 @@ class ActivityUserProfile : AppCompatActivity(),OnRefreshListener {
         showFollowers=findViewById(R.id.tvActivityUserProfileFollowers)
         btnSendMessage=findViewById(R.id.activityUserProfileOpenChat)
         followChatRow=findViewById(R.id.clActivityUserProfileFollow_Chat_Row)
+        mapButton=findViewById(R.id.btnFragmentUserProfileShowData)
+        statisticsButton=findViewById(R.id.btnFragmentUserProfileShowRecensions)
 
 
         val jsonMyObject: String
@@ -76,18 +85,12 @@ class ActivityUserProfile : AppCompatActivity(),OnRefreshListener {
             //val myObject: UserReceive = Gson().fromJson(jsonMyObject, UserReceive::class.java)
 
             userObject= Gson().fromJson(jsonMyObject, UserReceive::class.java)
+            updateUserData()
 
-            name.text=userObject.name
-            postsNumber.text=userObject.postNumber.toString()
-            followersNumber.text=userObject?.followersCount.toString()
-            followingNumber.text=userObject?.followingCount.toString()
 
-            if(userObject.pfp!=null) {
-                Glide.with(this@ActivityUserProfile)
-                    .load(RetrofitHelper.baseUrl + "/api/post/image/" + userObject.pfp!!._id)
-                    .circleCrop()//Round image
-                    .into(profilePicture)
-            }
+        }
+        else{
+            finish()
         }
 
 
@@ -99,6 +102,18 @@ class ActivityUserProfile : AppCompatActivity(),OnRefreshListener {
             val intent = Intent(this@ActivityUserProfile,ActivityShowFollowersAndFollowing::class.java)
             intent.putExtras(bundle)
             startActivity(intent)
+
+        }
+        statisticsButton.setOnClickListener{
+
+
+            var fragment: FragmentProfileStatistics = FragmentProfileStatistics()
+            val bundle = Bundle()
+            bundle.putString("username", userObject.username)
+            fragment.arguments=bundle
+            var fm: FragmentTransaction =supportFragmentManager.beginTransaction()
+            fm.replace(R.id.flActivityProfileFragmentContainer, fragment)
+            fm.commit()
 
         }
 
@@ -113,7 +128,6 @@ class ActivityUserProfile : AppCompatActivity(),OnRefreshListener {
         }
 
         setFollowerChatRow()
-
 
         showUserPosts.setOnClickListener {
             showUserPostsFragment()
@@ -290,7 +304,7 @@ class ActivityUserProfile : AppCompatActivity(),OnRefreshListener {
     fun updateUserData(){
         val api = RetrofitHelper.getInstance()
         val token = SharedPreferencesHelper.getValue("jwt", this@ActivityUserProfile)
-        var data = api.getProfileFromId("Bearer " + token, userObject._id);
+        var data = api.getProfile("Bearer " + token, userObject.username);
         data.enqueue(object : Callback<UserReceive> {
             override fun onResponse(
                 call: Call<UserReceive>,
@@ -299,10 +313,16 @@ class ActivityUserProfile : AppCompatActivity(),OnRefreshListener {
                 var userData=response.body()!!
 
                 name.text=userData.name
-                postsNumber.text=userData.postNumber.toString()
+                postsNumber.text=userData.postcount.toString()
                 followersNumber.text=userData.followersCount.toString()
                 followingNumber.text=userData.followingCount.toString()
                 swipeRefreshLayout.isRefreshing=false
+                if(userData.pfp!=null) {
+                    Glide.with(this@ActivityUserProfile)
+                        .load(RetrofitHelper.baseUrl + "/api/post/image/" + userObject.pfp!!._id)
+                        .circleCrop()//Round image
+                        .into(profilePicture)
+                }
             }
 
             override fun onFailure(call: Call<UserReceive>, t: Throwable) {
