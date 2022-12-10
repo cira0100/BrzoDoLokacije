@@ -48,6 +48,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:scaleType="centerCrop"
+            android:clickable="true"
             android:src="@drawable/ic_baseline_person_24"
             tools:ignore="ContentDescription"
             tools:layout_editor_absoluteX="9dp"

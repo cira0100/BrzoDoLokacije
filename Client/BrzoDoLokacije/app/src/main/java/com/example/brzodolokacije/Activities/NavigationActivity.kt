@@ -134,4 +134,9 @@ class NavigationActivity : AppCompatActivity() {
         }
     }
 
+    fun changeToProfile(){
+        setCurrentFragment(FragmentProfile())
+        bottomNav.menu.findItem(R.id.navProfile).isChecked = true
+    }
+
 }
