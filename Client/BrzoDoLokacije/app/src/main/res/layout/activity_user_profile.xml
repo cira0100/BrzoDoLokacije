@@ -6,254 +6,258 @@
     android:layout_height="match_parent"
     tools:context=".Activities.ActivityUserProfile">
 
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        android:id="@+id/ProfileSwipeRefresh">
 
-        <ImageView
-            android:scaleType="centerCrop"
-            android:id="@+id/imageView3"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
-            android:layout_height="180dp"
-            android:foreground="@drawable/b3"
-            android:foregroundGravity="center_vertical|center|center_horizontal|fill"
-            android:src="@drawable/b3"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-
-        <com.google.android.material.imageview.ShapeableImageView
-
-            android:id="@+id/tvFragmentProfileInfoContainer"
-            android:layout_width="0dp"
-            android:layout_height="199dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="90dp"
-            android:layout_marginEnd="20dp"
-            android:adjustViewBounds="true"
-            android:background="#E8FFFFFF"
-            android:elevation="1dp"
-            android:scaleType="fitEnd"
-
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/imageView3"
-            app:shapeAppearanceOverlay="@style/imageViewRoundedEdge" />
-
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/cvFragmentHomePageProfile"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_gravity="center"
-            android:layout_marginTop="24dp"
-            android:elevation="10dp"
-            app:cardCornerRadius="250dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            android:layout_height="match_parent">
 
             <ImageView
-
-                android:id="@+id/tvActivityProfileProfilePicture"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:elevation="10dp"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_baseline_person_24"
-                tools:ignore="ContentDescription" />
-        </androidx.cardview.widget.CardView>
-
-        <View
-            android:id="@+id/divider"
-            android:layout_width="409dp"
-            android:layout_height="1dp"
-            android:background="?android:attr/listDivider"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/buttons" />
-
-        <LinearLayout
-            android:id="@+id/buttons"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:weightSum="3"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvFragmentProfileInfoContainer">
-
-        <Button
-            android:layout_weight="1"
-            android:id="@+id/btnActivityUserProfileShowPosts"
-            android:layout_width="120dp"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#FFFFFF"
-            android:stateListAnimator="@null"
-            android:text="Objave"
-            android:textColor="@color/cardview_dark_background"
-             />
-
-        <Button
-            android:layout_weight="1"
-            android:id="@+id/btnFragmentUserProfileShowData"
-            android:layout_width="110dp"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#FFFFFF"
-            android:stateListAnimator="@null"
-            android:text="Nalog"
-            android:textColor="@color/cardview_dark_background"
-            />
-
-        <Button
-            android:id="@+id/btnFragmentUserProfileShowRecensions"
-            android:layout_width="120dp"
-            android:layout_height="wrap_content"
-            android:backgroundTint="#FFFFFF"
-            android:stateListAnimator="@null"
-            android:text="Recenzije"
-            android:textColor="@color/cardview_dark_background"
-           />
-        </LinearLayout>
-        <FrameLayout
-            android:layout_weight="1"
-            android:id="@+id/flActivityProfileFragmentContainer"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/divider"
-            app:layout_constraintVertical_bias="0.0"></FrameLayout>
-
-        <TableLayout
-
-            android:layout_width="350dp"
-            android:layout_height="140dp"
-            android:layout_marginStart="35dp"
-            android:layout_marginEnd="35dp"
-            android:elevation="1dp"
-            android:numColumns="3"
-            app:layout_constraintBottom_toBottomOf="@+id/tvFragmentProfileInfoContainer"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/tvFragmentProfileInfoContainer"
-            app:layout_constraintVertical_bias="0.88">
-
-            <TableRow
-                                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_column="1"
-                >
-
-                <TextView
-                    android:id="@+id/tvActivityUserProfileName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_gravity="center"
-                    android:text="Petar Petrović"
-                    android:textSize="23sp"
-                    android:textStyle="bold" />
-            </TableRow>
+                android:id="@+id/imageView3"
+                android:layout_width="match_parent"
+                android:layout_height="180dp"
+                android:foreground="@drawable/b3"
+                android:foregroundGravity="center_vertical|center|center_horizontal|fill"
+                android:src="@drawable/b3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
 
-            <TableRow
-                android:gravity="center"
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
-                android:layout_marginTop="5dp">
-            <LinearLayout
-                android:orientation="horizontal"
-                android:layout_height="wrap_content"
-                android:layout_width="wrap_content"
-                android:weightSum="3"
-                >
-                <TextView
-                    android:id="@+id/tvFragmentUserProfilePosts"
-                    android:layout_weight="1"
-                    android:backgroundTint="@color/white"
-                    android:gravity="center"
-                    android:layout_width="110dp"
-                    android:layout_height="wrap_content"
-                    android:textSize="14sp"
-                    android:stateListAnimator="@null"
-                    android:text="OBJAVE"
+            <com.google.android.material.imageview.ShapeableImageView
 
-                    android:textColor="#757471" />
+                android:id="@+id/tvFragmentProfileInfoContainer"
+                android:layout_width="0dp"
+                android:layout_height="199dp"
+                android:layout_marginStart="20dp"
+                android:layout_marginTop="90dp"
+                android:layout_marginEnd="20dp"
+                android:adjustViewBounds="true"
+                android:background="#E8FFFFFF"
+                android:elevation="1dp"
+                android:scaleType="fitEnd"
 
-                <Button
-                    android:id="@+id/tvActivityUserProfileFollowers"
-                    android:layout_width="110dp"
-                    android:layout_height="27dp"
-                    android:layout_margin="0dp"
-                    android:backgroundTint="@color/white"
-                    android:clickable="true"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:padding="0dp"
-                    android:stateListAnimator="@null"
-                    android:text="PRATIOCI"
-                    android:textColor="#757471"
-                    android:textSize="14sp"
-                    tools:ignore="TouchTargetSizeCheck" />
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/imageView3"
+                app:shapeAppearanceOverlay="@style/imageViewRoundedEdge" />
 
-                <Button
-                    android:textSize="14sp"
-                    android:id="@+id/tvActivityUserProfileFollow"
-                    android:layout_width="110dp"
-                    android:layout_height="27dp"
-                    android:layout_margin="0dp"
-                    android:backgroundTint="@color/white"
-                    android:clickable="true"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:padding="0dp"
-                    android:stateListAnimator="@null"
-                    android:text="PRAĆENJA"
-                    android:textColor="#757471"
-                    tools:ignore="TouchTargetSizeCheck" />
-            </LinearLayout>
 
-            </TableRow>
-
-            <TableRow
-                android:layout_marginLeft="10dp"
-                android:layout_marginRight="10dp"
+            <androidx.cardview.widget.CardView
+                android:id="@+id/cvFragmentHomePageProfile"
+                android:layout_width="120dp"
+                android:layout_height="120dp"
                 android:layout_gravity="center"
-                android:layout_height="wrap_content">
-            <LinearLayout>
-                <TextView
-                    android:id="@+id/tvActivityUserProfilePostsNo"
+                android:layout_marginTop="24dp"
+                android:elevation="10dp"
+                app:cardCornerRadius="250dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+
+                <ImageView
+
+                    android:id="@+id/tvActivityProfileProfilePicture"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:elevation="10dp"
+                    android:scaleType="centerCrop"
+                    android:src="@drawable/ic_baseline_person_24"
+                    tools:ignore="ContentDescription" />
+            </androidx.cardview.widget.CardView>
+
+            <View
+                android:id="@+id/divider"
+                android:layout_width="409dp"
+                android:layout_height="1dp"
+                android:background="?android:attr/listDivider"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/buttons" />
+
+            <LinearLayout
+                android:id="@+id/buttons"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:weightSum="3"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvFragmentProfileInfoContainer">
+
+                <Button
+                    android:layout_weight="1"
+                    android:id="@+id/btnActivityUserProfileShowPosts"
+                    android:layout_width="120dp"
+                    android:layout_height="wrap_content"
+                    android:backgroundTint="#FFFFFF"
+                    android:stateListAnimator="@null"
+                    android:text="Objave"
+                    android:textColor="@color/cardview_dark_background"
+                    />
+
+                <Button
+                    android:layout_weight="1"
+                    android:id="@+id/btnFragmentUserProfileShowData"
                     android:layout_width="110dp"
                     android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="156"
+                    android:backgroundTint="#FFFFFF"
+                    android:stateListAnimator="@null"
+                    android:text="Nalog"
+                    android:textColor="@color/cardview_dark_background"
+                    />
 
-                    android:textSize="20dp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:layout_width="110dp"
+                <Button
+                    android:id="@+id/btnFragmentUserProfileShowRecensions"
+                    android:layout_width="120dp"
                     android:layout_height="wrap_content"
-                    android:id="@+id/tvActivityUserProfileFollowersNo"
-                    android:gravity="center"
-                    android:text="50"
-                    android:textSize="20dp"
-                    android:textStyle="bold" />
-
-                <TextView
-                    android:id="@+id/tvActivityUserProfileFollowNo"
-                    android:layout_width="110dp"
-                    android:layout_height="wrap_content"
-                    android:gravity="center"
-                    android:text="40"
-                    android:textSize="20dp"
-                    android:textStyle="bold" />
+                    android:backgroundTint="#FFFFFF"
+                    android:stateListAnimator="@null"
+                    android:text="Recenzije"
+                    android:textColor="@color/cardview_dark_background"
+                    />
             </LinearLayout>
-            </TableRow>
+            <FrameLayout
+                android:layout_weight="1"
+                android:id="@+id/flActivityProfileFragmentContainer"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/divider"
+                app:layout_constraintVertical_bias="0.0"></FrameLayout>
+
+            <TableLayout
+
+                android:layout_width="350dp"
+                android:layout_height="140dp"
+                android:layout_marginStart="35dp"
+                android:layout_marginEnd="35dp"
+                android:elevation="1dp"
+                android:numColumns="3"
+                app:layout_constraintBottom_toBottomOf="@+id/tvFragmentProfileInfoContainer"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@+id/tvFragmentProfileInfoContainer"
+                app:layout_constraintVertical_bias="0.88">
+
+                <TableRow
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_column="1"
+                    >
+
+                    <TextView
+                        android:id="@+id/tvActivityUserProfileName"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_gravity="center"
+                        android:text="Petar Petrović"
+                        android:textSize="23sp"
+                        android:textStyle="bold" />
+                </TableRow>
+
+
+                <TableRow
+                    android:gravity="center"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_marginTop="5dp">
+                    <LinearLayout
+                        android:orientation="horizontal"
+                        android:layout_height="wrap_content"
+                        android:layout_width="wrap_content"
+                        android:weightSum="3"
+                        >
+                        <TextView
+                            android:id="@+id/tvFragmentUserProfilePosts"
+                            android:layout_weight="1"
+                            android:backgroundTint="@color/white"
+                            android:gravity="center"
+                            android:layout_width="110dp"
+                            android:layout_height="wrap_content"
+                            android:textSize="14sp"
+                            android:stateListAnimator="@null"
+                            android:text="OBJAVE"
+
+                            android:textColor="#757471" />
+
+                        <Button
+                            android:id="@+id/tvActivityUserProfileFollowers"
+                            android:layout_width="110dp"
+                            android:layout_height="27dp"
+                            android:layout_margin="0dp"
+                            android:backgroundTint="@color/white"
+                            android:clickable="true"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:padding="0dp"
+                            android:stateListAnimator="@null"
+                            android:text="PRATIOCI"
+                            android:textColor="#757471"
+                            android:textSize="14sp"
+                            tools:ignore="TouchTargetSizeCheck" />
+
+                        <Button
+                            android:textSize="14sp"
+                            android:id="@+id/tvActivityUserProfileFollow"
+                            android:layout_width="110dp"
+                            android:layout_height="27dp"
+                            android:layout_margin="0dp"
+                            android:backgroundTint="@color/white"
+                            android:clickable="true"
+                            android:layout_weight="1"
+                            android:gravity="center"
+                            android:padding="0dp"
+                            android:stateListAnimator="@null"
+                            android:text="PRAĆENJA"
+                            android:textColor="#757471"
+                            tools:ignore="TouchTargetSizeCheck" />
+                    </LinearLayout>
+
+                </TableRow>
+
+                <TableRow
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginRight="10dp"
+                    android:layout_gravity="center"
+                    android:layout_height="wrap_content">
+                    <LinearLayout>
+                        <TextView
+                            android:id="@+id/tvActivityUserProfilePostsNo"
+                            android:layout_width="110dp"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="156"
+
+                            android:textSize="20dp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:layout_width="110dp"
+                            android:layout_height="wrap_content"
+                            android:id="@+id/tvActivityUserProfileFollowersNo"
+                            android:gravity="center"
+                            android:text="50"
+                            android:textSize="20dp"
+                            android:textStyle="bold" />
+
+                        <TextView
+                            android:id="@+id/tvActivityUserProfileFollowNo"
+                            android:layout_width="110dp"
+                            android:layout_height="wrap_content"
+                            android:gravity="center"
+                            android:text="40"
+                            android:textSize="20dp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                </TableRow>
 
 
 
@@ -319,9 +323,11 @@
                         tools:ignore="SpeakableTextPresentCheck,TouchTargetSizeCheck" />
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
-        </TableLayout>
+            </TableLayout>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
 
 
 </FrameLayout>

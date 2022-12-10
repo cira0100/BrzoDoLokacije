@@ -4,16 +4,19 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.isVisible
-import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentTransaction
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.bumptech.glide.Glide
 import com.example.brzodolokacije.Fragments.FragmentUserPostsProfileActivity
 import com.example.brzodolokacije.Models.UserReceive
 import com.example.brzodolokacije.R
-import com.example.brzodolokacije.R.*
+import com.example.brzodolokacije.R.id
+import com.example.brzodolokacije.R.layout
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
 import com.google.gson.Gson
@@ -22,7 +25,8 @@ import retrofit2.Callback
 import retrofit2.Response
 
 
-class ActivityUserProfile : AppCompatActivity() {
+class ActivityUserProfile : AppCompatActivity(),OnRefreshListener {
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var name:TextView
     private lateinit var postsNumber:TextView
     private lateinit var followersNumber:TextView
@@ -80,8 +84,7 @@ class ActivityUserProfile : AppCompatActivity() {
         }
 
 
-        checkIfAlreadyFollow()
-        updateUserData()
+
 
         followUser.setOnClickListener{
                 val api = RetrofitHelper.getInstance()
@@ -179,6 +182,28 @@ class ActivityUserProfile : AppCompatActivity() {
             fm.replace(R.id.flActivityProfileFragmentContainer, fragment)
             fm.commit()
         }
+
+        swipeRefreshLayout = findViewById<View>(R.id.ProfileSwipeRefresh) as SwipeRefreshLayout
+        swipeRefreshLayout.setOnRefreshListener(this@ActivityUserProfile)
+        swipeRefreshLayout.setColorSchemeResources(
+            R.color.purple_200,
+            R.color.teal_200,
+            R.color.dark_blue_transparent,
+            R.color.purple_700
+        )
+        swipeRefreshLayout.post(kotlinx.coroutines.Runnable {
+            swipeRefreshLayout.isRefreshing=true
+        })
+    }
+
+    override fun onRefresh() {
+        onResume()
+    }
+
+    override fun onResume(){
+        super.onResume()
+        checkIfAlreadyFollow()
+        updateUserData()
     }
 
     fun checkIfAlreadyFollow(){
@@ -190,6 +215,7 @@ class ActivityUserProfile : AppCompatActivity() {
             override fun onFailure(call: Call<Boolean>, t: Throwable) {;
                 Log.d("fail","faillllllllllllllllllllllllllllllllllllllllllllllllllllllll")
                 Log.d("fail",t.toString())
+                swipeRefreshLayout.isRefreshing=false
             }
 
             @SuppressLint("ResourceAsColor")
@@ -199,6 +225,7 @@ class ActivityUserProfile : AppCompatActivity() {
                     return
                 }
                 var follow = response.body()!!
+                swipeRefreshLayout.isRefreshing=false
                 if(follow){
 
                     Log.d("success","follow")
@@ -250,12 +277,14 @@ class ActivityUserProfile : AppCompatActivity() {
                 postsNumber.text=userData.postNumber.toString()
                 followersNumber.text=userData.followersCount.toString()
                 followingNumber.text=userData.followingCount.toString()
+                swipeRefreshLayout.isRefreshing=false
             }
 
             override fun onFailure(call: Call<UserReceive>, t: Throwable) {
                 Toast.makeText(
                     this@ActivityUserProfile, t.toString(), Toast.LENGTH_LONG
                 ).show();
+                swipeRefreshLayout.isRefreshing=false
             }
         })
     }
