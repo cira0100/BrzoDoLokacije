@@ -13,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.brzodolokacije.Activities.ActivitySinglePost
+import com.example.brzodolokacije.Fragments.FragmentSinglePostComments
 import com.example.brzodolokacije.Interfaces.IBackendApi
 import com.example.brzodolokacije.Models.CommentReceive
 import com.example.brzodolokacije.Models.CommentSend
@@ -24,7 +25,7 @@ import kotlinx.android.synthetic.main.single_comment.view.*
 import retrofit2.Call
 import retrofit2.Response
 
-class CommentsAdapter (val items : MutableList<CommentSend>,val activity: Activity)
+class CommentsAdapter (val items : MutableList<CommentSend>,val activity: Activity, val fragment:FragmentSinglePostComments)
     : RecyclerView.Adapter<CommentsAdapter.ViewHolder>(){
     //constructer has one argument - list of objects that need to be displayed
     //it is bound to xml of single item
@@ -98,9 +99,9 @@ class CommentsAdapter (val items : MutableList<CommentSend>,val activity: Activi
                 rv.setHasFixedSize(true)
                 rv.layoutManager=LinearLayoutManager(activity,LinearLayoutManager.VERTICAL,false)
                 if(item.replies!=null)
-                    rv.adapter=CommentsAdapter(item.replies as MutableList<CommentSend>,activity)
+                    rv.adapter=CommentsAdapter(item.replies as MutableList<CommentSend>,activity,fragment)
                 else
-                    rv.adapter=CommentsAdapter(mutableListOf(),activity)
+                    rv.adapter=CommentsAdapter(mutableListOf(),activity,fragment)
             }
         }
         fun showKeyboard(item:EditText){
@@ -143,7 +144,7 @@ class CommentsAdapter (val items : MutableList<CommentSend>,val activity: Activi
             var adapter:CommentsAdapter=rv.adapter as CommentsAdapter
             adapter.items.add(0,newComment)
             rv.adapter=adapter
-            //(activity as ActivitySinglePost).addedComment()
+            fragment.addedComment()
         }
 
         private fun requestProfilePic(item:CommentSend){

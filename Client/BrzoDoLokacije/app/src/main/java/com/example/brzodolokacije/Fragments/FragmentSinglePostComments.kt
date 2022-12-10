@@ -3,7 +3,6 @@ package com.example.brzodolokacije.Fragments
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,19 +11,17 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.TextView
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.brzodolokacije.Adapters.CommentsAdapter
-import com.example.brzodolokacije.Adapters.PostImageAdapter
 import com.example.brzodolokacije.Models.CommentReceive
 import com.example.brzodolokacije.Models.CommentSend
 import com.example.brzodolokacije.Models.PostPreview
 import com.example.brzodolokacije.R
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
-import com.google.android.material.internal.ViewUtils.hideKeyboard
 import com.google.gson.Gson
-import org.w3c.dom.Text
 import retrofit2.Call
 import retrofit2.Response
 
@@ -139,7 +136,7 @@ class FragmentSinglePostComments : Fragment() {
 
     fun buildRecyclerViewComments(){
         recyclerViewComments=commentsContainer
-        adapterComments=CommentsAdapter(comments as MutableList<CommentSend>,requireActivity())
+        adapterComments=CommentsAdapter(comments as MutableList<CommentSend>,requireActivity(),this@FragmentSinglePostComments)
         layoutManagerComments= LinearLayoutManager(requireActivity(),LinearLayoutManager.VERTICAL,false)
         recyclerViewComments!!.setHasFixedSize(false)
         recyclerViewComments!!.layoutManager=layoutManagerComments
