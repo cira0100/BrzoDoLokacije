@@ -18,6 +18,8 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SnapHelper
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.auth0.android.jwt.JWT
 import com.example.brzodolokacije.Adapters.CommentsAdapter
 import com.example.brzodolokacije.Adapters.PostImageAdapter
@@ -41,7 +43,8 @@ import retrofit2.Call
 import retrofit2.Response
 
 
-class ActivitySinglePost : AppCompatActivity() {
+class ActivitySinglePost : AppCompatActivity(),OnRefreshListener {
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var binding: ActivitySinglePostBinding
     private var layoutManagerImages: RecyclerView.LayoutManager? = null
     private var layoutManagerComments: RecyclerView.LayoutManager? = null
@@ -102,21 +105,13 @@ class ActivitySinglePost : AppCompatActivity() {
         recyclerViewImages?.layoutManager = layoutManagerImages
         recyclerViewImages?.adapter = adapterImages
 
-        loadTextComponents()
 
-        var fm: FragmentTransaction =supportFragmentManager.beginTransaction()
-        val fragment = FragmentSinglePostDescription()
-        val b = Bundle()
-        b.putString("post",  Gson().toJson(post))
-        fragment.arguments = b
-        fm.replace(R.id.flSinglePostFragmentContainer, fragment)
-        fm.commit()
+        setUpFirstFragment()
 
 
         favouriteImage=binding.ivFavourite
         tagLayout =  binding.llTags
-        loadTags()
-        loadFavourite()
+
 
         // set recyclerView attributes
 
@@ -185,8 +180,39 @@ class ActivitySinglePost : AppCompatActivity() {
             fm.commit()
         }
 
-
+        swipeRefreshLayout = binding.PostSwipeRefresh
+        swipeRefreshLayout.setOnRefreshListener(this@ActivitySinglePost)
+        swipeRefreshLayout.setColorSchemeResources(
+            R.color.purple_200,
+            R.color.teal_200,
+            R.color.dark_blue_transparent,
+            R.color.purple_700
+        )
     }
+
+    fun setUpFirstFragment(){
+        var fm: FragmentTransaction =supportFragmentManager.beginTransaction()
+        val fragment = FragmentSinglePostDescription()
+        val b = Bundle()
+        b.putString("post",  Gson().toJson(post))
+        fragment.arguments = b
+        fm.replace(R.id.flSinglePostFragmentContainer, fragment)
+        fm.commit()
+    }
+
+    override fun onRefresh(){
+        onResume()
+    }
+
+    override fun onResume(){
+        super.onResume()
+        loadTextComponents()
+        loadTags()
+        loadFavourite()
+        setUpFirstFragment()
+        swipeRefreshLayout.isRefreshing=false
+    }
+
     fun loadTags(){
 
 

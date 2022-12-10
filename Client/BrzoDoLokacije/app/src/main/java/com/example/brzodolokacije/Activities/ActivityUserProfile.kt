@@ -174,13 +174,7 @@ class ActivityUserProfile : AppCompatActivity(),OnRefreshListener {
 
 
         showUserPosts.setOnClickListener {
-            var fm: FragmentTransaction =supportFragmentManager.beginTransaction()
-            val fragment = FragmentUserPostsProfileActivity()
-            val b = Bundle()
-            b.putString("userId", userObject._id.toString())
-            fragment.arguments = b
-            fm.replace(R.id.flActivityProfileFragmentContainer, fragment)
-            fm.commit()
+            showUserPostsFragment()
         }
 
         swipeRefreshLayout = findViewById<View>(R.id.ProfileSwipeRefresh) as SwipeRefreshLayout
@@ -204,6 +198,17 @@ class ActivityUserProfile : AppCompatActivity(),OnRefreshListener {
         super.onResume()
         checkIfAlreadyFollow()
         updateUserData()
+        showUserPostsFragment()
+    }
+    fun showUserPostsFragment(){
+        var fm: FragmentTransaction =supportFragmentManager.beginTransaction()
+        val fragment = FragmentUserPostsProfileActivity()
+        val b = Bundle()
+        b.putString("userId", userObject._id.toString())
+        fragment.arguments = b
+        fm.replace(R.id.flActivityProfileFragmentContainer, fragment)
+        fm.commit()
+        swipeRefreshLayout.isRefreshing=false
     }
 
     fun checkIfAlreadyFollow(){

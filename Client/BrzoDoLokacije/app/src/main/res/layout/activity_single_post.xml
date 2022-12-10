@@ -1,253 +1,258 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".Activities.ActivitySinglePost"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
-    tools:context=".Activities.ActivitySinglePost">
-
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/rvMain"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_margin="0dp"
-        android:paddingBottom="@dimen/component_padding"
-        app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
+    android:id="@+id/PostSwipeRefresh">
 
     <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/linearLayout2"
         android:layout_width="match_parent"
-        android:textSize="15dp"
-        android:layout_height="330dp"
-        android:background="@drawable/view_top_corner_radius"
-        android:elevation="30dp"
-        android:paddingHorizontal="16dp"
-        android:paddingTop="16dp"
-        android:paddingBottom="0dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        tools:backgroundTint="@color/white">
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-
-        <TextView
-            android:id="@+id/tvTitle"
-            style="@style/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:gravity="top|start"
-            android:padding="@dimen/text_padding"
-            android:text="Naslov"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/imageView12"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:src="@drawable/ic_baseline_location_on_24"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
-
-        <TextView
-            android:id="@+id/tvLocationParent"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:gravity="top|start"
-            android:padding="@dimen/text_padding"
-            android:textSize="15dp"
-            android:text="Drzava, grad"
-            app:layout_constraintStart_toEndOf="@+id/imageView12"
-            app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
-
-        <TextView
-            android:id="@+id/tvLocationType"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:gravity="top|start"
-            android:padding="@dimen/text_padding"
-            android:text="Tip lokacije"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
-
-        <TextView
-            android:id="@+id/tvUser"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
-            android:clickable="true"
-            android:gravity="top|start"
-            android:padding="@dimen/text_padding"
-            android:text="User"
-            android:textSize="20dp"
-            android:textStyle="bold"
-            android:textColor="#FF03DAC5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvLocationType" />
-
-        <TextView
-            android:id="@+id/tvDatePosted"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginEnd="16dp"
-            android:gravity="top|start"
-            android:padding="@dimen/text_padding"
-            android:text="Timestamp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvLocationType" />
-
-        <LinearLayout
-            android:id="@+id/llTags"
-            android:layout_width="match_parent"
-            android:layout_height="20dp"
-            android:orientation="horizontal"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvUser"></LinearLayout>
-
-        <ImageView
-            android:id="@+id/ivFavourite"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:clickable="true"
-            android:layout_marginRight="5dp"
-            android:src="@drawable/ic_baseline_favorite_border_24"
-            app:layout_constraintBottom_toBottomOf="@+id/tvRating"
-            app:layout_constraintEnd_toStartOf="@+id/tvRating"
-            app:layout_constraintTop_toTopOf="@+id/tvRating" />
-
-        <TextView
-            android:id="@+id/tvRating"
-            android:textSize="15dp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:layout_marginEnd="4dp"
-            android:padding="@dimen/text_padding"
-            android:text="4.2"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toStartOf="@+id/tvNumberOfRatings"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/tvNumberOfRatings"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
-            android:padding="@dimen/text_padding"
-            android:textSize="15dp"
-            android:text="(10,500)"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/activitySinglePostChangeHeightUp"
-            android:layout_width="100dp"
-            android:layout_height="30dp"
-            android:clickable="true"
-            android:src="@drawable/ic_round_keyboard_arrow_up_24"
-            android:text="Button"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <ImageView
-            android:id="@+id/activitySinglePostChangeHeightDown"
-            android:layout_width="100dp"
-            android:layout_height="30dp"
-            android:clickable="true"
-            android:src="@drawable/ic_round_keyboard_arrow_down_24"
-            android:text="Button"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <androidx.cardview.widget.CardView
-            android:id="@+id/MapDialogueMapView"
-            android:layout_width="match_parent"
-            android:layout_height="150dp"
-            android:layout_marginTop="8dp"
-            app:cardCornerRadius="10dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/llTags">
-
-            <org.osmdroid.views.MapView
-                android:id="@+id/MapDialogueMap"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-
-        </androidx.cardview.widget.CardView>
-
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/singlePostDetail"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/rvMain"
             android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="8dp"
+            android:layout_margin="0dp"
+            android:paddingBottom="@dimen/component_padding"
+            app:layout_constraintBottom_toTopOf="@+id/linearLayout2"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/linearLayout2"
+            android:layout_width="match_parent"
+            android:textSize="15dp"
+            android:layout_height="330dp"
+            android:background="@drawable/view_top_corner_radius"
+            android:elevation="30dp"
+            android:paddingHorizontal="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="0dp"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/MapDialogueMapView">
+            tools:backgroundTint="@color/white">
 
-            <Button
-                android:id="@+id/btnActivitySinglePostDescription"
-                android:layout_width="150dp"
+
+            <TextView
+                android:id="@+id/tvTitle"
+                style="@style/title"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginBottom="8dp"
-                android:backgroundTint="#FFFFFF"
-                android:stateListAnimator="@null"
-                android:text="opis"
-                android:textColor="@color/cardview_dark_background"
+                android:layout_marginTop="24dp"
+                android:gravity="top|start"
+                android:padding="@dimen/text_padding"
+                android:text="Naslov"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <Button
-                android:id="@+id/btnActivitySinglePostComments"
-                android:layout_width="150dp"
+            <ImageView
+                android:id="@+id/imageView12"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@drawable/ic_baseline_location_on_24"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+
+            <TextView
+                android:id="@+id/tvLocationParent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                android:backgroundTint="#FFFFFF"
-                android:stateListAnimator="@null"
-                android:text="Komentari"
-                android:textColor="@color/cardview_dark_background"
+                android:gravity="top|start"
+                android:padding="@dimen/text_padding"
+                android:textSize="15dp"
+                android:text="Drzava, grad"
+                app:layout_constraintStart_toEndOf="@+id/imageView12"
+                app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+
+            <TextView
+                android:id="@+id/tvLocationType"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:gravity="top|start"
+                android:padding="@dimen/text_padding"
+                android:text="Tip lokacije"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvTitle" />
+
+            <TextView
+                android:id="@+id/tvUser"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:clickable="true"
+                android:gravity="top|start"
+                android:padding="@dimen/text_padding"
+                android:text="User"
+                android:textSize="20dp"
+                android:textStyle="bold"
+                android:textColor="#FF03DAC5"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvLocationType" />
+
+            <TextView
+                android:id="@+id/tvDatePosted"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="16dp"
+                android:gravity="top|start"
+                android:padding="@dimen/text_padding"
+                android:text="Timestamp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvLocationType" />
+
+            <LinearLayout
+                android:id="@+id/llTags"
+                android:layout_width="match_parent"
+                android:layout_height="20dp"
+                android:orientation="horizontal"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvUser"></LinearLayout>
+
+            <ImageView
+                android:id="@+id/ivFavourite"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:clickable="true"
+                android:layout_marginRight="5dp"
+                android:src="@drawable/ic_baseline_favorite_border_24"
+                app:layout_constraintBottom_toBottomOf="@+id/tvRating"
+                app:layout_constraintEnd_toStartOf="@+id/tvRating"
+                app:layout_constraintTop_toTopOf="@+id/tvRating" />
+
+            <TextView
+                android:id="@+id/tvRating"
+                android:textSize="15dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="4dp"
+                android:padding="@dimen/text_padding"
+                android:text="4.2"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toStartOf="@+id/tvNumberOfRatings"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <TextView
+                android:id="@+id/tvNumberOfRatings"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:padding="@dimen/text_padding"
+                android:textSize="15dp"
+                android:text="(10,500)"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintTop_toTopOf="parent" />
 
-            <FrameLayout
-                android:id="@+id/flSinglePostFragmentContainer"
+            <ImageView
+                android:id="@+id/activitySinglePostChangeHeightUp"
+                android:layout_width="100dp"
+                android:layout_height="30dp"
+                android:clickable="true"
+                android:src="@drawable/ic_round_keyboard_arrow_up_24"
+                android:text="Button"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <ImageView
+                android:id="@+id/activitySinglePostChangeHeightDown"
+                android:layout_width="100dp"
+                android:layout_height="30dp"
+                android:clickable="true"
+                android:src="@drawable/ic_round_keyboard_arrow_down_24"
+                android:text="Button"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/MapDialogueMapView"
+                android:layout_width="match_parent"
+                android:layout_height="150dp"
+                android:layout_marginTop="8dp"
+                app:cardCornerRadius="10dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/llTags">
+
+                <org.osmdroid.views.MapView
+                    android:id="@+id/MapDialogueMap"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/singlePostDetail"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
-                android:paddingHorizontal="16dp"
+                android:layout_marginTop="8dp"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/divider5"
-                app:layout_constraintVertical_bias="1.0"></FrameLayout>
+                app:layout_constraintTop_toBottomOf="@+id/MapDialogueMapView">
 
-            <View
-                android:id="@+id/divider5"
-                android:layout_width="376dp"
-                android:layout_height="1dp"
-                android:background="?android:attr/listDivider"
-                android:elevation="10dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/btnActivitySinglePostDescription" />
+                <Button
+                    android:id="@+id/btnActivitySinglePostDescription"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="8dp"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:backgroundTint="#FFFFFF"
+                    android:stateListAnimator="@null"
+                    android:text="opis"
+                    android:textColor="@color/cardview_dark_background"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <Button
+                    android:id="@+id/btnActivitySinglePostComments"
+                    android:layout_width="150dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginEnd="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:backgroundTint="#FFFFFF"
+                    android:stateListAnimator="@null"
+                    android:text="Komentari"
+                    android:textColor="@color/cardview_dark_background"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+                <FrameLayout
+                    android:id="@+id/flSinglePostFragmentContainer"
+                    android:layout_width="match_parent"
+                    android:layout_height="0dp"
+                    android:paddingHorizontal="16dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/divider5"
+                    app:layout_constraintVertical_bias="1.0"></FrameLayout>
+
+                <View
+                    android:id="@+id/divider5"
+                    android:layout_width="376dp"
+                    android:layout_height="1dp"
+                    android:background="?android:attr/listDivider"
+                    android:elevation="10dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/btnActivitySinglePostDescription" />
+            </androidx.constraintlayout.widget.ConstraintLayout>
         </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
