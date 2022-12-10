@@ -1,6 +1,8 @@
 package com.example.brzodolokacije.Adapters
 
 import android.app.Activity
+import android.content.Intent
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -8,9 +10,11 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.example.brzodolokacije.Activities.ActivityUserProfile
 import com.example.brzodolokacije.Models.UserReceive
 import com.example.brzodolokacije.R
 import com.example.brzodolokacije.Services.RetrofitHelper
+import com.google.gson.Gson
 
 class FollowersAdapter (var followers:MutableList<UserReceive>, val activity: Activity):
     RecyclerView.Adapter<FollowersAdapter.FollowerViewHolder>() {
@@ -41,6 +45,12 @@ class FollowersAdapter (var followers:MutableList<UserReceive>, val activity: Ac
                         .load(RetrofitHelper.baseUrl + "/api/post/image/compress/" + follower.pfp!!._id)
                         .circleCrop()
                         .into(pfp)
+                }
+                itemView.setOnClickListener {
+                    val intent: Intent = Intent(activity, ActivityUserProfile::class.java)
+                    var b= Bundle()
+                    intent.putExtra("user", Gson().toJson(follower))
+                    activity.startActivity(intent)
                 }
             }
         }

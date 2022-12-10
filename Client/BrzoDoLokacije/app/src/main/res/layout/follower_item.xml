@@ -20,8 +20,8 @@
 
         <androidx.cardview.widget.CardView
             android:id="@+id/cvFragmentHomePageProfile"
-            android:layout_width="80dp"
-            android:layout_height="80dp"
+            android:layout_width="70dp"
+            android:layout_height="70dp"
             android:layout_gravity="center"
 
             android:elevation="10dp"
@@ -47,7 +47,7 @@
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="15dp"
             android:layout_marginStart="24dp"
-            android:layout_marginTop="28dp"
+            android:layout_marginTop="20dp"
             android:text="Petar Petrovic"
             android:textSize="17sp"
             android:textStyle="bold"
