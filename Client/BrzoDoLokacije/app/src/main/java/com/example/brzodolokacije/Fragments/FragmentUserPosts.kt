@@ -46,6 +46,7 @@ class FragmentUserPosts : Fragment() {
     private lateinit var posts : MutableList<PostPreview>
     private lateinit var rvPosts: RecyclerView
     private lateinit var addNewPost:TextView
+    var favourite=0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -64,6 +65,8 @@ class FragmentUserPosts : Fragment() {
             if(jwtString!=null) {
                 var jwt: JWT = JWT(jwtString!!)
                 var userId=jwt.getClaim("id").asString()
+                if(favourite==1)
+                    bundle.putString("favourite","true")
                 bundle.putString("id", userId)
                 val userMapFragment = UserPostsMapFragment()
                 userMapFragment.setArguments(bundle)
@@ -98,6 +101,7 @@ class FragmentUserPosts : Fragment() {
                 }
                 posts = response.body()!!.toMutableList<PostPreview>()
                 loadPosts()
+                favourite=1
             }
             override fun onFailure(call: Call<MutableList<PostPreview>>, t: Throwable) {
 

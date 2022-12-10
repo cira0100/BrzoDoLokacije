@@ -27,6 +27,7 @@ import com.example.brzodolokacije.R.id
 import com.example.brzodolokacije.R.layout
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
+import com.example.brzodolokacije.UserPostsMapFragment
 import com.google.gson.Gson
 import retrofit2.Call
 import retrofit2.Callback
@@ -102,6 +103,19 @@ class ActivityUserProfile : AppCompatActivity(),OnRefreshListener {
             val intent = Intent(this@ActivityUserProfile,ActivityShowFollowersAndFollowing::class.java)
             intent.putExtras(bundle)
             startActivity(intent)
+
+        }
+        mapButton.setOnClickListener {
+            val bundle = Bundle()
+
+            bundle.putString("id", userObject._id)
+            bundle.putString("other","true")
+            val userMapFragment = UserPostsMapFragment()
+            userMapFragment.setArguments(bundle)
+            var fm: FragmentTransaction =supportFragmentManager.beginTransaction()
+            fm.replace(R.id.flActivityProfileFragmentContainer, userMapFragment)
+            fm.commit()
+
 
         }
         statisticsButton.setOnClickListener{
