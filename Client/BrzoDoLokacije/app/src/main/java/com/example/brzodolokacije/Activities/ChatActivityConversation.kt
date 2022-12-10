@@ -59,7 +59,8 @@ class ChatActivityConversation : AppCompatActivity() {
         setRecyclerView()
         requestMessages()
         webSocketConnection=SignalRListener.getInstance(this@ChatActivityConversation)
-        (webSocketConnection!!.activity as ChatActivity).setClickedActivity(this@ChatActivityConversation)
+        if(webSocketConnection!!.activity is ChatActivity)
+            (webSocketConnection!!.activity as ChatActivity).setClickedActivity(this@ChatActivityConversation)
         setListeners()
     }
 

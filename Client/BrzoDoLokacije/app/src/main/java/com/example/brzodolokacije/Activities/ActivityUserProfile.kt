@@ -11,7 +11,9 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentTransaction
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
+import com.auth0.android.jwt.JWT
 import com.bumptech.glide.Glide
+import com.exam.DBHelper
 import com.example.brzodolokacije.Fragments.FragmentUserPostsProfileActivity
 import com.example.brzodolokacije.Models.UserReceive
 import com.example.brzodolokacije.R
@@ -38,6 +40,7 @@ class ActivityUserProfile : AppCompatActivity(),OnRefreshListener {
     private lateinit var userObject:UserReceive
     private lateinit var openChat:ImageButton
     private lateinit var unfollowUser:Button
+    private lateinit var btnSendMessage:ImageButton
 
     private lateinit var showFollowers:Button
     private lateinit var showFollowing:Button
@@ -60,6 +63,7 @@ class ActivityUserProfile : AppCompatActivity(),OnRefreshListener {
         openChat=findViewById(id.activityUserProfileOpenChat)
         showFollowing=findViewById(id.tvActivityUserProfileFollow)
         showFollowers=findViewById(R.id.tvActivityUserProfileFollowers)
+        btnSendMessage=findViewById(R.id.activityUserProfileOpenChat)
 
 
         val jsonMyObject: String
@@ -169,6 +173,21 @@ class ActivityUserProfile : AppCompatActivity(),OnRefreshListener {
             val intent = Intent(this@ActivityUserProfile,ActivityShowFollowersAndFollowing::class.java)
             intent.putExtras(bundle)
             startActivity(intent)
+        }
+
+        btnSendMessage.setOnClickListener{
+            if(userObject._id != SharedPreferencesHelper.getValue("jwt",this@ActivityUserProfile)
+                    ?.let { it1 -> JWT(it1).claims["id"]?.asString() }){
+                val intent: Intent = Intent(this@ActivityUserProfile, ChatActivityConversation::class.java)
+                intent.putExtra("userId",userObject._id)
+                intent.putExtra("username",userObject.username)
+                intent.putExtra("pfp",userObject.pfp?._id)
+                DBHelper.getInstance(this).readContact(userObject._id)
+                this.startActivity(intent)
+            }
+            else{
+                Toast.makeText(this,"Ne močete slati poruku samom sebi.",Toast.LENGTH_LONG).show()
+            }
         }
 
 

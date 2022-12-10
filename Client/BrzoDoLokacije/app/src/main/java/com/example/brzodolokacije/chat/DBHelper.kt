@@ -244,10 +244,12 @@ class DBHelper :
     }
 
     fun readContact(userId: String){
+        onCreate(db)
         var sql="UPDATE "+ CONTACTS_TABLE_NAME+" SET read=1 WHERE userId='"+userId+"'"
         db?.execSQL(sql)
     }
     fun unreadContact(userId: String){
+        onCreate(db)
         var sql="UPDATE "+ CONTACTS_TABLE_NAME+" SET read=0 WHERE userId='"+userId+"'"
         db?.execSQL(sql)
     }
