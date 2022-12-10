@@ -185,9 +185,6 @@ class ActivityUserProfile : AppCompatActivity(),OnRefreshListener {
             R.color.dark_blue_transparent,
             R.color.purple_700
         )
-        swipeRefreshLayout.post(kotlinx.coroutines.Runnable {
-            swipeRefreshLayout.isRefreshing=true
-        })
     }
 
     override fun onRefresh() {
