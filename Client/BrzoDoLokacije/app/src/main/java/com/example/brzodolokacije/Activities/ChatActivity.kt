@@ -1,7 +1,6 @@
 package com.example.brzodolokacije.Activities
 
 import android.Manifest
-import android.app.AlertDialog
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
@@ -11,6 +10,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -27,6 +27,7 @@ import com.example.brzodolokacije.Services.SharedPreferencesHelper
 import com.example.brzodolokacije.chat.Notifications
 import com.example.brzodolokacije.chat.SignalRListener
 import com.example.brzodolokacije.databinding.ActivityChatBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -120,12 +121,13 @@ class ChatActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     fun launchInfoDialog(){
-        val alertDialog: AlertDialog = AlertDialog.Builder(this@ChatActivity).create()
-        alertDialog.setTitle("Obaveštenje")
-        alertDialog.setMessage("Potrebno je restartovati aplikaciju da bi se sačuvale promene.")
-        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK"
+        var builder= MaterialAlertDialogBuilder(this)
+        builder.background = AppCompatResources.getDrawable(this,R.drawable.rounded_alert_background)
+        builder.setTitle("Obaveštenje")
+        builder.setMessage("Potrebno je restartovati aplikaciju da bi se sačuvale promene.")
+        builder.setPositiveButton("OK",
         ) { dialog, _ -> dialog.dismiss() }
-        alertDialog.show()
+        builder.show()
     }
 
 

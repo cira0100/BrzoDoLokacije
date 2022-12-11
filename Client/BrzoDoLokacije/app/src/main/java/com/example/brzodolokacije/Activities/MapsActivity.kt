@@ -122,7 +122,7 @@ class MapsActivity : AppCompatActivity() {
     fun addLocation(){
         var editText=EditText(this)
         var builder=MaterialAlertDialogBuilder(this)
-        builder.background = AppCompatResources.getDrawable(this,R.drawable.rounded_picture_background)
+        builder.background = AppCompatResources.getDrawable(this,R.drawable.rounded_alert_background)
         builder.setView(editText)
         builder.setTitle("Unesite naziv lokacije")
         if(searchBar.text!=null && searchBar.text.toString().trim()!="")
