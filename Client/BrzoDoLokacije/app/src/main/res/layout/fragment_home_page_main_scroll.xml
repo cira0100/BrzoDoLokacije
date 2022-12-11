@@ -41,13 +41,7 @@
                     android:textStyle="bold" />
 
 
-                <TextView
-                    android:id="@+id/tvFragmentHomePageNewestShowAll"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right"
-                    android:clickable="true"
-                    android:text="Prikaži sve" />
+
             </androidx.cardview.widget.CardView>
 
             <androidx.recyclerview.widget.RecyclerView
@@ -180,15 +174,6 @@
                                 android:text="Popularno"
                                 android:textStyle="bold" />
 
-                            <TextView
-                                android:id="@+id/tvFragmentHomePagePopularShowAll"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="right"
-                                android:clickable="true"
-                                android:text="Prikaži sve"
-
-                                tools:ignore="TouchTargetSizeCheck" />
 
                         </androidx.cardview.widget.CardView>
 
@@ -225,13 +210,7 @@
                                 android:text="Najbolje ocenjeno"
                                 android:textStyle="bold" />
 
-                            <TextView
-                                android:id="@+id/tvFragmentHomePageBestRatedShowAll"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="right"
-                                android:clickable="true"
-                                android:text="Prikaži sve" />
+
                         </androidx.cardview.widget.CardView>
 
                         <androidx.recyclerview.widget.RecyclerView
