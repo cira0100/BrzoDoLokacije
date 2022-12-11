@@ -18,6 +18,7 @@ import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
+import androidx.core.net.toUri
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.setMargins
@@ -28,6 +29,7 @@ import com.example.brzodolokacije.R
 import com.example.brzodolokacije.Services.GeocoderHelper
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
+import com.google.android.material.button.MaterialButton
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
@@ -37,6 +39,8 @@ import java.io.ByteArrayInputStream
 import java.io.ByteArrayOutputStream
 import java.io.File
 import java.io.InputStream
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class ActivityCapturePost : AppCompatActivity() {
@@ -51,12 +55,14 @@ class ActivityCapturePost : AppCompatActivity() {
     private lateinit var tagButtons:MutableList<Button>
     private lateinit var tagText: EditText
     private lateinit var tagButtonAdd:Button
+    private lateinit var addImage:MaterialButton
     private lateinit var tagList: MutableList<String>
     private var tagidcounter:Int = 0
     private lateinit var addDescription:Button
     private lateinit var locText: EditText
-
-
+    private lateinit var showNextImage:Button
+    private lateinit var showPreviousImage:Button
+    private var place=0;
     val LOCATIONREQCODE=123
     var locationId:String?=null
 
@@ -77,7 +83,9 @@ class ActivityCapturePost : AppCompatActivity() {
         tagText =findViewById<View>(R.id.acTagsCap) as EditText
         tagButtonAdd = findViewById<View>(R.id.btnActivityAddPostAddTagCap) as Button
         tagLayout =  findViewById<View>(R.id.llTagsCap) as LinearLayout
-
+        addImage=findViewById<View>(R.id.btnActivityCapturePostCaptureVisible1) as MaterialButton
+        showNextImage=findViewById<View>(R.id.nextImage) as Button
+        showPreviousImage=findViewById<View>(R.id.previousImage) as Button
         addDescription=findViewById<View>(R.id.tvActivityCapturePostDescriptiontext)as Button
         locText=findViewById<View>(R.id.etActivityAddPostLocationText) as EditText
 
@@ -110,6 +118,28 @@ class ActivityCapturePost : AppCompatActivity() {
             }
             false
         })
+        showPreviousImage.setOnClickListener{
+            if(fileList!=null && fileList!!.size>0)
+            if(place>0){
+                place=place-1
+                showImage.setImageURI(fileList!![place].toUri())
+                showNextImage.isEnabled=true
+            }
+            else{
+                showPreviousImage.isEnabled=false
+            }
+        }
+        showNextImage.setOnClickListener{
+            if(fileList!=null && fileList!!.size>0)
+            if(place<fileList!!.size-1){
+                place=place+1
+                showImage.setImageURI(fileList!![place].toUri())
+                showPreviousImage.isEnabled=true
+            }
+            else{
+                showNextImage.isEnabled=false
+            }
+        }
 
         //dodavanje sa kamere
 
@@ -168,23 +198,11 @@ class ActivityCapturePost : AppCompatActivity() {
 
             val APP_TAG = "BrzoDoLokacije"
             val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
- /*           val timeStamp: String = SimpleDateFormat("yyyyMMdd_HHmmss").format(Date())
-            //val storageDir: File? = getExternalFilesDir(Environment.DIRECTORY_PICTURES)
-            //val photo= File(storageDir,"JPEG_${timeStamp}.jpg")
-
-            val mediaStorageDir = File(getExternalFilesDir(Environment.DIRECTORY_PICTURES), APP_TAG)
-            if (!mediaStorageDir.exists() && !mediaStorageDir.mkdirs()) {
-                Log.d(APP_TAG, "failed to create directory")
-            }
-            var photoFile = File(mediaStorageDir.path + File.separator + "${APP_TAG}_${timeStamp}.jpg")
-
-            if (photoFile != null) {
-                val fileProvider: Uri =
-                    FileProvider.getUriForFile(this, "com.codepath.fileprovider", photoFile!!)
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, fileProvider)
-            }
-
-*/
+            cameraActivityResultLauncher.launch(takePictureIntent)
+        }
+        addImage.setOnClickListener {
+            val APP_TAG = "BrzoDoLokacije"
+            val takePictureIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             cameraActivityResultLauncher.launch(takePictureIntent)
         }
 
@@ -251,6 +269,7 @@ class ActivityCapturePost : AppCompatActivity() {
             locText.setText(name,TextView.BufferType.EDITABLE)
         }
     }
+    var fileList:ArrayList<File>?=null
     var f:File?=null
         private val cameraActivityResultLauncher =
         registerForActivityResult(ActivityResultContracts.StartActivityForResult()) { result ->
@@ -261,13 +280,21 @@ class ActivityCapturePost : AppCompatActivity() {
                 bitmap!!.compress(Bitmap.CompressFormat.PNG,100,outputStream)
                 val bitmapdata = outputStream.toByteArray()
                 val inputstream: InputStream = ByteArrayInputStream(bitmapdata)
-                f=File.createTempFile("temp","12345")
+
+
+                if(fileList==null)
+                    fileList=ArrayList<File>()
+                var r= Random().nextInt(100000)
+                f=File.createTempFile("temp","12345"+r.toString())
                 f!!.writeBytes(inputstream!!.readBytes())
-
-
-
+                fileList!!.add(f!!)
                 showImage.setImageBitmap(bitmap)
+
                 takePhoto.isVisible=false
+                if(!addImage.isVisible)
+                    addImage.isVisible=true
+                place=fileList!!.size-1
+
 
             }
 
@@ -296,11 +323,15 @@ class ActivityCapturePost : AppCompatActivity() {
         var tagReq=RequestBody.create("text/plain".toMediaTypeOrNull(),tagliststring)
 
         val imagesParts = arrayOfNulls<MultipartBody.Part>(
-            1
+            fileList!!.size
         )
 
-            var imageBody= RequestBody.create("image/*".toMediaTypeOrNull(),f!!)
-            imagesParts[0]= MultipartBody.Part.createFormData("images",f!!.name,imageBody)
+
+        for (i in 0 until fileList!!.size) {
+            var imageBody= RequestBody.create("image/*".toMediaTypeOrNull(),fileList!![i])
+            imagesParts[i]= MultipartBody.Part.createFormData("images",fileList!![i].name,imageBody)
+
+        }
 
         var jwtString= SharedPreferencesHelper.getValue("jwt",this)
         var data=api.addPost("Bearer "+jwtString,imagesParts,idReq,descReq,locReq,tagReq)
