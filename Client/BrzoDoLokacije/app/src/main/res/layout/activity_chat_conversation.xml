@@ -30,6 +30,7 @@
             <androidx.appcompat.widget.LinearLayoutCompat
                 android:layout_width="match_parent"
                 android:id="@+id/llHeader"
+                android:clickable="true"
                 android:layout_height="50dp">
                 <ImageView
                     android:id="@+id/ivUserImage"

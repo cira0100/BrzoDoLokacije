@@ -1,5 +1,6 @@
 package com.example.brzodolokacije.Activities
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
@@ -22,6 +23,7 @@ import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
 import com.example.brzodolokacije.chat.SignalRListener
 import com.example.brzodolokacije.databinding.ActivityChatConversationBinding
+import com.google.gson.Gson
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -156,6 +158,14 @@ class ChatActivityConversation : AppCompatActivity() {
                 }
 
             }
+        }
+        binding.llHeader.setOnClickListener {
+            val intent: Intent = Intent(this@ChatActivityConversation,ActivityUserProfile::class.java)
+            var b= Bundle()
+            intent.putExtra("user", Gson().toJson(
+                UserReceive(userId!!,"",receiverUsername!!,"",Date(),null,0, listOf(),0,listOf(),0,listOf(),0,null)
+            ))
+            this.startActivity(intent)
         }
 
     }

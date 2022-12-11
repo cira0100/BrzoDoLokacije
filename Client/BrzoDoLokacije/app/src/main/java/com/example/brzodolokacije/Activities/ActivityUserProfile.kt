@@ -10,17 +10,13 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentTransaction
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.auth0.android.jwt.JWT
 import com.bumptech.glide.Glide
 import com.exam.DBHelper
-import com.example.brzodolokacije.Adapters.MyPostsAdapter
 import com.example.brzodolokacije.FragmentProfileStatistics
-import com.example.brzodolokacije.Fragments.FragmentProfile
 import com.example.brzodolokacije.Fragments.FragmentUserPostsProfileActivity
-import com.example.brzodolokacije.Models.PostPreview
 import com.example.brzodolokacije.Models.UserReceive
 import com.example.brzodolokacije.R
 import com.example.brzodolokacije.R.id
@@ -333,7 +329,7 @@ class ActivityUserProfile : AppCompatActivity(),OnRefreshListener {
                 swipeRefreshLayout.isRefreshing=false
                 if(userData.pfp!=null) {
                     Glide.with(this@ActivityUserProfile)
-                        .load(RetrofitHelper.baseUrl + "/api/post/image/" + userObject.pfp!!._id)
+                        .load(RetrofitHelper.baseUrl + "/api/post/image/" + userData.pfp!!._id)
                         .circleCrop()//Round image
                         .into(profilePicture)
                 }
