@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -40,6 +41,8 @@ class MyPostsAdapter (val activity:Activity,val items : MutableList<PostPreview>
                 tvTitle.text = item.location.name
                 tvLocationParent.text = item.location.country
                 tvPostPreviewRating.text=item.ratings.toString()
+                if(item.images.size>1)
+                    ivMultipleImagesIcon.visibility= View.VISIBLE
                // tvLocationType.text = "TODO"
                 if(item.images.isNotEmpty()) {
                     Glide.with(activity)

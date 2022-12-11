@@ -31,6 +31,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+
+    <ImageView
+        android:id="@+id/ivMultipleImagesIcon"
+        android:layout_width="18dp"
+        android:layout_height="17dp"
+        android:layout_marginRight="5dp"
+        android:layout_marginTop="5dp"
+        android:elevation="10dp"
+        android:src="@drawable/ic_baseline_multiple_images_24"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toEndOf="@+id/locationImage"
+        app:layout_constraintTop_toTopOf="@+id/locationImage" />
+
     <View
         android:id="@+id/vBanner"
         android:layout_width="match_parent"

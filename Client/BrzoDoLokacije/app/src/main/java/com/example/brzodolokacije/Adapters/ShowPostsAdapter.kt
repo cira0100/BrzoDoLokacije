@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.paging.PagingDataAdapter
@@ -72,6 +73,8 @@ class ShowPostsAdapter (val activity:Activity,val items : MutableList<PostPrevie
                 else
                     tvLocationParent.text = item.location.country
                 tvPostPreviewRating.text=item.ratings.toString()
+                if(item.images.size>1)
+                    ivMultipleImagesIcon.visibility= View.VISIBLE
                 //tvLocationType.text = "TODO"
                 if(item.images.isNotEmpty()) {
                     Glide.with(activity)
