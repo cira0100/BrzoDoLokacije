@@ -158,9 +158,6 @@ private lateinit var change:Button
     }
 
     private fun getAllPosts(){
-        Toast.makeText(
-                    activity," get all", Toast.LENGTH_LONG
-                ).show();
         val api = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl(RetrofitHelper.baseUrl)
@@ -233,9 +230,7 @@ private lateinit var change:Button
 //        Toast.makeText(
 //            activity, "get all r ", Toast.LENGTH_LONG
 //        ).show();
-        Toast.makeText(
-            activity," get all newest", Toast.LENGTH_LONG
-        ).show();
+
         val api = RetrofitHelper.getInstance()
         val token= SharedPreferencesHelper.getValue("jwt", requireActivity())
         val data=api.get10Newest("Bearer "+token)
@@ -266,9 +261,6 @@ private lateinit var change:Button
 //        Toast.makeText(
 //            activity, "get all br ", Toast.LENGTH_LONG
 //        ).show();
-        Toast.makeText(
-            activity," get all best", Toast.LENGTH_LONG
-        ).show();
         val api = RetrofitHelper.getInstance()
         val token= SharedPreferencesHelper.getValue("jwt", requireActivity())
         val data=api.get10Best("Bearer "+token)

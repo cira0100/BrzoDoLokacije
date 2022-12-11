@@ -188,9 +188,6 @@ class ActivityUserProfile : AppCompatActivity(),OnRefreshListener {
                             updateUserData()
                         }
 
-                        Toast.makeText(
-                            this@ActivityUserProfile, "PRATITE KORISNIKA", Toast.LENGTH_LONG
-                        ).show();
                     }
 
                     override fun onFailure(call: Call<Boolean>, t: Throwable) {
@@ -219,9 +216,6 @@ class ActivityUserProfile : AppCompatActivity(),OnRefreshListener {
                             followUser.isEnabled = true
                             updateUserData()
                         }
-                        Toast.makeText(
-                            this@ActivityUserProfile, "VIŠE NE PRATITE KORISNIKA", Toast.LENGTH_LONG
-                        ).show();
                     }
 
                     override fun onFailure(call: Call<Boolean>, t: Throwable) {

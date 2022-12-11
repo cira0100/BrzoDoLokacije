@@ -55,9 +55,7 @@ class MainActivity : AppCompatActivity() {
             override fun onResponse(call: Call<String?>, response: Response<String?>) {
                 if(response.isSuccessful()){
                     val newToken=response.body().toString()
-                    Toast.makeText(
-                        applicationContext, token, Toast.LENGTH_LONG
-                    ).show();
+
                     SharedPreferencesHelper.addValue("jwt",newToken,this@MainActivity)
                 }else{
                     if(response.errorBody()!=null)

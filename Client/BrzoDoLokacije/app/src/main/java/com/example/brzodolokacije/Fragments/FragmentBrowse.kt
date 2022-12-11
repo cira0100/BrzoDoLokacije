@@ -337,7 +337,7 @@ class FragmentBrowse : Fragment(R.layout.fragment_browse) {
                                 .lastLocation
                             // Set latitude
                             map!!.controller.animateTo(GeoPoint(location1!!.latitude,location1!!.longitude))
-                            Toast.makeText(requireContext()," "+location1!!.latitude,Toast.LENGTH_LONG)
+
 
                         }
                     }
@@ -347,7 +347,7 @@ class FragmentBrowse : Fragment(R.layout.fragment_browse) {
                         Looper.myLooper());
                 } else {
                     map!!.controller.animateTo(GeoPoint(location!!.latitude,location!!.longitude))
-                    Toast.makeText(requireContext()," "+location.latitude,Toast.LENGTH_LONG)
+
                 }
 
 

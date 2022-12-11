@@ -89,9 +89,6 @@ class FragmentLogin : Fragment() {
                     override fun onResponse(call: Call<String?>, response: Response<String?>) {
                         if(response.isSuccessful()){
                             val token=response.body().toString()
-                            Toast.makeText(
-                                activity, token, Toast.LENGTH_LONG
-                            ).show();
                             SharedPreferencesHelper.addValue("jwt",token,activity!!)
                             val intent= Intent(activity!!, NavigationActivity::class.java)
                             startActivity(intent)

@@ -4,7 +4,6 @@ import android.content.Intent
 import android.os.Bundle
 import android.view.View
 import android.widget.ImageButton
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.brzodolokacije.Fragments.*
@@ -68,17 +67,12 @@ class NavigationActivity : AppCompatActivity() {
         var capturePost=bottomSheetDialog2.findViewById<View>(R.id.btnBottomSheetAddNewPostOpenCapturePost) as ImageButton
 
         openAddPost.setOnClickListener{
-            Toast.makeText(
-                applicationContext, "Open select from gallery ", Toast.LENGTH_LONG
-            ).show();
             val intent = Intent (this, ActivityAddPost::class.java)
             startActivity(intent)
         }
 
         capturePost.setOnClickListener{
-            Toast.makeText(
-                applicationContext, "Open capture ", Toast.LENGTH_LONG
-            ).show();
+
             val intent = Intent (this, ActivityCapturePost::class.java)
             startActivity(intent)
         }
@@ -88,9 +82,7 @@ class NavigationActivity : AppCompatActivity() {
 
     }
     private fun showBottomSheetAddNew(){
-        Toast.makeText(
-            applicationContext, "Open add new ", Toast.LENGTH_LONG
-        ).show();
+
         var bottomSheetDialog:BottomSheetDialog
         bottomSheetDialog=BottomSheetDialog(this)
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_add_new)
@@ -105,9 +97,7 @@ class NavigationActivity : AppCompatActivity() {
         }
 
         newLocation.setOnClickListener{
-            Toast.makeText(
-                applicationContext, "Open capture ", Toast.LENGTH_LONG
-            ).show();
+
             val intent = Intent (this, MapsActivity::class.java)
             startActivity(intent)
         }

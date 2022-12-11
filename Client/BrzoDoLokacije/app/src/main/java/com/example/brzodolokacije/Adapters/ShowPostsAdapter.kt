@@ -51,7 +51,7 @@ class ShowPostsAdapter (val activity:Activity,val items : MutableList<PostPrevie
         //sets components of particular item
         holder.bind(getItem(position)!!)
         holder.itemView.setOnClickListener {
-            Toast.makeText(activity,getItem(position)!!._id,Toast.LENGTH_LONG).show()
+
             val intent:Intent = Intent(activity,ActivitySinglePost::class.java)
             var b=Bundle()
             //getItem(position)!!.location.type=LocationType.ADA
