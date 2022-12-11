@@ -2,6 +2,8 @@ package com.example.brzodolokacije.Adapters
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.brzodolokacije.Activities.ActivitySinglePost
+import com.example.brzodolokacije.Activities.ActivityUserProfile
 import com.example.brzodolokacije.Fragments.FragmentSinglePostComments
 import com.example.brzodolokacije.Interfaces.IBackendApi
 import com.example.brzodolokacije.Models.CommentReceive
@@ -21,9 +24,11 @@ import com.example.brzodolokacije.Models.UserReceive
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
 import com.example.brzodolokacije.databinding.SingleCommentBinding
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.single_comment.view.*
 import retrofit2.Call
 import retrofit2.Response
+import java.util.*
 
 class CommentsAdapter (val items : MutableList<CommentSend>,val activity: Activity, val fragment:FragmentSinglePostComments)
     : RecyclerView.Adapter<CommentsAdapter.ViewHolder>(){
@@ -92,6 +97,15 @@ class CommentsAdapter (val items : MutableList<CommentSend>,val activity: Activi
                             }
                         }
                     }
+                }
+                ivPfp.setOnClickListener {
+                    val intent: Intent = Intent(activity, ActivityUserProfile::class.java)
+                    var b= Bundle()
+                    intent.putExtra("user", Gson().toJson(
+                        UserReceive(item.userId,"",item.username,"",
+                            Date(),null,0, listOf(),0,listOf(),0,listOf(),0,null)
+                    ))
+                    activity.startActivity(intent)
                 }
 
 
