@@ -215,7 +215,7 @@ class ActivitySinglePost : AppCompatActivity(),OnRefreshListener {
 
     fun loadTags(){
 
-
+        tagLayout.removeAllViews()
         if(post.tags!=null)
             for( item in post.tags!!){
                 var newbtn = Button(this)
