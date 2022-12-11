@@ -21,6 +21,7 @@ import com.example.brzodolokacije.Activities.ActivityAddPost
 import com.example.brzodolokacije.Activities.ChatActivity
 import com.example.brzodolokacije.Activities.NavigationActivity
 import com.example.brzodolokacije.Adapters.ShowPostsAdapter
+import com.example.brzodolokacije.Adapters.ShowPostsGridViewAdapter
 import com.example.brzodolokacije.Models.Location
 import com.example.brzodolokacije.Models.SearchParams
 import com.example.brzodolokacije.R
@@ -48,7 +49,7 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private var linearManagerVar: RecyclerView.LayoutManager? = null
     private var adapterVar: ShowPostsAdapter? = null
     private var recyclerView: RecyclerView?=null
-    private var gridManagerVar: RecyclerView.LayoutManager?=null
+   // private var gridManagerVar: RecyclerView.LayoutManager?=null
     private var swipeRefreshLayout:SwipeRefreshLayout?=null
     private lateinit var searchButton: MaterialButton
     private lateinit var searchPostsViewModel:SearchPostsViewModel
@@ -66,7 +67,7 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         //instantiate adapter and linearLayout
         adapterVar=ShowPostsAdapter(requireActivity())
         linearManagerVar= LinearLayoutManager(activity)
-        gridManagerVar=GridLayoutManager(activity,2)
+        //gridManagerVar=GridLayoutManager(activity,2)
     }
     fun searchText(){
         if(searchBar.text==null || searchBar.text.toString().trim()=="")
@@ -138,8 +139,11 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     fun setUpListeners(rootView: View?){
         rootView?.findViewById<ImageButton>(R.id.btnGridLayout)?.setOnClickListener() {
-            if(recyclerView?.layoutManager!=gridManagerVar){
-                recyclerView?.layoutManager=gridManagerVar
+            /*if(recyclerView?.layoutManager!=gridManagerVar){
+                recyclerView?.layoutManager=gridManagerVar*/
+            recyclerView?.apply {
+                layoutManager= GridLayoutManager(activity,2)
+                //adapter= ShowPostsGridViewAdapter(posts,requireActivity())
             }
             Log.d("main","klik")
         }
