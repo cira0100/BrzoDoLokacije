@@ -67,7 +67,11 @@ class ShowPostsAdapter (val activity:Activity,val items : MutableList<PostPrevie
         fun bind(item: PostPreview) {
             binding.apply {
                 tvTitle.text = item.location.name
-                tvLocationParent.text = item.location.country
+                if(item.location.city!=null)
+                    tvLocationParent.text = item.location.city
+                else
+                    tvLocationParent.text = item.location.country
+                tvPostPreviewRating.text=item.ratings.toString()
                 //tvLocationType.text = "TODO"
                 if(item.images.isNotEmpty()) {
                     Glide.with(activity)

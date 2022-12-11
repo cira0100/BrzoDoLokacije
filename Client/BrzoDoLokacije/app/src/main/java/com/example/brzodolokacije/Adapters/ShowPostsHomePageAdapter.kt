@@ -59,7 +59,10 @@ inner class PostViewHolder(view: View):RecyclerView.ViewHolder(view){
         }
         locationName.text=postPreview.location.name
         rating.text=postPreview.ratings.toString()
-        locationDetail.text="Srbija, Kragujevac"
+        if(postPreview.location.city!=null)
+            locationDetail.text=postPreview.location.city
+        else
+            locationDetail.text=postPreview.location.country
 
     }
 }
