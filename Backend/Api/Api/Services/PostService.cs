@@ -374,6 +374,10 @@ namespace Api.Services
                             }
                         }
                     }
+                    if(lista.Count==0 && locid=="-1")
+                    {
+                        lista = await _posts.Find(_ => true).ToListAsync();
+                    }
                 }
             }
             if (lista != null)

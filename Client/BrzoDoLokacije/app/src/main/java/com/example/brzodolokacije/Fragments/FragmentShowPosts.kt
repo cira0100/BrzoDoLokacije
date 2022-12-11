@@ -52,7 +52,7 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private var swipeRefreshLayout:SwipeRefreshLayout?=null
     private lateinit var searchButton: MaterialButton
     private lateinit var searchPostsViewModel:SearchPostsViewModel
-    private var searchParams:SearchParams?= SearchParams("Kragujevac",1,1)
+    private var searchParams:SearchParams?= SearchParams("-1",1,1)
     private lateinit var btnFilter:ImageButton
     private lateinit var btnSort:ImageButton
     private lateinit var searchBar: AutoCompleteTextView
