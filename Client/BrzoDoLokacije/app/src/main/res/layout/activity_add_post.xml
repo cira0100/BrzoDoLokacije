@@ -8,7 +8,7 @@
 
     <ImageSwitcher
         android:id="@+id/isActivityAddPostSwitcher"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         android:elevation="10dp"
         app:layout_constraintBottom_toTopOf="@+id/btnActivityAddPostUploadFromGallery"
@@ -24,7 +24,7 @@
         android:gravity="right"
         android:padding="30dp"
         app:icon="@drawable/ic_baseline_arrow_forward"
-        app:iconTint="#072242"
+        app:iconTint="@color/grey"
         app:layout_constraintBottom_toBottomOf="@+id/isActivityAddPostSwitcher"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -39,7 +39,7 @@
         android:gravity="left"
         android:padding="30dp"
         app:icon="@drawable/ic_baseline_arrow_back"
-        app:iconTint="#0E283C"
+        app:iconTint="@color/grey"
         app:layout_constraintBottom_toBottomOf="@+id/isActivityAddPostSwitcher"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -116,11 +116,11 @@
 
     <Button
         android:id="@+id/btnActivityAddPostPost"
-        android:layout_width="250dp"
-        android:layout_height="40dp"
+        android:layout_width="match_parent"
+        android:layout_marginHorizontal="16dp"
+        android:layout_height="45dp"
         android:layout_marginBottom="12dp"
-        android:background="@drawable/rounded_cyan_button"
-        android:backgroundTint="#1C789A"
+       style="@style/imageViewRoundedEdge"
         android:text="Objavi"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

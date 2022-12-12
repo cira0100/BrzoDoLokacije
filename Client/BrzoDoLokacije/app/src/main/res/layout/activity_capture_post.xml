@@ -8,9 +8,8 @@
 
         <ImageView
             android:id="@+id/ivActivityCapturePostImage"
-            android:layout_width="413dp"
+            android:layout_width="match_parent"
             android:layout_height="0dp"
-            android:layout_marginTop="4dp"
             android:scaleType="fitCenter"
             app:layout_constraintBottom_toTopOf="@+id/btnActivityCapturePostCapture"
             app:layout_constraintEnd_toEndOf="parent"
@@ -29,7 +28,7 @@
             android:gravity="right"
             android:padding="30dp"
             app:icon="@drawable/ic_baseline_arrow_forward"
-            app:iconTint="#072242"
+            app:iconTint="@color/grey"
             app:layout_constraintBottom_toTopOf="@+id/btnActivityCapturePostCapture"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -43,7 +42,7 @@
             android:gravity="left"
             android:padding="30dp"
             app:icon="@drawable/ic_baseline_arrow_back"
-            app:iconTint="#0E283C"
+            app:iconTint="@color/grey"
             app:layout_constraintBottom_toTopOf="@+id/btnActivityCapturePostCapture"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -156,8 +155,8 @@
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnActivityCapturePostCaptureVisible"
-            android:layout_width="50dp"
-            android:layout_height="wrap_content"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
             android:stateListAnimator="@null"
             app:backgroundTint="#00FFFFFF"
             app:icon="@drawable/ic_baseline_add_a_photo_24"
@@ -166,8 +165,10 @@
             app:iconTint="#1C7696"
             app:layout_constraintBottom_toTopOf="@+id/btnActivityCapturePostCapture"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.48"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.503" />
 
         <LinearLayout
             android:id="@+id/llTagsCap"
