@@ -89,6 +89,8 @@ class FragmentUserFollowing : Fragment() {
         if(searchBar.text==null || searchBar.text.isNullOrEmpty() || searchBar.text.toString().trim()=="")
             return
         var text=searchBar.text.toString().trim()
+        if(!this::following.isInitialized)
+            return
         searchedFollowing= mutableListOf()
         for(user in following){
             if(user.username.contains(text))
@@ -147,6 +149,16 @@ class FragmentUserFollowing : Fragment() {
                 Log.d("MyFollowings","Faillllllllllllllllllllllllll")
             }
         })
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if(showMy=="yes"){
+            getFollowingWithoutId()
+        }
+        else if(showMy=="no") {
+            getFollowing()
+        }
     }
 
 }
