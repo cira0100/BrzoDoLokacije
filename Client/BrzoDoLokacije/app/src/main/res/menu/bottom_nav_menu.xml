@@ -1,17 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
-<menu xmlns:android="http://schemas.android.com/apk/res/android">
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+
+    >
     <item
         android:id="@+id/navHomePage"
-        android:title="Početna strana"
+        android:title="Početna"
         android:icon="@drawable/ic_nav_home"/>
     <item
         android:id="@+id/navAllPosts"
         android:icon="@drawable/ic_baseline_list_24"
-        android:title="Sve objave" />
+        android:title="Objave" />
     <item
         android:id="@+id/navAddPost"
         android:title="Dodaj"
-        android:icon="@drawable/add_post_red_image"/>
+        android:icon="@drawable/add_post_red_image"
+        android:iconTint="@color/button_main"/>
     <item
         android:id="@+id/navBrowse"
         android:title="Pretraga"
