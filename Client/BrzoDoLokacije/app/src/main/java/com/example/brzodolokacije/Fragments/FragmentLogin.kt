@@ -3,6 +3,7 @@ package com.example.brzodolokacije.Fragments
 import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
+import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -48,6 +49,16 @@ class FragmentLogin : Fragment() {
         password = view.findViewById<View>(R.id.etFragmentLoginPassword) as EditText
         forgottenPassword = view.findViewById<View>(R.id.tvFragmentLoginForgottenPassword) as TextView
         login=view.findViewById<View>(R.id.btnFragmentLoginLogin) as Button
+
+        password.setOnKeyListener(View.OnKeyListener{v, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP){
+                //Start your action
+                login.performClick()
+                //End action
+                return@OnKeyListener true
+            }
+            false
+        })
 
         //osluskivanje unosa
 
