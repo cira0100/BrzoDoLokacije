@@ -5,13 +5,17 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.preference.PreferenceManager
+import android.util.Log
 import android.util.TypedValue
+import android.view.GestureDetector
+import android.view.MotionEvent
 import android.view.ViewGroup
 import android.view.ViewGroup.MarginLayoutParams
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.core.content.ContextCompat
+import androidx.core.view.GestureDetectorCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.setMargins
@@ -72,7 +76,7 @@ class ActivitySinglePost : AppCompatActivity(),OnRefreshListener {
     private lateinit var btnChangeHeightUp:ImageView
     private lateinit var btnChangeHeightDown:ImageView
     private lateinit var fragmentContainer: FrameLayout
-
+    //private lateinit var detector: GestureDetectorCompat
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding=ActivitySinglePostBinding.inflate(layoutInflater)
@@ -96,7 +100,7 @@ class ActivitySinglePost : AppCompatActivity(),OnRefreshListener {
             linearLayout2.getLayoutParams().height= ViewGroup.LayoutParams.MATCH_PARENT;
         }
 
-
+        //detector= GestureDetectorCompat(this,SwipeGestureListener())
 
         //instantiate adapter and linearLayout
         adapterImages= PostImageAdapter(this@ActivitySinglePost, post.images as MutableList<PostImage>)
@@ -198,7 +202,52 @@ class ActivitySinglePost : AppCompatActivity(),OnRefreshListener {
             R.color.dark_blue_transparent,
             R.color.purple_700
         )
+
+        btnChangeHeightUp.performClick()
+        btnChangeHeightDown.performClick()
     }
+
+    /*override fun onTouchEvent(event: MotionEvent?): Boolean {
+        return if(event?.let { detector.onTouchEvent(it) } == true){
+            Log.d("testing swipeup","------------------------")
+            true
+        }
+        else return super.onTouchEvent(event)
+    }
+
+    inner class SwipeGestureListener : GestureDetector.SimpleOnGestureListener() {
+        private val SWIPE_THRESHOLD = 20
+        private val SWIPE_VELOCITY_THRESHOLD = 20
+        override fun onFling(
+            downEvent: MotionEvent,
+            moveEvent: MotionEvent,
+            velocityX: Float,
+            velocityY: Float
+        ): Boolean {
+
+            Log.d("testing swipeup","------------------------")
+            var diffX = moveEvent?.x?.minus(downEvent!!.x) ?: 0.0F
+            var diffY = moveEvent?.y?.minus(downEvent!!.y) ?: 0.0F
+
+            if (Math.abs(diffX) < Math.abs(diffY)) {
+            if (Math.abs(diffY) > SWIPE_THRESHOLD && Math.abs(velocityY) > SWIPE_VELOCITY_THRESHOLD) {
+                    if (diffY > 0 ) {
+                        //top to bot
+
+                    }
+                    else {
+                        //bot to top
+                        btnChangeHeightUp.performClick()
+                    }
+
+                }
+                return true
+            }else{
+                return super.onFling(downEvent, moveEvent, velocityX, velocityY)
+            }
+            return super.onFling(downEvent, moveEvent, velocityX, velocityY)
+            }
+    }*/
 
     fun setUpFirstFragment(){
         var fm: FragmentTransaction =supportFragmentManager.beginTransaction()
@@ -220,6 +269,8 @@ class ActivitySinglePost : AppCompatActivity(),OnRefreshListener {
         loadTags()
         loadFavourite()
         setUpFirstFragment()
+        btnChangeHeightUp.performClick()
+        btnChangeHeightDown.performClick()
         swipeRefreshLayout.isRefreshing=false
     }
 
