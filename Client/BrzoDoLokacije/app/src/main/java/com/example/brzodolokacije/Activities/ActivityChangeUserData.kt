@@ -153,6 +153,11 @@ class ActivityChangeUserData : AppCompatActivity() {
     }
 
     fun changeUsername(){
+        if(username.text==null || username.text.trim().toString()=="")
+        {
+            Toast.makeText(this@ActivityChangeUserData,"Unesite korisničko ime",Toast.LENGTH_SHORT).show()
+            return
+        }
         val api = RetrofitHelper.getInstance()
         val token = SharedPreferencesHelper.getValue("jwt", this@ActivityChangeUserData)
         var data = api.changeMyUsername("Bearer " + token,username.text.trim().toString());
@@ -200,6 +205,11 @@ class ActivityChangeUserData : AppCompatActivity() {
     }
 
     fun changeName(){
+        if(name.text==null || name.text.trim().toString()=="")
+        {
+            Toast.makeText(this@ActivityChangeUserData,"Unesite ime",Toast.LENGTH_SHORT).show()
+            return
+        }
         val api = RetrofitHelper.getInstance()
         val token = SharedPreferencesHelper.getValue("jwt", this@ActivityChangeUserData)
         var data = api.changeMyName("Bearer " + token,name.text.trim().toString());
