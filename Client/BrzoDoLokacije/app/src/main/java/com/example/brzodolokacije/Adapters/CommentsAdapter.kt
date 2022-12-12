@@ -112,8 +112,15 @@ class CommentsAdapter (val items : MutableList<CommentSend>,val activity: Activi
                 var rv: RecyclerView = rvReplies
                 rv.setHasFixedSize(true)
                 rv.layoutManager=LinearLayoutManager(activity,LinearLayoutManager.VERTICAL,false)
-                if(item.replies!=null)
+                if(item.replies!=null){
+                    if(item.replies!!.count()==1)
+                        etReplyCount.text=item.replies!!.count().toString() + " odgovor"
+                    else
+                        etReplyCount.text=item.replies!!.count().toString() + " odgovora"
+                    clReplyCount.visibility=View.VISIBLE
+                    clReplyCount.invalidate()
                     rv.adapter=CommentsAdapter(item.replies as MutableList<CommentSend>,activity,fragment)
+                }
                 else
                     rv.adapter=CommentsAdapter(mutableListOf(),activity,fragment)
             }

@@ -27,14 +27,43 @@
             android:layout_height="wrap_content"
             android:orientation="vertical"
             android:layout_weight="1">
+            <androidx.appcompat.widget.LinearLayoutCompat
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+                <TextView
+                    android:id="@+id/tvCommentAuthor"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="autor"
+                    android:textStyle="bold"
+                    android:padding="@dimen/text_padding"/>
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    android:id="@+id/clReplyCount">
 
-            <TextView
-                android:id="@+id/tvCommentAuthor"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="autor"
-                android:textStyle="bold"
-                android:padding="@dimen/text_padding"/>
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:id="@+id/constraintLayout4"
+                        android:layout_width="5dp"
+                        android:layout_height="5dp"
+                        android:background="@drawable/rounded_picture_background"
+                        android:backgroundTint="@color/unfollow"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/etReplyCount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:clickable="true"
+                        android:padding="@dimen/text_padding"
+                        android:text="0 odgovora"
+                        app:layout_constraintStart_toEndOf="@id/constraintLayout4"
+                        tools:layout_editor_absoluteY="0dp" />
+                </androidx.constraintlayout.widget.ConstraintLayout>
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
 
             <TextView
                 android:id="@+id/tvCommentText"
