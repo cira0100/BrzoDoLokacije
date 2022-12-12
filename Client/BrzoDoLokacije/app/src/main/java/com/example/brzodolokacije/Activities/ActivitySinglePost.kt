@@ -2,6 +2,7 @@ package com.example.brzodolokacije.Activities
 
 import android.content.Intent
 import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.TypedValue
@@ -41,6 +42,7 @@ import org.osmdroid.views.MapView
 import org.osmdroid.views.overlay.Marker
 import retrofit2.Call
 import retrofit2.Response
+import java.text.SimpleDateFormat
 
 
 class ActivitySinglePost : AppCompatActivity(),OnRefreshListener {
@@ -315,7 +317,7 @@ class ActivitySinglePost : AppCompatActivity(),OnRefreshListener {
             tvNumberOfRatings.invalidate()
             //tvRating.text=String.format("%.2f",data.ratings)
             //tvNumberOfRatings.text=String.format("%d",data.ratingscount)
-            tvDatePosted.text=post.createdAt.toLocaleString()
+            tvDatePosted.text=SimpleDateFormat("dd/MM/yyyy").format(post.lastViewed)
             tvDatePosted.invalidate()
 
         }

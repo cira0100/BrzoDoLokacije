@@ -13,16 +13,28 @@
         android:padding="@dimen/component_padding"
         tools:layout_editor_absoluteX="0dp">
 
-
-        <TextView
-            android:id="@+id/tvDescription"
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cvDescription"
+            app:cardCornerRadius="10dp"
+            android:elevation="15dp"
+            android:layout_margin="3dp"
+            android:padding="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="TextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextView"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="parent">
 
+            <TextView
+                android:layout_margin="5dp"
+                android:id="@+id/tvDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="TextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.cardview.widget.CardView>
 
         <LinearLayout
 
@@ -32,17 +44,16 @@
             android:layout_marginTop="30dp"
             android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvDescription">
+            app:layout_constraintTop_toBottomOf="@+id/cvDescription">
             <TextView
                 android:id="@+id/title"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
                 android:text="Oceni"
+
+                style="@style/title"
                 android:gravity="center_vertical"
                 android:layout_weight="1"
-                android:textColor="@color/cardview_dark_background"
-                android:textSize="@dimen/header1_size"
-                android:textStyle="bold"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.005"
                 app:layout_constraintStart_toStartOf="parent"
@@ -54,7 +65,7 @@
                 android:layout_height="50dp"
                 android:clickable="true"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_round_star_outline_24" />
+                android:src="@drawable/ic_outline_star_border_24" />
 
             <ImageView
                 android:id="@+id/rateStar2"
@@ -62,7 +73,7 @@
                 android:layout_height="50dp"
                 android:clickable="true"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_round_star_outline_24" />
+                android:src="@drawable/ic_outline_star_border_24" />
 
             <ImageView
                 android:id="@+id/rateStar3"
@@ -70,7 +81,7 @@
                 android:layout_height="50dp"
                 android:clickable="true"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_round_star_outline_24" />
+                android:src="@drawable/ic_outline_star_border_24" />
 
             <ImageView
                 android:id="@+id/rateStar4"
@@ -78,7 +89,7 @@
                 android:layout_height="50dp"
                 android:clickable="true"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_round_star_outline_24" />
+                android:src="@drawable/ic_outline_star_border_24" />
 
             <ImageView
                 android:id="@+id/rateStar5"
@@ -86,7 +97,7 @@
                 android:layout_height="50dp"
                 android:clickable="true"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_round_star_outline_24" />
+                android:src="@drawable/ic_outline_star_border_24" />
 
 
         </LinearLayout>

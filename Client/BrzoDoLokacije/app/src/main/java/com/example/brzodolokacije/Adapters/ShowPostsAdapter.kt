@@ -17,6 +17,7 @@ import com.example.brzodolokacije.Models.PostPreview
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
 import com.example.brzodolokacije.databinding.PostPreviewBinding
+import java.text.SimpleDateFormat
 
 
 class ShowPostsAdapter (val activity:Activity,val items : MutableList<PostPreview>?=null)
@@ -67,6 +68,7 @@ class ShowPostsAdapter (val activity:Activity,val items : MutableList<PostPrevie
     inner class ViewHolder(itemView: PostPreviewBinding) : RecyclerView.ViewHolder(itemView.root) {
         fun bind(item: PostPreview) {
             binding.apply {
+                tvPostPreviewDate.text= SimpleDateFormat("dd/MM/yyyy").format(item.createdAt)
                 tvTitle.text = item.location.name
                 if(item.location.city!=null)
                     tvLocationParent.text = item.location.city

@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.swiperefreshlayout.widget.SwipeRefreshLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     tools:context=".Fragments.FragmentHomePageMainScroll"
     android:layout_width="match_parent"
@@ -9,9 +10,7 @@
     <ScrollView
 
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        xmlns:app="http://schemas.android.com/apk/res-auto"
-        >
+        android:layout_height="match_parent">
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -20,26 +19,27 @@
 
 
             <androidx.cardview.widget.CardView
-                android:backgroundTint="#f6f6f6"
-                android:layout_marginStart="10dp"
-                android:layout_marginEnd="16dp"
-                app:cardElevation="0dp"
                 android:id="@+id/cvFragmentHomePageText2"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:stateListAnimator="@null"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="16dp"
+                android:layout_marginBottom="5dp"
+                android:backgroundTint="#FFFCFCFC"
                 android:elevation="0dp"
-                android:layout_marginTop="16dp">
+                android:stateListAnimator="@null"
+                app:cardElevation="0dp">
 
                 <TextView
                     android:id="@+id/tvFragmentHomePageNewest"
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:layout_gravity="left"
-                    android:text="Najnovije"
                     android:clickable="true"
+                    android:text="Najnovije"
+                    android:textSize="16dp"
                     android:textStyle="bold" />
-
 
 
             </androidx.cardview.widget.CardView>
@@ -154,17 +154,19 @@
                         android:id="@+id/ll1"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
+
                         <androidx.cardview.widget.CardView
-                            android:backgroundTint="#f6f6f6"
-                            android:layout_marginTop="16dp"
                             android:id="@+id/cvFragmentHomePageText1"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
+                            android:layout_marginTop="16dp"
                             android:layout_marginEnd="16dp"
+                            android:backgroundTint="#FFFCFCFC"
                             android:elevation="0dp"
-                            app:cardElevation="0dp"
-                            >
+                            android:layout_marginBottom="5dp"
+
+                            app:cardElevation="0dp">
 
                             <TextView
                                 android:id="@+id/tvFragmentHomePagePopular"
@@ -172,6 +174,7 @@
                                 android:layout_height="match_parent"
                                 android:layout_gravity="left"
                                 android:text="Popularno"
+                                android:textSize="16dp"
                                 android:textStyle="bold" />
 
 
@@ -183,7 +186,7 @@
                             android:layout_height="wrap_content"
                             android:layout_marginStart="16dp"
                             android:layout_marginEnd="16dp"
-                            android:layout_marginBottom="16dp" />
+                            android:layout_marginBottom="8dp" />
 
                     </LinearLayout>
                     <LinearLayout
@@ -192,15 +195,18 @@
                         android:orientation="vertical"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
+
                         <androidx.cardview.widget.CardView
-                            android:backgroundTint="#f6f6f6"
-                            app:cardElevation="0dp"
-                            android:layout_marginStart="16dp"
-                            android:layout_marginEnd="16dp"
+                            android:layout_marginBottom="5dp"
+
                             android:id="@+id/cvFragmentHomePageText3"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginTop="16dp">
+                            android:layout_marginStart="16dp"
+                            android:layout_marginTop="16dp"
+                            android:layout_marginEnd="16dp"
+                            android:backgroundTint="#FFFCFCFC"
+                            app:cardElevation="0dp">
 
                             <TextView
                                 android:id="@+id/tvFragmentHomePageBestRated"
