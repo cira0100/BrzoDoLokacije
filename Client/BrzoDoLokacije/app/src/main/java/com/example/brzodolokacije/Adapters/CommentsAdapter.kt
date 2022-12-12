@@ -113,17 +113,27 @@ class CommentsAdapter (val items : MutableList<CommentSend>,val activity: Activi
                 rv.setHasFixedSize(true)
                 rv.layoutManager=LinearLayoutManager(activity,LinearLayoutManager.VERTICAL,false)
                 if(item.replies!=null){
-                    if(item.replies!!.count()==1)
-                        etReplyCount.text=item.replies!!.count().toString() + " odgovor"
-                    else
-                        etReplyCount.text=item.replies!!.count().toString() + " odgovora"
-                    clReplyCount.visibility=View.VISIBLE
-                    clReplyCount.invalidate()
+                    setReplyCount(layoutPosition)
+                    etReplyCount.setOnClickListener {
+                        if(llReplies.visibility==View.VISIBLE)
+                            llReplies.visibility=View.GONE
+                        else
+                            llReplies.visibility=View.VISIBLE
+                        llReplies.forceLayout()
+                    }
                     rv.adapter=CommentsAdapter(item.replies as MutableList<CommentSend>,activity,fragment)
                 }
                 else
                     rv.adapter=CommentsAdapter(mutableListOf(),activity,fragment)
             }
+        }
+        fun setReplyCount(position: Int){
+            if(items[position].replies!!.count()==1)
+                itemView.etReplyCount.text=items[position].replies!!.count().toString() + " odgovor"
+            else
+                itemView.etReplyCount.text=items[position].replies!!.count().toString() + " odgovora"
+            itemView.clReplyCount.visibility=View.VISIBLE
+            itemView.clReplyCount.invalidate()
         }
         fun showKeyboard(item:EditText){
             var imm:InputMethodManager=activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -146,6 +156,7 @@ class CommentsAdapter (val items : MutableList<CommentSend>,val activity: Activi
                         itemView.etReply.text!!.clear()
                         hideKeyboard(itemView.etReply)
                         itemView.etReply.clearFocus()
+                        setReplyCount(bindingAdapterPosition)
                     }else{
                         if(response.errorBody()!=null)
                             Log.d("main1",response.message().toString())
