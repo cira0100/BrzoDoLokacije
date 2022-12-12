@@ -10,13 +10,15 @@ namespace Api.Services
     {
         private readonly IHttpContextAccessor _httpContext;
         private readonly IMongoCollection<Message> _messages;
+        private readonly IUserService _userService;
         private readonly IJwtService _jwtService;
         private IConfiguration _configuration;
         private readonly IHubContext<ChatHub> _chatHub;
-        public MessageService(IDatabaseConnection settings, IMongoClient mongoClient, IJwtService jwtService, IHttpContextAccessor httpContextAccessor, IConfiguration configuration,IHubContext<ChatHub> chatHub)
+        public MessageService(IDatabaseConnection settings, IMongoClient mongoClient, IUserService userService, IJwtService jwtService, IHttpContextAccessor httpContextAccessor, IConfiguration configuration,IHubContext<ChatHub> chatHub)
         {
             var database = mongoClient.GetDatabase(settings.DatabaseName);
             _messages = database.GetCollection<Message>(settings.MessageCollectionname);
+            _userService = userService;
             _jwtService = jwtService;
             _httpContext = httpContextAccessor;
             _configuration = configuration;
@@ -28,6 +30,9 @@ namespace Api.Services
                 return null;
             var senderId = _httpContext.HttpContext.User.FindFirstValue("id").ToString();
             if (senderId == null)
+                return null;
+            var receiverCheck =await  _userService.GetSelfUserData(msg.receiverId);
+            if (receiverCheck == null)
                 return null;
             var tempMsg = new Message();
             tempMsg._id = "";

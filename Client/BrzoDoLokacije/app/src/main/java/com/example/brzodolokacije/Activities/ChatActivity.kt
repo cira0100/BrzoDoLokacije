@@ -132,11 +132,6 @@ class ChatActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
 
 
     fun setListeners(){
-        findViewById<ImageButton>(R.id.addNewMessage).setOnClickListener {
-            val intent: Intent = Intent(this@ChatActivity,ChatActivityConversation::class.java)
-            intent.putExtra("receiverId","")
-            startActivity(intent)
-        }
         findViewById<ImageButton>(R.id.btnBack).setOnClickListener {
             finish()
         }
