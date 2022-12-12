@@ -184,7 +184,11 @@ class ActivityAddPost : AppCompatActivity() {
                 description.setHintTextColor(Color.RED)
             }
             if(locationId==null || locationId!!.trim()==""){
-                Toast.makeText(this,"Unesite lokaciju klikom na dugme",Toast.LENGTH_LONG)
+                Toast.makeText(this@ActivityAddPost,"Unesite lokaciju klikom na dugme",Toast.LENGTH_LONG)
+            }
+            if(uploadedImages==null ||uploadedImages!!.size<=0)
+            {
+                Toast.makeText(this@ActivityAddPost,"Unesite fotografije",Toast.LENGTH_LONG)
             }
 
             if(!descriptionString.isEmpty()  && uploadedImages!!.size>0){
