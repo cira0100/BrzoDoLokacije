@@ -1,12 +1,13 @@
 package com.example.brzodolokacije.Activities
 
+import LinePagerIndicatorDecoration
 import android.content.Intent
 import android.graphics.Color
-import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.preference.PreferenceManager
 import android.util.TypedValue
 import android.view.ViewGroup
+import android.view.ViewGroup.MarginLayoutParams
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.constraintlayout.widget.ConstraintLayout
@@ -35,6 +36,7 @@ import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
 import com.example.brzodolokacije.databinding.ActivitySinglePostBinding
 import com.google.gson.Gson
+import kotlinx.android.synthetic.main.activity_single_post.*
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
 import org.osmdroid.util.GeoPoint
@@ -89,6 +91,7 @@ class ActivitySinglePost : AppCompatActivity(),OnRefreshListener {
         btnChangeHeightUp.isClickable=true
         linearLayout2=findViewById(R.id.linearLayout2)
 
+
         linearLayout2.setOnClickListener {
             linearLayout2.getLayoutParams().height= ViewGroup.LayoutParams.MATCH_PARENT;
         }
@@ -99,6 +102,11 @@ class ActivitySinglePost : AppCompatActivity(),OnRefreshListener {
         adapterImages= PostImageAdapter(this@ActivitySinglePost, post.images as MutableList<PostImage>)
         layoutManagerImages= LinearLayoutManager(this,LinearLayoutManager.HORIZONTAL,false)
         recyclerViewImages = binding.rvMain
+        //tackice image
+        var color = ContextCompat.getColor(this@ActivitySinglePost, R.color.unfollow)
+        var color1 = ContextCompat.getColor(this@ActivitySinglePost, R.color.button_main)
+        if(post.images.size>1)
+            recyclerViewImages!!.addItemDecoration(LinePagerIndicatorDecoration(10,10,100,color,color1))
 
         //DODATI SLIKE
         recyclerViewImages?.setHasFixedSize(true)
