@@ -63,7 +63,6 @@ class NavigationActivity : AppCompatActivity() {
         bottomSheetDialog2.setContentView(R.layout.bottom_sheet_add_new_post)
         bottomSheetDialog2.show()
 
-        var close=bottomSheetDialog2.findViewById<View>(R.id.btnBottomSheetAddNewPostClose) as ImageButton
         var openAddPost=bottomSheetDialog2.findViewById<View>(R.id.btnBottomSheetAddNewPostOpenAddPost) as Button
         var capturePost=bottomSheetDialog2.findViewById<View>(R.id.btnBottomSheetAddNewPostOpenCapturePost) as Button
 
@@ -77,9 +76,7 @@ class NavigationActivity : AppCompatActivity() {
             val intent = Intent (this, ActivityCapturePost::class.java)
             startActivity(intent)
         }
-        close.setOnClickListener {
-            bottomSheetDialog2.dismiss()
-        }
+
 
     }
     private fun showBottomSheetAddNew(){

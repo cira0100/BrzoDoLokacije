@@ -210,11 +210,11 @@ class ActivityCapturePost : AppCompatActivity() {
             }
             if(f==null)
             {
-                Toast.makeText(this@ActivityCapturePost,"Unesite fotografije",Toast.LENGTH_LONG)
+                Toast.makeText(this@ActivityCapturePost,"Unesite fotografije",Toast.LENGTH_LONG).show()
             }
             if(locationId==null || locationId!!.trim()=="")
             {
-                Toast.makeText(this@ActivityCapturePost,"Unesite lokaciju klikom na dugme",Toast.LENGTH_LONG)
+                Toast.makeText(this@ActivityCapturePost,"Unesite lokaciju klikom na dugme",Toast.LENGTH_LONG).show()
             }
             if(f!=null && locationId!=null && locationId!!.trim()!="" &&!descriptionString.isEmpty()){
                     uploadLocation()
