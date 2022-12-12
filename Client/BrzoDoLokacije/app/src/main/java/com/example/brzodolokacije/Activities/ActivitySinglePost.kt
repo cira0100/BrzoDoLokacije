@@ -317,7 +317,7 @@ class ActivitySinglePost : AppCompatActivity(),OnRefreshListener {
             tvNumberOfRatings.invalidate()
             //tvRating.text=String.format("%.2f",data.ratings)
             //tvNumberOfRatings.text=String.format("%d",data.ratingscount)
-            tvDatePosted.text=SimpleDateFormat("dd/MM/yyyy").format(post.lastViewed)
+            tvDatePosted.text=SimpleDateFormat("dd/MM/yyyy").format(post.createdAt)
             tvDatePosted.invalidate()
 
         }
