@@ -58,6 +58,24 @@ class ActivityChangePassword : AppCompatActivity() {
             oldPassError.isVisible=false
             newPassError.isVisible=false
             confirmPassError.isVisible=false
+            if(oldPass.text.toString().trim().isEmpty())
+            {
+                oldPassError.isVisible=true
+                oldPassError.text="Unesite trenutnu lozinku."
+                oldPassError.setTextColor(Color.RED)
+            }
+            if(newPass.text.toString().trim().isEmpty())
+            {
+                newPassError.isVisible=true
+                newPassError.text="Unesite novu lozinku."
+                newPassError.setTextColor(Color.RED)
+            }
+            if(confirmPass.text.toString().trim().isEmpty())
+            {
+                confirmPassError.isVisible=true
+                confirmPassError.text="Potvrdite novu lozinku."
+                confirmPassError.setTextColor(Color.RED)
+            }
 
             if(oldPass.text.toString().trim().isNotEmpty()&&newPass.text.toString().trim().isNotEmpty()
                 &&confirmPass.text.toString().trim().isNotEmpty()){
