@@ -2,6 +2,7 @@ package com.example.brzodolokacije.Activities
 
 import android.Manifest
 import android.app.ProgressDialog
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
@@ -11,19 +12,16 @@ import android.util.Log
 import android.util.TypedValue
 import android.view.KeyEvent
 import android.view.View
+import android.view.inputmethod.InputMethodManager
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
-import androidx.appcompat.widget.AppCompatImageView
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.setMargins
-import com.example.brzodolokacije.Models.Location
-import com.example.brzodolokacije.Models.LocationType
 import com.example.brzodolokacije.Models.PostPreview
 import com.example.brzodolokacije.R
-import com.example.brzodolokacije.Services.GeocoderHelper
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
 import okhttp3.MediaType.Companion.toMediaTypeOrNull
@@ -109,17 +107,23 @@ class ActivityAddPost : AppCompatActivity() {
         addDescription.setOnClickListener {
             description.isGone=false
             description.isVisible=true
+            description.requestFocus()
+            showKeyboard(description)
         }
         //dodavanje i brisanje tagova
         tagButtonAdd.setOnClickListener {
            addTag()
+            tagText.requestFocus()
+            showKeyboard(tagText)
         }
         tagText.setOnKeyListener(View.OnKeyListener { v1, keyCode, event -> // If the event is a key-down event on the "enter" button
-            if (event.action === KeyEvent.ACTION_DOWN &&
+            if (event.action === KeyEvent.ACTION_UP &&
                 keyCode == KeyEvent.KEYCODE_ENTER
             ) {
                 // Perform action on key press
                 addTag()
+                tagText.requestFocus()
+                showKeyboard(tagText)
                 return@OnKeyListener true
             }
             false
@@ -188,6 +192,17 @@ class ActivityAddPost : AppCompatActivity() {
             }
         }
     }
+
+    fun showKeyboard(item:EditText){
+        var imm: InputMethodManager =this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.showSoftInput(item, InputMethodManager.SHOW_IMPLICIT)
+    }
+
+    fun hideKeyboard(item: EditText){
+        var imm: InputMethodManager =this.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(item.windowToken, InputMethodManager.HIDE_NOT_ALWAYS)
+    }
+
     fun addTag(){
         tagText.isGone=false
         tagText.isVisible=true
