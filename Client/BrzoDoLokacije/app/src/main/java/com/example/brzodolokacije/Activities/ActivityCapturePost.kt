@@ -123,10 +123,6 @@ class ActivityCapturePost : AppCompatActivity() {
             if(place>0){
                 place=place-1
                 showImage.setImageURI(fileList!![place].toUri())
-                showNextImage.isEnabled=true
-            }
-            else{
-                showPreviousImage.isEnabled=false
             }
         }
         showNextImage.setOnClickListener{
@@ -134,11 +130,8 @@ class ActivityCapturePost : AppCompatActivity() {
             if(place<fileList!!.size-1){
                 place=place+1
                 showImage.setImageURI(fileList!![place].toUri())
-                showPreviousImage.isEnabled=true
             }
-            else{
-                showNextImage.isEnabled=false
-            }
+
         }
 
         //dodavanje sa kamere
