@@ -1,6 +1,5 @@
 package com.example.brzodolokacije.Fragments
 
-import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
@@ -8,21 +7,20 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
-import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.paging.PagingData
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-import com.example.brzodolokacije.Activities.ActivityAddPost
-import com.example.brzodolokacije.Activities.ChatActivity
 import com.example.brzodolokacije.Activities.NavigationActivity
 import com.example.brzodolokacije.Adapters.ShowPostsAdapter
 import com.example.brzodolokacije.Adapters.ShowPostsGridViewAdapter
 import com.example.brzodolokacije.Models.Location
+import com.example.brzodolokacije.Models.PostPreview
 import com.example.brzodolokacije.Models.SearchParams
 import com.example.brzodolokacije.R
 import com.example.brzodolokacije.Services.RetrofitHelper
@@ -32,22 +30,21 @@ import com.example.brzodolokacije.paging.SearchPostsViewModel
 import com.example.brzodolokacije.paging.SearchPostsViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
-import kotlinx.android.synthetic.main.fragment_show_posts.*
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
-import org.osmdroid.util.GeoPoint
-import org.osmdroid.views.overlay.ItemizedIconOverlay
-import org.osmdroid.views.overlay.OverlayItem
 import retrofit2.Call
 import retrofit2.Response
 
 
 class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
+    private var dataChanged:Boolean=false
+    private var flowData: PagingData<PostPreview>?=null
     private lateinit var binding: FragmentShowPostsBinding
     private var linearManagerVar: RecyclerView.LayoutManager? = null
     private var adapterVar: ShowPostsAdapter? = null
+    private var gridViewAdapter:ShowPostsGridViewAdapter?=null
     private var recyclerView: RecyclerView?=null
    // private var gridManagerVar: RecyclerView.LayoutManager?=null
     private var swipeRefreshLayout:SwipeRefreshLayout?=null
@@ -143,7 +140,12 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                 recyclerView?.layoutManager=gridManagerVar*/
             recyclerView?.apply {
                 layoutManager= GridLayoutManager(activity,2)
-                //adapter= ShowPostsGridViewAdapter(posts,requireActivity())
+                if(gridViewAdapter==null)
+                    gridViewAdapter= ShowPostsGridViewAdapter(requireActivity())
+                recyclerView?.adapter=gridViewAdapter
+                if(dataChanged)
+                    gridViewAdapter?.submitData(lifecycle,flowData!!)
+                dataChanged=false
             }
             Log.d("main","klik")
         }
@@ -152,6 +154,10 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             if(recyclerView?.layoutManager!=linearManagerVar){
                 recyclerView?.layoutManager=linearManagerVar
             }
+            recyclerView?.adapter=adapterVar
+            if(dataChanged)
+                adapterVar?.submitData(lifecycle,flowData!!)
+            dataChanged=false
             Log.d("main","klik")
         }
 
@@ -161,7 +167,14 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     fun requestToBack(searchParams: SearchParams){
         lifecycleScope.launch{
             searchPostsViewModel.fetchPosts(searchParams).distinctUntilChanged().collectLatest {
-                adapterVar?.submitData(lifecycle,it)
+                if(recyclerView?.adapter == gridViewAdapter){
+                    gridViewAdapter?.submitData(lifecycle,it)
+                }
+                else{
+                    adapterVar?.submitData(lifecycle,it)
+                }
+                dataChanged=true
+                flowData=it
                 swipeRefreshLayout?.isRefreshing=false
             }
         }
