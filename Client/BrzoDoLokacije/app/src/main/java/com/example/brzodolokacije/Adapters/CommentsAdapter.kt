@@ -11,6 +11,7 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
@@ -21,6 +22,7 @@ import com.example.brzodolokacije.Interfaces.IBackendApi
 import com.example.brzodolokacije.Models.CommentReceive
 import com.example.brzodolokacije.Models.CommentSend
 import com.example.brzodolokacije.Models.UserReceive
+import com.example.brzodolokacije.R
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
 import com.example.brzodolokacije.databinding.SingleCommentBinding
@@ -58,6 +60,8 @@ class CommentsAdapter (val items : MutableList<CommentSend>,val activity: Activi
     inner class ViewHolder(itemView : SingleCommentBinding) : RecyclerView.ViewHolder(itemView.root){
         fun bind(item : CommentSend){
             binding.apply {
+                var color = ContextCompat.getColor(activity, R.color.purple_500)
+                etReplyCount.setTextColor(color)
                 tvCommentAuthor.text=item.username
                 tvCommentText.text=item.comment
                 Log.d("info",tvCommentText.text.toString()+binding.toString())
@@ -128,6 +132,7 @@ class CommentsAdapter (val items : MutableList<CommentSend>,val activity: Activi
             }
         }
         fun setReplyCount(position: Int){
+
             if(items[position].replies!!.count()==1)
                 itemView.etReplyCount.text=items[position].replies!!.count().toString() + " odgovor"
             else
