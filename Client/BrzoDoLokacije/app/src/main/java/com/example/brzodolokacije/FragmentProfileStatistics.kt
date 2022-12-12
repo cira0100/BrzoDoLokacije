@@ -86,7 +86,7 @@ class FragmentProfileStatistics : Fragment() {
     }
     private fun loadMonths(){
         rcMonths.apply {
-            layoutManager= GridLayoutManager(requireContext(),1, GridLayoutManager.HORIZONTAL,false)
+            layoutManager= GridLayoutManager(requireContext(),2)
             adapter= MonthViewsAdapter(requireActivity(),
                 stats!!.monthlyViews as MutableList<MonthlyViews>
             )
