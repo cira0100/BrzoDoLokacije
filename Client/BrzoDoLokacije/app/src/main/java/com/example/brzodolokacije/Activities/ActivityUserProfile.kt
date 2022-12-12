@@ -143,6 +143,27 @@ class ActivityUserProfile : AppCompatActivity(),OnRefreshListener {
             showUserPostsFragment()
         }
 
+        followersNumber.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putString("userId", userObject._id.toString())
+            bundle.putString("show","followers")
+            bundle.putString("showMy","no")
+            val intent = Intent(this@ActivityUserProfile,ActivityShowFollowersAndFollowing::class.java)
+            intent.putExtras(bundle)
+            startActivity(intent)
+
+        }
+
+        followingNumber.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putString("userId", userObject._id.toString())
+            bundle.putString("show","following")
+            bundle.putString("showMy","no")
+            val intent = Intent(this@ActivityUserProfile,ActivityShowFollowersAndFollowing::class.java)
+            intent.putExtras(bundle)
+            startActivity(intent)
+        }
+
         swipeRefreshLayout = findViewById<View>(R.id.ProfileSwipeRefresh) as SwipeRefreshLayout
         swipeRefreshLayout.setOnRefreshListener(this@ActivityUserProfile)
         swipeRefreshLayout.setColorSchemeResources(

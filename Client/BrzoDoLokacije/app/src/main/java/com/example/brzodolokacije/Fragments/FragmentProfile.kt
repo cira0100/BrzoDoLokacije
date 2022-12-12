@@ -147,6 +147,26 @@ class FragmentProfile : Fragment(com.example.brzodolokacije.R.layout.fragment_pr
         swipeRefreshLayout?.post(kotlinx.coroutines.Runnable {
             swipeRefreshLayout?.isRefreshing=true
         })
+
+
+        followersNumber.setOnClickListener{
+            val bundle = Bundle()
+            bundle.putString("userId","error")
+            bundle.putString("show","followers")
+            bundle.putString("showMy","yes")
+            val intent = Intent(activity, ActivityShowFollowersAndFollowing::class.java)
+            intent.putExtras(bundle)
+            startActivity(intent)
+        }
+        followingNumber.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putString("userId","error")
+            bundle.putString("show","following")
+            bundle.putString("showMy","yes")
+            val intent = Intent(activity,ActivityShowFollowersAndFollowing::class.java)
+            intent.putExtras(bundle)
+            startActivity(intent)
+        }
         return view
     }
     fun openMyPosts(){
