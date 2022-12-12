@@ -2,6 +2,7 @@ package com.example.brzodolokacije.Fragments
 
 import android.graphics.Color
 import android.os.Bundle
+import android.view.KeyEvent
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -41,6 +42,16 @@ class FragmentRegister : Fragment() {
         username = view.findViewById<View>(R.id.etFragmentRegisterUser) as EditText
         name = view.findViewById<View>(R.id.etFragmentRegisterName) as EditText
         register=view.findViewById<View>(R.id.btnFragmentRegisterRegister) as Button
+
+        password.setOnKeyListener(View.OnKeyListener{v, keyCode, event ->
+            if (keyCode == KeyEvent.KEYCODE_ENTER && event.action == KeyEvent.ACTION_UP){
+                //Start your action
+                register.performClick()
+                //End action
+                return@OnKeyListener true
+            }
+            false
+        })
 
         //osluskivanje unosa
 
