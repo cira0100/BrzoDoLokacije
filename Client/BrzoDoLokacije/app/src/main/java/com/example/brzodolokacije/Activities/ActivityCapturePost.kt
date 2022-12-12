@@ -200,13 +200,23 @@ class ActivityCapturePost : AppCompatActivity() {
         }
 
         post.setOnClickListener {
+            Log.d("tsdadasdsa","dsadasdas")
            // locationString = location.text.toString().trim()
             descriptionString = description.text.toString().trim()
             //prazan unos?
             if (descriptionString.isEmpty()) {
                 description.hint = "Unesite opis"
                 description.setHintTextColor(Color.RED)
-            }else if(f!=null && locationId!=null && locationId!!.trim()!=""){
+            }
+            if(f==null)
+            {
+                Toast.makeText(this@ActivityCapturePost,"Unesite fotografije",Toast.LENGTH_LONG).show()
+            }
+            if(locationId==null || locationId!!.trim()=="")
+            {
+                Toast.makeText(this@ActivityCapturePost,"Unesite lokaciju klikom na dugme",Toast.LENGTH_LONG).show()
+            }
+            if(f!=null && locationId!=null && locationId!!.trim()!="" &&!descriptionString.isEmpty()){
                     uploadLocation()
             }
 
