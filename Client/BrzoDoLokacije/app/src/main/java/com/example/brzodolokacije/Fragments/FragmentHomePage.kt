@@ -120,11 +120,11 @@ class FragmentHomePage : Fragment() {
     }
 
     fun searchText(){
-        if(searchBar.text==null || searchBar.text.toString().trim()=="")
-            return
-
         var act=requireActivity() as NavigationActivity
-        act.searchQuery=searchBar.text.toString()
+        if(searchBar.text==null || searchBar.text.toString().trim()=="")
+            act.searchQuery="-1"
+        else
+            act.searchQuery=searchBar.text.toString()
         act.searchId=""
         act.bottomNav.selectedItemId=R.id.navAllPosts
     }

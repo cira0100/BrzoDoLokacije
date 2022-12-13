@@ -69,7 +69,7 @@
             android:layout_width="50dp"
             android:layout_height="50dp"
             android:layout_weight="1"
-
+            android:visibility="gone"
             android:background="#FFFCFCFC"
             android:padding="@dimen/component_padding"
             android:scaleType="centerCrop"

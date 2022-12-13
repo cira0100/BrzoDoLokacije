@@ -67,9 +67,7 @@ interface IBackendApi {
                         @Query("ratingFrom") ratingFrom:Int,
                         @Query("ratingTo") ratingTo:Int,
                         @Query("viewsFrom") viewsFrom:Int,
-                        @Query("viewsTo") viewsTo:Int,
-
-
+                        @Query("viewsTo") viewsTo:Int
                         ):PagedPosts
     @POST("/api/message/add")
     fun sendMessage(@Header("Authorization") authHeader:String,@Body message:MessageSend):Call<Message>

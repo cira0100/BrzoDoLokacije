@@ -85,12 +85,16 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
     }
     fun searchText(){
-        if(searchBar.text==null || searchBar.text.toString().trim()=="")
-            return
         var act=requireActivity() as NavigationActivity
-        act.searchQuery=searchBar.text.toString()
+        if(searchBar.text==null || searchBar.text.toString().trim()=="")
+            act.searchQuery="-1"
+        else{
+            act.searchQuery=searchBar.text.toString()
+        }
+
+
         act.searchId=""
-        searchParams=SearchParams(searchBar.text.toString(),filterBool,1,1,ratingFrom,ratingTo,viewsFrom,viewsTo)
+        searchParams=SearchParams(act.searchQuery,filterBool,1,1,ratingFrom,ratingTo,viewsFrom,viewsTo)
         requestToBack(searchParams!!)
     }
     fun onTextEnter(){
@@ -273,6 +277,9 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                         fromrating.setTextColor(Color.RED)
                     }
                 }
+                else{
+                    ratingFrom=-1
+                }
                 if(ratingToInput.text.toString().isNotEmpty()) {
                     if (ratingToInput.text.toString().trim().toInt() >= 0) {
                         filterBool = true
@@ -287,7 +294,10 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                             bottomSheetDialogFilter.findViewById<View>(R.id.ratingTotxt) as TextView
                         torating.setTextColor(Color.RED)
                     }
+                }else{
+                    ratingTo=-1
                 }
+
                 if(viewsFromInput.text.toString().isNotEmpty()) {
                     if (viewsFromInput.text.toString().trim().toInt() >= 0) {
                         filterBool = true
@@ -303,6 +313,9 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                         fromviews.setTextColor(Color.RED)
                     }
                 }
+                else{
+                    viewsFrom=-1
+                }
                 if(viewsToInput.text.toString().isNotEmpty()) {
                     if (viewsToInput.text.toString().trim().toInt() >= 0) {
                         filterBool = true
@@ -317,19 +330,22 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
                             bottomSheetDialogFilter.findViewById<View>(R.id.viewsTotxt) as TextView
                         toviews.setTextColor(Color.RED)
                     }
+                }else{
+                    viewsTo=-1
                 }
                 searchParams!!.filter=filterBool
                 searchParams!!.ratingFrom=ratingFrom
                 searchParams!!.ratingTo=ratingTo
                 searchParams!!.viewsFrom=viewsFrom
                 searchParams!!.viewsTo=viewsTo
-
+                searchText()
                 bottomSheetDialogFilter.dismiss()
             }
 
 
         }
         btnSort.setOnClickListener{
+            Log.d("main","fgdsfdssdfd")
             bottomSheetDialogSort.show()
             var sort = bottomSheetDialogSort.findViewById<View>(R.id.btnSortPosts) as Button
             var radioGroup = bottomSheetDialogSort.findViewById<View>(R.id.radioGroup)as RadioGroup
@@ -417,7 +433,8 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         Log.d("TEST","USAO")
         if(act.searchId!=null && act.searchId.trim()!="")
         {
-            searchBar.setText(act.searchQuery,TextView.BufferType.EDITABLE)
+            if(act.searchQuery!="-1")
+                searchBar.setText(act.searchQuery,TextView.BufferType.EDITABLE)
             searchParams= SearchParams(act.searchId,filterBool,1,1,ratingFrom,ratingTo,viewsFrom,viewsTo)
             requestToBack(searchParams!!)
         }else

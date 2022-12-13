@@ -394,19 +394,19 @@ namespace Api.Services
             {
                 if (ratingFrom >= 0)
                 {
-                    ls = ls.FindAll(post => post.ratings > ratingFrom).ToList();
+                    ls = ls.FindAll(post => Math.Floor(post.ratings) >= ratingFrom).ToList();
                 }
                 if (ratingTo >= 0)
                 {
-                    ls= ls.FindAll(post => post.ratings < ratingTo).ToList();
+                    ls= ls.FindAll(post => Math.Ceiling(post.ratings) <= ratingTo).ToList();
                 }
                 if (viewsFrom >= 0)
                 {
-                    ls = ls.FindAll(post => post.views >viewsFrom).ToList();
+                    ls = ls.FindAll(post => post.views >=viewsFrom).ToList();
                 }
                 if (viewsTo >= 0)
                 {
-                    ls = ls.FindAll(post => post.views < viewsTo).ToList();
+                    ls = ls.FindAll(post => post.views <= viewsTo).ToList();
                 }
                
             }
