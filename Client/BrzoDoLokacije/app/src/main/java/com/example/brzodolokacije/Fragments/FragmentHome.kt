@@ -45,7 +45,7 @@ class FragmentHome : Fragment(R.layout.fragment_home) {
         val rootView =  inflater?.inflate(R.layout.fragment_home, container, false)
         recyclerView = rootView?.findViewById(R.id.rvMain)
         // set recyclerView attributes
-        recyclerView?.setHasFixedSize(true)
+//        recyclerView?.setHasFixedSize(true)
         recyclerView?.layoutManager = layoutManagerVar
         recyclerView?.adapter = adapterVar
         return rootView

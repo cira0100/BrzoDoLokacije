@@ -137,6 +137,10 @@ class MapsActivity : AppCompatActivity() {
 
     }
     fun uploadLocation(locationName:String){
+        if(locationName.isNullOrEmpty() ||locationName.toString().trim()=="") {
+            Toast.makeText(this@MapsActivity,"Morate uneti naziv lokacije",Toast.LENGTH_SHORT).show()
+            return
+        }
         val api =RetrofitHelper.getInstance()
         var geocoder=GeocoderHelper.getInstance()
         var loc1=geocoder!!.getFromLocation(locLatitude!!,locLongitude!!,1)

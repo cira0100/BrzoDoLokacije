@@ -1,5 +1,6 @@
 package com.example.brzodolokacije.Activities
 
+import LinePagerIndicatorDecoration
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.os.Build
@@ -7,6 +8,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.PagerSnapHelper
 import androidx.recyclerview.widget.RecyclerView
@@ -17,6 +19,7 @@ import com.bumptech.glide.request.transition.Transition
 import com.example.brzodolokacije.Adapters.OpenedPostImageAdapter
 import com.example.brzodolokacije.Models.PostImage
 import com.example.brzodolokacije.Models.PostPreview
+import com.example.brzodolokacije.R
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.databinding.ActivityOpenedImagesBinding
 import java.util.*
@@ -78,6 +81,11 @@ class ActivityOpenedImages : AppCompatActivity() {
         snap.attachToRecyclerView(rvImages)
         rvImages!!.layoutManager=linearLayout
         rvImages!!.adapter=adapter
+        //tackice
+        var color = ContextCompat.getColor(this@ActivityOpenedImages, R.color.unfollow)
+        var color1 = ContextCompat.getColor(this@ActivityOpenedImages, R.color.button_main)
+        if(images!!.size>1)
+            rvImages!!.addItemDecoration(LinePagerIndicatorDecoration(10,10,100,color,color1))
     }
 
 }

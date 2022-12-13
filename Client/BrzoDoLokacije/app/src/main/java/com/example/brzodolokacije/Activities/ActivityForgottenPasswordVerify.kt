@@ -1,6 +1,7 @@
 package com.example.brzodolokacije.Activities
 
 import android.content.Intent
+import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
@@ -36,6 +37,19 @@ class ActivityForgottenPasswordVerify : AppCompatActivity() {
             var pwstr=pw.text.toString().trim()
             var pwchkstr=pwchk.text.toString().trim()
             var kodstr=kod.text.toString().trim()
+            if(kodstr.isEmpty())
+            {
+                kod.hint = "Unesite kod"
+                kod.setHintTextColor(Color.RED)
+            }
+            if(pwstr.isEmpty()){
+                pw.hint = "Unesite novu lozinku"
+                pw.setHintTextColor(Color.RED)
+            }
+            if(pwchkstr.isEmpty()){
+                pwchk.hint = "Potvrdite novu lozinku"
+                pwchk.setHintTextColor(Color.RED)
+            }
 
             if(!kodstr.isEmpty() && checkPassword(pwstr,pwchkstr)){
                 var resetData= ResetPass(email!!,kodstr,pwstr)
@@ -47,6 +61,8 @@ class ActivityForgottenPasswordVerify : AppCompatActivity() {
                         if(response.code()==200){
                             intent = Intent(cont, ActivityLoginRegister::class.java)
                             startActivity(intent)
+                        }else{
+                            Toast.makeText(this@ActivityForgottenPasswordVerify,"Nevalidan kod",Toast.LENGTH_LONG).show()
                         }
                     }
                     override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {

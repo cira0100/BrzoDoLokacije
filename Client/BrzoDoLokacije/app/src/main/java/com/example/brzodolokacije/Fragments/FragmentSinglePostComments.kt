@@ -128,6 +128,7 @@ class FragmentSinglePostComments : Fragment() {
             })
         }
         else{
+            newComment.replies= mutableListOf()
             (adapterComments as CommentsAdapter).items.add(0,newComment)
             recyclerViewComments?.adapter=adapterComments
             addedComment()

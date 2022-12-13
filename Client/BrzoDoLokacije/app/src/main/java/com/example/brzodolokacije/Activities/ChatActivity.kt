@@ -1,7 +1,6 @@
 package com.example.brzodolokacije.Activities
 
 import android.Manifest
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -132,11 +131,6 @@ class ChatActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
 
 
     fun setListeners(){
-        findViewById<ImageButton>(R.id.addNewMessage).setOnClickListener {
-            val intent: Intent = Intent(this@ChatActivity,ChatActivityConversation::class.java)
-            intent.putExtra("receiverId","")
-            startActivity(intent)
-        }
         findViewById<ImageButton>(R.id.btnBack).setOnClickListener {
             finish()
         }

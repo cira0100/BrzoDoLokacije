@@ -46,12 +46,18 @@ class ActivityForgottenPassword : AppCompatActivity() {
                             val intent = Intent(cont, ActivityForgottenPasswordVerify::class.java)
                             intent.putExtra("email", emailString)
                             startActivity(intent)
+                        }else{
+                            Toast.makeText(this@ActivityForgottenPassword,"Email ne postoji",Toast.LENGTH_LONG).show()
                         }
                     }
 
                     override fun onFailure(call: Call<ResponseBody?>, t: Throwable) {
+                        Toast.makeText(this@ActivityForgottenPassword,"Email ne postoji",Toast.LENGTH_LONG).show()
                     }
                 })
+            }
+            else{
+                Toast.makeText(this@ActivityForgottenPassword,"Unesite validan email",Toast.LENGTH_LONG).show()
             }
         }
 
