@@ -3,6 +3,7 @@ package com.example.brzodolokacije.Adapters
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,6 +18,7 @@ import com.example.brzodolokacije.Models.PostPreview
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
 import com.example.brzodolokacije.databinding.PostPreviewBinding
+import kotlinx.android.synthetic.main.post_preview.view.*
 import java.text.SimpleDateFormat
 
 
@@ -67,7 +69,7 @@ class ShowPostsAdapter (val activity:Activity,val items : MutableList<PostPrevie
 
     inner class ViewHolder(itemView: PostPreviewBinding) : RecyclerView.ViewHolder(itemView.root) {
         fun bind(item: PostPreview) {
-            binding.apply {
+            itemView.apply {
                 tvPostPreviewDate.text= SimpleDateFormat("dd/MM/yyyy").format(item.createdAt)
                 tvTitle.text = item.location.name
                 if(item.location.city!=null)

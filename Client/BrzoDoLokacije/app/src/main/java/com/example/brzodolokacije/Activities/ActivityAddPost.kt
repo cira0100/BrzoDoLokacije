@@ -37,7 +37,7 @@ class ActivityAddPost : AppCompatActivity() {
     private lateinit var takePhoto: Button
     private lateinit var showNextImage:Button
     private lateinit var showPreviousImage:Button
-    private lateinit var switcher: ImageSwitcher
+    private lateinit var switcher: ImageView
     private var uploadedImages:ArrayList<Uri?>?=null
 
     private lateinit var location:EditText
@@ -73,7 +73,7 @@ class ActivityAddPost : AppCompatActivity() {
         uploadFromGallery=findViewById<View>(R.id.btnActivityAddPostUploadFromGalleryVisible) as Button
         showNextImage=findViewById<View>(R.id.nextImage) as Button
         showPreviousImage=findViewById<View>(R.id.previousImage) as Button
-        switcher=findViewById<View>(R.id.isActivityAddPostSwitcher) as ImageSwitcher
+        switcher=findViewById<View>(R.id.isActivityAddPostSwitcher) as ImageView
         description=findViewById<View>(R.id.etActivityAddPostDescription) as EditText
         post=findViewById<View>(R.id.btnActivityAddPostPost) as Button
         addLocation=findViewById<View>(R.id.btnActivityAddPostAddLocation) as Button
@@ -95,11 +95,6 @@ class ActivityAddPost : AppCompatActivity() {
         progressDialog!!.setCanceledOnTouchOutside(false)
 
 
-        switcher?.setFactory{
-            val imgView = ImageView(applicationContext)
-            imgView.scaleType = ImageView.ScaleType.CENTER_CROP
-            imgView.setPadding(8, 8, 8, 8)
-            imgView}
         addLocation.setOnClickListener {
             val myIntent = Intent(this, MapsActivity::class.java)
             startActivityForResult(myIntent,LOCATIONREQCODE)

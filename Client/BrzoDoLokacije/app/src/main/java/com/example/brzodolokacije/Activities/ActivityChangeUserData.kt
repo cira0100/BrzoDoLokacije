@@ -79,23 +79,10 @@ class ActivityChangeUserData : AppCompatActivity() {
         getUser()
 
         editUsername.setOnClickListener{
-            username.setText("")
-            editUsername.isClickable=false
-            editUsername.isVisible=false
-            editUsername.isEnabled=false
-            editUsername.isGone=true
-            confirmUsername.isClickable=true
-            confirmUsername.isVisible=true
-            confirmUsername.isEnabled=true
-            confirmUsername.isGone=false
+            changeUsername()
+            getUser()
 
-            //dodati on change  listener
 
-            confirmUsername.setOnClickListener {
-                changeUsername()
-                getUser()
-
-            }
         }
 
         changeProfilePicture.setOnClickListener {
@@ -103,20 +90,7 @@ class ActivityChangeUserData : AppCompatActivity() {
         }
 
         editName.setOnClickListener{
-            name.setText("")
-            editName.isClickable=false
-            editName.isVisible=false
-            editName.isEnabled=false
-            editName.isGone=true
-            confirmName.isClickable=true
-            confirmName.isVisible=true
-            confirmName.isEnabled=true
-            confirmName.isGone=false
-
-            confirmName.setOnClickListener {
-                changeName()
-
-            }
+            changeName()
 
         }
         back.setOnClickListener {

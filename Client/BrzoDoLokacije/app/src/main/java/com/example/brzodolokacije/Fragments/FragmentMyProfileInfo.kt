@@ -2,6 +2,7 @@ package com.example.brzodolokacije.Fragments
 
 
 import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -15,6 +16,7 @@ import com.example.brzodolokacije.Activities.ActivityChangeUserData
 import com.example.brzodolokacije.Activities.ActivityLoginRegister
 import com.example.brzodolokacije.FragmentProfileStatistics
 import com.example.brzodolokacije.R
+import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
 
 
@@ -24,6 +26,7 @@ class FragmentMyProfileInfo : Fragment() {
     private lateinit var statistics:Button
     private lateinit var changePassword:Button
     private lateinit var favouritePosts:Button
+    private lateinit var inviteFriends:Button
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -37,6 +40,7 @@ class FragmentMyProfileInfo : Fragment() {
         statistics=view.findViewById<View>(R.id.getAccoutStatistics) as Button
         changePassword=view.findViewById(R.id.ChangePassword)
         favouritePosts=view.findViewById(R.id.getMyFavorite)
+        inviteFriends=view.findViewById(R.id.inviteFriends)
         logout.setOnClickListener{
             logOut()
         }
@@ -46,6 +50,13 @@ class FragmentMyProfileInfo : Fragment() {
             getActivity()?.startActivity(intent)
         }
 
+        inviteFriends.setOnClickListener {
+            val uri: Uri =
+                Uri.parse(RetrofitHelper.baseUrl+"/api/app/download") // missing 'http://' will cause crashed
+
+            val intent = Intent(Intent.ACTION_VIEW, uri)
+            startActivity(intent)
+        }
         favouritePosts.setOnClickListener {
 
             val manager: androidx.fragment.app.FragmentManager? = fragmentManager
