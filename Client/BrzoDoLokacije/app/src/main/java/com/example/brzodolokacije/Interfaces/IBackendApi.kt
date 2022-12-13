@@ -60,9 +60,16 @@ interface IBackendApi {
     @GET("/api/post/locations/{id}/posts")
     suspend fun getPagedPosts(@Header("Authorization") authHeader: String,
                         @Path("id") locationId:String,
+                        @Query("filter") filter:Boolean,
                         @Query("page") page:Int,
                         @Query("sorttype") sorttype:Int,
-                        @Query("filterdate") filterdate:Int
+                        @Query("filterdate") filterdate:Int,
+                        @Query("ratingFrom") ratingFrom:Int,
+                        @Query("ratingTo") ratingTo:Int,
+                        @Query("viewsFrom") viewsFrom:Int,
+                        @Query("viewsTo") viewsTo:Int,
+
+
                         ):PagedPosts
     @POST("/api/message/add")
     fun sendMessage(@Header("Authorization") authHeader:String,@Body message:MessageSend):Call<Message>

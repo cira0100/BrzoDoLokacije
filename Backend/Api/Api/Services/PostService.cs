@@ -348,7 +348,7 @@ namespace Api.Services
                 }
             }
         }
-        public async Task<PostSendPage> SearchPosts(string locid, int page = 0, int sorttype = 1, int filterdate = 1) // for now sorting by number of ratings , not avg rating
+        public async Task<PostSendPage> SearchPosts(string locid,bool filter, int page = 0, int sorttype = 1, int filterdate = 1, int ratingFrom = -1, int ratingTo = -1, int viewsFrom = -1, int viewsTo = -1)
         {
             var days = DateEnumToDays(filterdate);
             var tosend = new PostSendPage();
@@ -390,6 +390,26 @@ namespace Api.Services
                 }
 
             }
+            if (filter)
+            {
+                if (ratingFrom >= 0)
+                {
+                    ls = ls.FindAll(post => post.ratings > ratingFrom).ToList();
+                }
+                if (ratingTo >= 0)
+                {
+                    ls= ls.FindAll(post => post.ratings < ratingTo).ToList();
+                }
+                if (viewsFrom >= 0)
+                {
+                    ls = ls.FindAll(post => post.views >viewsFrom).ToList();
+                }
+                if (viewsTo >= 0)
+                {
+                    ls = ls.FindAll(post => post.views < viewsTo).ToList();
+                }
+               
+            }
             switch (sorttype)
             {
                 case 1:
@@ -400,6 +420,9 @@ namespace Api.Services
                     break;
                 case 3:
                     xd = ls.OrderByDescending(x => x.createdAt).ToList();
+                    break;
+                case 4:
+                    xd = ls.OrderBy(x => x.createdAt).ToList();
                     break;
                 default:
                     xd = ls.OrderByDescending(x => x.views).ToList();
@@ -637,7 +660,7 @@ namespace Api.Services
             {
                 var novi = new Trending();
                 novi.tagr = trending;
-                novi.page = await SearchPosts(trending.tag, 0, 1, 5);
+                novi.page = await SearchPosts(trending.tag, false,0, 1, 5,-1,-1,-1,-1);
                 tosend.Add(novi);
             }
 
@@ -660,7 +683,7 @@ namespace Api.Services
                 }
                 foreach (var elem in inradius)
                 {
-                    var locposts = await SearchPosts(elem._id, 0, 1, 1);
+                    var locposts = await SearchPosts(elem._id, false,0, 1, 1,-1,-1,-1,-1);
                     var best = locposts.posts.Take(1).FirstOrDefault();
                     if (best != null)
                         tosend.Add(best);

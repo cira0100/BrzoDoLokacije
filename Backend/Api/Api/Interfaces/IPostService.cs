@@ -16,7 +16,7 @@ namespace Api.Interfaces
         Task<List<CommentSend>> CascadeComments(string parentid, Post p);
         Task<Boolean> DeleteComments(string postid, string cmntid,string userid);
         Task CascadeDeleteComments(string cmntid, Post p);
-        Task<PostSendPage> SearchPosts(string locid, int page = 0, int sorttype = 1, int filterdate = 1);
+        Task<PostSendPage> SearchPosts(string locid,bool filter, int page = 0, int sorttype = 1, int filterdate = 1, int ratingFrom = -1, int ratingTo = -1, int viewsFrom = -1, int viewsTo = -1);
         int DateEnumToDays(int filterdate);
         Task<List<PostSend>> GetUsersPosts(string id);
         Task<List<PostSend>> UserHistory(string userid);

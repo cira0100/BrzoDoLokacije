@@ -52,15 +52,6 @@
             app:layout_constraintTop_toBottomOf="@+id/radioButton3"
             tools:layout_editor_absoluteX="16dp" />
 
-        <RadioButton
-            android:id="@+id/noSort"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:text="Poništi sortiranje"
-            app:layout_constraintTop_toBottomOf="@+id/radioButton3"
-            tools:layout_editor_absoluteX="16dp" />
-
     </RadioGroup>
 
     <Button

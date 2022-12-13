@@ -1,5 +1,8 @@
 package com.example.brzodolokacije.Fragments
 
+
+import android.graphics.Color
+
 import android.os.Bundle
 import android.util.Log
 import android.view.KeyEvent
@@ -19,7 +22,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.brzodolokacije.Activities.NavigationActivity
 import com.example.brzodolokacije.Adapters.ShowPostsAdapter
 import com.example.brzodolokacije.Adapters.ShowPostsGridViewAdapter
-import com.example.brzodolokacije.Models.FilterSort
+
 import com.example.brzodolokacije.Models.Location
 import com.example.brzodolokacije.Models.PostPreview
 import com.example.brzodolokacije.Models.SearchParams
@@ -38,8 +41,6 @@ import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Response
-import java.util.Date
-
 
 class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
 
@@ -54,17 +55,23 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private var swipeRefreshLayout:SwipeRefreshLayout?=null
     private lateinit var searchButton: MaterialButton
     private lateinit var searchPostsViewModel:SearchPostsViewModel
-    private var searchParams:SearchParams?= SearchParams("-1",1,1)
+
     private lateinit var btnFilter:ImageButton
     private lateinit var btnSort:ImageButton
     private lateinit var searchBar: AutoCompleteTextView
     var responseLocations:MutableList<com.example.brzodolokacije.Models.Location>?=null
     var selectedLocation:com.example.brzodolokacije.Models.Location?=null
-    private lateinit var obj:FilterSort
+
 
     private lateinit var filter:Button
-    private lateinit var removeFilter:Button
     private lateinit var sort:Button
+
+    private var filterBool:Boolean=false
+    private var ratingFrom:Int=-1
+    private var ratingTo:Int=-1
+    private var viewsFrom:Int=-1
+    private var viewsTo:Int=-1
+    private var searchParams:SearchParams?= SearchParams("-1",filterBool,1,1,ratingFrom,ratingTo,viewsFrom,viewsTo)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -83,7 +90,7 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         var act=requireActivity() as NavigationActivity
         act.searchQuery=searchBar.text.toString()
         act.searchId=""
-        searchParams=SearchParams(searchBar.text.toString(),1,1)
+        searchParams=SearchParams(searchBar.text.toString(),filterBool,1,1,ratingFrom,ratingTo,viewsFrom,viewsTo)
         requestToBack(searchParams!!)
     }
     fun onTextEnter(){
@@ -133,7 +140,7 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             var act=requireActivity() as NavigationActivity
             act.searchQuery=selectedLocation!!.name
             act.searchId=selectedLocation!!._id
-            searchParams=SearchParams(selectedLocation!!._id,1,1)//to do sort type
+            searchParams=SearchParams(selectedLocation!!._id,filterBool,1,1,ratingFrom,ratingTo,viewsFrom,viewsTo)//to do sort type
             requestToBack(searchParams!!)
 
         })
@@ -197,11 +204,159 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     ): View? {
         val rootView =  inflater?.inflate(R.layout.fragment_show_posts, container, false)
         recyclerView = rootView?.findViewById(R.id.rvMain)
+
+
         // set recyclerView attributes
 //        recyclerView?.setHasFixedSize(true)
         //recyclerView?.layoutManager = linearManagerVar
         recyclerView?.layoutManager = linearManagerVar
         recyclerView?.adapter = adapterVar
+
+
+        //filter dialog
+        var bottomSheetDialogFilter: BottomSheetDialog
+        bottomSheetDialogFilter = BottomSheetDialog(requireContext())
+        bottomSheetDialogFilter.setContentView(R.layout.bottom_sheet_filter)
+
+        //sort dialog
+        var bottomSheetDialogSort: BottomSheetDialog
+        bottomSheetDialogSort = BottomSheetDialog(requireContext())
+        bottomSheetDialogSort.setContentView(R.layout.bottom_sheet_sort)
+
+        var ratingFromInput=bottomSheetDialogFilter.findViewById<View>(R.id.filterRatingFrom) as EditText
+        var ratingToInput=bottomSheetDialogFilter.findViewById<View>(R.id.filterRatingTo) as EditText
+        var viewsFromInput=bottomSheetDialogFilter.findViewById<View>(R.id.filterViewsFrom) as EditText
+        var viewsToInput=bottomSheetDialogFilter.findViewById<View>(R.id.filterViewsTo) as EditText
+
+
+        btnFilter= rootView!!.findViewById(R.id.btnSortType)
+        btnSort=rootView!!.findViewById(R.id.btnSortDirection)
+
+        btnFilter.setOnClickListener{
+            bottomSheetDialogFilter.show()
+
+            var filter = bottomSheetDialogFilter.findViewById<View>(R.id.btnBSFFilter) as Button
+            var radioGroupF = bottomSheetDialogFilter.findViewById<View>(R.id.radioGroupFilter) as RadioGroup
+
+            filter.setOnClickListener {
+
+                var selectedRadioButtonIdF: Int = radioGroupF.checkedRadioButtonId
+                if (selectedRadioButtonIdF != -1) {
+                    var selectedRadioButtonF =
+                        bottomSheetDialogFilter.findViewById<View>(selectedRadioButtonIdF) as RadioButton
+                    val string: String = selectedRadioButtonF.text.toString().trim()
+
+                    if (string.equals("Prethodna nedelja")) {
+                        searchParams!!.filterdate= 5
+                    } else if (string.equals("Prethodni mesec")) {
+                        searchParams!!.filterdate=4
+                    } else if (string.equals("Prethodna tri meseca")) {
+                        searchParams!!.filterdate=3
+                    } else if (string.equals("Prethodna godina")) {
+                        searchParams!!.filterdate=2
+                    } else {
+                        searchParams!!.filterdate=1
+                    }
+                }
+                if(ratingFromInput.text.toString().isNotEmpty()) {
+                    if (ratingFromInput.text.toString().trim().toInt() >= 0) {
+                        filterBool = true
+                        ratingFrom = ratingFromInput.text.toString().toInt()
+                    } else {
+                        Toast.makeText(
+                            activity,
+                            "Vrednost rejtinga ne može biti negativna",
+                            Toast.LENGTH_LONG
+                        ).show();
+                        var fromrating =
+                            bottomSheetDialogFilter.findViewById<View>(R.id.ratingFromtxt) as TextView
+                        fromrating.setTextColor(Color.RED)
+                    }
+                }
+                if(ratingToInput.text.toString().isNotEmpty()) {
+                    if (ratingToInput.text.toString().trim().toInt() >= 0) {
+                        filterBool = true
+                        ratingTo = ratingToInput.text.toString().toInt()
+                    } else {
+                        Toast.makeText(
+                            activity,
+                            "Vrednost rejtinga ne može biti negativna",
+                            Toast.LENGTH_LONG
+                        ).show();
+                        var torating =
+                            bottomSheetDialogFilter.findViewById<View>(R.id.ratingTotxt) as TextView
+                        torating.setTextColor(Color.RED)
+                    }
+                }
+                if(viewsFromInput.text.toString().isNotEmpty()) {
+                    if (viewsFromInput.text.toString().trim().toInt() >= 0) {
+                        filterBool = true
+                        viewsFrom = viewsFromInput.text.toString().toInt()
+                    } else {
+                        Toast.makeText(
+                            activity,
+                            "Vrednost broja pregleda ne može biti negativna",
+                            Toast.LENGTH_LONG
+                        ).show();
+                        var fromviews =
+                            bottomSheetDialogFilter.findViewById<View>(R.id.viewsFromtxt) as TextView
+                        fromviews.setTextColor(Color.RED)
+                    }
+                }
+                if(viewsToInput.text.toString().isNotEmpty()) {
+                    if (viewsToInput.text.toString().trim().toInt() >= 0) {
+                        filterBool = true
+                        viewsTo = viewsToInput.text.toString().trim().toInt()
+                    } else {
+                        Toast.makeText(
+                            activity,
+                            "Vrednost broja pregleda ne može biti negativna",
+                            Toast.LENGTH_LONG
+                        ).show();
+                        var toviews =
+                            bottomSheetDialogFilter.findViewById<View>(R.id.viewsTotxt) as TextView
+                        toviews.setTextColor(Color.RED)
+                    }
+                }
+                searchParams!!.filter=filterBool
+                searchParams!!.ratingFrom=ratingFrom
+                searchParams!!.ratingTo=ratingTo
+                searchParams!!.viewsFrom=viewsFrom
+                searchParams!!.viewsTo=viewsTo
+
+                bottomSheetDialogFilter.dismiss()
+            }
+
+
+        }
+        btnSort.setOnClickListener{
+            bottomSheetDialogSort.show()
+            var sort = bottomSheetDialogSort.findViewById<View>(R.id.btnSortPosts) as Button
+            var radioGroup = bottomSheetDialogSort.findViewById<View>(R.id.radioGroup)as RadioGroup
+
+            sort.setOnClickListener {
+                val selectedRadioButtonId: Int = radioGroup.checkedRadioButtonId
+                if (selectedRadioButtonId != -1) {
+                    var selectedRadioButton =
+                        bottomSheetDialogSort.findViewById<View>(selectedRadioButtonId) as RadioButton
+                    val string: String = selectedRadioButton.text.toString().trim()
+                    if (string.equals("Najnovije")) {
+                        searchParams!!.sorttype = 3
+                    } else if (string.equals("Najstarije")) {
+                        searchParams!!.sorttype=4
+                    } else if (string.equals("Najbolje ocenjeno")) {
+                       searchParams!!.sorttype=2
+                    } else if (string.equals("Najviše pregleda")) {
+                        searchParams!!.sorttype=1
+                    } else {
+                        searchParams!!.sorttype=1
+                    }
+                }
+
+            }
+            bottomSheetDialogSort.dismiss()
+        }
+
         setUpListeners(rootView)
         swipeRefreshLayout = rootView?.findViewById<View>(R.id.swipeContainer) as SwipeRefreshLayout
         swipeRefreshLayout?.setOnRefreshListener(this)
@@ -216,121 +371,10 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             requestToBack(searchParams!!)
         })
 //////////////////////////////////////////////////////////////////
-        //filter sort validacija
-
-
-        //filter dialog
-        var bottomSheetDialogFilter: BottomSheetDialog
-        bottomSheetDialogFilter = BottomSheetDialog(requireContext())
-        bottomSheetDialogFilter.setContentView(R.layout.bottom_sheet_filter)
-
-        //sort dialog
-        var bottomSheetDialogSort: BottomSheetDialog
-        bottomSheetDialogSort = BottomSheetDialog(requireContext())
-        bottomSheetDialogSort.setContentView(R.layout.bottom_sheet_sort)
 
 
 
 
-        btnFilter=rootView.findViewById(R.id.btnSortType)
-        btnSort=rootView.findViewById(R.id.btnSortDirection)
-
-        var dateFrom=bottomSheetDialogFilter.findViewById<View>(R.id.filterDateFrom)as EditText
-        var dateFromDate:Date
-        var dateTo=bottomSheetDialogFilter.findViewById<View>(R.id.filterDateTo) as EditText
-        var dateToDate:Date
-        var ratingFrom=bottomSheetDialogFilter.findViewById<View>(R.id.filterRatingFrom) as EditText
-        var ratingTo=bottomSheetDialogFilter.findViewById<View>(R.id.filterRatingTo) as EditText
-        var viewsFrom=bottomSheetDialogFilter.findViewById<View>(R.id.filterViewsFrom) as EditText
-        var viewsTo=bottomSheetDialogFilter.findViewById<View>(R.id.filterViewsTo) as EditText
-
-
-        var removeFilter = bottomSheetDialogFilter.findViewById<View>(R.id.btnBSFFilterRemove) as Button
-
-        obj=FilterSort(false,false,0,5,0,1000000000,false,false,false,false)
-        obj.filter=false
-        obj.sort=false
-
-
-        btnFilter.setOnClickListener{
-            bottomSheetDialogFilter.show()
-            var filter = bottomSheetDialogFilter.findViewById<View>(R.id.btnBSFFilter) as Button
-
-            filter.setOnClickListener {
-                //validacija unosa
-                Toast.makeText(activity, "Method called From Fragment", Toast.LENGTH_LONG).show();
-                if(!dateFrom.text.equals("")){
-                  obj.filter=true                }
-                else if(!dateTo.text.equals("")){
-                    obj.filter=true
-                }
-                if(ratingFrom.text.toString().trim().toInt()>=0){
-                    obj.filter=true
-                    obj.filterRatingFrom=ratingFrom.text.toString().toInt()
-
-                }
-                else{
-                    ///toast
-                }
-                if(ratingTo.text.toString().trim().toInt()>=0){
-                    obj.filter=true
-                    obj.filterRatingTo=ratingTo.text.toString().toInt()
-                }
-                else{
-                    //toast
-                }
-                if(viewsFrom.text.toString().trim().toInt()>=0){
-                    obj.filter=true
-                    obj.filterViewsFrom=viewsFrom.text.toString().toInt()
-                }
-                else{
-                    //toast
-                }
-                if(viewsTo.text.toString().trim().toInt()>=0){
-                    obj.filter=true
-                    obj.filterViewsTo=viewsTo.text.toString().trim().toInt()
-                }
-                else{
-                    //toast
-                }
-
-
-            }
-        }
-
-        btnSort.setOnClickListener{
-            bottomSheetDialogSort.show()
-            var sort = bottomSheetDialogSort.findViewById<View>(R.id.btnSortPosts) as Button
-            var radioGroup = bottomSheetDialogSort.findViewById<View>(R.id.radioGroup)as RadioGroup
-
-            sort.setOnClickListener {
-                val selectedRadioButtonId: Int = radioGroup.checkedRadioButtonId
-                if (selectedRadioButtonId != -1) {
-                    var selectedRadioButton =
-                        bottomSheetDialogSort.findViewById<View>(selectedRadioButtonId) as RadioButton
-                    val string: String = selectedRadioButton.text.toString().trim()
-                    if (string.equals("Najnovije")) {
-                        obj.sort = true
-                        obj.sortLatest = true
-                    } else if (string.equals("Najstarije")) {
-                        obj.sort = true
-                        obj.sortOldest = true
-                    } else if (string.equals("Najbolje ocenjeno")) {
-                        obj.sort = true
-                        obj.sortBest = true
-                    } else if (string.equals("Najviše pregleda")) {
-                        obj.sort = true
-                        obj.sortMostViews = true
-                    } else {
-                        obj.sort = false
-                    }
-
-                } else {
-                    textView.text = "Nothing selected from the radio group"
-                }
-
-            }
-        }
 
   /////////////////////////////////////////////////////////////////////////////
 
@@ -374,48 +418,16 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         if(act.searchId!=null && act.searchId.trim()!="")
         {
             searchBar.setText(act.searchQuery,TextView.BufferType.EDITABLE)
-            searchParams= SearchParams(act.searchId,1,1)
+            searchParams= SearchParams(act.searchId,filterBool,1,1,ratingFrom,ratingTo,viewsFrom,viewsTo)
             requestToBack(searchParams!!)
         }else
             if(act.searchQuery!=null && act.searchQuery.trim()!="")
             {
                 searchBar.setText(act.searchQuery,TextView.BufferType.EDITABLE)
-                searchParams= SearchParams(act.searchQuery,1,1)
+                searchParams= SearchParams(act.searchQuery,filterBool,1,1,ratingFrom,ratingTo,viewsFrom,viewsTo)
                 requestToBack(searchParams!!)
             }
     }
 
-/*
-    private fun showBottomSheetFilter() {
-        var bottomSheetDialog: BottomSheetDialog
-        bottomSheetDialog = BottomSheetDialog(requireContext())
-        bottomSheetDialog.setContentView(R.layout.bottom_sheet_filter)
-        bottomSheetDialog.show()
 
-        var dateFrom=bottomSheetDialog.findViewById<View>(R.id.filterDateFrom)as EditText
-        var dateTo=bottomSheetDialog.findViewById<View>(R.id.filterDateTo) as EditText
-        var ratingFrom=bottomSheetDialog.findViewById<View>(R.id.filterRatingFrom) as EditText
-        var ratingTo=bottomSheetDialog.findViewById<View>(R.id.filterRatingTo) as EditText
-        var viewsFrom=bottomSheetDialog.findViewById<View>(R.id.filterViewsFrom) as EditText
-        var viewsTo=bottomSheetDialog.findViewById<View>(R.id.filterViewsTo) as EditText
-        var filter = bottomSheetDialog.findViewById<View>(R.id.btnBSFFilter) as Button
-        var removeFilter = bottomSheetDialog.findViewById<View>(R.id.btnBSFFilterRemove) as Button
-
-
-        filter.setOnClickListener {
-            //povezati sa back-om
-
-
-
-        }
-    }
-    private fun showBottomSheetSort() {
-        var bottomSheetDialogSort: BottomSheetDialog
-        bottomSheetDialogSort = BottomSheetDialog(requireContext())
-        bottomSheetDialogSort.setContentView(R.layout.bottom_sheet_sort)
-        bottomSheetDialogSort.show()
-
-    }
-
- */
 }

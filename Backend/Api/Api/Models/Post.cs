@@ -92,7 +92,9 @@ namespace Api.Models
     {
         VIEWS_DESC=1,
         RATING_DESC=2,
-        DATE =3
+        DATE =3,
+        DATE_ASC=4,
+
     }
     public enum FilterDate
     {
