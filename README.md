@@ -8,3 +8,4 @@ Sifra za preuzimanje aplikacije: jabukakruska123
 Nalozi za testiranje aplikacije:
 
     email: tamara.jerinic@gmail.com lozinka: testaplikacije1
+    email: ciraboxkg@gmail.com lozinka: cirakg
