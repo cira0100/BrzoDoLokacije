@@ -6,20 +6,25 @@
     android:layout_height="match_parent"
     tools:context=".Activities.ActivityAddPost">
 
-    <ImageSwitcher
+    <ImageView
         android:id="@+id/isActivityAddPostSwitcher"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:elevation="10dp"
-        app:layout_constraintBottom_toTopOf="@+id/btnActivityAddPostUploadFromGallery"
+        android:scaleType="fitCenter"
+        app:layout_constraintBottom_toTopOf="@+id/btnActivityAddPostAddLocation"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0"
+        tools:ignore="ImageContrastCheck"
+        tools:srcCompat="@tools:sample/avatars"/>
 
     <Button
         android:id="@+id/nextImage"
         android:layout_width="78dp"
         android:layout_height="0dp"
+        android:elevation="15dp"
         android:background="@drawable/rounded_transparent_button"
         android:gravity="right"
         android:padding="30dp"
@@ -34,7 +39,7 @@
         android:id="@+id/previousImage"
         android:layout_width="70dp"
         android:layout_height="0dp"
-
+        android:elevation="15dp"
         android:background="@drawable/rounded_transparent_button"
         android:gravity="left"
         android:padding="30dp"
