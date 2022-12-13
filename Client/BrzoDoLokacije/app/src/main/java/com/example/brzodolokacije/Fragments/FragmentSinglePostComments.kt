@@ -132,6 +132,7 @@ class FragmentSinglePostComments : Fragment() {
             (adapterComments as CommentsAdapter).items.add(0,newComment)
             recyclerViewComments?.adapter=adapterComments
             addedComment()
+
         }
     }
 

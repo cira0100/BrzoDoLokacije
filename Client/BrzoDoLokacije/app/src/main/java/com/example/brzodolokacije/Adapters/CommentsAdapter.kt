@@ -116,23 +116,26 @@ class CommentsAdapter (val items : MutableList<CommentSend>,val activity: Activi
                 var rv: RecyclerView = rvReplies
                 rv.setHasFixedSize(true)
                 rv.layoutManager=LinearLayoutManager(activity,LinearLayoutManager.VERTICAL,false)
+                etReplyCount.setOnClickListener {
+                    if(llReplies.visibility==View.VISIBLE)
+                        llReplies.visibility=View.GONE
+                    else
+                        llReplies.visibility=View.VISIBLE
+                    llReplies.forceLayout()
+                }
                 if(item.replies!=null){
                     setReplyCount(layoutPosition)
-                    etReplyCount.setOnClickListener {
-                        if(llReplies.visibility==View.VISIBLE)
-                            llReplies.visibility=View.GONE
-                        else
-                            llReplies.visibility=View.VISIBLE
-                        llReplies.forceLayout()
-                    }
                     rv.adapter=CommentsAdapter(item.replies as MutableList<CommentSend>,activity,fragment)
                 }
-                else
-                    rv.adapter=CommentsAdapter(mutableListOf(),activity,fragment)
+                else {
+                    rv.adapter = CommentsAdapter(mutableListOf(), activity, fragment)
+                }
             }
         }
         fun setReplyCount(position: Int){
 
+            if(items[position].replies==null)
+                items[position].replies= mutableListOf()
             if(items[position].replies!!.count()==1)
                 itemView.etReplyCount.text=items[position].replies!!.count().toString() + " odgovor"
             else
