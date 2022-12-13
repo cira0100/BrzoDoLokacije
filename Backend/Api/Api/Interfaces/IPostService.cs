@@ -32,5 +32,6 @@ namespace Api.Interfaces
         Task<List<PostSend>> BestPostForAllLocationsInRadius(Coords coords, double radius);
         Task<UserStats> UserStats(string userid);
         Task<List<PostSend>> userFavouritePosts();
+        Task<List<PostSend>> GetAllPostsFilterSort(FilterSort fs);
     }
 }

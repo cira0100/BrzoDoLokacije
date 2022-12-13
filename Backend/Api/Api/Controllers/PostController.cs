@@ -199,12 +199,20 @@ namespace Api.Controllers
         {
             return Ok(await _postService.TrendingTags());
         }
+
         [HttpGet("userFavouritePosts")]
         [Authorize(Roles = "User")]
         public async Task<ActionResult<List<PostSend>>> getUserFavouritePosts()
         {
             return Ok(await _postService.userFavouritePosts());
         }
+        
+        [HttpGet("posts/getAllPostsFilterSort")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<List<PostSend>>> GetAllPostsFilterSort([FromBody] FilterSort fs)
+        {
+            return Ok(await _postService.GetAllPostsFilterSort(fs));
+        }
 
-    }
+     }
 }

@@ -19,6 +19,7 @@ import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.example.brzodolokacije.Activities.NavigationActivity
 import com.example.brzodolokacije.Adapters.ShowPostsAdapter
 import com.example.brzodolokacije.Adapters.ShowPostsGridViewAdapter
+import com.example.brzodolokacije.Models.FilterSort
 import com.example.brzodolokacije.Models.Location
 import com.example.brzodolokacije.Models.PostPreview
 import com.example.brzodolokacije.Models.SearchParams
@@ -30,11 +31,14 @@ import com.example.brzodolokacije.paging.SearchPostsViewModel
 import com.example.brzodolokacije.paging.SearchPostsViewModelFactory
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.button.MaterialButton
+import kotlinx.android.synthetic.main.activity_splash_page.*
+import kotlinx.android.synthetic.main.bottom_sheet_sort.*
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Response
+import java.util.Date
 
 
 class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
@@ -56,6 +60,11 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
     private lateinit var searchBar: AutoCompleteTextView
     var responseLocations:MutableList<com.example.brzodolokacije.Models.Location>?=null
     var selectedLocation:com.example.brzodolokacije.Models.Location?=null
+    private lateinit var obj:FilterSort
+
+    private lateinit var filter:Button
+    private lateinit var removeFilter:Button
+    private lateinit var sort:Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -65,6 +74,8 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         adapterVar=ShowPostsAdapter(requireActivity())
         linearManagerVar= LinearLayoutManager(activity)
         //gridManagerVar=GridLayoutManager(activity,2)
+
+
     }
     fun searchText(){
         if(searchBar.text==null || searchBar.text.toString().trim()=="")
@@ -204,17 +215,125 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             swipeRefreshLayout?.isRefreshing=true
             requestToBack(searchParams!!)
         })
+//////////////////////////////////////////////////////////////////
+        //filter sort validacija
+
+
+        //filter dialog
+        var bottomSheetDialogFilter: BottomSheetDialog
+        bottomSheetDialogFilter = BottomSheetDialog(requireContext())
+        bottomSheetDialogFilter.setContentView(R.layout.bottom_sheet_filter)
+
+        //sort dialog
+        var bottomSheetDialogSort: BottomSheetDialog
+        bottomSheetDialogSort = BottomSheetDialog(requireContext())
+        bottomSheetDialogSort.setContentView(R.layout.bottom_sheet_sort)
+
+
+
 
         btnFilter=rootView.findViewById(R.id.btnSortType)
         btnSort=rootView.findViewById(R.id.btnSortDirection)
 
+        var dateFrom=bottomSheetDialogFilter.findViewById<View>(R.id.filterDateFrom)as EditText
+        var dateFromDate:Date
+        var dateTo=bottomSheetDialogFilter.findViewById<View>(R.id.filterDateTo) as EditText
+        var dateToDate:Date
+        var ratingFrom=bottomSheetDialogFilter.findViewById<View>(R.id.filterRatingFrom) as EditText
+        var ratingTo=bottomSheetDialogFilter.findViewById<View>(R.id.filterRatingTo) as EditText
+        var viewsFrom=bottomSheetDialogFilter.findViewById<View>(R.id.filterViewsFrom) as EditText
+        var viewsTo=bottomSheetDialogFilter.findViewById<View>(R.id.filterViewsTo) as EditText
+
+
+        var removeFilter = bottomSheetDialogFilter.findViewById<View>(R.id.btnBSFFilterRemove) as Button
+
+        obj=FilterSort(false,false,0,5,0,1000000000,false,false,false,false)
+        obj.filter=false
+        obj.sort=false
+
+
         btnFilter.setOnClickListener{
-            showBottomSheetFilter()
+            bottomSheetDialogFilter.show()
+            var filter = bottomSheetDialogFilter.findViewById<View>(R.id.btnBSFFilter) as Button
+
+            filter.setOnClickListener {
+                //validacija unosa
+                Toast.makeText(activity, "Method called From Fragment", Toast.LENGTH_LONG).show();
+                if(!dateFrom.text.equals("")){
+                  obj.filter=true                }
+                else if(!dateTo.text.equals("")){
+                    obj.filter=true
+                }
+                if(ratingFrom.text.toString().trim().toInt()>=0){
+                    obj.filter=true
+                    obj.filterRatingFrom=ratingFrom.text.toString().toInt()
+
+                }
+                else{
+                    ///toast
+                }
+                if(ratingTo.text.toString().trim().toInt()>=0){
+                    obj.filter=true
+                    obj.filterRatingTo=ratingTo.text.toString().toInt()
+                }
+                else{
+                    //toast
+                }
+                if(viewsFrom.text.toString().trim().toInt()>=0){
+                    obj.filter=true
+                    obj.filterViewsFrom=viewsFrom.text.toString().toInt()
+                }
+                else{
+                    //toast
+                }
+                if(viewsTo.text.toString().trim().toInt()>=0){
+                    obj.filter=true
+                    obj.filterViewsTo=viewsTo.text.toString().trim().toInt()
+                }
+                else{
+                    //toast
+                }
+
+
+            }
         }
 
         btnSort.setOnClickListener{
-            showBottomSheetSort()
+            bottomSheetDialogSort.show()
+            var sort = bottomSheetDialogSort.findViewById<View>(R.id.btnSortPosts) as Button
+            var radioGroup = bottomSheetDialogSort.findViewById<View>(R.id.radioGroup)as RadioGroup
+
+            sort.setOnClickListener {
+                val selectedRadioButtonId: Int = radioGroup.checkedRadioButtonId
+                if (selectedRadioButtonId != -1) {
+                    var selectedRadioButton =
+                        bottomSheetDialogSort.findViewById<View>(selectedRadioButtonId) as RadioButton
+                    val string: String = selectedRadioButton.text.toString().trim()
+                    if (string.equals("Najnovije")) {
+                        obj.sort = true
+                        obj.sortLatest = true
+                    } else if (string.equals("Najstarije")) {
+                        obj.sort = true
+                        obj.sortOldest = true
+                    } else if (string.equals("Najbolje ocenjeno")) {
+                        obj.sort = true
+                        obj.sortBest = true
+                    } else if (string.equals("Najviše pregleda")) {
+                        obj.sort = true
+                        obj.sortMostViews = true
+                    } else {
+                        obj.sort = false
+                    }
+
+                } else {
+                    textView.text = "Nothing selected from the radio group"
+                }
+
+            }
         }
+
+  /////////////////////////////////////////////////////////////////////////////
+
         searchBar=rootView.findViewById(R.id.etFragmentShowPostsSearch) as AutoCompleteTextView
         searchButton=rootView.findViewById<View>(R.id.mbFragmentHomePageSearch) as MaterialButton
         setUpSpinner()
@@ -266,21 +385,26 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
             }
     }
 
-
+/*
     private fun showBottomSheetFilter() {
         var bottomSheetDialog: BottomSheetDialog
         bottomSheetDialog = BottomSheetDialog(requireContext())
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_filter)
         bottomSheetDialog.show()
 
-        var dateFrom=bottomSheetDialog.findViewById<View>(R.id.dateFromBSF)as EditText
-        var dateTo=bottomSheetDialog.findViewById<View>(R.id.dateToBSF) as EditText
-        var location=bottomSheetDialog.findViewById<View>(R.id.locationBSF) as EditText
+        var dateFrom=bottomSheetDialog.findViewById<View>(R.id.filterDateFrom)as EditText
+        var dateTo=bottomSheetDialog.findViewById<View>(R.id.filterDateTo) as EditText
+        var ratingFrom=bottomSheetDialog.findViewById<View>(R.id.filterRatingFrom) as EditText
+        var ratingTo=bottomSheetDialog.findViewById<View>(R.id.filterRatingTo) as EditText
+        var viewsFrom=bottomSheetDialog.findViewById<View>(R.id.filterViewsFrom) as EditText
+        var viewsTo=bottomSheetDialog.findViewById<View>(R.id.filterViewsTo) as EditText
         var filter = bottomSheetDialog.findViewById<View>(R.id.btnBSFFilter) as Button
+        var removeFilter = bottomSheetDialog.findViewById<View>(R.id.btnBSFFilterRemove) as Button
 
 
         filter.setOnClickListener {
             //povezati sa back-om
+
 
 
         }
@@ -292,4 +416,6 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         bottomSheetDialogSort.show()
 
     }
+
+ */
 }

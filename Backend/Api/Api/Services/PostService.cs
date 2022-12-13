@@ -4,6 +4,7 @@ using Api.Models;
 using MongoDB.Driver;
 using MongoDB.Bson.Serialization.Attributes;
 using MongoDB.Bson;
+using System.Diagnostics;
 
 namespace Api.Services
 {
@@ -726,6 +727,78 @@ namespace Api.Services
             return posts;
         }
 
+        public async Task<List<PostSend>> GetAllPostsFilterSort(FilterSort fs)
+        {
+            List<PostSend> allPosts = fs.posts;
+            List<PostSend> filteredPosts = allPosts;
+            List<PostSend> fsPosts=allPosts; 
+            
+            if (fs.filter)
+            {
+                if (fs.filterRatingFrom>=0)
+                {
+                    filteredPosts =filteredPosts.FindAll(post => post.ratings >fs.filterRatingFrom);
+                }
+                if (fs.filterRatingTo >= 0)
+                {
+                    filteredPosts = filteredPosts.FindAll(post => post.ratings < fs.filterRatingTo);
+                }
+                if(fs.filterViewsFrom >= 0)
+                {
+                    filteredPosts = filteredPosts.FindAll(post => post.views > fs.filterViewsFrom);
+                }
+                if(fs.filterViewsTo >= 0)
+                {
+                    filteredPosts = filteredPosts.FindAll(post => post.views < fs.filterViewsTo);
+                }
+                if(fs.filterDateFrom!=null)
+                {
+                    filteredPosts = filteredPosts.FindAll(post => post.createdAt > fs.filterDateFrom);
+                }
+                if(fs.filterDateTo!=null)
+                {
+                    filteredPosts = filteredPosts.FindAll(post => post.createdAt < fs.filterDateTo);
+                }
+            }
 
+            if (fs.sort)
+            {             
+                if (fs.sortBest)
+                {
+                    fsPosts = filteredPosts.OrderByDescending(o => o.ratings).ToList();
+                }
+                if (fs.sortLatest)
+                {
+                    fsPosts = filteredPosts.OrderByDescending(o => o.createdAt).ToList();
+                }
+                if (fs.sortMostViews)
+                {
+                    fsPosts = filteredPosts.OrderByDescending(o => o.views).ToList();
+                }
+                if (fs.sortOldest)
+                {
+                    fsPosts = filteredPosts.OrderBy(p => p.createdAt).ToList();
+                }                
+            }
+            
+            if(!fs.filter && !fs.sort)
+            {
+                return allPosts;
+            }
+            else if(!fs.filter && fs.sort)
+            {
+                return fsPosts;
+            }
+            else if(fs.filter && !fs.sort)
+            {
+                return filteredPosts;
+            }
+            else
+            {
+                return filteredPosts;
+            }
+            
+
+        }
     }
 }

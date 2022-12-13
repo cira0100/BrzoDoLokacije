@@ -94,3 +94,21 @@ data class SearchParams(
     var sorttype:Int,
     var filterdate:Int
 )
+
+data class FilterSort(
+    //var posts: MutableList<PostPreview>,
+    var sort:Boolean,
+    var filter:Boolean,
+
+    //var filterDateFrom:Date,
+    //var filterDateTo:Date,
+    var filterRatingFrom:Int,
+    var filterRatingTo:Int,
+    var filterViewsFrom:Int,
+    var filterViewsTo:Int,
+
+    var sortLatest:Boolean,
+    var sortOldest:Boolean,
+    var sortBest:Boolean,
+    var sortMostViews:Boolean
+    )
