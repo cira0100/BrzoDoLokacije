@@ -29,7 +29,7 @@
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/linearLayout2"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="340dp"
             android:background="@drawable/view_top_corner_radius"
             android:elevation="30dp"
             android:paddingHorizontal="16dp"
@@ -183,12 +183,12 @@
 
             <androidx.cardview.widget.CardView
                 android:id="@+id/MapDialogueMapView"
-                android:elevation="15dp"
                 android:layout_width="match_parent"
                 android:layout_height="150dp"
-
                 android:layout_marginHorizontal="3dp"
+
                 android:layout_marginTop="8dp"
+                android:elevation="15dp"
                 app:cardCornerRadius="10dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
