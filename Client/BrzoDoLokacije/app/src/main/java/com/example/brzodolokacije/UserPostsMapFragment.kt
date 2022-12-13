@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import androidx.core.content.ContextCompat
 import com.example.brzodolokacije.Activities.ActivitySinglePost
 import com.example.brzodolokacije.Fragments.FragmentProfile
 import com.example.brzodolokacije.Models.PostPreview
@@ -40,13 +41,16 @@ class UserPostsMapFragment : Fragment() {
         map=view.findViewById(R.id.FragmentUserPostsMapMapView) as MapView
         backButton=view.findViewById(R.id.btnFragmentUserPostsBack) as ImageView
         map!!.setTileSource(TileSourceFactory.MAPNIK);
+        if(this.requireArguments().getString("other")!=null)
+            backButton!!.visibility=View.INVISIBLE
+
         id=this.requireArguments().getString("id");//https://stackoverflow.com/questions/17436298/how-to-pass-a-variable-from-activity-to-fragment-and-pass-it-back
         setUpMap()
         backButton!!.setOnClickListener{
             //SUBJECT TO CHANGE
             val fragmentProfile = FragmentProfile()
             fragmentManager?.beginTransaction()
-                ?.replace(com.example.brzodolokacije.R.id.flNavigationFragment,fragmentProfile)
+                ?.replace(R.id.flNavigationFragment,fragmentProfile)
                 ?.commit()
 //How to call fragment
 //            val bundle = Bundle()
@@ -70,7 +74,12 @@ class UserPostsMapFragment : Fragment() {
         var jwtString= SharedPreferencesHelper.getValue("jwt",requireActivity())
         if(id==null)
             return
-        var data=api.getUsersPosts("Bearer "+jwtString,id!!)
+        var data:Call<MutableList<PostPreview>>
+        if(this.requireArguments().getString("favourite")==null)
+            data=api.getUsersPosts("Bearer "+jwtString,id!!)
+        else
+            data=api.getMyFavouritePosts("Bearer "+jwtString)
+
 
         data.enqueue(object : retrofit2.Callback<MutableList<PostPreview>> {
             override fun onResponse(call: Call<MutableList<PostPreview>>, response: Response<MutableList<PostPreview>>) {
@@ -83,6 +92,7 @@ class UserPostsMapFragment : Fragment() {
                             val startMarker = Marker(map)
                             startMarker.setPosition(GeoPoint(post.location.latitude,post.location.longitude))
                             startMarker.setAnchor(Marker.ANCHOR_CENTER, Marker.ANCHOR_BOTTOM)
+                            startMarker.icon= ContextCompat.getDrawable(requireContext(), R.drawable.ic_baseline_location_on_24)
                             if(flag){
                                 flag=false
                                 map!!.controller.animateTo(GeoPoint(post.location.latitude,post.location.longitude))

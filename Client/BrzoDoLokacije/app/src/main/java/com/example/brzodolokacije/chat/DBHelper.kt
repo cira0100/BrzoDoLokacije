@@ -175,7 +175,6 @@ class DBHelper :
                     )
 
             Log.d("main",cal.time.toString())
-            readContact(userId)
             return msg
         }
         return null
@@ -216,20 +215,23 @@ class DBHelper :
         return null
     }
 
-    fun getContacts(): MutableList<ChatPreview>? {
+    suspend fun getContacts(): MutableList<ChatPreview>? {
+        var mapChats:Map<Long,ChatPreview>
+        mapChats= mutableMapOf()
         onCreate(db)
         var sql="SELECT * FROM "+ CONTACTS_TABLE_NAME
         var cursor=db?.rawQuery(sql,null)
         if(cursor?.count!! >0){
-            var contactList:MutableList<ChatPreview> =mutableListOf()
             var userIdIndex=cursor.getColumnIndexOrThrow("userId")
             var readIndex=cursor.getColumnIndexOrThrow("read")
             var usernameIndex=cursor.getColumnIndexOrThrow("username")
             while(cursor.moveToNext()){
-                contactList.add(ChatPreview(cursor.getString(userIdIndex),cursor.getInt(readIndex)==1,cursor.getString(usernameIndex)))
+                var chat=ChatPreview(cursor.getString(userIdIndex),cursor.getInt(readIndex)==1,cursor.getString(usernameIndex))
+                var lastMessage=getLastMessage(chat.userId)?.usableTimeStamp!!.timeInMillis
+                mapChats[lastMessage]=chat
             }
-            Log.d("main",contactList.size.toString())
-            return contactList
+            var sorted=mapChats.toSortedMap(kotlin.Comparator { o1, o2 -> (o2-o1).toInt() })
+            return ArrayList<ChatPreview>(sorted.values).toMutableList()
         }
         return null
     }
@@ -242,10 +244,12 @@ class DBHelper :
     }
 
     fun readContact(userId: String){
+        onCreate(db)
         var sql="UPDATE "+ CONTACTS_TABLE_NAME+" SET read=1 WHERE userId='"+userId+"'"
         db?.execSQL(sql)
     }
     fun unreadContact(userId: String){
+        onCreate(db)
         var sql="UPDATE "+ CONTACTS_TABLE_NAME+" SET read=0 WHERE userId='"+userId+"'"
         db?.execSQL(sql)
     }

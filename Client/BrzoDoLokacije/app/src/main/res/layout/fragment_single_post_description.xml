@@ -13,81 +13,136 @@
         android:padding="@dimen/component_padding"
         tools:layout_editor_absoluteX="0dp">
 
-
-        <TextView
-            android:id="@+id/tvDescription"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="TextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextView"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.526"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
-
-        <TextView
-            android:id="@+id/title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="32dp"
-            android:text="Oceni"
-            android:textColor="@color/cardview_dark_background"
-            android:textSize="@dimen/header1_size"
-            android:textStyle="bold"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.005"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/tvDescription" />
-
-        <LinearLayout
+        <androidx.cardview.widget.CardView
+            android:id="@+id/cvDescription"
+            app:cardCornerRadius="10dp"
+            android:elevation="15dp"
+            android:layout_margin="3dp"
+            android:padding="5dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+            <TextView
+                android:layout_margin="5dp"
+                android:id="@+id/tvDescription"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="TextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextViewTextView"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+        </androidx.cardview.widget.CardView>
+
+        <LinearLayout
+
+            android:id="@+id/linearLayout9"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
             android:orientation="horizontal"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/title">
+            app:layout_constraintTop_toBottomOf="@+id/cvDescription">
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:text="Oceni"
+
+                style="@style/title"
+                android:gravity="center_vertical"
+                android:layout_weight="1"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.005"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/tvDescription" />
 
             <ImageView
-                android:clickable="true"
                 android:id="@+id/rateStar1"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
+                android:clickable="true"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_round_star_outline_24" />
+                android:src="@drawable/ic_outline_star_border_24" />
 
             <ImageView
-                android:clickable="true"
                 android:id="@+id/rateStar2"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
+                android:clickable="true"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_round_star_outline_24" />
+                android:src="@drawable/ic_outline_star_border_24" />
 
             <ImageView
-                android:clickable="true"
                 android:id="@+id/rateStar3"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
+                android:clickable="true"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_round_star_outline_24" />
+                android:src="@drawable/ic_outline_star_border_24" />
 
             <ImageView
-                android:clickable="true"
                 android:id="@+id/rateStar4"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
+                android:clickable="true"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_round_star_outline_24" />
+                android:src="@drawable/ic_outline_star_border_24" />
 
             <ImageView
-                android:clickable="true"
                 android:id="@+id/rateStar5"
                 android:layout_width="50dp"
                 android:layout_height="50dp"
+                android:clickable="true"
                 android:scaleType="centerCrop"
-                android:src="@drawable/ic_round_star_outline_24" />
+                android:src="@drawable/ic_outline_star_border_24" />
 
 
         </LinearLayout>
+
+        <TextView
+            android:id="@+id/tvObrisi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Sigurno? Brisanje je trajno."
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/btnObrisi" />
+
+        <Button
+            android:id="@+id/btnObrisi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="19dp"
+            android:text="Obrisi objavu"
+            android:visibility="gone"
+            android:backgroundTint="#8B0000"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/linearLayout9" />
+
+        <Button
+            android:id="@+id/btnObrisiN"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:backgroundTint="#FFFFFF"
+            android:textColor="@color/cardview_dark_background"
+            android:layout_marginStart="20dp"
+            android:text="Odustani"
+            android:visibility="gone"
+            app:layout_constraintStart_toEndOf="@+id/btnObrisiY"
+            app:layout_constraintTop_toBottomOf="@+id/tvObrisi" />
+
+        <Button
+            android:id="@+id/btnObrisiY"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Potvrdi"
+            android:visibility="gone"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/tvObrisi" />
+
         <!--<LinearLayout
             android:id="@+id/linearLayout2"
             android:layout_width="match_parent"

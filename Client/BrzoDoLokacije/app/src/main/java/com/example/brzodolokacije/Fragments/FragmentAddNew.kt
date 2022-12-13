@@ -41,9 +41,7 @@ class FragmentAddNew : Fragment() {
 
 
         addNewPost.setOnClickListener{
-            Toast.makeText(
-                activity, "Add new post", Toast.LENGTH_LONG
-            ).show();
+
                 val intent = Intent (getActivity(), ActivityAddPost::class.java)
                 getActivity()?.startActivity(intent)
 

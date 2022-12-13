@@ -17,9 +17,7 @@ namespace Api.Services
         private readonly IMongoCollection<Post> _posts;
         private readonly IJwtService _jwtService;
         private IConfiguration _configuration;
-        private readonly IFileService _fileService;
-
-        private readonly IMongoCollection<UserSend> _usersSend; 
+        private readonly IFileService _fileService; 
         public UserService(IDatabaseConnection settings, IMongoClient mongoClient, IJwtService jwtService, IHttpContextAccessor httpContextAccessor, IConfiguration configuration, IFileService fileService)
         {
             var database = mongoClient.GetDatabase(settings.DatabaseName);
@@ -364,6 +362,7 @@ namespace Api.Services
             tosend.followingCount = user.followingCount;
             tosend.followers = user.followers;
             tosend.following = user.following;
+            tosend.favourites = user.favourites;
             var userposts = await _posts.Find(x => x.ownerId == user._id).ToListAsync();
             tosend.postcount = userposts.Count();
             return tosend;
@@ -384,6 +383,7 @@ namespace Api.Services
             tosend.followingCount = user.followingCount;
             tosend.followers = user.followers;
             tosend.following = user.following;
+            tosend.favourites = user.favourites;
             var userposts = await _posts.Find(x => x.ownerId == user._id).ToListAsync();
             tosend.postcount = userposts.Count();
             return tosend;
@@ -416,7 +416,9 @@ namespace Api.Services
             }
             User f = await _users.Find(user => user._id == followerId).FirstOrDefaultAsync();
             User u = await _users.Find(user => user._id == id).FirstOrDefaultAsync();
-           
+            if(await CheckIfAlreadyFollow(followerId))
+                return false;
+
             if (id != null && followerId!=null)
             {
                 if (f.followers == null)
@@ -476,6 +478,7 @@ namespace Api.Services
                         follower.followers = utemp.followers;
                         follower.followersCount = utemp.followersCount;
                         follower.followingCount = utemp.followingCount;
+                        follower.favourites = utemp.favourites;
                         
                         follower._id = utemp._id;
 
@@ -515,6 +518,7 @@ namespace Api.Services
                         follower._id = utemp._id;
                         follower.followersCount = utemp.followersCount;
                         follower.followingCount = utemp.followingCount;
+                        follower.favourites = utemp.favourites;
 
                         following.Add((UserSend)follower);
                     }
@@ -558,6 +562,7 @@ namespace Api.Services
                         following._id = utemp._id;
                         following.followersCount = utemp.followersCount;
                         following.followingCount = utemp.followingCount;
+                        following.favourites=utemp.favourites;
 
                         myFollowings.Add((UserSend)following);
                     }
@@ -614,27 +619,33 @@ namespace Api.Services
 
             User u = await _users.Find(user => user._id == myId).FirstOrDefaultAsync();
             User f = await _users.Find(user => user._id == id).FirstOrDefaultAsync();
-
+            if(await CheckIfAlreadyFollow(id))
             if (u != null)
             {
-                if (u.following != null && f.followers!=null)
-                {
                     u.following.Remove(f._id);
+                    if (u.following == null)
+                        u.following = new List<string>();
                     u.followingCount=u.following.Count();
+                    if (u.followers == null)
+                        u.followers = new List<string>();
                     u.followersCount = u.followers.Count();
                    
 
                     f.followers.Remove(u._id);
+                    if (f.followers == null)
+                        f.followers = new List<string>();
                     f.followersCount =f.followers.Count();
+                    if (f.following == null)
+                        f.following = new List<string>();
                     f.followingCount =f.following.Count();
 
-                    _users.ReplaceOne(user => user._id == myId, u);
-                    _users.ReplaceOne(user => user._id == id, f);
+                    await _users.ReplaceOneAsync(user => user._id == myId, u);
+                    await _users.ReplaceOneAsync(user => user._id == id, f);
 
                     //updateUserFollowerFollowingCount(u.followers, u.following, u._id);
                     //updateUserFollowerFollowingCount(f.followers, f.following, f._id);
                     return true; 
-                }
+                
 
             }
             return false;
@@ -672,6 +683,7 @@ namespace Api.Services
                         follower.followersCount = utemp.followersCount;
                         follower.followingCount = utemp.followingCount;
                         follower._id = utemp._id;
+                        follower.favourites = utemp.favourites;
                         myfollowers.Add((UserSend)follower);
                     }
                     return myfollowers;
@@ -727,6 +739,30 @@ namespace Api.Services
 
             }
             return false;
+        }
+
+        public async Task<int> ChangePass(string currentPass,string newPass)
+        {
+
+            string myId = null;
+            if (_httpContext.HttpContext.User.FindFirstValue("id") != null)
+            {
+                myId = _httpContext.HttpContext.User.FindFirstValue("id").ToString();
+            }
+
+            User u = await _users.Find(user => user._id == myId).FirstOrDefaultAsync();
+
+            if (u != null)
+            {
+                if (checkPassword(currentPass, u.password))
+                {
+                    u.password = hashPassword(newPass);
+                    await _users.ReplaceOneAsync(x => x._id == u._id, u);
+                    return 1;
+                }
+                return -1;
+            }
+            return -2;
         }
 
         

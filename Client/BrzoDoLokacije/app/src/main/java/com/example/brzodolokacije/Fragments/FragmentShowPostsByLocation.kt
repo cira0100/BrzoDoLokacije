@@ -59,9 +59,7 @@ class FragmentShowPostsByLocation : Fragment() {
         data.enqueue(object : Callback<MutableList<PostPreview>> {
             override fun onResponse(call: Call<MutableList<PostPreview>>, response: Response<MutableList<PostPreview>>) {
                 if (response.body() == null) {
-                    Toast.makeText(
-                        activity, "get all null", Toast.LENGTH_LONG
-                    ).show();
+
 
                     return
                 }

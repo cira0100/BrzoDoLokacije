@@ -46,6 +46,7 @@ class FragmentUserPosts : Fragment() {
     private lateinit var posts : MutableList<PostPreview>
     private lateinit var rvPosts: RecyclerView
     private lateinit var addNewPost:TextView
+    var favourite=0
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -64,6 +65,8 @@ class FragmentUserPosts : Fragment() {
             if(jwtString!=null) {
                 var jwt: JWT = JWT(jwtString!!)
                 var userId=jwt.getClaim("id").asString()
+                if(favourite==1)
+                    bundle.putString("favourite","true")
                 bundle.putString("id", userId)
                 val userMapFragment = UserPostsMapFragment()
                 userMapFragment.setArguments(bundle)
@@ -77,8 +80,34 @@ class FragmentUserPosts : Fragment() {
         }
 
         rvPosts=view.findViewById(R.id.rvFragmentUserPostsPosts) as RecyclerView
-        getPosts()
+        if(this.arguments==null)
+            getPosts()
+        else
+            getFavouritePosts()
         return view
+    }
+    fun getFavouritePosts(){
+        val api = RetrofitHelper.getInstance()
+        val token= SharedPreferencesHelper.getValue("jwt", requireActivity())
+        val data=api.getMyFavouritePosts("Bearer "+token)
+
+        data.enqueue(object : Callback<MutableList<PostPreview>> {
+            override fun onResponse(
+                call: Call<MutableList<PostPreview>>,
+                response: Response<MutableList<PostPreview>>
+            ) {
+                if (response.body() == null) {
+                    return
+                }
+                posts = response.body()!!.toMutableList<PostPreview>()
+                loadPosts()
+                favourite=1
+            }
+            override fun onFailure(call: Call<MutableList<PostPreview>>, t: Throwable) {
+
+            }
+        })
+
     }
 
     fun getPosts(){

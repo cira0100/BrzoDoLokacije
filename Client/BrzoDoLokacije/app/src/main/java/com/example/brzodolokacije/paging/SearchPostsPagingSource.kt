@@ -21,8 +21,9 @@ class SearchPostsPagingSource(
         val page=params.key?:0
         val token=SharedPreferencesHelper.getValue("jwt", activity)
         return try{
-            val response=backend.getPagedPosts("Bearer "+token,searchParams.locationId,
-                page,searchParams.sorttype,searchParams.filterdate
+            val response=backend.getPagedPosts("Bearer "+token,searchParams.locationId,searchParams.filter,
+                page,searchParams.sorttype,searchParams.filterdate,searchParams.ratingFrom,searchParams.ratingTo,
+                searchParams.viewsFrom,searchParams.viewsTo
             )
             Log.d("main","stranicenje: "+page.toString())
             LoadResult.Page(

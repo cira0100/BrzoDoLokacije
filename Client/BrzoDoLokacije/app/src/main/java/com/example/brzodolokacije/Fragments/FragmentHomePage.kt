@@ -7,31 +7,26 @@ import android.view.KeyEvent
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.AdapterView
+import android.widget.ArrayAdapter
+import android.widget.AutoCompleteTextView
+import android.widget.ImageView
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
+import com.auth0.android.jwt.JWT
+import com.bumptech.glide.Glide
 import com.example.brzodolokacije.Activities.ChatActivity
 import com.example.brzodolokacije.Activities.NavigationActivity
-import com.example.brzodolokacije.Adapters.ShowPostsHomePageAdapter
-import com.example.brzodolokacije.Interfaces.IBackendApi
 import com.example.brzodolokacije.Models.Location
-import com.example.brzodolokacije.Models.LocationType
-import com.example.brzodolokacije.Models.PostPreview
-import com.example.brzodolokacije.Models.SearchParams
+import com.example.brzodolokacije.Models.UserReceive
 import com.example.brzodolokacije.R
 import com.example.brzodolokacije.Services.RetrofitHelper
-import com.example.brzodolokacije.Services.RetrofitHelper.baseUrl
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
 import com.google.android.material.button.MaterialButton
 import retrofit2.Call
-import retrofit2.Callback
 import retrofit2.Response
-import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 
 
 class FragmentHomePage : Fragment() {
@@ -40,6 +35,7 @@ class FragmentHomePage : Fragment() {
     private lateinit var btnBack:ImageView
     private lateinit var searchBar:AutoCompleteTextView
     private lateinit var searchButton: MaterialButton
+    private lateinit var pfp:ImageView
     var responseLocations:MutableList<com.example.brzodolokacije.Models.Location>?=null
     /* override fun onCreate(savedInstanceState: Bundle?) {
          super.onCreate(savedInstanceState)
@@ -56,6 +52,7 @@ class FragmentHomePage : Fragment() {
         btnChat=view.findViewById(R.id.ivFragmentHomePageChat)
         searchBar=view.findViewById(R.id.etFragmentHomePageSearch)
         searchButton=view.findViewById(R.id.mbFragmentHomePageSearchButton)
+        pfp=view.findViewById(R.id.ivFragmentHomePageProfile)
         setBtnBackInvisible()
         setUpSpinner()
         var fm: FragmentTransaction =childFragmentManager.beginTransaction()
@@ -88,16 +85,46 @@ class FragmentHomePage : Fragment() {
             false
         })
 
+        pfp.setOnClickListener {
+            (activity as NavigationActivity).changeToProfile()
+        }
+        reqProfile()
+
         return view
     }
 
+    fun reqProfile(){
+        var api=RetrofitHelper.getInstance()
+        var token=SharedPreferencesHelper.getValue("jwt",requireActivity())
+        val request2=api?.getProfileFromId("Bearer "+token,
+            JWT(token!!).claims["id"]!!.asString()!!
+        )
+        request2?.enqueue(object : retrofit2.Callback<UserReceive?> {
+            override fun onResponse(call: Call<UserReceive?>, response: Response<UserReceive?>) {
+                if(response.isSuccessful()){
+                    //zahtev da se posalje poruka
+                    var user=response.body()!!
+                    if(user.pfp!=null) {
+                        Glide.with(activity!!)
+                            .load(RetrofitHelper.baseUrl + "/api/post/image/compress/" + user.pfp!!._id)
+                            .circleCrop()
+                            .into(pfp)
+                    }
+                }
+            }
+
+            override fun onFailure(call: Call<UserReceive?>, t: Throwable) {
+
+            }
+        })
+    }
 
     fun searchText(){
-        if(searchBar.text==null || searchBar.text.toString().trim()=="")
-            return
-
         var act=requireActivity() as NavigationActivity
-        act.searchQuery=searchBar.text.toString()
+        if(searchBar.text==null || searchBar.text.toString().trim()=="")
+            act.searchQuery="-1"
+        else
+            act.searchQuery=searchBar.text.toString()
         act.searchId=""
         act.bottomNav.selectedItemId=R.id.navAllPosts
     }

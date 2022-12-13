@@ -1,63 +1,55 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.google.android.material.circularreveal.CircularRevealLinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/bottomSheetAddNewForNav"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
->
+    android:orientation="vertical"
+    android:background="@drawable/view_top_corner_radius">
+
+
     <TextView
         android:id="@+id/textView6"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_gravity="center"
+        android:layout_marginTop="10dp"
         android:fontFamily="sans-serif-black"
         android:text="Dodaj novu objavu"
         android:textSize="20sp"
+
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <ImageButton
+    <Button
         android:id="@+id/btnBottomSheetAddNewPostOpenAddPost"
-        android:layout_width="0dp"
-        android:layout_height="60dp"
-        android:layout_marginStart="30dp"
-
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="40dp"
-        android:layout_marginBottom="24dp"
-        android:background="@drawable/button_choose_from_gallery"
+        style="@style/clean_button_margin"
+        android:layout_width="match_parent"
+        android:layout_marginTop="20dp"
+        android:gravity="left|center_vertical"
+        android:drawableLeft="@drawable/ic_outline_add_photo_alternate_24"
+        android:text="Izaberi fotografije iz galerije"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/btnBottomSheetAddNewPostOpenCapturePost"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView6"
         app:layout_constraintVertical_bias="0.0" />
 
-    <ImageButton
+    <Button
         android:id="@+id/btnBottomSheetAddNewPostOpenCapturePost"
-
-        android:layout_width="0dp"
-        android:layout_height="60dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="30dp"
-        android:layout_marginBottom="24dp"
-        android:background="@drawable/button_capture"
+        style="@style/clean_button_margin"
+        android:layout_width="match_parent"
+        android:drawableLeft="@drawable/ic_outline_add_a_photo_24"
+android:layout_marginBottom="16dp"
+        android:text="Fotografiši"
+        android:gravity="left|center_vertical"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toEndOf="@+id/btnBottomSheetAddNewPostOpenAddPost"
-        app:layout_constraintTop_toBottomOf="@+id/textView6"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <ImageButton
-        android:id="@+id/btnBottomSheetAddNewPostClose"
-        android:layout_width="65dp"
-        android:layout_height="17dp"
-        app:cornerRadius="50dp"
-        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/btnBottomSheetAddNewPostOpenAddPost"
+        app:shapeAppearance="@style/imageViewRoundedEdge" />
 
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+</com.google.android.material.circularreveal.CircularRevealLinearLayout>

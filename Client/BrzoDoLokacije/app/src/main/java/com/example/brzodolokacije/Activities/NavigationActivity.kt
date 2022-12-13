@@ -1,18 +1,19 @@
 package com.example.brzodolokacije.Activities
 
 import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.widget.Button
 import android.widget.ImageButton
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatDelegate
+import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import com.example.brzodolokacije.Fragments.*
 import com.example.brzodolokacije.R
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import com.google.android.material.bottomsheet.BottomSheetDialog
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
+import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent
 
 class NavigationActivity : AppCompatActivity() {
 
@@ -33,6 +34,7 @@ class NavigationActivity : AppCompatActivity() {
         val profileFragment=FragmentProfile()
         bottomNav=findViewById<View>(R.id.bottomNavigationView) as BottomNavigationView
         setCurrentFragment(fragmentHomePage)
+        KeyboardEvents()
         bottomNav.setOnNavigationItemSelectedListener {
             when(it.itemId){
                 R.id.navHomePage->setCurrentFragment(fragmentHomePage)
@@ -61,34 +63,25 @@ class NavigationActivity : AppCompatActivity() {
         bottomSheetDialog2.setContentView(R.layout.bottom_sheet_add_new_post)
         bottomSheetDialog2.show()
 
-        var close=bottomSheetDialog2.findViewById<View>(R.id.btnBottomSheetAddNewPostClose) as ImageButton
-        var openAddPost=bottomSheetDialog2.findViewById<View>(R.id.btnBottomSheetAddNewPostOpenAddPost) as ImageButton
-        var capturePost=bottomSheetDialog2.findViewById<View>(R.id.btnBottomSheetAddNewPostOpenCapturePost) as ImageButton
+
+        var openAddPost=bottomSheetDialog2.findViewById<View>(R.id.btnBottomSheetAddNewPostOpenAddPost) as Button
+        var capturePost=bottomSheetDialog2.findViewById<View>(R.id.btnBottomSheetAddNewPostOpenCapturePost) as Button
 
         openAddPost.setOnClickListener{
-            Toast.makeText(
-                applicationContext, "Open select from gallery ", Toast.LENGTH_LONG
-            ).show();
             val intent = Intent (this, ActivityAddPost::class.java)
             startActivity(intent)
         }
 
         capturePost.setOnClickListener{
-            Toast.makeText(
-                applicationContext, "Open capture ", Toast.LENGTH_LONG
-            ).show();
+
             val intent = Intent (this, ActivityCapturePost::class.java)
             startActivity(intent)
         }
-        close.setOnClickListener {
-            bottomSheetDialog2.dismiss()
-        }
+
 
     }
     private fun showBottomSheetAddNew(){
-        Toast.makeText(
-            applicationContext, "Open add new ", Toast.LENGTH_LONG
-        ).show();
+
         var bottomSheetDialog:BottomSheetDialog
         bottomSheetDialog=BottomSheetDialog(this)
         bottomSheetDialog.setContentView(R.layout.bottom_sheet_add_new)
@@ -103,17 +96,34 @@ class NavigationActivity : AppCompatActivity() {
         }
 
         newLocation.setOnClickListener{
-            Toast.makeText(
-                applicationContext, "Open capture ", Toast.LENGTH_LONG
-            ).show();
+
             val intent = Intent (this, MapsActivity::class.java)
             startActivity(intent)
         }
 
-        close.setOnClickListener {
-            bottomSheetDialog.dismiss()
+
+    }
+
+    fun KeyboardEvents(){
+        KeyboardVisibilityEvent.setEventListener(
+            this
+        ) { isOpen ->
+                if (isOpen) {
+                    bottomNav.visibility = View.GONE
+                    bottomNav.forceLayout()
+
+                } else {
+                    MainScope().launch {
+                        bottomNav.visibility = View.VISIBLE
+                        bottomNav.forceLayout()
+                    }
+                }
         }
     }
 
+    fun changeToProfile(){
+        setCurrentFragment(FragmentProfile())
+        bottomNav.menu.findItem(R.id.navProfile).isChecked = true
+    }
 
 }

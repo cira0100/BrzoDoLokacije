@@ -1,11 +1,8 @@
 package com.example.brzodolokacije.Activities
 
 import android.Manifest
-import android.app.AlertDialog
 import android.content.Context
-import android.content.DialogInterface
 import android.content.pm.PackageManager
-import android.graphics.Color
 import android.location.Location
 import android.location.LocationManager
 import android.os.Build
@@ -21,17 +18,18 @@ import android.view.View
 import android.widget.*
 import android.widget.AdapterView.OnItemClickListener
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import androidx.core.widget.addTextChangedListener
 import com.example.brzodolokacije.Models.LocationType
-import com.example.brzodolokacije.Models.PostPreview
 import com.example.brzodolokacije.R
 import com.example.brzodolokacije.Services.GeocoderHelper
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
 import com.google.android.gms.location.*
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 import org.osmdroid.config.Configuration
 import org.osmdroid.tileprovider.tilesource.TileSourceFactory
@@ -39,7 +37,6 @@ import org.osmdroid.util.GeoPoint
 import org.osmdroid.views.MapView
 import org.osmdroid.views.Projection
 import org.osmdroid.views.overlay.ItemizedIconOverlay
-import org.osmdroid.views.overlay.Marker
 import org.osmdroid.views.overlay.Overlay
 import org.osmdroid.views.overlay.OverlayItem
 import org.osmdroid.views.overlay.ScaleBarOverlay
@@ -50,8 +47,6 @@ import org.osmdroid.views.overlay.mylocation.GpsMyLocationProvider
 import org.osmdroid.views.overlay.mylocation.MyLocationNewOverlay
 import retrofit2.Call
 import retrofit2.Response
-import java.util.*
-import kotlin.collections.ArrayList
 
 
 class MapsActivity : AppCompatActivity() {
@@ -126,18 +121,26 @@ class MapsActivity : AppCompatActivity() {
     }
     fun addLocation(){
         var editText=EditText(this)
-        var dialog=AlertDialog.Builder(this).setTitle("Naziv").setMessage("Unesite naziv")
-            .setView(editText)
-        dialog.setPositiveButton("Dodaj") { dialog, which ->
+        var builder=MaterialAlertDialogBuilder(this)
+        builder.background = AppCompatResources.getDrawable(this,R.drawable.rounded_alert_background)
+        builder.setView(editText)
+        builder.setTitle("Unesite naziv lokacije")
+        if(searchBar.text!=null && searchBar.text.toString().trim()!="")
+            editText.setText(searchBar.text.toString())
+        builder.setPositiveButton("Dodaj") { dialog, which ->
             uploadLocation(editText.text.toString())
         }
-        dialog.setNegativeButton("Prekini") { dialog, which ->
+        builder.setNegativeButton("Prekini") { dialog, which ->
 
         }
-        dialog.show()
+        builder.show()
 
     }
     fun uploadLocation(locationName:String){
+        if(locationName.isNullOrEmpty() ||locationName.toString().trim()=="") {
+            Toast.makeText(this@MapsActivity,"Morate uneti naziv lokacije",Toast.LENGTH_SHORT).show()
+            return
+        }
         val api =RetrofitHelper.getInstance()
         var geocoder=GeocoderHelper.getInstance()
         var loc1=geocoder!!.getFromLocation(locLatitude!!,locLongitude!!,1)
@@ -399,16 +402,16 @@ class MapsActivity : AppCompatActivity() {
         //Log.d("Main",geocoder!!.getFromLocationName("Paris",1)[0].countryName)
         var locString=searchBar.text.toString().trim()
         if(locString==null || locString=="")
-            Toast.makeText(this,"Unesite naziv lokacije", Toast.LENGTH_LONG)
+            Toast.makeText(this@MapsActivity,"Unesite naziv lokacije", Toast.LENGTH_LONG)
         else{
             var temp=geocoder!!.getFromLocationName(locString,1)
             if(temp.size<=0) {
-                Toast.makeText(this,"Nepostojeca lokacija",Toast.LENGTH_LONG)
+                Toast.makeText(this@MapsActivity,"Nepostojeca lokacija",Toast.LENGTH_LONG)
                 return
             }
             var result=temp[0]
             if(result==null)
-                Toast.makeText(this,"Nepostojeca lokacija", Toast.LENGTH_LONG)
+                Toast.makeText(this@MapsActivity,"Nepostojeca lokacija", Toast.LENGTH_LONG)
             else{
                 //Move to spot
                 val searchPoint = GeoPoint(result.latitude,result.longitude)

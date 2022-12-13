@@ -92,7 +92,9 @@ namespace Api.Models
     {
         VIEWS_DESC=1,
         RATING_DESC=2,
-        DATE =3
+        DATE =3,
+        DATE_ASC=4,
+
     }
     public enum FilterDate
     {
@@ -122,5 +124,32 @@ namespace Api.Models
     {
         public TagR tagr { get; set; }
         public PostSendPage page { get; set; }
+    }
+
+    public class FilterSort
+    {
+        public List<PostSend> posts { get; set; }
+        public bool sort { get; set; }
+        public bool filter { get; set; }
+        public bool filterDate { get; set; }
+        public bool filterRating { get; set; }
+        public bool filterViews{ get; set; }
+        public DateTime filterDateFrom { get; set; }
+        public DateTime filterDateTo { get; set; }
+        public int filterRatingFrom { get; set; }
+        public int filterRatingTo { get; set; }
+        public int filterViewsFrom { get; set; }
+        public int filterViewsTo { get; set; }
+
+        public bool sortLatest { get; set; }    
+        public bool sortOldest { get; set; }
+        public bool sortBest{ get; set; }
+        public bool sortMostViews{ get; set; }
+
+
+
+
+
+
     }
 }

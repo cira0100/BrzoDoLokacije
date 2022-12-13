@@ -1,8 +1,6 @@
 package com.example.brzodolokacije.Activities
 
 import android.Manifest
-import android.app.AlertDialog
-import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
 import android.os.Bundle
@@ -11,6 +9,7 @@ import android.widget.Toast
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -24,8 +23,12 @@ import com.example.brzodolokacije.Models.MessageReceive
 import com.example.brzodolokacije.R
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
+import com.example.brzodolokacije.chat.Notifications
 import com.example.brzodolokacije.chat.SignalRListener
 import com.example.brzodolokacije.databinding.ActivityChatBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import kotlinx.coroutines.MainScope
+import kotlinx.coroutines.launch
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
@@ -48,47 +51,14 @@ class ChatActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding= ActivityChatBinding.inflate(layoutInflater)
-        permissionLauncher=registerForActivityResult(
-            ActivityResultContracts.RequestPermission()
-        ) { isGranted: Boolean ->
-            if (!isGranted) {
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                    if (Build.VERSION.SDK_INT >= 33) {
-                        //ako je  upravo odbijena dozvola na uredjaju na kome je ona neophodna
-                        binding.btnNotifications.setImageResource(R.drawable.bell_off)
-                    }
-                    else{
-                        //ako je  upravo odbijena dozvola na uredjaju na kome nije ona neophodna
-                        binding.btnNotifications.setImageResource(R.drawable.bell_on)
-                    }
-                }
-                else{
-                    //ako je  upravo odbijena dozvola na uredjaju na kome nije ona neophodna
-                    binding.btnNotifications.setImageResource(R.drawable.bell_on)
-                }
-            }
-            else{
-                //ako je  upravo prihvacena dozvola na uredjaju na kome nije ona neophodna
-                binding.btnNotifications.setImageResource(R.drawable.bell_on)
-            }
-        }
-        //provera da li je dozvoljeno
-        when {
-            ContextCompat.checkSelfPermission(this,Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED -> {
-                binding.btnNotifications.setImageResource(R.drawable.bell_on)
-            }
-            else -> {
-                binding.btnNotifications.setImageResource(R.drawable.bell_off)
-            }
-        }
-
-
+        Notifications.makeChannel(this)
+        setPermissionLauncher()
+        checkPermissions()
         setContentView(binding.root)
         dbConnection= DBHelper(this@ChatActivity,null)
         ws=SignalRListener.getInstance(this@ChatActivity)
         setListeners()
         setRecyclerView()
-        requestNewMessages()
         swipeRefreshLayout = binding.swipeContainer
         swipeRefreshLayout?.setOnRefreshListener(this@ChatActivity)
         swipeRefreshLayout?.setColorSchemeResources(
@@ -97,11 +67,52 @@ class ChatActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
             R.color.dark_blue_transparent,
             R.color.purple_700
         )
-        swipeRefreshLayout?.post(kotlinx.coroutines.Runnable {
-            swipeRefreshLayout?.isRefreshing=true
-            requestNewMessages()
-        })
+    }
 
+    override fun onResume() {
+        super.onResume()
+        clickedChat=null
+        requestNewMessages()
+    }
+
+    fun setPermissionLauncher(){
+        permissionLauncher=registerForActivityResult(
+            ActivityResultContracts.RequestPermission()
+        ) { isGranted: Boolean ->
+            if (!isGranted) {
+                binding.btnNotifications.setImageResource(R.drawable.bell_off)
+            }
+            else{
+                binding.btnNotifications.setImageResource(R.drawable.bell_on)
+            }
+        }
+    }
+
+    fun checkPermissions(){
+        when {
+            //treba proveriti permisije
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU-> {
+                if(ContextCompat.checkSelfPermission(this,Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
+                    binding.btnNotifications.setImageResource(R.drawable.bell_on)
+                }
+                else{
+                    binding.btnNotifications.setImageResource(R.drawable.bell_off)
+                }
+            }
+            //treba proveriti preference
+            else-> {
+                if(SharedPreferencesHelper.getValue("notifications",this)==null){
+                    SharedPreferencesHelper.addValue("notifications","false",this@ChatActivity)
+                }
+                else if (SharedPreferencesHelper.getValue("notifications",this)=="true") {
+                    binding.btnNotifications.setImageResource(R.drawable.bell_on)
+                }
+                else{
+                    binding.btnNotifications.setImageResource(R.drawable.bell_off)
+                }
+            }
+
+        }
     }
 
     fun launchNotificationPermissionPrompt(){
@@ -109,44 +120,54 @@ class ChatActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
     }
 
     fun launchInfoDialog(){
-        val alertDialog: AlertDialog = AlertDialog.Builder(this@ChatActivity).create()
-        alertDialog.setTitle("Obaveštenje")
-        alertDialog.setMessage("Potrebno je restartovati aplikaciju da bi se sačuvale promene.")
-        alertDialog.setButton(AlertDialog.BUTTON_NEUTRAL, "OK"
+        var builder= MaterialAlertDialogBuilder(this)
+        builder.background = AppCompatResources.getDrawable(this,R.drawable.rounded_alert_background)
+        builder.setTitle("Obaveštenje")
+        builder.setMessage("Potrebno je restartovati aplikaciju da bi se sačuvale promene.")
+        builder.setPositiveButton("OK",
         ) { dialog, _ -> dialog.dismiss() }
-        alertDialog.show()
+        builder.show()
     }
 
 
     fun setListeners(){
-        findViewById<ImageButton>(R.id.addNewMessage).setOnClickListener {
-            val intent: Intent = Intent(this@ChatActivity,ChatActivityConversation::class.java)
-            intent.putExtra("receiverId","")
-            startActivity(intent)
-        }
         findViewById<ImageButton>(R.id.btnBack).setOnClickListener {
             finish()
         }
         findViewById<ImageButton>(R.id.btnNotifications).setOnClickListener {
             when {
-                ContextCompat.checkSelfPermission(this,Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED -> {
-                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                //treba proveriti permisije
+                Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU-> {
+                    if(ContextCompat.checkSelfPermission(this,Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED) {
                         revokeSelfPermissionOnKill(Manifest.permission.POST_NOTIFICATIONS)
+                        launchInfoDialog()
                     }
-                    launchInfoDialog()
+                     else{
+                        launchNotificationPermissionPrompt()
+                    }
                 }
-                else -> {
-                    launchNotificationPermissionPrompt()
+                //treba proveriti preference
+                else-> {
+                    if (SharedPreferencesHelper.getValue("notifications",this)=="true") {
+                        SharedPreferencesHelper.addValue("notifications","false",this@ChatActivity)
+                        binding.btnNotifications.setImageResource(R.drawable.bell_off)
+                    }
+                    else{
+                        SharedPreferencesHelper.addValue("notifications","true",this@ChatActivity)
+                        binding.btnNotifications.setImageResource(R.drawable.bell_on)
+                    }
                 }
+
             }
         }
     }
 
     fun requestForChats(){
-        var dbHelper= DBHelper.getInstance(this@ChatActivity)
-        items=dbHelper.getContacts()
-        adapterVar= items?.let { ChatPreviewsAdapter(it,this@ChatActivity) }
-        setRecyclerView(setParams = false)
+        MainScope().launch{
+            var dbHelper= DBHelper.getInstance(this@ChatActivity)
+            items=dbHelper.getContacts()
+            setRecyclerView()
+        }
     }
 
     fun requestNewMessages(){
@@ -164,7 +185,8 @@ class ChatActivity : AppCompatActivity(), SwipeRefreshLayout.OnRefreshListener {
                             cal.time=message.timestamp
                             dbHelper.addMessage(
                                 Message(message.senderId+message.timestamp,message.senderId,
-                                JWT(SharedPreferencesHelper.getValue("jwt",this@ChatActivity)!!).claims["id"]?.asString()!!,message.messagge,message.timestamp,cal),false)
+                                    JWT(SharedPreferencesHelper.getValue("jwt",this@ChatActivity)!!).claims["id"]?.asString()!!,message.messagge,message.timestamp,cal),false)
+
                         }
                     }
                     requestForChats()

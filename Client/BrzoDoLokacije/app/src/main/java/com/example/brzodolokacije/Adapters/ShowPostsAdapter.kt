@@ -3,7 +3,9 @@ package com.example.brzodolokacije.Adapters
 import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.paging.PagingDataAdapter
@@ -16,6 +18,8 @@ import com.example.brzodolokacije.Models.PostPreview
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
 import com.example.brzodolokacije.databinding.PostPreviewBinding
+import kotlinx.android.synthetic.main.post_preview.view.*
+import java.text.SimpleDateFormat
 
 
 class ShowPostsAdapter (val activity:Activity,val items : MutableList<PostPreview>?=null)
@@ -51,7 +55,7 @@ class ShowPostsAdapter (val activity:Activity,val items : MutableList<PostPrevie
         //sets components of particular item
         holder.bind(getItem(position)!!)
         holder.itemView.setOnClickListener {
-            Toast.makeText(activity,getItem(position)!!._id,Toast.LENGTH_LONG).show()
+
             val intent:Intent = Intent(activity,ActivitySinglePost::class.java)
             var b=Bundle()
             //getItem(position)!!.location.type=LocationType.ADA
@@ -65,9 +69,16 @@ class ShowPostsAdapter (val activity:Activity,val items : MutableList<PostPrevie
 
     inner class ViewHolder(itemView: PostPreviewBinding) : RecyclerView.ViewHolder(itemView.root) {
         fun bind(item: PostPreview) {
-            binding.apply {
+            itemView.apply {
+                tvPostPreviewDate.text= SimpleDateFormat("dd/MM/yyyy").format(item.createdAt)
                 tvTitle.text = item.location.name
-                tvLocationParent.text = item.location.country
+                if(item.location.city!=null)
+                    tvLocationParent.text = item.location.city
+                else
+                    tvLocationParent.text = item.location.country
+                tvPostPreviewRating.text=item.ratings.toString()
+                if(item.images.size>1)
+                    ivMultipleImagesIcon.visibility= View.VISIBLE
                 //tvLocationType.text = "TODO"
                 if(item.images.isNotEmpty()) {
                     Glide.with(activity)

@@ -6,6 +6,7 @@
     android:layout_height="wrap_content">
 
     <RadioGroup
+        android:id="@+id/radioGroup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         app:layout_constraintEnd_toEndOf="parent"
@@ -13,7 +14,7 @@
         app:layout_constraintTop_toBottomOf="@+id/textView12">
 
         <RadioButton
-            android:id="@+id/radioButton"
+            android:id="@+id/sortLatest"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -21,20 +22,10 @@
             android:text="Najnovije"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.0"
-            app:layout_constraintStart_toStartOf="parent"
- />
+            app:layout_constraintStart_toStartOf="parent" />
 
         <RadioButton
-            android:id="@+id/radioButton2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
-            android:text="Najbolje ocenjeno"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/radioButton4" />
-
-        <RadioButton
-            android:id="@+id/radioButton3"
+            android:id="@+id/sortOldest"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
@@ -43,15 +34,43 @@
             app:layout_constraintTop_toBottomOf="@+id/radioButton" />
 
         <RadioButton
-            android:id="@+id/radioButton4"
+            android:id="@+id/sortBest"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
+            android:text="Najbolje ocenjeno"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/radioButton4" />
 
+
+        <RadioButton
+            android:id="@+id/sortMostViewed"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
             android:text="Najviše pregleda"
             app:layout_constraintTop_toBottomOf="@+id/radioButton3"
             tools:layout_editor_absoluteX="16dp" />
+
     </RadioGroup>
+
+    <Button
+        android:id="@+id/btnSortPosts"
+        android:layout_width="match_parent"
+        android:layout_height="39dp"
+        android:layout_marginHorizontal="10dp"
+        android:layout_marginTop="16dp"
+        android:layout_marginBottom="16dp"
+        android:layout_weight="1"
+        android:background="@drawable/view_corner_radius"
+        android:text="Primeni"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/radioGroup"
+        app:layout_constraintVertical_bias="0.0"
+        tools:ignore="TouchTargetSizeCheck" />
 
     <TextView
         android:id="@+id/textView12"

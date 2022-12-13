@@ -2,16 +2,20 @@ package com.example.brzodolokacije.chat
 
 import android.Manifest
 import android.app.Activity
+import android.app.PendingIntent
+import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Color
 import android.util.Log
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.app.TaskStackBuilder
 import androidx.core.content.ContextCompat
 import com.auth0.android.jwt.JWT
 import com.exam.DBHelper
 import com.example.brzodolokacije.Activities.ChatActivity
+import com.example.brzodolokacije.Activities.ChatActivityConversation
 import com.example.brzodolokacije.Models.Message
 import com.example.brzodolokacije.Models.MessageReceive
 import com.example.brzodolokacije.Models.UserReceive
@@ -82,35 +86,42 @@ class SignalRListener private constructor(val activity: Activity){
             if(activity.clickedChat?.userId==message.senderId){
                 activity.clickedChat?.requestMessages()
             }
-            activity.requestNewMessages()
+            activity.onRefresh()
         }
-        when {
-            ContextCompat.checkSelfPermission(activity,
-                Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED -> {
-                //poslati notifikaciju
-                var api=RetrofitHelper.getInstance()
-                var token=SharedPreferencesHelper.getValue("jwt",activity)
-                val request2=api?.getProfileFromId("Bearer "+token,
-                    message.senderId
-                )
-                request2?.enqueue(object : retrofit2.Callback<UserReceive?> {
-                    override fun onResponse(call: Call<UserReceive?>, response: Response<UserReceive?>) {
-                        if(response.isSuccessful()){
-                            var user=response.body()!!
-                            createNotification(message,user,activity)
-                            }
-                        }
-
-                    override fun onFailure(call: Call<UserReceive?>, t: Throwable) {
-                        //TODO("Not yet implemented")
+        if(ContextCompat.checkSelfPermission(activity,
+                Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED || SharedPreferencesHelper.getValue("notifications",activity)=="true"){
+            //poslati notifikaciju
+            var api=RetrofitHelper.getInstance()
+            var token=SharedPreferencesHelper.getValue("jwt",activity)
+            val request2=api?.getProfileFromId("Bearer "+token,
+                message.senderId
+            )
+            request2?.enqueue(object : retrofit2.Callback<UserReceive?> {
+                override fun onResponse(call: Call<UserReceive?>, response: Response<UserReceive?>) {
+                    if(response.isSuccessful()){
+                        var user=response.body()!!
+                        createNotification(message,user,activity)
                     }
-                })
                 }
-            }
 
+                override fun onFailure(call: Call<UserReceive?>, t: Throwable) {
+                    //TODO("Not yet implemented")
+                }
+            })
+        }
     }
 
     fun createNotification(message: MessageReceive,user: UserReceive,activity: Activity){
+        val resultIntent = Intent(activity, ChatActivityConversation::class.java)
+        resultIntent.putExtra("userId",user._id)
+        resultIntent.putExtra("username",user.username)
+        resultIntent.putExtra("pfp",user.pfp?._id)
+        val resultPendingIntent: PendingIntent? = TaskStackBuilder.create(activity).run {
+            addNextIntentWithParentStack(resultIntent)
+            getPendingIntent(0,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+        }
+
         val notificationBuilder = NotificationCompat.Builder(activity, Notifications.CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_round_chat_24)
             .setAutoCancel(true)
@@ -120,6 +131,7 @@ class SignalRListener private constructor(val activity: Activity){
             .setContentTitle(user.username)
             .setContentText(message.messagge)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            .setContentIntent(resultPendingIntent)
         val notificationManager = NotificationManagerCompat.from(activity)
         val notification = notificationBuilder.build()
         notificationManager.notify(NotificationID.iD, notification)

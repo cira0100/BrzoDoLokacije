@@ -15,6 +15,8 @@ import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentTransaction
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
 import com.bumptech.glide.Glide
 import com.example.brzodolokacije.Activities.ActivityShowFollowersAndFollowing
 import com.example.brzodolokacije.Models.UserReceive
@@ -41,7 +43,9 @@ private const val ARG_PARAM2 = "param2"
  * Use the [FragmentProfile.newInstance] factory method to
  * create an instance of this fragment.
  */
-class FragmentProfile : Fragment(com.example.brzodolokacije.R.layout.fragment_profile) {
+class FragmentProfile : Fragment(com.example.brzodolokacije.R.layout.fragment_profile),OnRefreshListener {
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
+
     // TODO: Rename and change types of parameters
     private lateinit var username: TextView
     private lateinit var name: TextView
@@ -60,6 +64,7 @@ class FragmentProfile : Fragment(com.example.brzodolokacije.R.layout.fragment_pr
     private lateinit var profilePicturePlus: MaterialButton
     private lateinit var showFollowers: TextView
     private lateinit var showFollowing: TextView
+    public  var usernameStringSend:String?=null
 
 
     override fun onCreateView(
@@ -131,8 +136,37 @@ class FragmentProfile : Fragment(com.example.brzodolokacije.R.layout.fragment_pr
             intent.putExtras(bundle)
             startActivity(intent)
         }
-        getProfileInfo()
-        openMyPosts()
+        swipeRefreshLayout = view.findViewById<View>(R.id.ProfileSwipeRefresh) as SwipeRefreshLayout
+        swipeRefreshLayout?.setOnRefreshListener(this@FragmentProfile)
+        swipeRefreshLayout?.setColorSchemeResources(
+            R.color.purple_200,
+            R.color.teal_200,
+            R.color.dark_blue_transparent,
+            R.color.purple_700
+        )
+        swipeRefreshLayout?.post(kotlinx.coroutines.Runnable {
+            swipeRefreshLayout?.isRefreshing=true
+        })
+
+
+        followersNumber.setOnClickListener{
+            val bundle = Bundle()
+            bundle.putString("userId","error")
+            bundle.putString("show","followers")
+            bundle.putString("showMy","yes")
+            val intent = Intent(activity, ActivityShowFollowersAndFollowing::class.java)
+            intent.putExtras(bundle)
+            startActivity(intent)
+        }
+        followingNumber.setOnClickListener {
+            val bundle = Bundle()
+            bundle.putString("userId","error")
+            bundle.putString("show","following")
+            bundle.putString("showMy","yes")
+            val intent = Intent(activity,ActivityShowFollowersAndFollowing::class.java)
+            intent.putExtras(bundle)
+            startActivity(intent)
+        }
         return view
     }
     fun openMyPosts(){
@@ -140,6 +174,16 @@ class FragmentProfile : Fragment(com.example.brzodolokacije.R.layout.fragment_pr
 
         fm.replace(com.example.brzodolokacije.R.id.flFragmentProfileFragmentContainer, FragmentUserPosts())
         fm.commit()
+    }
+
+    override fun onRefresh() {
+        onResume()
+    }
+
+    override fun onResume(){
+        super.onResume()
+        getProfileInfo()
+        openMyPosts()
     }
 
     private fun addProfilePicture(){
@@ -193,7 +237,9 @@ class FragmentProfile : Fragment(com.example.brzodolokacije.R.layout.fragment_pr
             override fun onResponse(call: Call<UserReceive?>, response: Response<UserReceive?>) {
                 if(response.isSuccessful()){
                      setUserInfo(response.body()!!)
+                    swipeRefreshLayout.isRefreshing=false
                 }else{
+                    swipeRefreshLayout.isRefreshing=false
                     if(response.errorBody()!=null)
                         Toast.makeText(activity, response.errorBody()!!.string(), Toast.LENGTH_LONG).show();
                 }
@@ -202,12 +248,14 @@ class FragmentProfile : Fragment(com.example.brzodolokacije.R.layout.fragment_pr
                 Toast.makeText(
                     activity, t.toString(), Toast.LENGTH_LONG
                 ).show();
+                swipeRefreshLayout.isRefreshing=false
             }
         })
     }
     private fun setUserInfo(user:UserReceive){
         name.setText(user.name)
         username.setText("@"+user.username)
+        usernameStringSend=user.username
         postsCount.setText(user.postcount.toString())
         Log.d("follno",user.followersCount.toString())
         Log.d("follno","helllllllllllllllllllllppppppppppppppppppppppppppppppp")

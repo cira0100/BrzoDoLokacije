@@ -2,6 +2,8 @@ package com.example.brzodolokacije.Adapters
 
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -9,22 +11,28 @@ import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.brzodolokacije.Activities.ActivitySinglePost
+import com.example.brzodolokacije.Activities.ActivityUserProfile
+import com.example.brzodolokacije.Fragments.FragmentSinglePostComments
 import com.example.brzodolokacije.Interfaces.IBackendApi
 import com.example.brzodolokacije.Models.CommentReceive
 import com.example.brzodolokacije.Models.CommentSend
 import com.example.brzodolokacije.Models.UserReceive
+import com.example.brzodolokacije.R
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
 import com.example.brzodolokacije.databinding.SingleCommentBinding
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.single_comment.view.*
 import retrofit2.Call
 import retrofit2.Response
+import java.util.*
 
-class CommentsAdapter (val items : MutableList<CommentSend>,val activity: Activity)
+class CommentsAdapter (val items : MutableList<CommentSend>,val activity: Activity, val fragment:FragmentSinglePostComments)
     : RecyclerView.Adapter<CommentsAdapter.ViewHolder>(){
     //constructer has one argument - list of objects that need to be displayed
     //it is bound to xml of single item
@@ -52,6 +60,8 @@ class CommentsAdapter (val items : MutableList<CommentSend>,val activity: Activi
     inner class ViewHolder(itemView : SingleCommentBinding) : RecyclerView.ViewHolder(itemView.root){
         fun bind(item : CommentSend){
             binding.apply {
+                var color = ContextCompat.getColor(activity, R.color.purple_500)
+                etReplyCount.setTextColor(color)
                 tvCommentAuthor.text=item.username
                 tvCommentText.text=item.comment
                 Log.d("info",tvCommentText.text.toString()+binding.toString())
@@ -80,7 +90,7 @@ class CommentsAdapter (val items : MutableList<CommentSend>,val activity: Activi
                     else{
                         showKeyboard(etReply)
                         btnPostReply.setOnClickListener{
-                            if(etReply.text.isNotEmpty()){
+                            if(etReply.text!!.isNotEmpty()){
                                 val postId=(activity as ActivitySinglePost).post._id
                                 Log.d("main",binding.toString())
                                 val comment= CommentReceive(etReply.text.toString(),item._id)
@@ -92,16 +102,46 @@ class CommentsAdapter (val items : MutableList<CommentSend>,val activity: Activi
                         }
                     }
                 }
+                ivPfp.setOnClickListener {
+                    val intent: Intent = Intent(activity, ActivityUserProfile::class.java)
+                    var b= Bundle()
+                    intent.putExtra("user", Gson().toJson(
+                        UserReceive(item.userId,"",item.username,"",
+                            Date(),null,0, listOf(),0,listOf(),0,listOf(),0,null)
+                    ))
+                    activity.startActivity(intent)
+                }
 
 
                 var rv: RecyclerView = rvReplies
                 rv.setHasFixedSize(true)
                 rv.layoutManager=LinearLayoutManager(activity,LinearLayoutManager.VERTICAL,false)
-                if(item.replies!=null)
-                    rv.adapter=CommentsAdapter(item.replies as MutableList<CommentSend>,activity)
-                else
-                    rv.adapter=CommentsAdapter(mutableListOf(),activity)
+                etReplyCount.setOnClickListener {
+                    if(llReplies.visibility==View.VISIBLE)
+                        llReplies.visibility=View.GONE
+                    else
+                        llReplies.visibility=View.VISIBLE
+                    llReplies.forceLayout()
+                }
+                if(item.replies!=null){
+                    setReplyCount(layoutPosition)
+                    rv.adapter=CommentsAdapter(item.replies as MutableList<CommentSend>,activity,fragment)
+                }
+                else {
+                    rv.adapter = CommentsAdapter(mutableListOf(), activity, fragment)
+                }
             }
+        }
+        fun setReplyCount(position: Int){
+
+            if(items[position].replies==null)
+                items[position].replies= mutableListOf()
+            if(items[position].replies!!.count()==1)
+                itemView.etReplyCount.text=items[position].replies!!.count().toString() + " odgovor"
+            else
+                itemView.etReplyCount.text=items[position].replies!!.count().toString() + " odgovora"
+            itemView.clReplyCount.visibility=View.VISIBLE
+            itemView.clReplyCount.invalidate()
         }
         fun showKeyboard(item:EditText){
             var imm:InputMethodManager=activity.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -121,9 +161,10 @@ class CommentsAdapter (val items : MutableList<CommentSend>,val activity: Activi
                     if(response.isSuccessful){
                         var newComment=response.body()!!
                         requestGetComments(newComment)
-                        itemView.etReply.text.clear()
+                        itemView.etReply.text!!.clear()
                         hideKeyboard(itemView.etReply)
                         itemView.etReply.clearFocus()
+                        setReplyCount(bindingAdapterPosition)
                     }else{
                         if(response.errorBody()!=null)
                             Log.d("main1",response.message().toString())
@@ -143,7 +184,7 @@ class CommentsAdapter (val items : MutableList<CommentSend>,val activity: Activi
             var adapter:CommentsAdapter=rv.adapter as CommentsAdapter
             adapter.items.add(0,newComment)
             rv.adapter=adapter
-            //(activity as ActivitySinglePost).addedComment()
+            fragment.addedComment()
         }
 
         private fun requestProfilePic(item:CommentSend){

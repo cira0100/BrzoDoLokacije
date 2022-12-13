@@ -9,7 +9,6 @@ import com.example.brzodolokacije.Activities.ActivityLoginRegister
 import com.example.brzodolokacije.Activities.NavigationActivity
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
-import com.example.brzodolokacije.chat.Notifications
 import retrofit2.Call
 import retrofit2.Response
 
@@ -23,7 +22,6 @@ class MainActivity : AppCompatActivity() {
         val intent:Intent
 
         if(checkLoggedIn()) {
-            Notifications.makeChannel(this)
             intent = Intent(this, NavigationActivity::class.java)
         }
         else
@@ -57,13 +55,14 @@ class MainActivity : AppCompatActivity() {
             override fun onResponse(call: Call<String?>, response: Response<String?>) {
                 if(response.isSuccessful()){
                     val newToken=response.body().toString()
-                    Toast.makeText(
-                        applicationContext, token, Toast.LENGTH_LONG
-                    ).show();
+
                     SharedPreferencesHelper.addValue("jwt",newToken,this@MainActivity)
                 }else{
                     if(response.errorBody()!=null)
                         Toast.makeText(applicationContext, response.errorBody()!!.string(), Toast.LENGTH_LONG).show();
+                    intent= Intent(this@MainActivity, ActivityLoginRegister::class.java)
+                    SharedPreferencesHelper.removeValue("jwt",this@MainActivity)
+                    startActivity(intent)
                 }
 
 

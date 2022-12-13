@@ -1,9 +1,9 @@
 package com.example.brzodolokacije.Activities
 
+import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.util.Log
-import android.view.View
 import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.Toast
@@ -11,6 +11,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.auth0.android.jwt.JWT
+import com.bumptech.glide.Glide
 import com.exam.DBHelper
 import com.example.brzodolokacije.Adapters.ChatMessagesAdapter
 import com.example.brzodolokacije.Models.Message
@@ -21,6 +22,7 @@ import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
 import com.example.brzodolokacije.chat.SignalRListener
 import com.example.brzodolokacije.databinding.ActivityChatConversationBinding
+import com.google.gson.Gson
 import kotlinx.coroutines.MainScope
 import kotlinx.coroutines.launch
 import retrofit2.Call
@@ -39,6 +41,7 @@ class ChatActivityConversation : AppCompatActivity() {
     var webSocketConnection:SignalRListener?=null
     var items:MutableList<Message>?=mutableListOf()
     var userImage:Bitmap?=null
+    var userImageId:String?=null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,13 +49,19 @@ class ChatActivityConversation : AppCompatActivity() {
         setContentView(binding.root)
         userId=intent.extras?.get("userId").toString()
         receiverUsername=intent.extras?.get("username").toString()
-        userImage=intent.extras?.get("pfp") as Bitmap?
+        if(intent.extras?.get("pfp") is Bitmap){
+            userImage=intent.extras?.get("pfp") as Bitmap?
+        }
+        else{
+            userImageId=intent.extras?.get("pfp") as String?
+        }
         dbConnection=DBHelper.getInstance(this@ChatActivityConversation)
         setHeader()
         setRecyclerView()
         requestMessages()
         webSocketConnection=SignalRListener.getInstance(this@ChatActivityConversation)
-        (webSocketConnection!!.activity as ChatActivity).setClickedActivity(this@ChatActivityConversation)
+        if(webSocketConnection!!.activity is ChatActivity)
+            (webSocketConnection!!.activity as ChatActivity).setClickedActivity(this@ChatActivityConversation)
         setListeners()
     }
 
@@ -62,58 +71,6 @@ class ChatActivityConversation : AppCompatActivity() {
             var messageContent=findViewById<EditText>(R.id.etNewMessage).text.trim().toString()
             val Api= RetrofitHelper.getInstance()
             if(!messageContent.isNullOrEmpty()){
-                if(userId.isNullOrEmpty() || userId.equals("null")){
-                    //zahtev sa username=om
-                    receiverUsername=findViewById<EditText>(R.id.etReceiverUsername).text.toString()
-                    val request=Api.getProfile("Bearer "+token,
-                        receiverUsername!!
-                    )
-                    request.enqueue(object : retrofit2.Callback<UserReceive?> {
-                        override fun onResponse(call: Call<UserReceive?>, response: Response<UserReceive?>) {
-                            if(response.isSuccessful()){
-                                //zahtev da se posalje poruka
-                                var user:UserReceive=response.body()!!
-                                userId=user._id
-                                setHeader()
-                                var message= MessageSend(userId!!,messageContent)
-                                val request2=Api.sendMessage("Bearer "+token,
-                                    message
-                                )
-                                request2.enqueue(object : retrofit2.Callback<Message?> {
-                                    override fun onResponse(call: Call<Message?>, response: Response<Message?>) {
-                                        if(response.isSuccessful()){
-                                            //zahtev da se posalje poruka
-                                            var responseMessage=response.body()
-                                            var cal: Calendar = Calendar.getInstance()
-                                            cal.time=responseMessage?.timestamp
-                                            responseMessage?.usableTimeStamp=cal
-                                            dbConnection?.addMessage(responseMessage!!,username=user.username)
-                                            requestMessages()
-                                            binding.etNewMessage.text?.clear()
-
-                                        }
-                                        else{
-                                            Toast.makeText(this@ChatActivityConversation,"Pogresno korisnicko ime1.",Toast.LENGTH_LONG).show()
-                                        }
-                                    }
-
-                                    override fun onFailure(call: Call<Message?>, t: Throwable) {
-                                        Toast.makeText(this@ChatActivityConversation,"Pogresno korisnicko ime2.",Toast.LENGTH_LONG).show()
-                                    }
-                                })
-                            }
-                            else{
-                                Log.d("main",response.message())
-                                //Toast.makeText(this@ChatActivityConversation,"Pogresno korisnicko ime3.",Toast.LENGTH_LONG).show()
-                            }
-                        }
-
-                        override fun onFailure(call: Call<UserReceive?>, t: Throwable) {
-                            Toast.makeText(this@ChatActivityConversation,"fail.",Toast.LENGTH_LONG).show()
-                        }
-                    })
-                }
-                else{
                     //zahtev da se posalje poruka
                     var message= MessageSend(userId!!,messageContent)
                     val request2=Api.sendMessage("Bearer "+token,
@@ -140,35 +97,40 @@ class ChatActivityConversation : AppCompatActivity() {
                             Toast.makeText(this@ChatActivityConversation,"Pogresno korisnicko ime.",Toast.LENGTH_LONG).show()
                         }
                     })
-                }
-
             }
+        }
+        binding.llHeader.setOnClickListener {
+            val intent: Intent = Intent(this@ChatActivityConversation,ActivityUserProfile::class.java)
+            var b= Bundle()
+            intent.putExtra("user", Gson().toJson(
+                UserReceive(userId!!,"",receiverUsername!!,"",Date(),null,0, listOf(),0,listOf(),0,listOf(),0,null)
+            ))
+            this.startActivity(intent)
         }
 
     }
 
     private fun setHeader(){
         if(userId.isNullOrEmpty() || userId.equals("null")){
-            binding.cvParentUsername.visibility= View.VISIBLE
-            binding.cvParentUsername.forceLayout()
-            binding.llHeader.visibility= View.GONE
-            binding.llHeader.invalidate()
-            binding.llHeader.forceLayout()
+            binding.tvFragmentTitle.text="Nije nađen korisnik"
+            binding.tvFragmentTitle.invalidate()
         }
         else{
-            binding.llHeader.visibility= View.VISIBLE
-            binding.llHeader.invalidate()
-            binding.llHeader.forceLayout()
             binding.tvFragmentTitle.text=receiverUsername
             binding.tvFragmentTitle.invalidate()
-            binding.cvParentUsername.visibility= View.GONE
-            binding.cvParentUsername.forceLayout()
         }
         binding.btnBack.setOnClickListener {
             finish()
         }
-        if(userImage!=null)
+        if(userImage!=null){
             binding.ivUserImage.setImageBitmap(userImage)
+        }
+        else if(userImageId!=null){
+            Glide.with(this)
+                .load(RetrofitHelper.baseUrl + "/api/post/image/compress/" + userImageId!!)
+                .circleCrop()
+                .into(binding.ivUserImage)
+        }
     }
     fun setRecyclerView(setParams:Boolean=true){
         MainScope().launch {

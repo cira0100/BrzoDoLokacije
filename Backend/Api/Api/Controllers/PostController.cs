@@ -56,7 +56,7 @@ namespace Api.Controllers
             }
             return BadRequest();
         }
-        [HttpGet("posts/delete/{id}")]
+        [HttpDelete("posts/delete/{id}")]
         [Authorize(Roles = "User")]
         public async Task<ActionResult<string>> deletePost(string id)
         {
@@ -140,9 +140,9 @@ namespace Api.Controllers
         }
         [HttpGet("locations/{id}/posts")]
         [Authorize(Roles = "User")]
-        public async Task<ActionResult<List<PostSend>>> searchPosts(string id,int page=0,int sorttype=1,int  filterdate=1)
+        public async Task<ActionResult<List<PostSend>>> searchPosts(string id,bool filter,int page=0,int sorttype=1,int  filterdate=1,int ratingFrom=-1, int ratingTo=-1,int viewsFrom=-1,int viewsTo=-1)
         {
-            var res = await _postService.SearchPosts(id,page,sorttype,filterdate);
+            var res = await _postService.SearchPosts(id,filter,page,sorttype,filterdate,ratingFrom,ratingTo,viewsFrom,viewsTo);
             if (res != null)
             {
                 return Ok(res);
@@ -199,5 +199,20 @@ namespace Api.Controllers
         {
             return Ok(await _postService.TrendingTags());
         }
-    }
+
+        [HttpGet("userFavouritePosts")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<List<PostSend>>> getUserFavouritePosts()
+        {
+            return Ok(await _postService.userFavouritePosts());
+        }
+        
+        [HttpGet("posts/getAllPostsFilterSort")]
+        [Authorize(Roles = "User")]
+        public async Task<ActionResult<List<PostSend>>> GetAllPostsFilterSort([FromBody] FilterSort fs)
+        {
+            return Ok(await _postService.GetAllPostsFilterSort(fs));
+        }
+
+     }
 }

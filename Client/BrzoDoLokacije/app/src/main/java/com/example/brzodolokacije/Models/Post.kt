@@ -3,6 +3,7 @@ package com.example.brzodolokacije.Models
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 import okhttp3.MultipartBody
+import retrofit2.http.Query
 import java.time.LocalDateTime
 import java.util.*
 
@@ -91,6 +92,29 @@ data class PagedPosts(
 
 data class SearchParams(
     var locationId: String,
+    var filter:Boolean,
     var sorttype:Int,
-    var filterdate:Int
+    var filterdate:Int,
+    var ratingFrom:Int,
+    var ratingTo:Int,
+    var viewsFrom:Int,
+    var viewsTo:Int,
 )
+/*
+data class FilterSort(
+    //var posts: MutableList<PostPreview>,
+    var sort:Boolean,
+    var filter:Boolean,
+
+    //var filterDateFrom:Date,
+    //var filterDateTo:Date,
+    var filterRatingFrom:Int,
+    var filterRatingTo:Int,
+    var filterViewsFrom:Int,
+    var filterViewsTo:Int,
+
+    var sortLatest:Boolean,
+    var sortOldest:Boolean,
+    var sortBest:Boolean,
+    var sortMostViews:Boolean
+    )*/

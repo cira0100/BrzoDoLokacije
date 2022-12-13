@@ -39,9 +39,7 @@ class FragmentFollowers : Fragment() {
         val bundle = this.arguments
         if (bundle != null) {
             userId= bundle.getString("userId").toString()
-            Toast.makeText(
-                activity, bundle.getString("userId"), Toast.LENGTH_LONG
-            ).show();
+
         }
 
         getFollowers()

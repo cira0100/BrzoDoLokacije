@@ -8,11 +8,12 @@ import android.widget.Button
 import android.widget.ImageButton
 import android.widget.LinearLayout
 import android.widget.Toast
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.FragmentTransaction
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import androidx.swiperefreshlayout.widget.SwipeRefreshLayout.OnRefreshListener
+import com.example.brzodolokacije.Activities.NavigationActivity
 import com.example.brzodolokacije.Adapters.ShowPostsHomePageAdapter
 import com.example.brzodolokacije.Interfaces.IBackendApi
 import com.example.brzodolokacije.Models.LocationType
@@ -20,15 +21,15 @@ import com.example.brzodolokacije.Models.PostPreview
 import com.example.brzodolokacije.R
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
-import kotlinx.android.synthetic.main.fragment_home_page_main_scroll.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
 
-class FragmentHomePageMainScroll : Fragment() {
+class FragmentHomePageMainScroll : Fragment(),OnRefreshListener {
 
+    private lateinit var swipeRefreshLayout: SwipeRefreshLayout
     private lateinit var posts : MutableList<PostPreview>
     private lateinit var mostViewedPosts : MutableList<PostPreview>
     private lateinit var newestPosts : MutableList<PostPreview>
@@ -79,107 +80,50 @@ private lateinit var change:Button
         location_waterfall=view.findViewById(R.id.btnFragmentHomePagelocation_waterfall)
 
         //pokupi sve objave iz baze'
-        getAllPosts()
+        //getAllPosts()
 
         var bundle=Bundle()
         var fragment=FragmentShowPostsByLocation()
 
         location_spa.setOnClickListener {
-            filter=LocationType.BANJA
-            filterString=filter.toString()
-            bundle.putString("data",filterString)
-            fragment.arguments=bundle
+                tagSearch("Banja")
 
-            val parentFrag: FragmentHomePage = this@FragmentHomePageMainScroll.getParentFragment() as FragmentHomePage
-            parentFrag.changeScrollVIewToLocationView()
-            parentFrag.setBtnBackVisible()
+
 
 
         }
         location_waterfall.setOnClickListener {
-            filter=LocationType.VODOPAD
-            filterString=filter.toString()
-            bundle.putString("data",filterString)
-            fragment.arguments=bundle
-
-            val parentFrag: FragmentHomePage = this@FragmentHomePageMainScroll.getParentFragment() as FragmentHomePage
-            parentFrag.changeScrollVIewToLocationView()
-            parentFrag.setBtnBackVisible()
+            tagSearch("Vodopad")
 
 
         }
         location_mountain.setOnClickListener {
-            filter=LocationType.PLANINA
-            filterString=filter.toString()
-            bundle.putString("data",filterString)
-            fragment.arguments=bundle
-
-            val parentFrag: FragmentHomePage = this@FragmentHomePageMainScroll.getParentFragment() as FragmentHomePage
-            parentFrag.changeScrollVIewToLocationView()
-            parentFrag.setBtnBackVisible()
+            tagSearch("Planina")
 
 
         }
         location_landmark.setOnClickListener {
-            filter=LocationType.LOKALITET
-            filterString=filter.toString()
-            bundle.putString("data",filterString)
-            fragment.arguments=bundle
-
-            val parentFrag: FragmentHomePage = this@FragmentHomePageMainScroll.getParentFragment() as FragmentHomePage
-            parentFrag.changeScrollVIewToLocationView()
-            parentFrag.setBtnBackVisible()
+            tagSearch("Lokalitet")
 
 
         }
         location_city.setOnClickListener {
-            filter=LocationType.GRAD
-            filterString=filter.toString()
-            bundle.putString("data",filterString)
-            fragment.arguments=bundle
-
-            val parentFrag: FragmentHomePage = this@FragmentHomePageMainScroll.getParentFragment() as FragmentHomePage
-            parentFrag.changeScrollVIewToLocationView()
-            parentFrag.setBtnBackVisible()
+            tagSearch("Grad")
 
         }
         location_lake.setOnClickListener {
-            filter=LocationType.JEZERO
-            filterString=filter.toString()
-            bundle.putString("data",filterString)
-            fragment.arguments=bundle
-            val parentFrag: FragmentHomePage = this@FragmentHomePageMainScroll.getParentFragment() as FragmentHomePage
-            parentFrag.changeScrollVIewToLocationView()
-            parentFrag.setBtnBackVisible()
+            tagSearch("Jezero")
 
         }
         location_attraction.setOnClickListener {
-            filter=LocationType.ATRAKCIJA
-            filterString=filter.toString()
-            bundle.putString("data",filterString)
-            fragment.arguments=bundle
-            val parentFrag: FragmentHomePage = this@FragmentHomePageMainScroll.getParentFragment() as FragmentHomePage
-            parentFrag.changeScrollVIewToLocationView()
-            parentFrag.setBtnBackVisible()
+            tagSearch("Atrakcija")
         }
         location_amusement_park.setOnClickListener {
-            filter=LocationType.ZABAVNI_PARK
-            filterString=filter.toString()
-            bundle.putString("data",filterString)
-            fragment.arguments=bundle
-            val parentFrag: FragmentHomePage = this@FragmentHomePageMainScroll.getParentFragment() as FragmentHomePage
-            parentFrag.changeScrollVIewToLocationView()
-            parentFrag.setBtnBackVisible()
+            tagSearch("Zabavni park")
 
         }
         location_beach.setOnClickListener {
-            filter=LocationType.PLAZA
-            filterString=filter.toString()
-            bundle.putString("data",filterString)
-            fragment.arguments=bundle
-            val parentFrag: FragmentHomePage = this@FragmentHomePageMainScroll.getParentFragment() as FragmentHomePage
-            parentFrag.changeScrollVIewToLocationView()
-            parentFrag.setBtnBackVisible()
+            tagSearch("Plaza")
 
         }
        /* ll1.isVisible=true
@@ -190,13 +134,30 @@ private lateinit var change:Button
         }
 
 */
+        swipeRefreshLayout = view.findViewById<View>(R.id.swipeContainer) as SwipeRefreshLayout
+        swipeRefreshLayout.setOnRefreshListener(this)
+        swipeRefreshLayout.setColorSchemeResources(
+            R.color.purple_200,
+            R.color.teal_200,
+            R.color.dark_blue_transparent,
+            R.color.purple_700
+        )
+        swipeRefreshLayout.post(kotlinx.coroutines.Runnable {
+            swipeRefreshLayout.isRefreshing=true
+        })
         return view
     }
 
+    override fun onRefresh() {
+        getAllPosts()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        getAllPosts()
+    }
+
     private fun getAllPosts(){
-        Toast.makeText(
-                    activity," get all", Toast.LENGTH_LONG
-                ).show();
         val api = Retrofit.Builder()
             .addConverterFactory(GsonConverterFactory.create())
             .baseUrl(RetrofitHelper.baseUrl)
@@ -269,9 +230,7 @@ private lateinit var change:Button
 //        Toast.makeText(
 //            activity, "get all r ", Toast.LENGTH_LONG
 //        ).show();
-        Toast.makeText(
-            activity," get all newest", Toast.LENGTH_LONG
-        ).show();
+
         val api = RetrofitHelper.getInstance()
         val token= SharedPreferencesHelper.getValue("jwt", requireActivity())
         val data=api.get10Newest("Bearer "+token)
@@ -289,6 +248,7 @@ private lateinit var change:Button
                     layoutManager= LinearLayoutManager(activity, LinearLayoutManager.HORIZONTAL,false)
                     adapter= ShowPostsHomePageAdapter(newestposts,requireActivity())
                 }
+                swipeRefreshLayout.isRefreshing=false
             }
             override fun onFailure(call: Call<MutableList<PostPreview>>, t: Throwable) {
 
@@ -301,9 +261,6 @@ private lateinit var change:Button
 //        Toast.makeText(
 //            activity, "get all br ", Toast.LENGTH_LONG
 //        ).show();
-        Toast.makeText(
-            activity," get all best", Toast.LENGTH_LONG
-        ).show();
         val api = RetrofitHelper.getInstance()
         val token= SharedPreferencesHelper.getValue("jwt", requireActivity())
         val data=api.get10Best("Bearer "+token)
@@ -328,6 +285,12 @@ private lateinit var change:Button
         })
 
 
+    }
+    private fun tagSearch(tag:String){
+        var act = requireActivity() as NavigationActivity
+        act.searchQuery = tag
+        act.searchId = ""
+        act.bottomNav.selectedItemId = R.id.navAllPosts
     }
 
 }

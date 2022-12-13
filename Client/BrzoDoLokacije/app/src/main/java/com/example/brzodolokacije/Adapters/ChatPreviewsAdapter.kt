@@ -42,16 +42,6 @@ class ChatPreviewsAdapter (val items : MutableList<ChatPreview>,val activity:Cha
     override fun onBindViewHolder(holder: ViewHolder, position: Int){
         //sets components of particular item
         holder.bind(items[position])
-        holder.itemView.setOnClickListener {
-            val intent: Intent = Intent(activity, ChatActivityConversation::class.java)
-            intent.putExtra("userId",items[position].userId)
-            intent.putExtra("username",holder.itemView.tvUsername.text)
-            intent.putExtra("pfp",holder.itemView.ivUserImage.drawable.toBitmap(200,200))
-            db.readContact(items[position].userId)
-            items[position].read=true
-            holder.itemView.tvUsername.typeface= Typeface.DEFAULT
-            activity.startActivity(intent)
-        }
     }
     override fun getItemCount() = items.size
     inner class ViewHolder(itemView : ChatPreviewBinding) : RecyclerView.ViewHolder(itemView.root){
@@ -70,7 +60,7 @@ class ChatPreviewsAdapter (val items : MutableList<ChatPreview>,val activity:Cha
                             tvUsername.text=user.username
                             if(user.pfp!=null) {
                                 Glide.with(activity)
-                                    .load(RetrofitHelper.baseUrl + "/api/post/image/" + user.pfp!!._id)
+                                    .load(RetrofitHelper.baseUrl + "/api/post/image/compress/" + user.pfp!!._id)
                                     .circleCrop()
                                     .into(ivUserImage)
                             }
@@ -90,10 +80,14 @@ class ChatPreviewsAdapter (val items : MutableList<ChatPreview>,val activity:Cha
                 var lastMessage=db.getLastMessage(item.userId)
                 tvUsername.text=item.username
                 if(lastMessage!=null){
-                    tvLastMessage.text=lastMessage.messagge
-                    if(layoutPosition==0 || isDifferentDays(lastMessage.usableTimeStamp,Calendar.getInstance())){
-                        tvLastMessageDate.text=lastMessage.usableTimeStamp.get(Calendar.HOUR_OF_DAY).toString() + ":" + lastMessage.usableTimeStamp.get(
-                            Calendar.MINUTE).toString()
+                    //var msg=lastMessage.messagge.dropLast(if(lastMessage.messagge.length>20) lastMessage.messagge.length-20 else 0)
+                    tvLastMessage.text=lastMessage.messagge//msg+if(lastMessage.messagge.length>20) "..." else ""
+                    if(!isDifferentDays(lastMessage.usableTimeStamp,Calendar.getInstance())){
+                        var hour=lastMessage.usableTimeStamp.get(Calendar.HOUR_OF_DAY)
+                        var hourStr=if(hour<10) "0"+hour.toString() else hour.toString()
+                        var minute=lastMessage.usableTimeStamp.get(Calendar.MINUTE)
+                        var minuteStr=if(minute<10) "0"+minute.toString() else minute.toString()
+                        tvLastMessageDate.text= hourStr + ":" + minuteStr
                     }
                     else{
                         tvLastMessageDate.text=lastMessage.usableTimeStamp.get(Calendar.DAY_OF_MONTH).toString()+"/"+
@@ -101,6 +95,16 @@ class ChatPreviewsAdapter (val items : MutableList<ChatPreview>,val activity:Cha
                                 lastMessage.usableTimeStamp.get(Calendar.YEAR).toString()
                     }
 
+                }
+                itemView.setOnClickListener {
+                    val intent: Intent = Intent(activity, ChatActivityConversation::class.java)
+                    intent.putExtra("userId",items[position].userId)
+                    intent.putExtra("username",itemView.tvUsername.text)
+                    intent.putExtra("pfp",itemView.ivUserImage.drawable.toBitmap(200,200))
+                    db.readContact(items[position].userId)
+                    items[position].read=true
+                    setRead()
+                    activity.startActivity(intent)
                 }
             }
         }
@@ -121,6 +125,17 @@ class ChatPreviewsAdapter (val items : MutableList<ChatPreview>,val activity:Cha
             itemView.tvLastMessageDate.typeface= Typeface.DEFAULT_BOLD
             itemView.tvLastMessageDate.invalidate()
             itemView.readIndicator.background= ContextCompat.getDrawable(activity,R.color.dark_blue_transparent)
+            itemView.readIndicator.invalidate()
+        }
+
+        fun setRead(){
+            itemView.tvUsername.typeface= Typeface.DEFAULT
+            itemView.tvUsername.invalidate()
+            itemView.tvLastMessage.typeface= Typeface.DEFAULT
+            itemView.tvLastMessage.invalidate()
+            itemView.tvLastMessageDate.typeface= Typeface.DEFAULT
+            itemView.tvLastMessageDate.invalidate()
+            itemView.readIndicator.background= ContextCompat.getDrawable(activity,R.color.white)
             itemView.readIndicator.invalidate()
         }
     }

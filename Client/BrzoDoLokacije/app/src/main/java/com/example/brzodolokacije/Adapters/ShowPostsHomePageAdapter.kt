@@ -7,6 +7,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.net.toUri
 import androidx.recyclerview.widget.RecyclerView
@@ -49,6 +50,7 @@ inner class PostViewHolder(view: View):RecyclerView.ViewHolder(view){
     private val locationName:TextView=view.findViewById(R.id.tvPIHPLocationName)
     private val locationDetail:TextView=view.findViewById(R.id.tvPIHPLocationDetail)
     private val rating:TextView=view.findViewById(R.id.tvPIHPRecension)
+    private val multipleImageIcon:ImageView=view.findViewById(R.id.ivMultipleImagesIcon)
 
     fun bindView(postPreview:PostPreview){
         //background.setImageURI(postPreview.images[0]._id.to)
@@ -59,7 +61,12 @@ inner class PostViewHolder(view: View):RecyclerView.ViewHolder(view){
         }
         locationName.text=postPreview.location.name
         rating.text=postPreview.ratings.toString()
-        locationDetail.text="Srbija, Kragujevac"
+        if(postPreview.images.size>1)
+            multipleImageIcon.visibility=View.VISIBLE
+        if(postPreview.location.city!=null)
+            locationDetail.text=postPreview.location.city
+        else
+            locationDetail.text=postPreview.location.country
 
     }
 }

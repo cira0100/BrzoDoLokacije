@@ -2,12 +2,10 @@ package com.example.brzodolokacije.Adapters
 
 import android.app.Activity
 import android.content.Intent
-import android.graphics.BitmapFactory
-import android.os.AsyncTask
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.brzodolokacije.Activities.ActivitySinglePost
@@ -16,12 +14,9 @@ import com.example.brzodolokacije.Models.LocationType
 import com.example.brzodolokacije.Models.PostPreview
 import com.example.brzodolokacije.Services.RetrofitHelper
 import com.example.brzodolokacije.Services.SharedPreferencesHelper
+import com.example.brzodolokacije.databinding.PostItemHomePageBinding
+import com.example.brzodolokacije.databinding.PostItemUserPostBinding
 import com.example.brzodolokacije.databinding.PostPreviewBinding
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.launch
-import okhttp3.ResponseBody
-import retrofit2.Call
-import retrofit2.Response
 
 
 class MyPostsAdapter (val activity:Activity,val items : MutableList<PostPreview>)
@@ -29,14 +24,12 @@ class MyPostsAdapter (val activity:Activity,val items : MutableList<PostPreview>
     private lateinit var token: String
     private lateinit var imageApi: IBackendApi
 
-    //constructer has one argument - list of objects that need to be displayed
-    //it is bound to xml of single item
-    private lateinit var binding: PostPreviewBinding
+    private lateinit var binding: PostItemUserPostBinding
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val inflater = LayoutInflater.from(parent.context)
         imageApi= RetrofitHelper.getInstance()
         token= SharedPreferencesHelper.getValue("jwt", activity).toString()
-        binding = PostPreviewBinding.inflate(inflater, parent, false)
+        binding = PostItemUserPostBinding.inflate(inflater, parent, false)
         return ViewHolder(binding)
     }
 
@@ -44,17 +37,19 @@ class MyPostsAdapter (val activity:Activity,val items : MutableList<PostPreview>
 
 
     override fun getItemCount() = items.size
-    inner class ViewHolder(itemView: PostPreviewBinding) : RecyclerView.ViewHolder(itemView.root) {
+    inner class ViewHolder(itemView: PostItemUserPostBinding) : RecyclerView.ViewHolder(itemView.root) {
         fun bind(item: PostPreview) {
             binding.apply {
-                tvTitle.text = item.location.name
-                tvLocationParent.text = item.location.country
-                tvPostPreviewRating.text=item.ratings.toString()
+                piupLocation.text = item.location.name
+                piupLocationDetail.text = item.location.country
+                piuprating.text=item.ratings.toString()
+                if(item.images.size>1)
+                    ivMultipleImagesIcon.visibility= View.VISIBLE
                // tvLocationType.text = "TODO"
                 if(item.images.isNotEmpty()) {
                     Glide.with(activity)
                         .load(RetrofitHelper.baseUrl + "/api/post/image/compress/" + item.images[0]._id)
-                        .into(locationImage)
+                        .into(piupbackground)
                 }
 
             }

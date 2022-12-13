@@ -1,10 +1,7 @@
 package com.example.brzodolokacije.Interfaces
 
 import com.example.brzodolokacije.Models.*
-import com.example.brzodolokacije.Models.Auth.JustMail
-import com.example.brzodolokacije.Models.Auth.Login
-import com.example.brzodolokacije.Models.Auth.Register
-import com.example.brzodolokacije.Models.Auth.ResetPass
+import com.example.brzodolokacije.Models.Auth.*
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okhttp3.ResponseBody
@@ -57,13 +54,20 @@ interface IBackendApi {
 
     @GET("/api/user/posts")
     fun getMyPosts(@Header("Authorization") authHeader:String):Call<MutableList<PostPreview>>
+    @GET("/api/post/userFavouritePosts")
+    fun getMyFavouritePosts(@Header("Authorization") authHeader:String):Call<MutableList<PostPreview>>
 
     @GET("/api/post/locations/{id}/posts")
     suspend fun getPagedPosts(@Header("Authorization") authHeader: String,
                         @Path("id") locationId:String,
+                        @Query("filter") filter:Boolean,
                         @Query("page") page:Int,
                         @Query("sorttype") sorttype:Int,
-                        @Query("filterdate") filterdate:Int
+                        @Query("filterdate") filterdate:Int,
+                        @Query("ratingFrom") ratingFrom:Int,
+                        @Query("ratingTo") ratingTo:Int,
+                        @Query("viewsFrom") viewsFrom:Int,
+                        @Query("viewsTo") viewsTo:Int
                         ):PagedPosts
     @POST("/api/message/add")
     fun sendMessage(@Header("Authorization") authHeader:String,@Body message:MessageSend):Call<Message>
@@ -121,4 +125,13 @@ interface IBackendApi {
     @GET("/api/user/{newName}/changeMyName")
     fun changeMyName(@Header("Authorization") authHeader:String,@Path("newName") newName:String):Call<Boolean>
 
+
+    @POST("/api/user/changePass")
+    fun changePass(@Header("Authorization") authHeader:String,@Body changePass:ChangePass):Call<Int>
+    @GET("/api/user/{username}/profile/stats")
+    fun getUserStatsFromUsername(@Header("Authorization") authHeader:String,@Path("username") username:String):Call<Statistics>
+    @GET("/api/auth/jwttoid")
+    fun getUserId(@Header("Authorization") authHeader:String):Call<String>
+    @DELETE("api/Post/posts/delete/{id}")
+    fun DeletePost(@Header("Authorization") authHeader:String,@Path("id") id:String):Call<String>
 }
