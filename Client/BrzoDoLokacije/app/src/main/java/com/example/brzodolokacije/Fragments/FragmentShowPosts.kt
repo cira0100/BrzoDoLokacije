@@ -187,7 +187,7 @@ class FragmentShowPosts : Fragment(), SwipeRefreshLayout.OnRefreshListener {
         val rootView =  inflater?.inflate(R.layout.fragment_show_posts, container, false)
         recyclerView = rootView?.findViewById(R.id.rvMain)
         // set recyclerView attributes
-        recyclerView?.setHasFixedSize(true)
+//        recyclerView?.setHasFixedSize(true)
         //recyclerView?.layoutManager = linearManagerVar
         recyclerView?.layoutManager = linearManagerVar
         recyclerView?.adapter = adapterVar
